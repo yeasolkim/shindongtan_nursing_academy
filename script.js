@@ -235,10 +235,18 @@ async function configurePageHero() {
     const breadcrumbEl = document.getElementById('breadcrumb-path');
     const badgeEl = document.querySelector('.badge-text');
 
-    if (titleEl) titleEl.textContent = config.title;
-    if (descriptionEl) descriptionEl.textContent = config.description;
-    if (breadcrumbEl) breadcrumbEl.textContent = config.breadcrumb;
-    if (badgeEl) badgeEl.textContent = config.badge;
+    // 모바일 환경에서 academy_introduction.html 페이지 최적화
+    if (currentPage === 'academy_introduction.html' && window.innerWidth <= 768) {
+      if (titleEl) titleEl.textContent = '인사말';
+      if (descriptionEl) descriptionEl.textContent = '';
+      if (breadcrumbEl) breadcrumbEl.textContent = '인사말';
+      if (badgeEl) badgeEl.textContent = '';
+    } else {
+      if (titleEl) titleEl.textContent = config.title;
+      if (descriptionEl) descriptionEl.textContent = config.description;
+      if (breadcrumbEl) breadcrumbEl.textContent = config.breadcrumb;
+      if (badgeEl) badgeEl.textContent = config.badge;
+    }
   });
 }
 
@@ -580,6 +588,13 @@ document.addEventListener('DOMContentLoaded', async function() {
       // 기본적으로 실행될 스크립트 없음
       break;
   }
+
+  // 5. 화면 크기 변경 시 academy_introduction.html 페이지 최적화 적용
+  window.addEventListener('resize', () => {
+    if (currentPage === 'academy_introduction.html' && document.getElementById('page-hero-container')) {
+      configurePageHero();
+    }
+  });
 
   console.log("신동탄간호학원 스크립트 초기화 완료.");
 });
