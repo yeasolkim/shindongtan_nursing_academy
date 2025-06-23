@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 페이지 - 신동탄간호학원</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body { 
+        font-family: 'Pretendard', sans-serif; 
+        background-color: #f8f9fa; 
+        margin: 0; 
+        transition: background-color 0.3s, background-image 0.3s;
+    }
+    body.login-active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+    }
+    #login-screen {
+        width: 100%;
+        padding: 2rem;
+    }
+    .login-form-card { 
+        max-width: 420px; 
+        margin: 0 auto; 
+        padding: 3rem; 
+        background-color: #ffffff; 
+        border-radius: 16px; 
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        border: 1px solid #e9ecef;
+        text-align: center;
+    }
+    .login-logo {
+        max-width: 150px;
+        margin-bottom: 1rem;
+    }
+    .login-form-card h2 { 
+        text-align: center; 
+        margin-top: 0; 
+        margin-bottom: 2.5rem; 
+        color: #212529;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+    
+    #login-form .form-group {
+        margin-bottom: 1.5rem;
+        text-align: left;
+    }
+    #login-form label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #495057;
+        font-size: 0.9rem;
+    }
+    #login-form input {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 1rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    #login-form input:focus {
+        border-color: #9d3d3f;
+        box-shadow: 0 0 0 4px rgba(157, 61, 63, 0.1);
+        outline: none;
+    }
+    #login-form .button-primary {
+        width: 100%;
+        padding: 0.9rem;
+        font-size: 1.1rem;
+        margin-top: 1rem;
+    }
+    .go-home-link {
+        display: inline-block;
+        margin-top: 1.5rem;
+        padding: 0.6rem 1.2rem;
+        color: #495057;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background-color 0.3s, color 0.3s;
+        font-size: 0.95rem;
+        border: 1px solid #dee2e6;
+        background-color: #f8f9fa;
+    }
+    .go-home-link:hover {
+        background-color: #e9ecef;
+        color: #212529;
+    }
+    .go-home-link i {
+        margin-right: 0.5rem;
+    }
+    .admin-container { 
+        width: 100%;
+        max-width: 1400px; 
+        margin: 2rem auto; 
+        padding: 2rem; 
+    }
+    .admin-header { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        margin-bottom: 2rem; 
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+    .admin-header h1 { font-size: 1.8rem; color: #343a40; margin: 0; }
+    .admin-header .header-buttons { display: flex; gap: 1rem; }
+    
+    .admin-section h2 { font-size: 1.5rem; color: #333; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+    .admin-card { 
+        background-color: #fff; 
+        border: 1px solid #e9ecef; 
+        border-radius: 12px; 
+        padding: 2rem; 
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .admin-card h3 { font-size: 1.3rem; margin-top: 0; margin-bottom: 1.5rem; color: #334a6c; }
+    
+    .admin-form .form-group { margin-bottom: 1.5rem; }
+    .admin-form label { display: block; margin-bottom: 0.6rem; font-weight: 500; color: #495057; }
+    .admin-form input[type="text"], 
+    .admin-form input[type="file"], 
+    .admin-form textarea { 
+        width: 100%; 
+        padding: 0.8rem 1rem; 
+        border: 1px solid #ced4da; 
+        border-radius: 8px; 
+        box-sizing: border-box; 
+        font-size: 1rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .admin-form input:focus, .admin-form textarea:focus {
+        border-color: #334a6c;
+        box-shadow: 0 0 0 3px rgba(51, 74, 108, 0.1);
+        outline: none;
+    }
+    .admin-form textarea { resize: vertical; }
+    
+    .button-primary { background-color: #334a6c; color: white; border: none; padding: 0.8rem 1.75rem; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: background-color 0.3s; }
+    .button-primary:hover { background-color: #2c405e; }
+    
+    .image-previews { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; }
+    .image-preview-item { 
+        position: relative; 
+        border: 1px solid #dee2e6; 
+        border-radius: 8px; 
+        padding: 0.75rem; 
+        background-color: #f8f9fa;
+        text-align: center;
+        transition: box-shadow 0.3s;
+    }
+    .image-preview-item:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .image-preview-item img { width: 100%; height: 140px; object-fit: cover; display: block; border-radius: 4px; margin-bottom: 0.75rem;}
+    .image-preview-item p { margin: 0; font-size: 0.9rem; color: #495057; }
+    .image-preview-item .delete-btn { 
+        position: absolute; top: -10px; right: -10px; 
+        background-color: #dc3545;
+        color: white; border: 2px solid white; border-radius: 50%; 
+        width: 28px; height: 28px; cursor: pointer; font-size: 14px; 
+        line-height: 24px; text-align: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        transition: background-color 0.3s, transform 0.3s;
+    }
+    .image-preview-item .delete-btn:hover {
+        background-color: #c82333;
+        transform: scale(1.1);
+    }
+    
+    .error-message { color: #d92121; background: #fdeaea; padding: 0.75rem; border-radius: 4px; margin-top: 1rem; display: none; }
+    
+    .button-secondary { background-color: #6c757d; color: white; border:none; border-radius: 4px; padding: 0.6rem 1rem; cursor: pointer; }
+    .button-secondary:hover { background-color: #5a6268; }
+    .button-danger { background-color: #dc3545; color: white; border: none; border-radius: 4px; padding: 0.6rem 1rem; cursor: pointer; }
+    .button-danger:hover { background-color: #c82333; }
+    
+    .jobs-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; font-size: 0.95rem; }
+    .jobs-table th, .jobs-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #dee2e6; }
+    .jobs-table th { background-color: #f8f9fa; font-weight: 600; color: #495057; text-align: center; }
+    .jobs-table td { color: #343a40; }
+    .jobs-table tbody tr:hover { background-color: #f1f3f5; }
+    .jobs-table td:first-child, .jobs-table th:first-child { text-align: left; }
+    .jobs-table td.actions { text-align: center; }
+    .jobs-table .button-secondary, .jobs-table .button-danger { padding: 0.4rem 0.8rem; font-size: 0.85rem; border:none; border-radius: 4px; cursor: pointer; margin: 0 0.2rem; }
+    
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); }
+    .modal-content { background-color: #fff; margin: 5% auto; padding: 2.5rem; border: none; width: 90%; max-width: 700px; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e9ecef; padding-bottom: 1.5rem; margin-bottom: 2rem; }
+    .modal-header h3 { margin: 0; font-size: 1.75rem; color: #1e293b; font-weight: 600; }
+    .close-button { color: #6c757d; font-size: 28px; font-weight: bold; cursor: pointer; transition: color 0.3s ease; }
+    .close-button:hover, .close-button:focus { color: #1e293b; text-decoration: none; }
+    
+    .admin-tabs { display: flex; border-bottom: 2px solid #dee2e6; margin-bottom: 2.5rem; }
+    .tab-link { background: none; border: none; padding: 1rem 1.5rem; font-size: 1.1rem; cursor: pointer; color: #6c757d; margin-bottom: -2px; border-bottom: 2px solid transparent; transition: color 0.3s, border-color 0.3s; }
+    .tab-link:hover { color: #334a6c; }
+    .tab-link.active { color: #334a6c; border-bottom-color: #334a6c; font-weight: 600; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    
+    /* 강사 관리 스타일 */
+    .instructor-admin-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    .instructor-admin-item {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .instructor-admin-item:hover {
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      border-color: #334a6c;
+    }
+    
+    .instructor-admin-item .instructor-preview {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .instructor-admin-item .instructor-preview img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .instructor-admin-item .instructor-info h4 {
+      margin: 0 0 0.25rem 0;
+      color: #334a6c;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    
+    .instructor-admin-item .instructor-info p {
+      margin: 0;
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+    
+    .instructor-admin-item .instructor-details {
+      font-size: 0.85rem;
+      color: #495057;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      max-height: 80px;
+      overflow-y: auto;
+    }
+    
+    .instructor-admin-item .instructor-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .instructor-admin-item .button-secondary,
+    .instructor-admin-item .button-danger {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .instructor-admin-item .button-secondary:hover {
+      background-color: #5a6268;
+      transform: translateY(-1px);
+    }
+    
+    .instructor-admin-item .button-danger:hover {
+      background-color: #c82333;
+      transform: translateY(-1px);
+    }
+    
+    .instructor-admin-item .delete-btn {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 24px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .instructor-admin-item .delete-btn:hover {
+      background-color: #c82333;
+      transform: scale(1.1);
+    }
+    
+    /* 강사 수정 모달 특별 스타일 */
+    .modal .form-group { margin-bottom: 2rem; }
+    .modal .form-group label { display: block; margin-bottom: 0.75rem; font-weight: 600; color: #374151; font-size: 1rem; }
+    .modal .form-group input[type="text"], 
+    .modal .form-group input[type="file"], 
+    .modal .form-group textarea { 
+        width: 100%; 
+        padding: 1rem; 
+        border: 2px solid #e5e7eb; 
+        border-radius: 10px; 
+        box-sizing: border-box; 
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: #f9fafb;
+    }
+    .modal .form-group input:focus, 
+    .modal .form-group textarea:focus {
+        border-color: #334a6c;
+        box-shadow: 0 0 0 4px rgba(51, 74, 108, 0.1);
+        outline: none;
+        background-color: #fff;
+    }
+    .modal .form-group textarea { 
+        resize: vertical; 
+        min-height: 120px;
+        line-height: 1.6;
+    }
+    .modal .form-group small { 
+        display: block; 
+        margin-top: 0.5rem; 
+        color: #6b7280; 
+        font-size: 0.875rem; 
+        line-height: 1.4;
+    }
+    .admin-card .alert-info {
+      background-color: #e7f3fe;
+      border-left: 4px solid #2196F3;
+      padding: 15px;
+      margin: 15px 0;
+      color: #555;
+      font-size: 0.9em;
+      border-radius: 0 4px 4px 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="login-screen">
+    <div class="login-form-card">
+      <img src="shindongtan/resource/logo.png" alt="신동탄간호학원 로고" class="login-logo">
+      <form id="login-form">
+        <h2>관리자 로그인</h2>
+        <div class="form-group">
+            <label for="username">아이디</label>
+            <input type="text" id="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" required>
+        </div>
+        <button type="submit" class="button-primary">로그인</button>
+      </form>
+      <a href="index.html" class="go-home-link"><i class="fas fa-home"></i> 홈페이지로 돌아가기</a>
+    </div>
+  </div>
+
+  <div class="admin-container" id="admin-main-content" style="display: none;">
+    <div class="admin-header">
+      <h1>신동탄간호학원 관리자 페이지</h1>
+      <div class="header-buttons">
+        <a href="index.html" class="button-secondary" style="text-decoration: none; margin-right: 10px;">
+          <i class="fas fa-home"></i> 홈페이지로 가기
+        </a>
+        <button id="logout-btn" class="button-secondary">로그아웃</button>
+      </div>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="tab-link active" data-tab="tab-instructors">강사진 관리</button>
+      <button class="tab-link" data-tab="tab-facilities">시설 사진 관리</button>
+      <button class="tab-link" data-tab="tab-jobs">구인 게시판 관리</button>
+      <button class="tab-link" data-tab="tab-gallery">갤러리 관리</button>
+      <button class="tab-link" data-tab="tab-notice">공지사항 관리</button>
+      <button class="tab-link" data-tab="tab-data">데이터 관리</button>
+    </div>
+
+    <!-- 강사진 관리 탭 -->
+    <div id="tab-instructors" class="tab-content active">
+      <div class="admin-card">
+        <h3>신규 강사 추가</h3>
+        <form id="instructor-form" class="admin-form">
+          <input type="hidden" id="instructor-id">
+          <div class="form-group">
+            <label for="instructor-name">이름</label>
+            <input type="text" id="instructor-name" required>
+          </div>
+          <div class="form-group">
+            <label for="instructor-title">직책</label>
+            <input type="text" id="instructor-title" required>
+          </div>
+          <div class="form-group">
+            <label for="instructor-image">사진</label>
+            <input type="file" id="instructor-image" accept="image/*">
+            <small>사진을 변경하지 않으려면 비워두세요.</small>
+          </div>
+          <div class="form-group">
+            <label for="instructor-details">상세 경력 (한 줄에 하나씩 입력)</label>
+            <textarea id="instructor-details" rows="5"></textarea>
+          </div>
+          <button type="submit" class="button-primary">저장하기</button>
+          <button type="button" id="cancel-instructor-edit" class="button-secondary" style="display: none;">취소</button>
+        </form>
+      </div>
+      <div class="admin-card">
+        <h3>등록된 강사 목록</h3>
+        <div id="instructor-list" class="instructor-admin-list"></div>
+      </div>
+    </div>
+
+    <!-- 시설 사진 관리 탭 -->
+    <div id="tab-facilities" class="tab-content">
+      <div class="admin-card">
+        <h3>신규 시설 사진 추가</h3>
+        <form id="facility-form" class="admin-form">
+          <div class="form-group">
+            <label for="facility-images">사진 파일 (여러 개 선택 가능)</label>
+            <input type="file" id="facility-images" accept="image/*" multiple required>
+          </div>
+          <div class="alert-info">
+            <strong>참고:</strong> 고용량의 이미지를 많이 추가하면 브라우저 저장 공간이 가득 차 오류가 발생할 수 있습니다. 이미지를 최적화(압축)한 후 업로드하는 것을 권장합니다.
+          </div>
+          <button type="submit" class="button-primary">업로드</button>
+        </form>
+      </div>
+      <div class="admin-card">
+        <h3>등록된 시설 사진</h3>
+        <div id="facility-list" class="image-previews"></div>
+      </div>
+    </div>
+
+    <!-- 구인 게시판 관리 탭 -->
+    <div id="tab-jobs" class="tab-content">
+      <div class="admin-card">
+          <h3>신규 구인 게시물 작성</h3>
+          <button id="add-job-btn" class="button-primary">글쓰기</button>
+      </div>
+      <div class="admin-card">
+        <h3>구인 게시물 목록</h3>
+        <table class="jobs-table" id="job-list-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>제목</th>
+              <th>작성일</th>
+              <th>조회수</th>
+              <th>작업</th>
+            </tr>
+          </thead>
+          <tbody id="job-list"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 갤러리 관리 탭 -->
+    <div id="tab-gallery" class="tab-content">
+        <div class="admin-card">
+            <h3>신규 갤러리 게시물 작성</h3>
+            <button id="add-gallery-btn" class="button-primary">글쓰기</button>
+            <div class="alert-info" style="margin-top: 15px;">
+              <strong>참고:</strong> 고용량의 이미지를 많이 추가하면 브라우저 저장 공간이 가득 차 오류가 발생할 수 있습니다. 이미지를 최적화(압축)한 후 업로드하는 것을 권장합니다.
+            </div>
+        </div>
+        <div class="admin-card">
+          <h3>갤러리 게시물 목록</h3>
+          <table class="jobs-table" id="gallery-list-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>썸네일</th>
+                <th>제목</th>
+                <th>작성일</th>
+                <th>조회수</th>
+                <th>작업</th>
+              </tr>
+            </thead>
+            <tbody id="gallery-list"></tbody>
+          </table>
+        </div>
+    </div>
+
+    <!-- 공지사항 관리 탭 -->
+    <div id="tab-notice" class="tab-content">
+        <div class="admin-card">
+            <h3>신규 공지사항 작성</h3>
+            <button id="add-notice-btn" class="button-primary">글쓰기</button>
+        </div>
+        <div class="admin-card">
+          <h3>공지사항 목록</h3>
+          <table class="jobs-table" id="notice-list-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>제목</th>
+                <th>유형</th>
+                <th>작성일</th>
+                <th>조회수</th>
+                <th>작업</th>
+              </tr>
+            </thead>
+            <tbody id="notice-list"></tbody>
+          </table>
+        </div>
+    </div>
+
+    <!-- 데이터 관리 탭 -->
+    <div id="tab-data" class="tab-content">
+      <div class="admin-card">
+        <h3>데이터 관리</h3>
+        <p>
+          이 기능을 사용하면 브라우저에 저장된 모든 로컬 데이터를 삭제하고 사이트를 초기 상태(db.json 기준)로 되돌립니다.<br>
+          'The quota has been exceeded'와 같은 저장 공간 오류가 발생하거나, 사이트 작동에 문제가 있을 때 사용하세요.<br>
+          <strong>주의:</strong> 저장했지만 아직 홈페이지에 반영되지 않은 모든 변경사항이 사라집니다.
+        </p>
+        <button id="clear-local-storage-btn" class="button-danger">모든 로컬 데이터 초기화</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 범용 모달 (게시판 글쓰기/수정용) -->
+  <div id="post-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">새 게시물 작성</h3>
+        <span class="close-button">&times;</span>
+      </div>
+      <form id="modal-form" class="admin-form">
+        <input type="hidden" id="modal-post-id">
+        <input type="hidden" id="modal-post-type">
+        <div class="form-group">
+          <label for="modal-title-input">제목</label>
+          <input type="text" id="modal-title-input" required>
+        </div>
+        <div class="form-group" id="modal-image-group" style="display: none;">
+          <label for="modal-image-input">이미지</label>
+          <input type="file" id="modal-image-input" accept="image/*">
+          <small>갤러리 게시물에만 해당됩니다.</small>
+        </div>
+        <div class="form-group">
+          <label for="modal-content-input">내용</label>
+          <textarea id="modal-content-input" rows="10" required></textarea>
+        </div>
+        <div class="form-group" id="modal-notice-group" style="display: none;">
+          <label>
+            <input type="checkbox" id="modal-is-notice-checkbox"> 중요 공지
+          </label>
+          <small>공지사항 게시판 상단에 고정됩니다.</small>
+        </div>
+        <button type="submit" class="button-primary">저장</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html> 

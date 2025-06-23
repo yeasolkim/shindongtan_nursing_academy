@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오시는 길 - 신동탄간호학원</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="history.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <!-- Leaflet.js CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    /* 오시는 길 페이지 전용 스타일 */
+    .location-map-container {
+      position: relative;
+      margin-bottom: 3rem;
+      margin-top: 2rem;
+    }
+    
+    .temp-map {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+      transition: all 0.3s ease;
+    }
+    
+    .temp-map:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+    }
+    
+    .temp-map img {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      border-radius: 20px;
+    }
+    
+    .map-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(26, 54, 93, 0.1), rgba(45, 55, 72, 0.1));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .map-placeholder {
+      background: linear-gradient(135deg, #1a365d, #2d3748);
+      color: white;
+      padding: 3rem;
+      border-radius: 20px;
+      text-align: center;
+      width: 100%;
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .map-placeholder i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.8;
+    }
+    
+    .map-placeholder h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    
+    .map-placeholder p {
+      font-size: 1rem;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+    
+    /* 연락처 정보 통합 카드 */
+    .contact-summary {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 3rem;
+    }
+    
+    .contact-summary h3 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #1a365d;
+      margin-bottom: 2rem;
+      text-align: center;
+      position: relative;
+    }
+    
+    .contact-summary h3::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, #1a365d, #2d3748);
+      border-radius: 2px;
+    }
+    
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    
+    .contact-item {
+      display: flex;
+      align-items: center;
+      padding: 1.5rem;
+      background: #f8fafc;
+      border-radius: 15px;
+      border-left: 4px solid #1a365d;
+      transition: all 0.3s ease;
+    }
+    
+    .contact-item:hover {
+      transform: translateX(5px);
+      background: #edf2f7;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .contact-item .icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #1a365d, #2d3748);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      font-size: 1.2rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    
+    .contact-item .info {
+      flex: 1;
+    }
+    
+    .contact-item .label {
+      font-size: 0.9rem;
+      color: #718096;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+    }
+    
+    .contact-item .value {
+      font-size: 1.1rem;
+      color: #2d3748;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    
+    /* 연락처 카드 호버 효과 */
+    .contact-card {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    
+    .contact-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #1a365d, #2d3748);
+    }
+    
+    .contact-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .contact-card h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1a365d;
+      margin-bottom: 1rem;
+    }
+    
+    .contact-card p {
+      color: #4a5568;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    
+    .contact-card .highlight {
+      color: #1a365d;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    
+    /* 교통편 정보 */
+    .transport-info {
+      background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+      padding: 2rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+    }
+    
+    .transport-info h3 {
+      color: #1a365d;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .transport-info h3 i {
+      margin-right: 0.5rem;
+      color: #1a365d;
+    }
+    
+    .transport-info ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .transport-info li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #e2e8f0;
+      color: #4a5568;
+    }
+    
+    .transport-info li:last-child {
+      border-bottom: none;
+    }
+    
+    /* 운영시간 및 주의사항 */
+    .hours-notice {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+    
+    .hours-notice h3 {
+      color: #1a365d;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    
+    .hours-notice .hours {
+      background: #f8fafc;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+    
+    .hours-notice .notice {
+      background: #fff5f5;
+      padding: 1rem;
+      border-radius: 10px;
+      border-left: 4px solid #e53e3e;
+    }
+    
+    .hours-notice .notice h4 {
+      color: #e53e3e;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    /* 반응형 디자인 */
+    @media (max-width: 768px) {
+      .contact-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+      
+      .contact-summary {
+        padding: 1.5rem;
+      }
+      
+      .contact-card {
+        padding: 1.5rem;
+      }
+      
+      .map-placeholder {
+        padding: 2rem;
+        height: 300px;
+      }
+      
+      .map-placeholder i {
+        font-size: 3rem;
+      }
+      
+      .map-placeholder h3 {
+        font-size: 1.3rem;
+      }
+    }
+    
+    /* 매우 작은 화면에서 세로 정렬 */
+    @media (max-width: 480px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 헤더 로드 -->
+  <header class="header"></header>
+
+  <!-- 페이지 히어로가 동적으로 여기에 삽입됩니다 -->
+  <div id="page-hero-container"></div>
+
+  <!-- 메인 콘텐츠 -->
+  <main>
+    <!-- 여기에 페이지의 주요 내용이 들어갑니다 -->
+    <section class="location-section">
+      <div class="container">
+        <!-- 지도 섹션 -->
+        <div class="location-map-container">
+          <div id="map" style="width: 100%; height: 450px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);"></div>
+        </div>
+
+        <!-- 연락처 정보 통합 카드 -->
+        <div class="contact-summary">
+          <h3>연락처 정보</h3>
+          <div class="contact-grid">
+            <div class="contact-item">
+              <div class="icon">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <div class="info">
+                <div class="label">주소</div>
+                <div class="value">경기도 화성시 메타폴리스로 38 (반송동), 천년프라자 401호</div>
+              </div>
+            </div>
+            
+            <div class="contact-item">
+              <div class="icon">
+                <i class="fas fa-phone"></i>
+              </div>
+              <div class="info">
+                <div class="label">전화번호</div>
+                <div class="value">031-8003-2456</div>
+              </div>
+            </div>
+            
+            <div class="contact-item">
+              <div class="icon">
+                <i class="fas fa-fax"></i>
+              </div>
+              <div class="info">
+                <div class="label">팩스번호</div>
+                <div class="value">050-4062-2456</div>
+              </div>
+            </div>
+            
+            <div class="contact-item">
+              <div class="icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="info">
+                <div class="label">이메일</div>
+                <div class="value">nurse8003@naver.com</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 교통편 정보 -->
+        <div class="transport-info">
+          <h3><i class="fas fa-bus"></i> 대중교통 이용</h3>
+          <ul>
+            <li><strong>지하철:</strong> 신분당선 동탄역 하차 후 도보 10분</li>
+            <li><strong>버스:</strong> 동탄역 정류장 하차 (간선버스 1000번, 지선버스 5000번)</li>
+            <li><strong>마을버스:</strong> 동탄1번, 동탄2번 버스 이용</li>
+          </ul>
+        </div>
+
+        <!-- 운영시간 및 주의사항 -->
+        <div class="hours-notice">
+          <h3>운영시간 및 주의사항</h3>
+          <div class="hours">
+            <h4>운영시간</h4>
+            <p><strong>평일:</strong> 09:00 - 18:00</p>
+            <p><strong>토요일:</strong> 09:00 - 15:00</p>
+            <p><strong>일요일 및 공휴일:</strong> 휴무</p>
+          </div>
+          <div class="notice">
+            <h4>주의사항</h4>
+            <p>• 상담은 사전 예약을 권장합니다.</p>
+            <p>• 주차는 건물 내 지하주차장을 이용해주세요.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- COMP-FOOTER-01: 글로벌 푸터 -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <p>상호명: 신동탄간호학원</p>
+          <p>사업자등록번호: 602-91-03887</p>
+          <p>대표자: 김예람</p>
+          <br/>
+          <p>전화번호: 031-8003-2456</p>
+          <p>팩스번호: 050-4062-2456</p>
+          <p>이메일: nurse8003@naver.com</p>
+          <br/>
+          <p>주소: 경기도 화성시 메타폴리스로 38 (반송동), 천년프라자 401호</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 신동탄간호학원. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="script.js"></script>
+</body>
+</html> 

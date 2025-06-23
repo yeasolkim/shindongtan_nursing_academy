@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>취업/구인정보 - 신동탄간호학원</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .post-main { padding: 4rem 0; background-color: #ffffff; }
+    .post-container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; display: flex; gap: 2rem; }
+    .post-content-wrapper { flex: 1; min-width: 0; }
+    .post-view { border-top: 2px solid #333; }
+    .post-header { padding: 1.5rem; border-bottom: 1px solid #ddd; }
+    .post-header h2 { font-size: 1.8rem; font-weight: 600; margin-bottom: 1rem; }
+    .post-meta { display: flex; align-items: center; gap: 1.5rem; font-size: 0.9rem; color: #777; }
+    .post-meta span i { margin-right: 0.3rem; }
+    .post-body { padding: 3rem 1.5rem; border-bottom: 1px solid #ddd; line-height: 1.8; min-height: 200px; }
+    .post-nav { list-style: none; padding: 0; margin: 0; }
+    .post-nav li { display: flex; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid #eee; }
+    .post-nav .nav-label { font-weight: 600; width: 80px; flex-shrink: 0; }
+    .post-nav .nav-title { text-decoration: none; color: #555; }
+    .post-nav .nav-title:hover { text-decoration: underline; }
+    .post-footer { display: flex; justify-content: flex-end; margin-top: 2rem; }
+    .list-button { padding: 0.7rem 1.5rem; background-color: #333; color: white; text-decoration: none; border-radius: 5px; }
+    /* Quick Contact Sidebar */
+    .quick-contact-sidebar { width: 240px; flex-shrink: 0; }
+    .contact-box { border: 1px solid #e9e9e9; margin-bottom: 1rem; text-align: center; padding: 1.5rem 1rem; }
+    .contact-box h3 { font-size: 1.1rem; font-weight: 600; margin: 0 0 1rem; color: #1a365d; }
+    .contact-box .phone-number { font-size: 1.3rem; font-weight: 700; color: #333; }
+    .contact-box .kakao-link { display: block; background-color: #ffeb00; padding: 1rem; text-decoration: none; color: #3c1e1e; font-weight: 600; }
+    @media (max-width: 1200px) { .quick-contact-sidebar { display: none; } }
+  </style>
+</head>
+<body>
+  <header class="header"></header>
+  <div id="page-hero-container"></div>
+
+  <main class="post-main">
+    <div class="post-container">
+      <div class="post-content-wrapper" id="post-detail-view">
+        <!-- 게시물 상세 내용이 여기에 동적으로 삽입됩니다. -->
+      </div>
+      
+      <aside class="quick-contact-sidebar">
+        <div class="contact-box">
+          <h3>문의 전화</h3>
+          <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
+        </div>
+        <div class="contact-box" style="padding: 0;">
+            <a href="#" class="kakao-link"><strong>KakaoTalk</strong><span>플러스 친구</span></a>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+  <script src="script.js"></script>
+</body>
+</html> 

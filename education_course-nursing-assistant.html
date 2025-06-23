@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>간호조무사 교육과정 - 신동탄간호학원</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="common-pages.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .subsection-title {
+        font-size: 1.8rem;
+        color: #1a365d;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+    .subsection-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background-color: #0052cc;
+        border-radius: 2px;
+    }
+    .process-flow-section {
+        margin-bottom: 4rem;
+    }
+    .process-flow-diagram {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    .process-step {
+        background-color: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        width: 200px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+    .process-step:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    }
+    .process-step h4 {
+        margin: 0 0 0.5rem 0;
+        color: #0052cc;
+        font-size: 1.1rem;
+    }
+    .process-step p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #555;
+    }
+    .process-arrow {
+        font-size: 2rem;
+        color: #0052cc;
+    }
+    @media (max-width: 992px) {
+        .process-flow-diagram {
+            flex-direction: column;
+        }
+        .process-arrow {
+            transform: rotate(90deg);
+        }
+    }
+    .table-responsive {
+        overflow-x: auto;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07);
+        overflow: hidden;
+    }
+    .curriculum-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0;
+    }
+    .curriculum-table th, .curriculum-table td {
+        border: 1px solid #dee2e6;
+        padding: 1rem;
+        text-align: left;
+        vertical-align: middle;
+    }
+    .curriculum-table thead th {
+        background-color: #1a365d;
+        color: white;
+        font-weight: 600;
+        text-align: center;
+    }
+    .curriculum-table tbody tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    .curriculum-table tbody td:first-child, .curriculum-table tbody td:last-child {
+        font-weight: 600;
+        text-align: center;
+    }
+    .curriculum-table .details-list {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+    }
+    .curriculum-table .details-list li {
+        margin-bottom: 0.5rem;
+    }
+    .curriculum-table .details-list li:last-child {
+        margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <header class="header"></header>
+  <div id="page-hero-container"></div>
+
+  <!-- 메인 콘텐츠 -->
+  <main>
+    <section class="page-section">
+      <div class="container">
+        <div class="content-card">
+          <div class="section-title">
+            <h2>간호조무사 교육과정</h2>
+            <p>미래를 향한 첫걸음, 전문 간호 인력 양성</p>
+          </div>
+          <div class="card-content">
+            <div class="process-flow-section">
+              <h3 class="subsection-title">간호조무사 교육과정 순서도</h3>
+              <div class="process-flow-diagram">
+                <div class="process-step">
+                  <h4>입학</h4>
+                  <p>(6개월)</p>
+                </div>
+                <div class="process-arrow">&rarr;</div>
+                <div class="process-step">
+                  <h4>이론 교육</h4>
+                  <p>(740시간 이상 이수)</p>
+                </div>
+                <div class="process-arrow">&rarr;</div>
+                <div class="process-step">
+                  <h4>병원실습</h4>
+                  <p>(병원 400시간, 의원 380시간)</p>
+                </div>
+                <div class="process-arrow">&rarr;</div>
+                <div class="process-step">
+                  <h4>요점정리/문제풀이</h4>
+                  <p>(2개월)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="curriculum-table-section">
+              <h3 class="subsection-title">간호조무사 교과과정</h3>
+              <div class="table-responsive">
+                <table class="curriculum-table">
+                  <thead>
+                    <tr>
+                      <th>교과목</th>
+                      <th>단원</th>
+                      <th>세부내용</th>
+                      <th>이수시간</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td rowspan="12">기초간호학 개요</td>
+                      <td>간호관리</td>
+                      <td>1.간호 변천의 역사적 고찰 2.간호체계 3.간호조무사의 직업윤리와 태도 4.병원의 기능과 간호조무사의 업무</td>
+                      <td rowspan="17" style="text-align:center; vertical-align: middle;">740</td>
+                    </tr>
+                    <tr>
+                      <td>기초해부 생리</td>
+                      <td>1.해부학 용어 2.항상성 3.인체의 구성 4.골격계의 구조와 기능 5.근육계의 구조와 기능 6.소화기계의 구조와 기능 7.호흡기계의 구조와 기능 8.순환기계의 구조와 기능 9.비뇨기계의 구조와 기능 10.생식기계의 구조와 기능 11.신경계의 구조와 기능 12.내분비계의 구조와 기능 13.피부의 구조와 기능 14.감각기관의 구조와 기능</td>
+                    </tr>
+                    <tr>
+                      <td>기초약리</td>
+                      <td>1.약물과 약물작용 2.약용량의 계산 3.투약의 원칙과 방법 4.화학요법제 5.자율신경계 작용 약물 6.중추신경계 작용 약물 7.말초신경계 작용 약물 8.심혈관계 작용 약물 등</td>
+                    </tr>
+                    <tr>
+                        <td>기초영양</td>
+                        <td>1.영양과 건강 2.기초영양소 3.영양 상태 판정 4.병원식이</td>
+                    </tr>
+                    <tr>
+                        <td>기초치과</td>
+                        <td>1.치의학 2.구강 해부학 3.구강 영양학 4.진찰실의 표준기구 및 장비 5.간호조무사의 기본 업무 6.치과 진료용 기구의 연마 및 소독 7.구강 외과적 및 소아 치과학 8.예방 치의학</td>
+                    </tr>
+                    <tr>
+                        <td>기초한방</td>
+                        <td>1.한방 간호의 유래 및 나이팅게일 2.경락과 경혈 3.한방 병원 간호 관리의 실제 4.자연요법 관리 5.체질(사상)의 정의와 원리</td>
+                    </tr>
+                    <tr>
+                        <td>기본 간호의 기초</td>
+                        <td>1.병원환경조성돕기 2.간호기록과 간호계획의 기록 돕기 3.활력징후돕기 4.건강사정돕기 5.감염관리와 무균술 돕기 6.검사돕기 7.침상 만들기 돕기 8.개인위생 돕기 9.식사 돕기 10.배변 돕기 11.배뇨돕기 12.체위유지돕기 등 23개 항목</td>
+                    </tr>
+                     <tr>
+                        <td>성인 간호의 기초</td>
+                        <td>1.일반적인 간호돕기 2.근골격계 질환 3.호흡기계 질환 4.내분비계 질환 5.혈액질환 6.소화기계 질환 7.비뇨생식기계 질환 8.내분비계 질환 9.순환기계 질환 10.신경계 질환 11.피부계 질환 12.안과 질환 13.이비인후과 질환</td>
+                    </tr>
+                    <tr>
+                        <td>모성 간호의 기초</td>
+                        <td>1.여성의 생식기와 임신 2.임신과 관련된 불편감과 간호 3.태아 건강사정 4.고위험 임신 5.분만과 고위험 분만 6.산욕과 고위험 신욕</td>
+                    </tr>
+                    <tr>
+                        <td>아동 간호의 기초</td>
+                        <td>1.성장과 발달 2.신생아 간호 3.입원한 아동의 간호 4.영아 간호 5.유아 간호 6.입원한 어린이의 간호</td>
+                    </tr>
+                    <tr>
+                        <td>노인 간호의 기초</td>
+                        <td>1.노인 간호의 이해 2.노화에 따른 변화 3.노년기의 건강관리 4.노인의 상해 및 수면, 의사소통 5.치매노인간호 6.노인 학대</td>
+                    </tr>
+                    <tr>
+                        <td>응급 간호의 기초</td>
+                        <td>1.응급의료체계 2.응급처치의 개요 3.응급처치:기도폐쇄 및 이물질 제거 4.응급처치:상처 5.응급처치:근골격계 손상 6.응급처치:화상, 열손상, 동상 등</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="4">보건간호학 개요</td>
+                        <td>보건교육</td>
+                        <td>1.보건교육의 개념 2.보건교육 계획 및 평가 3.보건교육방법</td>
+                    </tr>
+                    <tr>
+                        <td>보건행정</td>
+                        <td>1.보건행정의 이해 2.보건의료체계 3.보건행정조직 4.국제보건기구 5.보건의료 6.사회보장과 의료보장</td>
+                    </tr>
+                    <tr>
+                        <td>환경보건</td>
+                        <td>1.환경의 중요성 및 산업보건 2.기후와 건강 3.공선과 건강 4.공기와 건강 5.물과 건강 6.폐기물관리 7.식품과 건강 8.위생동물의 관리</td>
+                    </tr>
+                     <tr>
+                        <td>산업보건</td>
+                        <td>1.산업보건의 의의 2.근로자 건강진단 3.산업재해 4.직업병</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="5">공중보건학개론</td>
+                        <td>질병관리사업</td>
+                        <td>1.건강과 질병 2.감염병의 발생과정 3.감염병 관리의 원칙 4.급성감염병 관리 5.만성 퇴행성 질환 6.기생충질환 관리</td>
+                    </tr>
+                    <tr>
+                        <td>인구와 출산</td>
+                        <td>1.인구의 정의와 분류 2.인구구조조사 및 생명표 3.인구증가에 따른 문제와 대책 4.가족계획</td>
+                        <td style="text-align:center; vertical-align: middle;"></td>
+                    </tr>
+                    <tr>
+                        <td>모자보건</td>
+                        <td>1.모자보건(모자보건의 이해, 모자보건사업, 모자보건센터의 역할, 모자보건사업의 추진방향) 2.학교보건</td>
+                        <td style="text-align:center; vertical-align: middle;"></td>
+                    </tr>
+                     <tr>
+                        <td>지역사회보건</td>
+                        <td>1.지역사회 간호의 개요 2.지역사회 간호요원 3.지역사회 간호사업의 미래 4.지역사회 정신보건 5.지역사회 간호활동 6.지역사회 간호전달체계</td>
+                        <td style="text-align:center; vertical-align: middle;"></td>
+                    </tr>
+                    <tr>
+                        <td>의료관계법규</td>
+                        <td>1.의료법 2.감염병의 예방 및 관리에 관한 법률 3.정신건강증진 및 정신질환자 복지서비스 지원에 관한 법률 4.결핵예방법 5.구강보건법 6.혈액관리법 7.등록:간호조무사 및 의료유사업자에 관한 규칙</td>
+                        <td style="text-align:center; vertical-align: middle;"></td>
+                    </tr>
+                    <tr>
+                        <td>현장실습</td>
+                        <td>병,의원급 의료기관</td>
+                        <td>기본간호실무 자신과 기술을 익혀 현장실무능력을 함양</td>
+                        <td style="text-align:center; vertical-align: middle;">780</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- COMP-FOOTER-01: 글로벌 푸터 -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <p>상호명: 신동탄간호학원</p>
+          <p>사업자등록번호: 602-91-03887</p>
+          <p>대표자: 김예람</p>
+          <br/>
+          <p>전화번호: 031-8003-2456</p>
+          <p>팩스번호: 050-4062-2456</p>
+          <p>이메일: nurse8003@naver.com</p>
+          <br/>
+          <p>주소: 경기도 화성시 메타폴리스로38, 천년프라자 401호</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 신동탄간호학원. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html> 

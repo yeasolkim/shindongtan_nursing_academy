@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>진학 - 신동탄간호학원</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="history.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* 기존 스타일 유지 */
+    .course-section { padding: 4rem 2rem; background-color: #f8f9fa; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .content-card { background: #fff; padding: 3rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    .section-title { text-align: center; margin-bottom: 3rem; }
+    .section-title h2 { font-size: 2rem; font-weight: 700; color: #333; margin-bottom: 0.5rem; }
+    .section-title p { font-size: 1.1rem; color: #666; }
+
+    /* 새로운 콘텐츠 스타일 */
+    .admission-section { margin-bottom: 4rem; }
+    .admission-section:last-child { margin-bottom: 0; }
+    .admission-section h3 { font-size: 1.5rem; color: #1a365d; margin-bottom: 1.5rem; border-left: 4px solid #1a365d; padding-left: 1rem; }
+    
+    .intro-box {
+      background-color: #eef2f7;
+      padding: 2rem;
+      border-radius: 8px;
+      margin-bottom: 3rem;
+      text-align: center;
+      border: 1px solid #dbe3ec;
+    }
+    .intro-box h4 { font-size: 1.3rem; color: #1a365d; margin-bottom: 1rem; }
+    .intro-box p { font-size: 1rem; color: #333; line-height: 1.7; }
+    
+    .department-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .department-card {
+      background-color: #fff;
+      padding: 1.5rem;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+    }
+    .department-card h5 { font-size: 1.1rem; font-weight: 600; color: #334a6c; margin-bottom: 0.5rem; }
+    .department-card p { font-size: 0.95rem; color: #555; line-height: 1.6; flex-grow: 1; }
+    
+    .university-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+    }
+    .university-table th, .university-table td {
+      border: 1px solid #dee2e6;
+      padding: 0.85rem 1rem;
+      text-align: left;
+      vertical-align: middle;
+    }
+    .university-table th { background-color: #f1f3f5; font-weight: 600; text-align: center; }
+    .university-table td { background-color: #fff; }
+    .university-table a { color: #1a365d; text-decoration: none; }
+    .university-table a:hover { text-decoration: underline; }
+    .university-table td:first-child { font-weight: 500; text-align: center; }
+
+    @media (max-width: 992px) {
+        .department-grid {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+    }
+
+    @media (max-width: 768px) {
+      .content-card { padding: 2rem; }
+      .university-table { display: block; overflow-x: auto; white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header"></header>
+  <div id="page-hero-container"></div>
+
+  <main>
+    <section class="course-section">
+      <div class="container">
+        <div class="content-card">
+          <div class="section-title">
+            <h2>진학</h2>
+            <p>진학 정보를 안내합니다.</p>
+          </div>
+          
+          <div class="intro-box">
+            <h4>보건의료·분야·진학</h4>
+            <p>대학진학을 희망하는 경우 전국 4년제 및 2-3년제 대학에 간호학과 및 보건계열 분야에<br>간호조무사 특별전형을 통해 가산점을 받는 곳이 있습니다.</p>
+          </div>
+
+          <div class="admission-section">
+            <h3>학과 소개</h3>
+            <div class="department-grid">
+              <div class="department-card"><h5>간호과</h5><p>정보 기술 사회가 필요로 하는 지식과 기술, 높은 윤리적 가치, 인류의 건강증진에 공헌하는 간호전문직 정신, 합리적이며 과학적 사고를 지닌 국제화, 세계화 시대에 기여할 수 있는 능력 있는 전문 간호사 육성을 교육목표로 두고 있는 과이다</p></div>
+              <div class="department-card"><h5>노인보건복지과</h5><p>노인 및 장애인을 위한 생활교육, 사회복지분야 등의 이론과 실습을 학습함으로써 노인보건복지 전문가를 양성하는 과이다</p></div>
+              <div class="department-card"><h5>물리치료과</h5><p>물리치료의 원리를 이해하고 물리치료를 발전시킬 수 있는 지식과 역량을 갖춘 물리치료 전문인력을 양성하는 과이다.</p></div>
+              <div class="department-card"><h5>응급구조과</h5><p>응급상황에 대처하기 위한 국가검증 유자격자를 배출하는 곳으로서 현장에서 응급환자를 효율적으로 응급처치하고 관리하며 이송할 수 있는 1급 응급구조사 양성을 목표로 하는 과이다</p></div>
+              <div class="department-card"><h5>치기공과</h5><p>치아나 그 주위 조직 및 악안면 부위에서 결손된 조직의 기능 회복이나 잘못된 악골 관계의 개선과 보정 등을 위해 제작되는 보철 및 교정 장치물의 기공제작에 관한 기술을 익히는 과이다</p></div>
+              <div class="department-card"><h5>치위생과</h5><p>구강보건교육, 예방치과처치, 치과진료협조 및 경영·관리를 지원함으로써 국민구강건강의 질적 향상에 한목을 담당할 전문직업인을 양성하는 과이다</p></div>
+              <div class="department-card"><h5>의료정보시스템과</h5><p>멀티미디어형 보건의료정보의 관리, 의료지원전문 인력을 양성하는 과이다</p></div>
+              <div class="department-card"><h5>의료보험심사과</h5><p>전국민의료보험제도의 효율적 운영과 병원산업 및 보건의료산업의 성장, 발전을 위하여 의료보험심사를 전문적으로 담당할 전문직업인을 양성하기 위한 과이다</p></div>
+              <div class="department-card"><h5>의무행정과</h5><p>의무기록, 의무행정, 의료보험 및 병원재무관리 분야의 학문과 병원전산실습, 산학연계교육을 통한 병원현장실습을 체계적이고 효율적으로 실시하여 이론과 실무 능력을 배우는 과이다</p></div>
+              <div class="department-card"><h5>임상병리과</h5><p>질병으로 인해 발생하는 인체의 생리학적 변화를 혈액, 체액, 조직, 세포 등 다양한 인체 성분을 대상으로 분석, 검사하여 질병의 진단과 치료에 결정적인 정보를 제공하는 과이다</p></div>
+              <div class="department-card"><h5>작업치료과</h5><p>신체적, 정신적, 사회적 장애를 가진 사람들에게 치료적 목적이 있는 일, 놀이, 운동 등을 이용하여 손상되었거나 약해진 기능을 회복, 유지, 강화시키기 위한 관리를 하는 과이다</p></div>
+              <div class="department-card"><h5>병원, 약국 행정전산과</h5><p>병원 및 약국에 필요한 의약 정보관리 전문 인력을 양성하는 과이다</p></div>
+              <div class="department-card"><h5>보건행정과</h5><p>보건 의료관리 전문요원의 교육을 통해 실무 전문가를 양성함을 목표로 하는 과이다</p></div>
+              <div class="department-card"><h5>병원 경영과</h5><p>병원관리를 효율적으로 수행할 수 있는 전문 직업인의 양성을 목표로 하는 과이다<br>※산업체 특별전형은 간호조무사 자격증 취득 후 가능합니다.</p></div>
+            </div>
+          </div>
+          
+          <div class="admission-section">
+            <h3>대학진학 절차</h3>
+            <div class="intro-box" style="background-color: #eaf5ff;">
+              <p>· 간호조무사 자격증 취득 → 간호학과 및 보건의료분야 특별전형 지원<br>· 간호조무사 자격증 취득 → 취업 → 보건의료분야 특별전형 지원</p>
+            </div>
+          </div>
+
+          <div class="admission-section">
+            <h3>특별전형이 있는 대학 소개</h3>
+            <table class="university-table">
+              <thead>
+                <tr><th>지역</th><th>학교명</th><th>전화번호</th><th>홈페이지</th></tr>
+              </thead>
+              <tbody>
+                <tr><td rowspan=4>서울</td><td>삼육보건대학 (동대문구)</td><td>02)3407-8500</td><td><a href="http://www.snhc.ac.kr" target="_blank">www.snhc.ac.kr</a></td></tr>
+                <tr><td>적십자간호대학 (종로구)</td><td>02)2129-1114</td><td><a href="http://www.redcross.ac.kr" target="_blank">www.redcross.ac.kr</a></td></tr>
+                <tr><td>한양여자대학 (성동구)</td><td>02)2290-2114</td><td><a href="http://www.hywoman.ac.kr" target="_blank">www.hywoman.ac.kr</a></td></tr>
+                <tr><td>숭의여자대학 (중구)</td><td>02)3708-9000</td><td><a href="http://www.sewc.ac.kr" target="_blank">http://www.sewc.ac.kr</a></td></tr>
+                <tr><td rowspan=14>인천 / 경기</td><td>경인여자대학 (인천)</td><td>032)540-0032</td><td><a href="http://www.kic.ac.kr" target="_blank">http://www.kic.ac.kr</a></td></tr>
+                <tr><td>경복대학 (포천)</td><td>031)539-5200</td><td><a href="http://www.kyungbok.ac.kr" target="_blank">www.kyungbok.ac.kr</a></td></tr>
+                <tr><td>경원전문대학 (성남)</td><td>031)750-8531</td><td><a href="http://www.kwc.ac.kr" target="_blank">www.kwc.ac.kr</a></td></tr>
+                <tr><td>동남보건대학 (수원)</td><td>031)249-6666</td><td><a href="http://www.dongnam.ac.kr" target="_blank">www.dongnam.ac.kr</a></td></tr>
+                <tr><td>수원과학대학 (화성)</td><td>031)353-8980</td><td><a href="http://www.ssc.ac.kr" target="_blank">www.ssc.ac.kr</a></td></tr>
+                <tr><td>수원여자대학 (수원)</td><td>031)290-8000</td><td><a href="http://www.suwon-c.ac.kr" target="_blank">www.suwon-c.ac.kr</a></td></tr>
+                <tr><td>신흥대학 (의정부)</td><td>031)870-3343</td><td><a href="http://www.shc.ac.kr" target="_blank">www.shc.ac.kr</a></td></tr>
+                <tr><td>동서울대학 (성남)</td><td>031)720-2114</td><td><a href="http://www.dsc.ac.kr" target="_blank">www.dsc.ac.kr</a></td></tr>
+                <tr><td>신구대학 (성남)</td><td>031)740-1114</td><td><a href="http://www.shingu.ac.kr" target="_blank">www.shingu.ac.kr</a></td></tr>
+                <tr><td>동원대학 (광주시)</td><td>031)763-8541</td><td><a href="http://www.tongwon.ac.kr" target="_blank">www.tongwon.ac.kr</a></td></tr>
+                <tr><td>유한대학 (부천)</td><td>02)2610-0622</td><td><a href="http://www.yuhan.ac.kr" target="_blank">www.yuhan.ac.kr</a></td></tr>
+                <tr><td>용인송담대학 (용인시)</td><td>031)330-9000</td><td><a href="http://www.ysc.ac.kr" target="_blank">www.ysc.ac.kr</a></td></tr>
+                <tr><td>안산1대학 (안산)</td><td>031)400-6905</td><td><a href="http://www.ansan.ac.kr" target="_blank">www.ansan.ac.kr</a></td></tr>
+                <tr><td>여주대학 (여주)</td><td>031)880-5111</td><td><a href="http://www.suwon-c.ac.kr" target="_blank">http://www.suwon-c.ac.kr</a></td></tr>
+                <tr><td rowspan=12>강원 / 충청</td><td>강릉영동대학 (강릉)</td><td>033)610-0114</td><td><a href="http://www.gyc.ac.kr" target="_blank">www.gyc.ac.kr</a></td></tr>
+                <tr><td>강원관광대학 (태백)</td><td>033)639-0500</td><td><a href="http://www.kt.ac.kr" target="_blank">www.kt.ac.kr</a></td></tr>
+                <tr><td>동우대학 (속초)</td><td>033)632-6557</td><td><a href="http://www.duc.ac.kr" target="_blank">www.duc.ac.kr</a></td></tr>
+                <tr><td>원주대학 (원주)</td><td>063)840-1551</td><td><a href="http://www.wonju.ac.kr" target="_blank">www.wonju.ac.kr</a></td></tr>
+                <tr><td>신성대학 (당진)</td><td>041)305-1121</td><td><a href="http://www.shinsung.ac.kr" target="_blank">www.shinsung.ac.kr</a></td></tr>
+                <tr><td>혜전대학 (홍성)</td><td>041)630-5128</td><td><a href="http://www.hyejeon.ac.kr" target="_blank">www.hyejeon.ac.kr</a></td></tr>
+                <tr><td>극동정보대학 (음성)</td><td>043)879-3305</td><td><a href="http://www.kdc.ac.kr" target="_blank">www.kdc.ac.kr</a></td></tr>
+                <tr><td>대원과학대학 (제천)</td><td>043)645-9171</td><td><a href="http://www.daewon.ac.kr" target="_blank">www.daewon.ac.kr</a></td></tr>
+                <tr><td>청주과학대학 (증평)</td><td>043)820-5011</td><td><a href="http://www.cjnc.ac.kr" target="_blank">www.cjnc.ac.kr</a></td></tr>
+                <tr><td>대전보건대학 (대전)</td><td>042)670-9000</td><td><a href="http://www.hit.ac.kr" target="_blank">www.hit.ac.kr</a></td></tr>
+                <tr><td>혜천대학 (대전)</td><td>042)580-6111</td><td><a href="http://www.yes.ac.kr" target="_blank">www.yes.ac.kr</a></td></tr>
+                <tr><td>송곡대학 (춘천)</td><td>033)260-3600</td><td><a href="http://www.songgok.ac.kr" target="_blank">http://www.songgok.ac.kr</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"></footer>
+  <script src="script.js"></script>
+</body>
+</html> 

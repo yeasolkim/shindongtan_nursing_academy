@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>모집요강 - 신동탄간호학원</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="common-pages.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .subsection {
+        margin-bottom: 3.5rem;
+    }
+    .subsection:last-child {
+        margin-bottom: 0;
+    }
+    .subsection-title {
+        font-size: 1.8rem;
+        color: #1a365d;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 2px solid #e0e0e0;
+        display: inline-block;
+    }
+    .subsection-title .highlight {
+        color: #0052cc;
+        font-weight: 700;
+        margin-right: 0.5rem;
+    }
+    .subsection p {
+        color: #555;
+        line-height: 1.8;
+        font-size: 1.05rem;
+        margin-bottom: 1rem;
+    }
+    .info-list {
+        list-style: none;
+        padding-left: 0;
+    }
+    .info-list li {
+        position: relative;
+        padding-left: 1.5rem;
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+    }
+    .info-list li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: #0052cc;
+        font-weight: bold;
+    }
+
+    .process-diagram {
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    .process-step {
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        flex: 1;
+        min-width: 200px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        border: 2px solid;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .process-step h4 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.1rem;
+    }
+    .process-step p {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: #444;
+    }
+    .process-step-1 { border-color: #ff9800; background-color: #fff3e0; }
+    .process-step-2 { border-color: #ffc107; background-color: #fff8e1; }
+    .process-step-3 { border-color: #4caf50; background-color: #e8f5e9; }
+    .process-step-4 { border-color: #2196f3; background-color: #e3f2fd; }
+
+    .disqualification-list {
+        list-style-type: none;
+        padding-left: 0;
+        counter-reset: item;
+    }
+    .disqualification-list > li {
+        position: relative;
+        padding-left: 2.5rem;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+    .disqualification-list > li::before {
+        content: counter(item);
+        counter-increment: item;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background-color: #1a365d;
+        color: white;
+        width: 1.8rem;
+        height: 1.8rem;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+    .disqualification-list .note {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #dc3545;
+    }
+
+    @media (max-width: 992px) {
+        .process-diagram {
+            flex-direction: column;
+        }
+    }
+  </style>
+</head>
+<body>
+  <header class="header"></header>
+  <div id="page-hero-container"></div>
+
+  <!-- 메인 콘텐츠 -->
+  <main>
+    <section class="page-section">
+      <div class="container">
+        <div class="content-card">
+          <div class="section-title">
+            <h2>모집요강</h2>
+            <p>신동탄간호학원 교육과정 입학 안내</p>
+          </div>
+          <div class="card-content">
+            
+            <div class="subsection">
+              <h3 class="subsection-title"><span class="highlight">/</span> 입학자격</h3>
+              <ul class="info-list">
+                <li>고2, 3학년 재학 중인 남, 여</li>
+                <li>고졸 및 동등이상의 학력소지자(방통고, 검정고시 합격자)</li>
+                <li>전문대, 대학교 휴학생 및 졸업자</li>
+                <li>병, 의원 등 의료기관 근무자 중 자격증 미취득자</li>
+                <li>취업을 원하는 주부 및 경력 단절 여성</li>
+                <li>취업을 원하는 남성(병원 내 원무과, 수술실 등 취업가능)</li>
+                <li>사회복지과, 유아교육과, 임상병리과, 피부미용과 등 재학생 및 졸업생</li>
+              </ul>
+            </div>
+
+            <div class="subsection">
+              <h3 class="subsection-title"><span class="highlight">/</span> 교육기간</h3>
+              <p>이론 740시간, 실습 780시간 (총 1,520시간 12개월)</p>
+              <div class="process-diagram">
+                <div class="process-step process-step-1">
+                  <h4>기본교육(2개월)</h4>
+                  <p>간호학 전반에 걸친 기초간호학을 이론과 실습교육을 기초로 하는 기본교육과정</p>
+                </div>
+                <div class="process-step process-step-2">
+                  <h4>전문교육(4개월)</h4>
+                  <p>기초교육을 기본으로 전문 간호인으로써 갖추어야 할 필요한 부분을 심도 있게 배우는 전문교육과정</p>
+                </div>
+                <div class="process-step process-step-3">
+                  <h4>병,의원 실습과정(4개월)</h4>
+                  <p>병원급(400시간) / 일반의원급(380시간) 병원현장에서 익히는 실무과정</p>
+                </div>
+                <div class="process-step process-step-4">
+                  <h4>국가고시 대비 실전 문제풀이(2개월)</h4>
+                  <p>기초교육과 전문교육을 압축하여 핵심자료 및 실전 모의고사 집중 교육</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <h3 class="subsection-title"><span class="highlight">/</span> 모집기간</h3>
+              <ul class="info-list">
+                <li>상반기 봄학기(3-4월)</li>
+                <li>하반기 가을학기(9-10월)</li>
+              </ul>
+            </div>
+
+            <div class="subsection">
+              <h3 class="subsection-title"><span class="highlight">/</span> 결격사유(의료법 제8조)</h3>
+              <ol class="disqualification-list">
+                <li>정신보건법 제3조 제1호에 따른 정신질환자. 다만, 전문의가 의료인으로서 적합하다고 인정하는 사람은 그러하지 아니하다.</li>
+                <li>마약·대마·향정신성의약품 중독자, 금치산자·한정치산자</li>
+                <li>이 법 또는 「형법」, 「보건범죄단속에 관한 특별조치법」, 「지역보건법」, 「후천성면역결핍증 예방법」, 「응급의료에 관한 법률」, 「농어촌 등 보건의료를 위한 특별조치법」, 「시체해부 및 보존에 관한 법률」, 「혈액관리법」, 「마약류관리에 관한 법률」, 「약사법」, 「모자보건법」, 그 밖에 대통령령으로 정하는 의료 관련 법령을 위반하여 금고 이상의 형을 선고받고 그 형의 집행이 종료되지 아니하였거나 집행을 받지 아니하기로 확정되지 아니한 자</li>
+                <li>고등학교 졸업학력 이하 자</li>
+              </ol>
+              <p class="note">※ 상기 ①,②항의 경우 실습교육에 제한이 있을 수 있습니다.</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"></footer>
+  <script src="script.js"></script>
+</body>
+</html> 

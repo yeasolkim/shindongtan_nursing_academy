@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>심리상담사 - 신동탄간호학원</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="common-pages.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .course-section {
+        padding-bottom: 4rem;
+    }
+    .subsection {
+        margin-bottom: 3.5rem;
+    }
+    .subsection:last-child {
+        margin-bottom: 0;
+    }
+    .subsection-title {
+        font-size: 1.8rem;
+        color: #1a365d;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 2px solid #e0e0e0;
+        display: inline-block;
+    }
+    .subsection p {
+        color: #555;
+        line-height: 1.8;
+        font-size: 1.05rem;
+        margin-bottom: 1rem;
+    }
+    .course-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        counter-reset: course-counter;
+    }
+    .course-list li {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-left: 5px solid #1a365d;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        display: flex;
+        align-items: center;
+        counter-increment: course-counter;
+        gap: 1.5rem;
+    }
+    .course-list li::before {
+        content: counter(course-counter);
+        background-color: #1a365d;
+        color: white;
+        font-weight: 700;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <header class="header"></header>
+  <div id="page-hero-container"></div>
+
+  <!-- 메인 콘텐츠 -->
+  <main>
+    <section class="course-section">
+      <div class="container">
+        <div class="content-card">
+          <div class="section-title">
+            <h2>심리상담사</h2>
+            <p>마음의 병을 치유하는 따뜻한 전문가 과정</p>
+          </div>
+          <div class="card-content">
+            
+            <div class="subsection">
+              <h3 class="subsection-title">심리상담사란?</h3>
+              <p>여러 가지 갈등과 문제로 인해 고통을 받고 있는 현대인들을 대상으로 정신건강이나 정서 관련문제를 심리학적으로 치료하여 건강하게 삶을 영위할 수 있도록 돕는 직업입니다. 아무나 할 수 있는 것은 아니지만 누구나 할 수 있는 직업으로 현재 어떤 불안한 요소가 있다면 그것을 표현하기까지 도움을 주고 표현 후에 다양한 방법으로 상담을 진행해 상담자의 마음의 병을 고쳐주는 매력적인 과정이라고 생각합니다.</p>
+              <p>저희 학원은 심리상담사 1급을 취득하실 수 있도록 전문기관과 제휴하여 심리상담사 취득을 위해 아래의 내용을 무료로 수강하실 수 있습니다.</p>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">수강내용</h3>
+                <ol class="course-list">
+                    <li><span>상담의 의미와 필요성에 대해 알아보는 시간으로 상담이란 무엇인가?</span></li>
+                    <li><span>인간의 기본 관점과 심리적 문제 발생과정을 이론적으로 배우는 정신분석적 상담이론</span></li>
+                    <li><span>인간에 대한 기본관점을 이해하는 인간중심 상담이론</span></li>
+                    <li><span>인지행동 상담과 심리적 문제의 발생과정을 알아보는 인지 행동적 상담이론</span></li>
+                    <li><span>상담자의 태도와 책임과 상담의 원리와 문제 해결하는 상담 과정 다지기</span></li>
+                    <li><span>문제유형별 상담</span></li>
+                </ol>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"></footer>
+  <script src="script.js"></script>
+</body>
+</html> 

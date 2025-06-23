@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>인사말 - 신동탄간호학원</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* 페이지 전용 스타일 */
+    .intro-main {
+      padding: 4rem 0;
+      background-color: #f8f9fa;
+    }
+
+    .intro-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    /* 공통 섹션 타이틀 */
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1a365d;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-header p {
+      font-size: 1.1rem;
+      color: #6c757d;
+    }
+    
+    .content-card {
+        background-color: #ffffff;
+        border-radius: 15px;
+        padding: 3rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        margin-bottom: 3rem;
+    }
+
+    /* 1. 인사말 섹션 */
+    .greeting-section .quote-box {
+      background: linear-gradient(135deg, #e9efff, #d2e1ff);
+      border-radius: 15px;
+      padding: 2.5rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .greeting-section .quote-box p {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #1a365d;
+      line-height: 1.6;
+    }
+    
+    .greeting-section .quote-box strong {
+        font-weight: 700;
+        color: #0045b6;
+    }
+
+    .greeting-section .quote-box .fa-quote-left,
+    .greeting-section .quote-box .fa-quote-right {
+      color: #a4b9e2;
+      font-size: 1.5rem;
+      position: absolute;
+    }
+    .greeting-section .quote-box .fa-quote-left { top: 1.5rem; left: 1.5rem; }
+    .greeting-section .quote-box .fa-quote-right { bottom: 1.5rem; right: 1.5rem; }
+
+    .greeting-text p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: #343a40;
+      text-align: justify;
+      margin-bottom: 1.5rem;
+    }
+    .greeting-text p:last-child {
+        margin-bottom: 0;
+    }
+    .greeting-text strong {
+        font-weight: 600;
+        color: #1a365d;
+    }
+
+    /* 2. 학원 강점 섹션 */
+    .strengths-section {
+      background: #ffffff;
+      padding: 4rem 0;
+    }
+    
+    .strengths-section .section-header h2 {
+        color: #1a365d;
+    }
+
+    .strengths-list {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .strengths-list li {
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      color: #343a40;
+      transition: all 0.3s ease;
+      border-left: 5px solid #dcdcdc;
+    }
+    
+    .strengths-list li:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        border-left-color: #1a365d;
+    }
+
+    .strengths-list .fa-check-circle {
+      color: #1a365d;
+      font-size: 1.5rem;
+      margin-right: 1rem;
+    }
+
+    /* 3. 미션 & 비전 섹션 */
+    .mission-vision-section {
+      padding: 4rem 0;
+    }
+    
+    .mission-vision-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      position: relative;
+    }
+    
+    .mission-vision-container::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 25%;
+        right: 25%;
+        height: 2px;
+        background-color: #dee2e6;
+        z-index: 1;
+    }
+
+    .mv-card {
+      width: 40%;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .mv-icon-wrapper {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 4rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .mv-card.mission .mv-icon-wrapper { background: linear-gradient(135deg, #1a365d, #2d3748); }
+    .mv-card.vision .mv-icon-wrapper { background: linear-gradient(135deg, #6c757d, #495057); }
+    
+    .mv-card h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    .mv-card.mission h3 { color: #1a365d; }
+    .mv-card.vision h3 { color: #6c757d; }
+
+    .mv-card p {
+      font-size: 1.1rem;
+      color: #495057;
+      line-height: 1.7;
+      padding: 1.5rem;
+      background-color: #ffffff;
+      border-radius: 10px;
+    }
+    
+    /* 반응형 디자인 */
+    @media (max-width: 992px) {
+        .strengths-list {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .content-card { padding: 2rem; }
+        .section-header h2 { font-size: 2rem; }
+        .greeting-section .quote-box p { font-size: 1.2rem; }
+        .mission-vision-container { flex-direction: column; }
+        .mission-vision-container::after { display: none; }
+        .mv-card { width: 100%; }
+        .mv-card:first-child { margin-bottom: 3rem; }
+    }
+
+  </style>
+</head>
+<body>
+  <header class="header"></header>
+  <div id="page-hero-container"></div>
+
+  <!-- 메인 콘텐츠 -->
+  <main class="intro-main">
+    <div class="intro-container">
+
+      <!-- 1. 인사말 -->
+      <section class="greeting-section">
+        <div class="content-card animate-on-scroll">
+            <div class="section-header">
+                <h2>학원장 인사말</h2>
+                <p>여러분의 새로운 시작, 신동탄간호학원이 함께합니다.</p>
+            </div>
+          
+            <div class="quote-box">
+              <i class="fas fa-quote-left"></i>
+              <p>꿈을 밀고 나가는 힘은 이성이 아니라 <strong>희망</strong>이며,<br>두뇌가 아니라 <strong>심장</strong>이다.</p>
+              <i class="fas fa-quote-right"></i>
+            </div>
+            
+            <div class="greeting-text">
+              <p>간호조무사는 간호의 기본이념인 인도주의와 박애 정신을 기반으로 국민의 건강증진 및 질병 예방에 기여하는 보건의료인 입니다. 우리나라 간호의 한 축을 지탱하는 간호 인력으로 그 역할과 책임을 다하고 있습니다.</p>
+              <p>우리 학원에서는 건강 100세 시대에 급증하고 있는 간호조무사의 수요에 발맞춰 자신의 미래를 고민하는 분에게 확실하고 안정된 직장을 제공하고자 합니다. 본 학원은 쾌적한 교육환경과 풍부한 경험을 가진 전문 강사진으로 구성되어 따뜻한 가슴과 능숙한 기술을 갖춘 보건인력을 배출하고자 하는 열정을 가지고 훈련생 개인에 맞는 취업처 제공과 학업 지도를 위해 최선의 노력을 다할 것입니다.</p>
+              <p><strong>20년 이상의 교육 경력과 현장 경력을 가진 원장 직접 강의</strong>와 비교할 수 없는 보건업계 최고의 전문 간호학원으로써 자부심을 느끼고 현명한 선택에 대한 확실한 보장으로 보답하겠습니다. 새로운 출발을 위해 용기를 내신 여러분의 진정한 후원자가 되어드리겠습니다.</p>
+            </div>
+        </div>
+      </section>
+
+      <!-- 2. 학원 강점 -->
+      <div class="strengths-section">
+        <div class="content-card animate-on-scroll">
+            <div class="section-header">
+                <h2>신동탄간호학원만의 특별함</h2>
+            </div>
+          <ul class="strengths-list">
+            <li><i class="fas fa-check-circle"></i> 10년 이상의 병원과 교육 경험을 바탕으로 하는 현장감 있는 원장 직강!!</li>
+            <li><i class="fas fa-check-circle"></i> 공신력 있는 교육과정의 심리상담사 취득!!</li>
+            <li><i class="fas fa-check-circle"></i> 병원서비스코디네이터 자격 취득으로 서비스마인드까지 겸비!!</li>
+            <li><i class="fas fa-check-circle"></i> 주간반과 야간반 수강으로 바쁜 시간 내에 국가시험 취득기준 740시간 이수!!</li>
+            <li><i class="fas fa-check-circle"></i> 질 좋은 강의를 원장 직강으로 하여 저렴한 비용에 수강!!</li>
+            <li><i class="fas fa-check-circle"></i> 국제표준규약 기준의 가이드라인에 따른 심폐소생술 국제라이센스(EFR) 수료!!</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 3. 미션과 비전 -->
+      <section class="mission-vision-section">
+          <div class="content-card animate-on-scroll">
+            <div class="section-header">
+                <h2>우리의 약속</h2>
+            </div>
+            <div class="mission-vision-container">
+              <div class="mv-card mission">
+                <div class="mv-icon-wrapper"><i class="fas fa-bullseye"></i></div>
+                <h3>Mission</h3>
+                <p>숭고한 사랑을 바탕으로 현장 실무능력을 겸비한 책임감 있고 배려하는 보건인력 양성</p>
+              </div>
+              <div class="mv-card vision">
+                <div class="mv-icon-wrapper"><i class="fas fa-eye"></i></div>
+                <h3>Vision</h3>
+                <p>나눔과 사랑을 실천하는 현장감 있는 유능한 보건 간호 인력을 양성하는 진취적인 학원</p>
+              </div>
+            </div>
+          </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+  <script src="script.js"></script>
+</body>
+</html> 

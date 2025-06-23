@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>갤러리 - 신동탄간호학원</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .gallery-main {
+      padding: 4rem 0;
+      background-color: #ffffff;
+    }
+    .gallery-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      gap: 2rem;
+    }
+    .gallery-content-wrapper {
+      flex: 1;
+      min-width: 0;
+    }
+    .section-title-bar {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .section-title-bar h2 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: #333;
+      position: relative;
+      display: inline-block;
+      padding-bottom: 0.5rem;
+    }
+    .section-title-bar h2::before {
+      content: '';
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 3px;
+      background-color: #1a365d;
+    }
+    .board-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .total-posts {
+      font-size: 0.95rem;
+      color: #555;
+    }
+    .search-bar {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .search-bar select, .search-bar input {
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 0.9rem;
+    }
+    .search-bar select {
+      width: 120px;
+    }
+    .search-bar input {
+      width: 240px;
+    }
+    .search-bar button {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      background-color: #1a365d;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .search-bar button:hover {
+      background-color: #152c4a;
+    }
+    .board-list {
+      border-top: 2px solid #333;
+      border-bottom: 1px solid #ddd;
+    }
+    .board-header, .board-row {
+      display: grid;
+      grid-template-columns: 80px 120px 1fr 150px 150px 100px;
+      text-align: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid #ddd;
+      align-items: center;
+    }
+    .board-header {
+      font-weight: 600;
+      background-color: #f8f9fa;
+    }
+    .board-row {
+      transition: background-color 0.2s;
+    }
+    .board-row:hover {
+      background-color: #f5f7fa;
+    }
+    .board-row .thumbnail {
+      width: 80px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin: 0 auto;
+    }
+    .board-row .title-section {
+      text-align: left;
+      padding: 0 1rem;
+    }
+    .board-row .title-section .title {
+      font-weight: 500;
+      color: #333;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .board-row .title-section .title:hover {
+      text-decoration: underline;
+      color: #1a365d;
+    }
+    .board-row .title-section .description {
+      font-size: 0.85rem;
+      color: #666;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .board-bottom {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 2rem;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.2rem;
+    }
+    .pagination button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid #ddd;
+      background-color: white;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+    .pagination button:hover {
+      border-color: #1a365d;
+      color: #1a365d;
+    }
+    .pagination button.active {
+      background-color: #1a365d;
+      color: white;
+      border-color: #1a365d;
+    }
+    /* Quick Contact Sidebar */
+    .quick-contact-sidebar {
+      width: 240px;
+      flex-shrink: 0;
+    }
+    .contact-box {
+      border: 1px solid #e9e9e9;
+      margin-bottom: 1rem;
+      text-align: center;
+      padding: 1.5rem 1rem;
+    }
+    .contact-box h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 0 1rem;
+      color: #1a365d;
+    }
+    .contact-box .phone-number {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #333;
+    }
+    .contact-box .kakao-link {
+      display: block;
+      background-color: #ffeb00;
+      padding: 1rem;
+      text-decoration: none;
+      color: #3c1e1e;
+      font-weight: 600;
+    }
+    .contact-box .kakao-link strong { 
+      font-size: 1.2rem; 
+    }
+    .contact-box .kakao-link span { 
+      display: block; 
+      font-size: 0.9rem; 
+    }
+
+    /* 반응형 */
+    @media (max-width: 1200px) {
+      .quick-contact-sidebar { 
+        display: none; 
+      }
+    }
+    @media (max-width: 992px) {
+      .board-header, .board-row { 
+        grid-template-columns: 60px 100px 1fr 100px 100px; 
+      }
+      .board-header .views, .board-row .views { 
+        display: none; 
+      }
+    }
+    @media (max-width: 768px) {
+      .board-header, .board-row { 
+        grid-template-columns: 50px 80px 1fr 80px; 
+      }
+      .board-header .author, .board-row .author { 
+        display: none; 
+      }
+    }
+    @media (max-width: 576px) {
+      .search-bar { 
+        flex-direction: column; 
+        align-items: stretch; 
+      }
+      .board-controls { 
+        flex-direction: column; 
+        gap: 1rem; 
+        align-items: stretch; 
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header"></header>
+  <div id="page-hero-container"></div>
+
+  <main class="gallery-main">
+    <div class="gallery-container">
+      <div class="gallery-content-wrapper">
+    
+        
+        <div class="board-controls">
+          <div class="total-posts" id="total-posts-counter"></div>
+          <div class="search-bar">
+            <select id="gallery-search-type">
+              <option value="title">제목</option>
+              <option value="content">내용</option>
+              <option value="title_content">제목+내용</option>
+            </select>
+            <input type="text" id="gallery-search-input" placeholder="검색어를 입력하세요">
+            <button id="gallery-search-btn">검색</button>
+          </div>
+        </div>
+
+        <div class="board-list" id="gallery-list">
+          <div class="board-header">
+            <div class="number">번호</div>
+            <div class="thumbnail">썸네일</div>
+            <div class="title">제목</div>
+            <div class="author">작성자</div>
+            <div class="date">날짜</div>
+            <div class="views">조회</div>
+          </div>
+          <!-- 게시물 목록이 여기에 동적으로 삽입됩니다. -->
+        </div>
+
+        <div class="board-bottom">
+          <div class="pagination" id="pagination">
+            <!-- 페이지네이션 버튼이 여기에 동적으로 삽입됩니다. -->
+          </div>
+        </div>
+      </div>
+      
+      <aside class="quick-contact-sidebar">
+        <div class="contact-box">
+          <h3>문의 전화</h3>
+          <p class="phone-number">
+            <i class="fas fa-phone-alt"></i> 031) 8003-2456
+          </p>
+        </div>
+        <div class="contact-box" style="padding: 0;">
+          <a href="#" class="kakao-link">
+            <strong>KakaoTalk</strong>
+            <span>플러스 친구</span>
+          </a>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer"></footer>
+  <script src="script.js"></script>
+</body>
+</html> 

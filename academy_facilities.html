@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>시설 둘러보기 - 신동탄간호학원</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="history.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .facilities-main { padding: 4rem 2rem; background-color: #f8f9fa; }
+    .facilities-container { max-width: 1200px; margin: 0 auto; }
+    .content-card { background: #fff; padding: 3rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    .section-title { text-align: center; margin-bottom: 3rem; }
+    .section-title h2 { font-size: 2rem; font-weight: 700; color: #1a365d; margin-bottom: 0.5rem; }
+    .section-title p { font-size: 1.1rem; color: #666; }
+
+    .slider-wrapper {
+        max-width: 900px;
+        margin: 0 auto;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+    }
+    .slider-wrapper.loaded {
+        opacity: 1;
+    }
+    .slider-main {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        background-color: #fff;
+    }
+    .slider-main-image {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 10;
+        object-fit: cover;
+    }
+    .slider-nav {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        transform: translateY(-50%);
+        display: flex;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        box-sizing: border-box;
+        pointer-events: none;
+    }
+    .slider-nav button {
+        background: rgba(26, 54, 93, 0.7);
+        border: 1px solid rgba(255,255,255,0.2);
+        color: white;
+        font-size: 1.2rem;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: all;
+        transition: all 0.3s ease;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .slider-nav button:hover {
+        background: #1a365d;
+        transform: scale(1.1);
+    }
+    .slider-thumbnails {
+        display: flex;
+        justify-content: center;
+        margin-top: 1.5rem;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 0 1rem;
+    }
+    .thumbnail {
+        width: 120px;
+        height: 80px;
+        object-fit: cover;
+        cursor: pointer;
+        border-radius: 8px;
+        border: 3px solid transparent;
+        transition: all 0.3s ease;
+        opacity: 0.6;
+        filter: grayscale(50%);
+    }
+    .thumbnail:hover {
+        transform: scale(1.05);
+        opacity: 1;
+        filter: grayscale(0);
+    }
+    .thumbnail.active {
+        border-color: #1a365d;
+        opacity: 1;
+        filter: grayscale(0);
+        box-shadow: 0 0 15px rgba(26, 54, 93, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <header class="header"></header>
+  <div id="page-hero-container"></div>
+
+  <!-- 메인 콘텐츠 -->
+  <main class="facilities-main">
+    <section class="course-section">
+      <div class="facilities-container">
+        <div class="content-card">
+          <div class="section-title">
+            <h2>시설 둘러보기</h2>
+            <p>신동탄간호학원의 쾌적하고 전문적인 교육 환경을 만나보세요.</p>
+          </div>
+          <div class="slider-wrapper" id="facilities-slider">
+            <div class="slider-main">
+              <img src="" alt="학원 시설" class="slider-main-image" id="slider-main-image">
+              <div class="slider-nav">
+                <button id="slider-prev-btn">&lt;</button>
+                <button id="slider-next-btn">&gt;</button>
+              </div>
+            </div>
+            <div class="slider-thumbnails" id="slider-thumbnails">
+              <!-- Thumbnails go here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"></footer>
+  <script src="script.js"></script>
+</body>
+</html>

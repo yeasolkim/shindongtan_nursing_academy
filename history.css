@@ -1,0 +1,151 @@
+/* history.css - 통일되고 세련된 디자인 */
+
+/* 섹션 타이틀 */
+.section-title h2 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: #111827;
+    text-align: center;
+}
+
+.section-title p {
+    font-size: 1.1rem;
+    color: #6b7280;
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+/* 타임라인 컨테이너 */
+.timeline {
+  position: relative;
+  max-width: 700px; /* 최적의 가독성을 위한 폭 설정 */
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.timeline ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 왼쪽 세로선 */
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10px; /* 왼쪽으로 배치 */
+  height: 100%;
+  width: 2px;
+  background: #e5e7eb;
+}
+
+/* 타임라인 각 항목 */
+.timeline > ul > li {
+  position: relative;
+  margin-bottom: 40px;
+  padding-left: 40px; /* 선과 마커를 위한 공간 */
+}
+
+/* 타임라인 마커(원) */
+.timeline > ul > li::before {
+  content: '';
+  position: absolute;
+  left: 11px; /* 세로선 중앙에 위치 */
+  top: 5px;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  border: 4px solid #1a237e;
+  z-index: 1;
+}
+
+/* 콘텐츠 카드 */
+.timeline-content {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 25px;
+  border: 1px solid #e5e7eb;
+  position: relative;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timeline-content:hover {
+    border-color: #303f9f;
+    transform: translateY(-4px);
+    box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* 카드 내 연도 */
+.timeline-year {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+/* 카드 내 본문 p 태그 */
+.timeline-content p {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #374151;
+  margin: 0 0 12px 0;
+  line-height: 1.7;
+}
+
+/* p 태그 자체에 하이라이트가 적용된 경우 */
+.timeline-content p.highlight {
+  font-weight: 700;
+  color: #1a237e;
+  background: #e8eaf6;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* span 태그로 하이라이트가 적용된 경우 */
+.highlight {
+  font-weight: 700;
+  color: #1a237e;
+}
+
+/* 하위 목록 */
+.timeline-sub-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
+}
+
+.timeline-sub-list li {
+  font-size: 0.95rem;
+  color: #4b5563;
+  margin-bottom: 8px;
+  line-height: 1.6;
+  position: relative;
+  padding-left: 20px;
+}
+
+/* 하위 목록 불릿 */
+.timeline-sub-list li::before {
+  content: '·';
+  font-weight: bold;
+  font-size: 1.5rem;
+  line-height: 1;
+  position: absolute;
+  left: 0;
+  top: 6px;
+  color: #5c6bc0;
+}
+
+/* 반응형 디자인 (더 작은 화면) */
+@media screen and (max-width: 640px) {
+  .timeline {
+    padding: 1.5rem 1rem;
+  }
+  .section-title h2 {
+    font-size: 28px;
+  }
+} 

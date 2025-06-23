@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>국가시험 안내 - 신동탄간호학원</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="common-pages.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .exam-section {
+        max-width: 800px;
+        margin: 0 auto 4rem;
+    }
+    .subsection-title {
+        font-size: 1.8rem;
+        color: #1a365d;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+    .subsection-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background-color: #0052cc;
+        border-radius: 2px;
+    }
+    .eligibility-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .eligibility-list > li {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        display: flex;
+        align-items: flex-start;
+        text-align: left;
+    }
+     .eligibility-list > li .icon {
+        color: #0052cc;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-right: 1rem;
+        margin-top: 2px;
+    }
+    .eligibility-list .sub-list {
+        list-style: none;
+        padding-left: 1rem;
+        margin-top: 0.5rem;
+    }
+    .eligibility-list .sub-list li {
+        position: relative;
+        padding-left: 1.2rem;
+    }
+    .eligibility-list .sub-list li::before {
+        content: '•';
+        position: absolute;
+        left: 0;
+        color: #1a365d;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07);
+        overflow: hidden;
+    }
+    .exam-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .exam-table th, .exam-table td {
+        border: 1px solid #dee2e6;
+        padding: 1rem;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .exam-table thead th {
+        background-color: #1a365d;
+        color: white;
+        font-weight: 600;
+    }
+    .exam-table tbody tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    .exam-table tbody td:nth-child(3) {
+        text-align: left;
+    }
+
+    .exam-note, .info-box {
+        background-color: #e9f2ff;
+        border-left: 5px solid #0052cc;
+        padding: 1.5rem;
+        margin: 2rem 0 0;
+        border-radius: 0 8px 8px 0;
+        text-align: center;
+        font-weight: 500;
+        color: #1a365d;
+    }
+  </style>
+</head>
+<body>
+  <header class="header"></header>
+  <div id="page-hero-container"></div>
+
+  <!-- 메인 콘텐츠 -->
+  <main>
+    <section class="page-section">
+      <div class="container">
+        <div class="content-card">
+          <div class="section-title">
+            <h2>간호조무사 국가시험 안내</h2>
+            <p>자격증 취득을 위한 국가공인시험 정보</p>
+          </div>
+          <div class="card-content">
+
+            <div class="exam-section">
+              <h3 class="subsection-title">국가고시 응시자격</h3>
+              <ul class="eligibility-list">
+                <li>
+                  <span class="icon">✓</span>
+                  <div>의료법 제80조(간호조무사 자격)에 따라 보건복지부령으로 정하는 교육과정을 이수하고 간호조무사 국가시험에 합격한 후 보건복지부장관의 자격인정을 받아야 합니다.</div>
+                </li>
+                <li>
+                  <span class="icon">✓</span>
+                  <div>
+                    간호조무사 및 의료유사업자에 관한 규칙 제4조(간호조무사 국가시험의 응시자격)
+                    <ul class="sub-list">
+                      <li>① 보건복지부 장관의 지정을 받은 간호조무사 교육훈련기관에서 실시하는 740시간 이상의 이론교육 과정을 이수한 자</li>
+                      <li>② 교육훈련기관의 장이 실습교육을 위탁한 의료기관 또는 보건소에서 실시하는 780시간 이상의 실습교육과정(병원실습 400시간 이상)을 이수한 자</li>
+                    </ul>
+                  </div>
+                </li>
+                <li>
+                  <span class="icon">✓</span>
+                  <div>고등학교 이상의 학력 소지자 또는 이와 동등 이상의 학력이 있는 자</div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="exam-section">
+              <h3 class="subsection-title">국가고시 시험 과목 및 범위</h3>
+              <div class="table-responsive">
+                <table class="exam-table">
+                  <thead>
+                    <tr>
+                      <th>시험과목</th>
+                      <th>배점비율</th>
+                      <th>출제범위</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>기초간호학 개요<br/>(치의학기초개론 및 한의학기초개론 포함)</td>
+                      <td>35문항</td>
+                      <td>간호관리, 기초해부생리, 기초약리, 기초영양, 기초치과, 기초한방, 기본간호, 성인·모성·아동·노인·응급 관련 간호</td>
+                    </tr>
+                    <tr>
+                      <td>보건간호학개요</td>
+                      <td>15문항</td>
+                      <td>보건교육, 보건행정, 환경보건, 산업보건</td>
+                    </tr>
+                    <tr>
+                      <td>공중보건학개론</td>
+                      <td>20문항</td>
+                      <td>질병관리사업, 인구와 출산, 모자보건, 지역사회 보건, 의료관계법규(의료법, 정신보건법, 결핵예방법, 구강보건법, 혈액관리법, 감염병의 예방 및 관리에 관한 법률)</td>
+                    </tr>
+                    <tr>
+                      <td>실기</td>
+                      <td>35문항</td>
+                      <td>병원간호실기학</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="exam-note">※ 매 과목 만점의 40% 이상, 전 과목 총점의 60% 이상 득점한 자를 합격자로 합니다.</p>
+            </div>
+
+            <div class="exam-section">
+              <h3 class="subsection-title">시험 일정</h3>
+              <div class="info-box">
+                <p>매년 초 한국보건의료인국가시험원에서 3월과 9월 1~4주 내의 토요일로 공지</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"></footer>
+  <script src="script.js"></script>
+</body>
+</html> 
