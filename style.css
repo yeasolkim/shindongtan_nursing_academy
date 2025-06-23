@@ -442,7 +442,24 @@ main {
 }
 
 /* =================================== */
-/* 3. 푸터 (Footer)                     */
+/* 3. 페이지 히어로 (Page Hero)             */
+/* =================================== */
+.page-hero {
+  padding: 4rem 1rem;
+  background-color: #f8f9fa;
+  text-align: center;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.page-hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a365d;
+  margin: 0;
+}
+
+/* =================================== */
+/* 4. 푸터 (Footer)                      */
 /* =================================== */
 .footer {
   /* 푸터 스타일링 */
@@ -450,7 +467,7 @@ main {
 
 
 /* =================================== */
-/* 4. 애니메이션 & 효과 (Animations)   */
+/* 5. 애니메이션 & 효과 (Animations)   */
 /* =================================== */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translate3d(0, 30px, 0); }
@@ -468,10 +485,10 @@ main {
 
 
 /* =================================== */
-/* 5. 반응형 (Responsive)               */
+/* 6. 반응형 (Responsive)               */
 /* =================================== */
 
-/* 5.1 태블릿 (Tablet) - 992px 이하 */
+/* 6.1 태블릿 (Tablet) - 992px 이하 */
 @media (max-width: 992px) {
   .feature-cards-grid {
     grid-template-columns: 1fr;
@@ -493,7 +510,7 @@ main {
   }
 }
 
-/* 5.2 모바일 (Mobile) - 768px 이하 */
+/* 6.2 모바일 (Mobile) - 768px 이하 */
 @media (max-width: 768px) {
   /* 헤더 */
   .header-content {
@@ -629,9 +646,17 @@ main {
   .preview-item-icon { width: 26px; height: 26px; font-size: 0.75rem; }
   .preview-item-text .title { font-size: 0.85rem; }
   .preview-item-text .meta { font-size: 0.75rem; }
+
+  /* Page Hero */
+  .page-hero {
+    padding: 3rem 1rem;
+  }
+  .page-hero-title {
+    font-size: 2rem;
+  }
 }
 
-/* 5.3 작은 모바일 (Small Mobile) - 480px 이하 */
+/* 6.3 작은 모바일 (Small Mobile) - 480px 이하 */
 @media (max-width: 480px) {
   .hero-v2 { padding: 3rem 0.5rem; }
   .hero-v2-title { font-size: 1.3rem; }
