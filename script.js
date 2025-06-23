@@ -269,13 +269,63 @@ function setupMobileMenu() {
   const header = document.querySelector('.header');
   if (!header) return;
 
-  const mobileMenuToggle = header.querySelector('.mobile-menu-toggle');
+  // 모바일 메뉴 토글 버튼 생성
+  const mobileMenuToggle = document.createElement('div');
+  mobileMenuToggle.className = 'mobile-menu-toggle';
+  mobileMenuToggle.innerHTML = `
+    <span></span>
+    <span></span>
+    <span></span>
+  `;
+  
+  // 헤더에 토글 버튼 추가
+  const headerContent = header.querySelector('.header-content');
+  if (headerContent) {
+    headerContent.appendChild(mobileMenuToggle);
+  }
+
   const mainMenu = header.querySelector('.main-menu');
   
   if (mobileMenuToggle && mainMenu) {
+    // 전체 메뉴 토글
     mobileMenuToggle.addEventListener('click', (e) => {
       e.stopPropagation();
       header.classList.toggle('mobile-active');
+      mainMenu.classList.toggle('mobile-open');
+    });
+
+    // 메인 메뉴 아이템 클릭 시 서브메뉴 토글
+    const menuItems = mainMenu.querySelectorAll('.menu-item');
+    menuItems.forEach(item => {
+      const menuLink = item.querySelector('.menu-link');
+      const submenuContainer = item.querySelector('.submenu-container');
+      
+      if (menuLink && submenuContainer) {
+        menuLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          
+          // 다른 메뉴 아이템들의 서브메뉴 닫기
+          menuItems.forEach(otherItem => {
+            if (otherItem !== item) {
+              otherItem.classList.remove('submenu-open');
+            }
+          });
+          
+          // 현재 메뉴 아이템의 서브메뉴 토글
+          item.classList.toggle('submenu-open');
+        });
+      }
+    });
+
+    // 메뉴 외부 클릭 시 메뉴 닫기
+    document.addEventListener('click', (e) => {
+      if (!header.contains(e.target)) {
+        header.classList.remove('mobile-active');
+        mainMenu.classList.remove('mobile-open');
+        menuItems.forEach(item => {
+          item.classList.remove('submenu-open');
+        });
+      }
     });
   }
 }
