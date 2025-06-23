@@ -170,11 +170,34 @@
       }
     }
     @media (max-width: 768px) {
+      .section-title h2 { font-size: 1.5rem; }
+      .section-title p { font-size: 0.9rem; }
+      .content-card { padding: 1.5rem 1rem; }
+
+      #map { height: 350px; }
+      .contact-summary { padding: 2rem 1.5rem; }
       .contact-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
       }
-      .contact-summary { padding: 1.5rem; }
+      .contact-item { padding: 1.2rem; }
+      .contact-item .icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
+      .contact-item .label { font-size: 0.85rem; }
+      .contact-item .value { font-size: 1rem; }
+      
+      .transport-info, .hours-notice { padding: 1.5rem; }
+    }
+
+    @media (max-width: 480px) {
+      .content-card { padding: 1rem 0.5rem; }
+      #map { height: 300px; }
+      .contact-summary { padding: 1.5rem 1rem; }
+      .contact-summary h3 { font-size: 1.4rem; }
+      .transport-info h3, .hours-notice h3 { font-size: 1.2rem; }
     }
   </style>
 </head>

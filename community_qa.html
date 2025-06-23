@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Q&A - 신동탄간호학원</title>
+  <title>커뮤니티 - Q&A - 신동탄간호학원</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="common-pages.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -74,6 +74,150 @@
       font-size: 1rem;
       color: #444;
       white-space: pre-line;
+    }
+    
+    /* 모바일 최적화 */
+    @media (max-width: 768px) {
+      .accordion-header {
+        padding: 1.2rem 0.8rem;
+        align-items: flex-start;
+      }
+      
+      .accordion-header .q-icon {
+        font-size: 1.3rem;
+        margin-right: 1rem;
+        margin-top: 0.1rem;
+      }
+      
+      .accordion-header h3 {
+        font-size: 1rem;
+        line-height: 1.4;
+        flex-grow: 1;
+        margin-right: 0.5rem;
+      }
+      
+      .accordion-header .toggle-icon {
+        font-size: 1.1rem;
+        margin-top: 0.1rem;
+        flex-shrink: 0;
+      }
+      
+      .answer-wrapper {
+        padding: 1.2rem 1rem 1.5rem 1rem;
+      }
+      
+      .answer-wrapper .a-icon {
+        font-size: 1.3rem;
+        margin-right: 1rem;
+        margin-top: 0.1rem;
+      }
+      
+      .answer-wrapper p {
+        font-size: 0.95rem;
+        line-height: 1.7;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .accordion-header {
+        padding: 1rem 0.6rem;
+      }
+      
+      .accordion-header .q-icon {
+        font-size: 1.2rem;
+        margin-right: 0.8rem;
+      }
+      
+      .accordion-header h3 {
+        font-size: 0.95rem;
+        line-height: 1.3;
+      }
+      
+      .accordion-header .toggle-icon {
+        font-size: 1rem;
+      }
+      
+      .answer-wrapper {
+        padding: 1rem 0.8rem 1.3rem 0.8rem;
+      }
+      
+      .answer-wrapper .a-icon {
+        font-size: 1.2rem;
+        margin-right: 0.8rem;
+      }
+      
+      .answer-wrapper p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .accordion-header {
+        padding: 0.9rem 0.5rem;
+      }
+      
+      .accordion-header .q-icon {
+        font-size: 1.1rem;
+        margin-right: 0.7rem;
+      }
+      
+      .accordion-header h3 {
+        font-size: 0.9rem;
+        line-height: 1.3;
+      }
+      
+      .accordion-header .toggle-icon {
+        font-size: 0.95rem;
+      }
+      
+      .answer-wrapper {
+        padding: 0.9rem 0.6rem 1.2rem 0.6rem;
+      }
+      
+      .answer-wrapper .a-icon {
+        font-size: 1.1rem;
+        margin-right: 0.7rem;
+      }
+      
+      .answer-wrapper p {
+        font-size: 0.85rem;
+        line-height: 1.6;
+      }
+    }
+    
+    @media (max-width: 400px) {
+      .accordion-header {
+        padding: 0.8rem 0.4rem;
+      }
+      
+      .accordion-header .q-icon {
+        font-size: 1rem;
+        margin-right: 0.6rem;
+      }
+      
+      .accordion-header h3 {
+        font-size: 0.85rem;
+        line-height: 1.3;
+      }
+      
+      .accordion-header .toggle-icon {
+        font-size: 0.9rem;
+      }
+      
+      .answer-wrapper {
+        padding: 0.8rem 0.5rem 1.1rem 0.5rem;
+      }
+      
+      .answer-wrapper .a-icon {
+        font-size: 1rem;
+        margin-right: 0.6rem;
+      }
+      
+      .answer-wrapper p {
+        font-size: 0.8rem;
+        line-height: 1.5;
+      }
     }
   </style>
 </head>

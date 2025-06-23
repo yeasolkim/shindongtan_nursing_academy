@@ -109,7 +109,7 @@ function getDefaultHeader() {
               <a href="#" class="menu-link">취업/진학</a>
               <div class="submenu">
                 <a href="job_info.html">진학</a>
-                <a href="job_employment.html">취업</a>
+                <a href="job_employment.html">취업(협력기관)</a>
               </div>
             </li>
             <li class="menu-item">
@@ -118,6 +118,7 @@ function getDefaultHeader() {
                 <a href="community_notice.html">공지사항</a>
                 <a href="community_qa.html">Q&A</a>
                 <a href="community_gallery.html">갤러리</a>
+                <a href="community_gallery_detail.html">갤러리 상세</a>
                 <a href="community_jobs.html">취업/구인</a>
               </div>
             </li>
@@ -193,7 +194,7 @@ function getDefaultFooter() {
 
 const PAGE_HERO_CONFIGS = {
     'academy_introduction.html': { title: '인사말', description: '여러분을 환영합니다.', breadcrumb: '학원소개 > 인사말', badge: '학원소개' },
-    'academy_history.html': { title: '연혁', description: '신동탄간호학원의 발자취', breadcrumb: '학원소개 > 연혁', badge: '학원소개' },
+    'academy_history.html': { title: '기관연혁', description: '신동탄간호학원의 발자취', breadcrumb: '학원소개 > 기관연혁', badge: '학원소개' },
     'academy_instructors.html': { title: '강사진', description: '최고의 강사진을 소개합니다.', breadcrumb: '학원소개 > 강사진', badge: '학원소개' },
     'academy_facilities.html': { title: '시설안내', description: '최신 시설을 갖춘 교육 환경', breadcrumb: '학원소개 > 시설안내', badge: '학원소개' },
     'academy_location.html': { title: '오시는 길', description: '학원 위치를 안내해 드립니다.', breadcrumb: '학원소개 > 오시는 길', badge: '학원소개' },
@@ -206,16 +207,19 @@ const PAGE_HERO_CONFIGS = {
     'education_course-efr.html': { title: 'EFR', description: '심폐소생술 국제라이센스 과정', breadcrumb: '교육안내 > EFR', badge: '교육안내' },
     'education_course-exam-info.html': { title: '국가시험 안내', description: '간호조무사 국가시험 정보를 안내합니다.', breadcrumb: '교육안내 > 국가시험 안내', badge: '교육안내' },
     
-    'recruitment_recruit-info.html': { title: '모집안내', description: '신동탄간호학원의 최신 모집 정보를 확인하세요.', breadcrumb: '모집안내 > 모집안내', badge: '모집안내' },
-    'recruitment_funding-info.html': { title: '국비지원안내', description: '국민내일배움카드 등 다양한 국비지원 프로그램을 안내합니다.', breadcrumb: '모집안내 > 국비지원안내', badge: '모집안내' },
+    'recruitment_recruit-info.html': { title: '모집요강', description: '신동탄간호학원의 최신 모집 정보를 확인하세요.', breadcrumb: '입학안내 > 모집요강', badge: '입학안내' },
+    'recruitment_funding-info.html': { title: '국비과정모집(국민내일배움카드제)', description: '국민내일배움카드 등 다양한 국비지원 프로그램을 안내합니다.', breadcrumb: '입학안내 > 국비과정모집(국민내일배움카드제)', badge: '입학안내' },
     
     'job_info.html': { title: '진학', description: '진학 정보를 안내합니다.', breadcrumb: '취업/진학 > 진학', badge: '취업/진학' },
-    'job_employment.html': { title: '취업', description: '체계적인 취업 지원 프로그램을 통해 성공적인 취업을 돕습니다.', breadcrumb: '취업/진학 > 취업', badge: '취업/진학' },
+    'job_employment.html': { title: '취업(협력기관)', description: '체계적인 취업 지원 프로그램을 통해 성공적인 취업을 돕습니다.', breadcrumb: '취업/진학 > 취업(협력기관)', badge: '취업/진학' },
 
     'community_notice.html': { title: '공지사항', description: '학원의 주요 소식과 공지사항을 확인하세요.', breadcrumb: '커뮤니티 > 공지사항', badge: '커뮤니티' },
+    'community_notice_detail.html': { title: '공지사항 상세', description: '공지사항의 상세 내용을 확인하세요.', breadcrumb: '커뮤니티 > 공지사항 > 상세', badge: '커뮤니티' },
     'community_qa.html': { title: 'Q&A', description: '자주 묻는 질문에 대한 답변입니다.', breadcrumb: '커뮤니티 > Q&A', badge: '커뮤니티' },
     'community_gallery.html': { title: '갤러리', description: '신동탄간호학원의 다채로운 활동 모습을 사진으로 만나보세요.', breadcrumb: '커뮤니티 > 갤러리', badge: '커뮤니티' },
+    'community_gallery_detail.html': { title: '갤러리 상세', description: '갤러리 이미지와 상세 내용을 확인하세요.', breadcrumb: '커뮤니티 > 갤러리 > 상세', badge: '커뮤니티' },
     'community_jobs.html': { title: '취업/구인', description: '채용 정보를 확인하고 취업 기회를 잡으세요.', breadcrumb: '커뮤니티 > 취업/구인', badge: '커뮤니티' },
+    'community_jobs_detail.html': { title: '취업/구인 상세', description: '채용 정보의 상세 내용을 확인하세요.', breadcrumb: '커뮤니티 > 취업/구인 > 상세', badge: '커뮤니티' },
 };
 
 /**
@@ -227,6 +231,18 @@ async function configurePageHero() {
 
   const currentPage = getCurrentPage();
   const config = PAGE_HERO_CONFIGS[currentPage];
+  const isMobile = window.innerWidth <= 768;
+  const pagesToHideHeroOnMobile = ['academy_introduction.html', 'academy_history.html', 'academy_instructors.html', 'academy_facilities.html', 'academy_location.html'];
+
+  // 모바일이면서 특정 페이지이면 히어로 섹션을 숨김
+  if (isMobile && pagesToHideHeroOnMobile.includes(currentPage)) {
+    pageHeroContainer.style.display = 'none';
+    return; // 히어로를 숨기고 함수를 종료
+  } else {
+    // 다른 모든 경우에는 보이게 함 (리사이즈 대응)
+    pageHeroContainer.style.display = '';
+  }
+
   if (!config) return;
 
   await loadComponent('#page-hero-container', 'page-hero.html', () => {
@@ -235,18 +251,11 @@ async function configurePageHero() {
     const breadcrumbEl = document.getElementById('breadcrumb-path');
     const badgeEl = document.querySelector('.badge-text');
 
-    // 모바일 환경에서 academy_introduction.html 페이지 최적화
-    if (currentPage === 'academy_introduction.html' && window.innerWidth <= 768) {
-      if (titleEl) titleEl.textContent = '인사말';
-      if (descriptionEl) descriptionEl.textContent = '';
-      if (breadcrumbEl) breadcrumbEl.textContent = '인사말';
-      if (badgeEl) badgeEl.textContent = '';
-    } else {
-      if (titleEl) titleEl.textContent = config.title;
-      if (descriptionEl) descriptionEl.textContent = config.description;
-      if (breadcrumbEl) breadcrumbEl.textContent = config.breadcrumb;
-      if (badgeEl) badgeEl.textContent = config.badge;
-    }
+    // 모든 뷰에 대한 기본값 설정
+    if (titleEl) titleEl.textContent = config.title;
+    if (descriptionEl) descriptionEl.textContent = config.description;
+    if (breadcrumbEl) breadcrumbEl.textContent = config.breadcrumb;
+    if (badgeEl) badgeEl.textContent = config.badge;
   });
 }
 
@@ -584,14 +593,18 @@ document.addEventListener('DOMContentLoaded', async function() {
     case 'community_notice.html':
       initNoticePage();
       break;
+    case 'community_notice_detail.html':
+      initNoticeDetailPage();
+      break;
     default:
       // 기본적으로 실행될 스크립트 없음
       break;
   }
 
-  // 5. 화면 크기 변경 시 academy_introduction.html 페이지 최적화 적용
+  // 5. 화면 크기 변경 시 페이지 히어로 재설정
   window.addEventListener('resize', () => {
-    if (currentPage === 'academy_introduction.html' && document.getElementById('page-hero-container')) {
+    const pagesWithCustomHero = ['academy_introduction.html', 'academy_history.html', 'academy_instructors.html', 'academy_facilities.html', 'academy_location.html'];
+    if (pagesWithCustomHero.includes(getCurrentPage()) && document.getElementById('page-hero-container')) {
       configurePageHero();
     }
   });
@@ -1800,5 +1813,94 @@ async function loadLatestQA() {
   } catch (error) {
     console.error('Q&A 로드 중 오류:', error);
     return [];
+  }
+}
+
+/**
+ * 공지사항 상세 페이지를 초기화합니다.
+ */
+async function initNoticeDetailPage() {
+  const detailContainer = document.getElementById('post-detail-view');
+  if (!detailContainer) return;
+
+  try {
+    // URL에서 게시글 ID 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = parseInt(urlParams.get('id'));
+    
+    if (!postId) {
+      detailContainer.innerHTML = '<p style="text-align: center; padding: 2rem;">잘못된 접근입니다.</p>';
+      return;
+    }
+
+    // 데이터베이스와 로컬 스토리지에서 게시글 찾기
+    const dbItems = (await (await fetch('db.json')).json()).notices || [];
+    const localItems = getLocalNotices();
+    const allItems = [...localItems, ...dbItems];
+    
+    const post = allItems.find(item => item.id === postId);
+    
+    if (!post) {
+      detailContainer.innerHTML = '<p style="text-align: center; padding: 2rem;">게시글을 찾을 수 없습니다.</p>';
+      return;
+    }
+
+    // 조회수 증가
+    incrementNoticeView(postId);
+
+    // 현재 게시글의 인덱스 찾기
+    const currentIndex = allItems.findIndex(item => item.id === postId);
+    const prevPost = currentIndex < allItems.length - 1 ? allItems[currentIndex + 1] : null;
+    const nextPost = currentIndex > 0 ? allItems[currentIndex - 1] : null;
+
+    // 상세 페이지 HTML 생성
+    const detailHTML = `
+      <div class="post-view">
+        <div class="post-header">
+          <h2>${post.title}</h2>
+          <div class="post-meta">
+            <span><i class="fas fa-user"></i> ${post.author}</span>
+            <span><i class="fas fa-calendar"></i> ${post.date}</span>
+            <span><i class="fas fa-eye"></i> ${post.views || 0}회</span>
+          </div>
+        </div>
+        <div class="post-body">
+          ${post.content}
+        </div>
+        <ul class="post-nav">
+          ${prevPost ? `
+            <li>
+              <span class="nav-label">이전글</span>
+              <a href="community_notice_detail.html?id=${prevPost.id}" class="nav-title">${prevPost.title}</a>
+            </li>
+          ` : `
+            <li>
+              <span class="nav-label">이전글</span>
+              <span class="nav-title" style="color: #999;">이전 글이 없습니다.</span>
+            </li>
+          `}
+          ${nextPost ? `
+            <li>
+              <span class="nav-label">다음글</span>
+              <a href="community_notice_detail.html?id=${nextPost.id}" class="nav-title">${nextPost.title}</a>
+            </li>
+          ` : `
+            <li>
+              <span class="nav-label">다음글</span>
+              <span class="nav-title" style="color: #999;">다음 글이 없습니다.</span>
+            </li>
+          `}
+        </ul>
+        <div class="post-footer">
+          <a href="community_notice.html" class="list-button">목록으로</a>
+        </div>
+      </div>
+    `;
+
+    detailContainer.innerHTML = detailHTML;
+
+  } catch (error) {
+    console.error('공지사항 상세 페이지 초기화 오류:', error);
+    detailContainer.innerHTML = '<p style="text-align: center; padding: 2rem;">게시글을 불러오는 데 실패했습니다.</p>';
   }
 }

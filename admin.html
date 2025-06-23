@@ -357,6 +357,395 @@
       font-size: 0.9em;
       border-radius: 0 4px 4px 0;
     }
+    
+    /* 모바일 최적화 스타일 */
+    @media (max-width: 768px) {
+      body {
+        font-size: 14px;
+      }
+      
+      #login-screen {
+        padding: 1rem;
+      }
+      
+      .login-form-card {
+        padding: 2rem 1.5rem;
+        margin: 0 1rem;
+      }
+      
+      .login-form-card h2 {
+        font-size: 1.3rem;
+        margin-bottom: 2rem;
+      }
+      
+      #login-form input {
+        padding: 0.8rem;
+        font-size: 16px; /* iOS에서 줌 방지 */
+      }
+      
+      #login-form .button-primary {
+        padding: 0.8rem;
+        font-size: 1rem;
+      }
+      
+      .go-home-link {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+      
+      .admin-container {
+        padding: 1rem;
+        margin: 1rem auto;
+      }
+      
+      .admin-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+        text-align: center;
+      }
+      
+      .admin-header h1 {
+        font-size: 1.5rem;
+      }
+      
+      .admin-header .header-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      .admin-header .header-buttons a,
+      .admin-header .header-buttons button {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+      }
+      
+      .admin-tabs {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+      }
+      
+      .tab-link {
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
+        flex: 1;
+        min-width: 120px;
+        text-align: center;
+      }
+      
+      .admin-card {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .admin-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+      }
+      
+      .admin-form input[type="text"],
+      .admin-form input[type="file"],
+      .admin-form textarea {
+        padding: 0.7rem;
+        font-size: 16px; /* iOS에서 줌 방지 */
+      }
+      
+      .button-primary {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.95rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+      
+      .button-secondary {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.95rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+      
+      .button-danger {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.95rem;
+        width: 100%;
+      }
+      
+      .image-previews {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 1rem;
+      }
+      
+      .image-preview-item {
+        padding: 0.5rem;
+      }
+      
+      .image-preview-item img {
+        height: 100px;
+      }
+      
+      .image-preview-item p {
+        font-size: 0.8rem;
+      }
+      
+      .jobs-table {
+        font-size: 0.8rem;
+        display: block;
+        overflow-x: auto;
+      }
+      
+      .jobs-table th,
+      .jobs-table td {
+        padding: 0.6rem 0.4rem;
+        white-space: nowrap;
+        min-width: 60px;
+      }
+      
+      .jobs-table th:nth-child(2),
+      .jobs-table td:nth-child(2) {
+        min-width: 120px;
+      }
+      
+      .jobs-table .button-secondary,
+      .jobs-table .button-danger {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+        margin: 0.1rem;
+      }
+      
+      .modal-content {
+        margin: 10% auto;
+        padding: 1.5rem;
+        width: 95%;
+        max-width: none;
+      }
+      
+      .modal-header h3 {
+        font-size: 1.3rem;
+      }
+      
+      .modal .form-group {
+        margin-bottom: 1.5rem;
+      }
+      
+      .modal .form-group input[type="text"],
+      .modal .form-group input[type="file"],
+      .modal .form-group textarea {
+        padding: 0.8rem;
+        font-size: 16px;
+      }
+      
+      .modal .form-group textarea {
+        min-height: 100px;
+      }
+      
+      /* 강사 관리 모바일 최적화 */
+      .instructor-admin-list {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .instructor-admin-item {
+        padding: 1rem;
+      }
+      
+      .instructor-admin-item .instructor-preview {
+        gap: 0.8rem;
+      }
+      
+      .instructor-admin-item .instructor-preview img {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .instructor-admin-item .instructor-info h4 {
+        font-size: 1rem;
+      }
+      
+      .instructor-admin-item .instructor-info p {
+        font-size: 0.8rem;
+      }
+      
+      .instructor-admin-item .instructor-details {
+        font-size: 0.8rem;
+        max-height: 60px;
+      }
+      
+      .instructor-admin-item .instructor-actions {
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+      
+      .instructor-admin-item .button-secondary,
+      .instructor-admin-item .button-danger {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+        width: 100%;
+      }
+      
+      .instructor-admin-item .delete-btn {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+        line-height: 20px;
+      }
+      
+      /* 폼 그룹 간격 조정 */
+      .form-group {
+        margin-bottom: 1rem;
+      }
+      
+      .form-group label {
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+      }
+      
+      .form-group small {
+        font-size: 0.8rem;
+      }
+      
+      .alert-info {
+        padding: 12px;
+        font-size: 0.85rem;
+        margin: 12px 0;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .admin-container {
+        padding: 0.8rem;
+        margin: 0.8rem auto;
+      }
+      
+      .admin-header h1 {
+        font-size: 1.3rem;
+      }
+      
+      .tab-link {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.8rem;
+        min-width: 100px;
+      }
+      
+      .admin-card {
+        padding: 1rem;
+      }
+      
+      .admin-card h3 {
+        font-size: 1.1rem;
+      }
+      
+      .login-form-card {
+        padding: 1.5rem 1rem;
+      }
+      
+      .login-form-card h2 {
+        font-size: 1.2rem;
+      }
+      
+      .modal-content {
+        margin: 5% auto;
+        padding: 1rem;
+      }
+      
+      .modal-header h3 {
+        font-size: 1.2rem;
+      }
+      
+      .jobs-table {
+        font-size: 0.75rem;
+      }
+      
+      .jobs-table th,
+      .jobs-table td {
+        padding: 0.4rem 0.3rem;
+      }
+      
+      .image-previews {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.8rem;
+      }
+      
+      .image-preview-item img {
+        height: 80px;
+      }
+      
+      .instructor-admin-item .instructor-preview img {
+        width: 50px;
+        height: 50px;
+      }
+      
+      .instructor-admin-item .instructor-info h4 {
+        font-size: 0.9rem;
+      }
+      
+      .instructor-admin-item .instructor-info p {
+        font-size: 0.75rem;
+      }
+      
+      .instructor-admin-item .instructor-details {
+        font-size: 0.75rem;
+        max-height: 50px;
+      }
+    }
+    
+    @media (max-width: 360px) {
+      .admin-container {
+        padding: 0.5rem;
+      }
+      
+      .admin-header h1 {
+        font-size: 1.2rem;
+      }
+      
+      .tab-link {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.75rem;
+        min-width: 90px;
+      }
+      
+      .admin-card {
+        padding: 0.8rem;
+      }
+      
+      .admin-card h3 {
+        font-size: 1rem;
+      }
+      
+      .login-form-card {
+        padding: 1.2rem 0.8rem;
+      }
+      
+      .login-form-card h2 {
+        font-size: 1.1rem;
+      }
+      
+      .modal-content {
+        padding: 0.8rem;
+      }
+      
+      .modal-header h3 {
+        font-size: 1.1rem;
+      }
+      
+      .jobs-table {
+        font-size: 0.7rem;
+      }
+      
+      .jobs-table th,
+      .jobs-table td {
+        padding: 0.3rem 0.2rem;
+      }
+      
+      .image-previews {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 0.6rem;
+      }
+      
+      .image-preview-item img {
+        height: 70px;
+      }
+    }
   </style>
 </head>
 <body>

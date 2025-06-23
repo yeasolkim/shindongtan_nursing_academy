@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>취업(협력기관) - 신동탄간호학원</title>
+  <title>취업/진학 - 취업(협력기관) - 신동탄간호학원</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="common-pages.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
@@ -16,44 +17,257 @@
       max-width: 1200px;
       margin: 0 auto;
     }
-    .section-title-bar {
+    .content-card {
+      background: #fff;
+      padding: 3rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      border: 1px solid #e9ecef;
+    }
+    .section-title {
       text-align: center;
       margin-bottom: 3rem;
     }
-    .section-title-bar h2 {
+    .section-title h2 {
       font-size: 2.2rem;
-      font-weight: 600;
-      color: #333;
+      font-weight: 700;
+      color: #1a365d;
+      margin-bottom: 0.5rem;
     }
-    .section-title-bar p {
+    .section-title p {
       font-size: 1.1rem;
       color: #666;
-      margin-top: 0.5rem;
+      line-height: 1.6;
     }
-    .partners-image-container {
-      margin-top: 1rem;
-      background-color: #ffffff;
-      padding: 1.5rem;
+    
+    .intro-section {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      padding: 2rem;
       border-radius: 12px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      margin-bottom: 3rem;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+    }
+    .intro-section h3 {
+      font-size: 1.4rem;
+      color: #1a365d;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    .intro-section p {
+      font-size: 1rem;
+      color: #475569;
+      line-height: 1.7;
+      margin-bottom: 0;
+    }
+    
+    .partners-section {
+      margin-bottom: 3rem;
+    }
+    .partners-section h3 {
+      font-size: 1.5rem;
+      color: #1a365d;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-weight: 600;
+    }
+    
+    .partners-image-container {
+      background-color: #ffffff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
       border: 1px solid #e9ecef;
+      position: relative;
+      overflow: hidden;
+    }
+    .partners-image-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #1a365d, #0052cc);
     }
     .partners-image-container img {
       width: 100%;
       height: auto;
       display: block;
       border-radius: 8px;
+      transition: transform 0.3s ease;
+    }
+    .partners-image-container:hover img {
+      transform: scale(1.02);
+    }
+    
+    .features-section {
+      margin-top: 3rem;
+    }
+    .features-section h3 {
+      font-size: 1.5rem;
+      color: #1a365d;
+      margin-bottom: 2rem;
+      text-align: center;
+      font-weight: 600;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .feature-card {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid #e9ecef;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .feature-card h4 {
+      font-size: 1.2rem;
+      color: #1a365d;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .feature-card h4 i {
+      color: #0052cc;
+      font-size: 1.1rem;
+    }
+    .feature-card p {
+      font-size: 0.95rem;
+      color: #475569;
+      line-height: 1.6;
+      margin: 0;
     }
 
     @media (max-width: 768px) {
       .employment-main {
-        padding: 3rem 1rem;
+        padding: 2rem 1rem;
       }
-      .section-title-bar h2 {
+      .content-card {
+        padding: 2rem;
+      }
+      .section-title h2 {
         font-size: 1.8rem;
+      }
+      .section-title p {
+        font-size: 1rem;
+      }
+      .intro-section {
+        padding: 1.5rem;
+      }
+      .intro-section h3 {
+        font-size: 1.2rem;
+      }
+      .intro-section p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+      .partners-section h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1.2rem;
+      }
+      .partners-image-container {
+        padding: 1.5rem;
+      }
+      .features-section h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+      }
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .feature-card {
+        padding: 1.2rem;
+      }
+      .feature-card h4 {
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+      }
+      .feature-card h4 i {
+        font-size: 1rem;
+      }
+      .feature-card p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .employment-main {
+        padding: 1.5rem 0.5rem;
+      }
+      .content-card {
+        padding: 1.5rem;
+      }
+      .section-title h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.4rem;
+      }
+      .section-title p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+      .intro-section {
+        padding: 1rem;
+        margin-bottom: 2rem;
+      }
+      .intro-section h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+      }
+      .intro-section p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+      .partners-section {
+        margin-bottom: 2rem;
+      }
+      .partners-section h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
       }
       .partners-image-container {
         padding: 1rem;
+      }
+      .partners-image-container img {
+        border-radius: 6px;
+      }
+      .features-section {
+        margin-top: 2rem;
+      }
+      .features-section h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1.2rem;
+      }
+      .features-grid {
+        gap: 0.8rem;
+      }
+      .feature-card {
+        padding: 1rem;
+      }
+      .feature-card h4 {
+        font-size: 1rem;
+        margin-bottom: 0.6rem;
+        gap: 0.4rem;
+      }
+      .feature-card h4 i {
+        font-size: 0.9rem;
+      }
+      .feature-card p {
+        font-size: 0.85rem;
+        line-height: 1.4;
       }
     }
   </style>
@@ -64,12 +278,45 @@
 
   <main class="employment-main">
     <div class="employment-container">
-      <div class="section-title-bar">
-        <h2>주요 협력 기관</h2>
-        <p>신동탄간호학원 수료생들을 위한 맞춤형 취업 연계 기관입니다.</p>
-      </div>
-      <div class="partners-image-container">
-        <img src="./shindongtan/resource/company.png" alt="신동탄간호학원 주요 협력 기관 목록">
+      <div class="content-card">
+        <div class="section-title">
+          <h2>주요 협력 기관</h2>
+          <p>신동탄간호학원 수료생들을 위한 맞춤형 취업 연계 기관입니다.</p>
+        </div>
+        
+        <div class="intro-section">
+          <h3>체계적인 취업 지원 시스템</h3>
+          <p>신동탄간호학원은 전국 주요 의료기관과의 협력 관계를 통해 수료생들의 성공적인 취업을 지원합니다.<br>다양한 분야의 의료기관과의 연계로 안정적이고 전문적인 진로를 제공합니다.</p>
+        </div>
+        
+        <div class="partners-section">
+          <h3>협력 기관 현황</h3>
+          <div class="partners-image-container">
+            <img src="./shindongtan/resource/company.png" alt="신동탄간호학원 주요 협력 기관 목록">
+          </div>
+        </div>
+        
+        <div class="features-section">
+          <h3>취업 지원 특징</h3>
+          <div class="features-grid">
+            <div class="feature-card">
+              <h4><i class="fas fa-handshake"></i>맞춤형 취업 상담</h4>
+              <p>개인의 적성과 희망에 맞는 취업 상담을 통해 최적의 진로를 제시합니다.</p>
+            </div>
+            <div class="feature-card">
+              <h4><i class="fas fa-network-wired"></i>광범위한 네트워크</h4>
+              <p>전국 주요 의료기관과의 협력 관계를 통해 다양한 취업 기회를 제공합니다.</p>
+            </div>
+            <div class="feature-card">
+              <h4><i class="fas fa-chart-line"></i>높은 취업률</h4>
+              <p>체계적인 교육과 취업 지원을 통해 높은 취업 성공률을 달성하고 있습니다.</p>
+            </div>
+            <div class="feature-card">
+              <h4><i class="fas fa-users"></i>지속적인 관리</h4>
+              <p>취업 후에도 지속적인 관리와 지원을 통해 안정적인 직장 생활을 돕습니다.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </main>

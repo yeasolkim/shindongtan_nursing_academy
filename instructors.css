@@ -288,46 +288,116 @@
     gap: 1.5rem;
     margin-top: 2rem;
   }
-  
+
   .instructor-card {
-    padding: 2rem 1.5rem;
+    padding: 1.5rem;
   }
   
   .instructor-card .img-container {
-    width: 140px;
-    height: 140px;
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1.5rem;
   }
   
+  .instructor-card .name {
+    font-size: 1.2rem;
+    margin-bottom: 0.4rem;
+  }
+  
+  .instructor-card .title {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+  }
+  
+  .instructor-card .details-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
   .detail-content {
-    padding: 2rem 1.5rem;
+    grid-template-columns: 1fr;
     gap: 2rem;
+    padding: 1.5rem;
   }
   
   .detail-info .name {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
   
   .detail-info .title {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    padding-bottom: 0.8rem;
   }
   
   .detail-info .details-list li {
-    padding: 0.875rem 1rem 0.875rem 2.5rem;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    padding: 0.8rem 1rem 0.8rem 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .back-to-list {
+    margin-bottom: 2rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
   }
 }
 
 @media screen and (max-width: 480px) {
+  .instructor-grid {
+    gap: 1.2rem;
+    margin-top: 1.5rem;
+  }
+  
+  .instructor-card {
+    padding: 1.2rem;
+  }
+  
   .instructor-card .img-container {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1.2rem;
+  }
+  
+  .instructor-card .name {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .instructor-card .title {
+    font-size: 0.9rem;
+    margin-bottom: 1.2rem;
+    line-height: 1.3;
+  }
+  
+  .instructor-card .details-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
   }
   
   .detail-content {
-    padding: 1.5rem 1rem;
+    padding: 1.2rem;
+    gap: 1.5rem;
   }
   
   .detail-info .name {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
+  }
+  
+  .detail-info .title {
+    font-size: 1rem;
+    padding-bottom: 0.6rem;
+  }
+  
+  .detail-info .details-list li {
+    font-size: 0.85rem;
+    padding: 0.7rem 0.8rem 0.7rem 2.2rem;
+    margin-bottom: 0.4rem;
+  }
+  
+  .back-to-list {
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
   }
 } 

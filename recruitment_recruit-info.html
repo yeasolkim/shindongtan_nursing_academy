@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>모집요강 - 신동탄간호학원</title>
+  <title>입학안내 - 모집요강 - 신동탄간호학원</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="common-pages.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -125,6 +125,140 @@
     @media (max-width: 992px) {
         .process-diagram {
             flex-direction: column;
+        }
+    }
+    
+    /* 모바일 최적화 */
+    @media (max-width: 768px) {
+        .subsection {
+            margin-bottom: 2.5rem;
+        }
+        
+        .subsection-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.6rem;
+        }
+        
+        .subsection-title .highlight {
+            font-size: 1.4rem;
+        }
+        
+        .subsection p {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 0.8rem;
+        }
+        
+        .info-list li {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 0.6rem;
+            padding-left: 1.2rem;
+        }
+        
+        .process-diagram {
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+        }
+        
+        .process-step {
+            padding: 1.2rem;
+            min-width: auto;
+        }
+        
+        .process-step h4 {
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
+        }
+        
+        .process-step p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .disqualification-list > li {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 0.8rem;
+            padding-left: 2.2rem;
+        }
+        
+        .disqualification-list > li::before {
+            width: 1.5rem;
+            height: 1.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .disqualification-list .note {
+            font-size: 0.85rem;
+            margin-top: 0.8rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .subsection {
+            margin-bottom: 2rem;
+        }
+        
+        .subsection-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.5rem;
+        }
+        
+        .subsection-title .highlight {
+            font-size: 1.2rem;
+        }
+        
+        .subsection p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 0.7rem;
+        }
+        
+        .info-list li {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+        }
+        
+        .process-diagram {
+            gap: 0.6rem;
+            margin-top: 1.2rem;
+        }
+        
+        .process-step {
+            padding: 1rem;
+        }
+        
+        .process-step h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .process-step p {
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .disqualification-list > li {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 0.6rem;
+            padding-left: 2rem;
+        }
+        
+        .disqualification-list > li::before {
+            width: 1.3rem;
+            height: 1.3rem;
+            font-size: 0.75rem;
+        }
+        
+        .disqualification-list .note {
+            font-size: 0.8rem;
+            margin-top: 0.6rem;
         }
     }
   </style>

@@ -114,6 +114,59 @@
         filter: grayscale(0);
         box-shadow: 0 0 15px rgba(26, 54, 93, 0.4);
     }
+
+    @media (max-width: 768px) {
+        .subsection-title {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+        .slider-main-image {
+            aspect-ratio: 4 / 3;
+        }
+        .slider-nav button {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+        .slider-nav {
+            padding: 0 1rem;
+        }
+        .thumbnail {
+            width: 90px;
+            height: 60px;
+        }
+        .slider-thumbnails {
+            gap: 10px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .content-card {
+            padding: 1.5rem 0.5rem;
+        }
+        .subsection-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        .slider-main-image {
+            aspect-ratio: 1 / 1;
+            border-radius: 8px;
+        }
+        .slider-nav button {
+            width: 36px;
+            height: 36px;
+        }
+        .slider-thumbnails {
+            margin-top: 1rem;
+            gap: 8px;
+            padding: 0 0.5rem;
+        }
+        .thumbnail {
+            width: 75px;
+            height: 50px;
+            border-radius: 6px;
+        }
+    }
   </style>
 </head>
 <body>
@@ -130,7 +183,7 @@
             <p>신동탄간호학원의 쾌적하고 전문적인 교육 환경을 만나보세요.</p>
           </div>
           <div class="card-content">
-            <h3 class="subsection-title">학원 시설</h3>
+           
             <div class="slider-wrapper" id="facilities-slider">
               <div class="slider-main">
                 <img src="" alt="학원 시설" class="slider-main-image" id="slider-main-image">

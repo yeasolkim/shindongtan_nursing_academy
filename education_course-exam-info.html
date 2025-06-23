@@ -109,6 +109,116 @@
         font-weight: 500;
         color: #1a365d;
     }
+    
+    /* 모바일 최적화 */
+    @media (max-width: 768px) {
+        .exam-section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .subsection-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+        }
+        
+        .subsection-title::after {
+            width: 60px;
+            height: 3px;
+        }
+        
+        .eligibility-list > li {
+            padding: 1.2rem;
+            margin-bottom: 0.8rem;
+            gap: 0.8rem;
+        }
+        
+        .eligibility-list > li .icon {
+            font-size: 1rem;
+            margin-right: 0.8rem;
+            margin-top: 0;
+        }
+        
+        .eligibility-list .sub-list {
+            padding-left: 0.8rem;
+            margin-top: 0.4rem;
+        }
+        
+        .eligibility-list .sub-list li {
+            padding-left: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .exam-table th, .exam-table td {
+            padding: 0.8rem;
+            font-size: 0.9rem;
+        }
+        
+        .exam-table thead th {
+            font-size: 0.95rem;
+        }
+        
+        .exam-note, .info-box {
+            padding: 1.2rem;
+            margin: 1.5rem 0 0;
+            font-size: 0.9rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .exam-section {
+            margin-bottom: 2rem;
+        }
+        
+        .subsection-title {
+            font-size: 1.3rem;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.6rem;
+        }
+        
+        .subsection-title::after {
+            width: 50px;
+            height: 2px;
+        }
+        
+        .eligibility-list > li {
+            padding: 1rem;
+            margin-bottom: 0.7rem;
+            gap: 0.6rem;
+        }
+        
+        .eligibility-list > li .icon {
+            font-size: 0.9rem;
+            margin-right: 0.6rem;
+        }
+        
+        .eligibility-list .sub-list {
+            padding-left: 0.6rem;
+            margin-top: 0.3rem;
+        }
+        
+        .eligibility-list .sub-list li {
+            padding-left: 0.8rem;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        
+        .exam-table th, .exam-table td {
+            padding: 0.6rem;
+            font-size: 0.8rem;
+        }
+        
+        .exam-table thead th {
+            font-size: 0.85rem;
+        }
+        
+        .exam-note, .info-box {
+            padding: 1rem;
+            margin: 1.2rem 0 0;
+            font-size: 0.85rem;
+        }
+    }
   </style>
 </head>
 <body>

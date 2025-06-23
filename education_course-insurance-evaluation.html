@@ -101,6 +101,135 @@
         color: #dc3545;
         text-align: right;
     }
+    
+    /* 모바일 최적화 */
+    @media (max-width: 768px) {
+        .subsection {
+            margin-bottom: 2.5rem;
+        }
+        
+        .subsection-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.6rem;
+        }
+        
+        .subsection-title .highlight {
+            font-size: 1.4rem;
+        }
+        
+        .subsection > p {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 0.8rem;
+        }
+        
+        .subsection ul li {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 0.4rem;
+        }
+        
+        .prospect-cards {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .prospect-card {
+            padding: 1.2rem;
+        }
+        
+        .prospect-card:hover {
+            transform: none;
+        }
+        
+        .prospect-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.6rem;
+        }
+        
+        .prospect-card p {
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .prospect-card ul li {
+            font-size: 0.9rem;
+            padding-left: 1rem;
+        }
+        
+        .prospect-card .sub-list {
+            padding-left: 0.8rem;
+        }
+        
+        .subsection .note {
+            font-size: 0.85rem;
+            text-align: center;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .subsection {
+            margin-bottom: 2rem;
+        }
+        
+        .subsection-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.5rem;
+        }
+        
+        .subsection-title .highlight {
+            font-size: 1.2rem;
+        }
+        
+        .subsection > p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 0.7rem;
+        }
+        
+        .subsection ul li {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 0.3rem;
+        }
+        
+        .prospect-cards {
+            gap: 0.8rem;
+            margin-top: 1.2rem;
+        }
+        
+        .prospect-card {
+            padding: 1rem;
+        }
+        
+        .prospect-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.6rem;
+            padding-bottom: 0.5rem;
+        }
+        
+        .prospect-card p {
+            font-size: 0.9rem;
+            margin-bottom: 0.6rem;
+        }
+        
+        .prospect-card ul li {
+            font-size: 0.85rem;
+            padding-left: 0.8rem;
+        }
+        
+        .prospect-card .sub-list {
+            padding-left: 0.6rem;
+        }
+        
+        .subsection .note {
+            font-size: 0.8rem;
+        }
+    }
   </style>
 </head>
 <body>

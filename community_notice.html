@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>공지사항 - 신동탄간호학원</title>
+  <title>커뮤니티 - 공지사항 - 신동탄간호학원</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="common-pages.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -133,13 +133,179 @@
       .board-header .views, .board-row .views { display: none; }
     }
     @media (max-width: 768px) {
-      .board-header, .board-row { grid-template-columns: 40px 1fr 80px; }
+      .board-header, .board-row { grid-template-columns: 35px 1fr 75px; }
       .board-header .author, .board-row .author { display: none; }
+      
+      .board-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+      }
+      
+      .search-bar {
+        width: 100%;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .search-bar select, .search-bar input {
+        width: 100%;
+        padding: 0.8rem;
+        font-size: 1rem;
+      }
+      
+      .search-bar button {
+        width: 100%;
+        padding: 0.8rem;
+        font-size: 1rem;
+      }
+      
+      .total-posts {
+        text-align: center;
+        font-size: 0.9rem;
+      }
+      
+      .board-header, .board-row {
+        padding: 0.6rem 0;
+        font-size: 0.8rem;
+      }
+      
+      .board-row .title {
+        padding: 0 0.3rem;
+        font-size: 0.8rem;
+        line-height: 1.2;
+      }
+      
+      .board-row.notice .number {
+        padding: 1px 4px;
+        font-size: 0.65rem;
+      }
+      
+      .pagination button {
+        width: 38px;
+        height: 38px;
+        font-size: 0.85rem;
+      }
     }
     @media (max-width: 576px) {
-      .search-bar { width: 100%; }
-      .search-bar input { flex-grow: 1; }
-      .board-controls { justify-content: center; }
+      .board-header, .board-row { 
+        grid-template-columns: 28px 1fr 65px; 
+        font-size: 0.75rem;
+        padding: 0.5rem 0;
+      }
+      
+      .board-row .title {
+        padding: 0 0.2rem;
+        font-size: 0.75rem;
+        line-height: 1.1;
+      }
+      
+      .board-row.notice .number {
+        padding: 1px 3px;
+        font-size: 0.6rem;
+      }
+      
+      .search-bar select, .search-bar input {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+      }
+      
+      .search-bar button {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+      }
+      
+      .total-posts {
+        font-size: 0.8rem;
+      }
+      
+      .pagination button {
+        width: 34px;
+        height: 34px;
+        font-size: 0.8rem;
+      }
+      
+      .pagination {
+        gap: 0.1rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .board-header, .board-row { 
+        grid-template-columns: 22px 1fr 55px; 
+        font-size: 0.7rem;
+        padding: 0.4rem 0;
+      }
+      
+      .board-row .title {
+        padding: 0 0.15rem;
+        font-size: 0.7rem;
+        line-height: 1.1;
+      }
+      
+      .board-row.notice .number {
+        padding: 1px 2px;
+        font-size: 0.55rem;
+      }
+      
+      .search-bar select, .search-bar input {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+      }
+      
+      .search-bar button {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+      }
+      
+      .total-posts {
+        font-size: 0.75rem;
+      }
+      
+      .pagination button {
+        width: 30px;
+        height: 30px;
+        font-size: 0.75rem;
+      }
+    }
+    
+    @media (max-width: 400px) {
+      .board-header, .board-row { 
+        grid-template-columns: 20px 1fr 50px; 
+        font-size: 0.65rem;
+        padding: 0.35rem 0;
+      }
+      
+      .board-row .title {
+        padding: 0 0.1rem;
+        font-size: 0.65rem;
+        line-height: 1.1;
+      }
+      
+      .board-row.notice .number {
+        padding: 1px 2px;
+        font-size: 0.5rem;
+      }
+      
+      .search-bar select, .search-bar input {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+      }
+      
+      .search-bar button {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+      }
+      
+      .total-posts {
+        font-size: 0.7rem;
+      }
+      
+      .pagination button {
+        width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
+      }
     }
   </style>
 </head>

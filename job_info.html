@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>진학 - 신동탄간호학원</title>
+  <title>취업/진학 - 진학 - 신동탄간호학원</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="common-pages.css">
   <link rel="stylesheet" href="history.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -74,8 +75,135 @@
     }
 
     @media (max-width: 768px) {
-      .content-card { padding: 2rem; }
-      .university-table { display: block; overflow-x: auto; white-space: nowrap; }
+      .course-section { 
+        padding: 2rem 1rem; 
+      }
+      .content-card { 
+        padding: 2rem; 
+      }
+      .section-title h2 { 
+        font-size: 1.8rem; 
+      }
+      .section-title p { 
+        font-size: 1rem; 
+      }
+      
+      .admission-section { 
+        margin-bottom: 2.5rem; 
+      }
+      .admission-section h3 { 
+        font-size: 1.3rem; 
+        margin-bottom: 1.2rem; 
+        padding-left: 0.8rem; 
+      }
+      
+      .intro-box {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      .intro-box h4 { 
+        font-size: 1.2rem; 
+        margin-bottom: 0.8rem; 
+      }
+      .intro-box p { 
+        font-size: 0.95rem; 
+        line-height: 1.6; 
+      }
+      
+      .department-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .department-card {
+        padding: 1.2rem;
+      }
+      .department-card h5 { 
+        font-size: 1rem; 
+        margin-bottom: 0.4rem; 
+      }
+      .department-card p { 
+        font-size: 0.9rem; 
+        line-height: 1.5; 
+      }
+      
+      .university-table {
+        font-size: 0.85rem;
+        margin-top: 1rem;
+      }
+      .university-table th, .university-table td {
+        padding: 0.6rem 0.8rem;
+      }
+      .university-table th { 
+        font-size: 0.8rem; 
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .course-section { 
+        padding: 1.5rem 0.5rem; 
+      }
+      .content-card { 
+        padding: 1.5rem; 
+      }
+      .section-title h2 { 
+        font-size: 1.5rem; 
+        margin-bottom: 0.4rem; 
+      }
+      .section-title p { 
+        font-size: 0.9rem; 
+        line-height: 1.5; 
+      }
+      
+      .admission-section { 
+        margin-bottom: 2rem; 
+      }
+      .admission-section h3 { 
+        font-size: 1.2rem; 
+        margin-bottom: 1rem; 
+        padding-left: 0.6rem; 
+      }
+      
+      .intro-box {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .intro-box h4 { 
+        font-size: 1.1rem; 
+        margin-bottom: 0.6rem; 
+      }
+      .intro-box p { 
+        font-size: 0.9rem; 
+        line-height: 1.5; 
+      }
+      
+      .department-grid {
+        gap: 0.8rem;
+      }
+      .department-card {
+        padding: 1rem;
+      }
+      .department-card h5 { 
+        font-size: 0.95rem; 
+        margin-bottom: 0.3rem; 
+      }
+      .department-card p { 
+        font-size: 0.85rem; 
+        line-height: 1.4; 
+      }
+      
+      .university-table {
+        font-size: 0.8rem;
+        margin-top: 0.8rem;
+      }
+      .university-table th, .university-table td {
+        padding: 0.5rem 0.6rem;
+      }
+      .university-table th { 
+        font-size: 0.75rem; 
+      }
+      .university-table a { 
+        font-size: 0.75rem; 
+      }
     }
   </style>
 </head>

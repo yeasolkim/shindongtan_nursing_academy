@@ -55,6 +55,73 @@
         background-color: #e9f2ff;
         transform: translateY(-3px);
     }
+    
+    /* 모바일 최적화 */
+    @media (max-width: 768px) {
+        .subsection {
+            margin-bottom: 2.5rem;
+        }
+        
+        .subsection-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.6rem;
+        }
+        
+        .subsection-title .highlight {
+            font-size: 1.4rem;
+        }
+        
+        .subsection p {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 0.8rem;
+        }
+        
+        .role-list {
+            grid-template-columns: 1fr;
+            gap: 0.8rem;
+        }
+        
+        .role-list li {
+            padding: 0.8rem 1rem;
+            font-size: 0.95rem;
+            text-align: left;
+        }
+        
+        .role-list li:hover {
+            transform: none;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .subsection {
+            margin-bottom: 2rem;
+        }
+        
+        .subsection-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.5rem;
+        }
+        
+        .subsection-title .highlight {
+            font-size: 1.2rem;
+        }
+        
+        .subsection p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 0.7rem;
+        }
+        
+        .role-list {
+            gap: 0.6rem;
+        }
+        
+        .role-list li {
+            padding: 0.7rem 0.8rem;
+            font-size: 0.9rem;
   </style>
 </head>
 <body>
