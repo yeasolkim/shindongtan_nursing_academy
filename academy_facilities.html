@@ -5,16 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>시설 둘러보기 - 신동탄간호학원</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="history.css">
+  <link rel="stylesheet" href="common-pages.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    .facilities-main { padding: 4rem 2rem; background-color: #f8f9fa; }
-    .facilities-container { max-width: 1200px; margin: 0 auto; }
-    .content-card { background: #fff; padding: 3rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-    .section-title { text-align: center; margin-bottom: 3rem; }
-    .section-title h2 { font-size: 2rem; font-weight: 700; color: #1a365d; margin-bottom: 0.5rem; }
-    .section-title p { font-size: 1.1rem; color: #666; }
+    .subsection-title {
+        font-size: 1.8rem;
+        color: #1a365d;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+    .subsection-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background-color: #0052cc;
+        border-radius: 2px;
+    }
 
     .slider-wrapper {
         max-width: 900px;
@@ -108,24 +121,27 @@
   <div id="page-hero-container"></div>
 
   <!-- 메인 콘텐츠 -->
-  <main class="facilities-main">
-    <section class="course-section">
-      <div class="facilities-container">
+  <main>
+    <section class="page-section">
+      <div class="container">
         <div class="content-card">
           <div class="section-title">
             <h2>시설 둘러보기</h2>
             <p>신동탄간호학원의 쾌적하고 전문적인 교육 환경을 만나보세요.</p>
           </div>
-          <div class="slider-wrapper" id="facilities-slider">
-            <div class="slider-main">
-              <img src="" alt="학원 시설" class="slider-main-image" id="slider-main-image">
-              <div class="slider-nav">
-                <button id="slider-prev-btn">&lt;</button>
-                <button id="slider-next-btn">&gt;</button>
+          <div class="card-content">
+            <h3 class="subsection-title">학원 시설</h3>
+            <div class="slider-wrapper" id="facilities-slider">
+              <div class="slider-main">
+                <img src="" alt="학원 시설" class="slider-main-image" id="slider-main-image">
+                <div class="slider-nav">
+                  <button id="slider-prev-btn">&lt;</button>
+                  <button id="slider-next-btn">&gt;</button>
+                </div>
               </div>
-            </div>
-            <div class="slider-thumbnails" id="slider-thumbnails">
-              <!-- Thumbnails go here -->
+              <div class="slider-thumbnails" id="slider-thumbnails">
+                <!-- Thumbnails go here -->
+              </div>
             </div>
           </div>
         </div>
@@ -133,7 +149,28 @@
     </section>
   </main>
 
-  <footer class="footer"></footer>
+  <!-- COMP-FOOTER-01: 글로벌 푸터 -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <p>상호명: 신동탄간호학원</p>
+          <p>사업자등록번호: 602-91-03887</p>
+          <p>대표자: 김예람</p>
+          <br/>
+          <p>전화번호: 031-8003-2456</p>
+          <p>팩스번호: 050-4062-2456</p>
+          <p>이메일: nurse8003@naver.com</p>
+          <br/>
+          <p>주소: 경기도 화성시 메타폴리스로38, 천년프라자 401호</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 신동탄간호학원. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
   <script src="script.js"></script>
 </body>
 </html>

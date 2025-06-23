@@ -5,9 +5,166 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>학원 연혁 - 신동탄간호학원</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="history.css">
+  <link rel="stylesheet" href="common-pages.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .subsection-title {
+        font-size: 1.8rem;
+        color: #1a365d;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+    .subsection-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background-color: #0052cc;
+        border-radius: 2px;
+    }
+    
+    .timeline {
+        margin-top: 3rem;
+    }
+    
+    .timeline ul {
+        list-style: none;
+        padding: 0;
+        position: relative;
+    }
+    
+    .timeline ul::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(to bottom, #1a365d, #0052cc);
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+    
+    .timeline li {
+        position: relative;
+        margin-bottom: 3rem;
+    }
+    
+    .timeline-content {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07);
+        position: relative;
+        width: 45%;
+        margin-left: 5%;
+        transition: all 0.3s ease;
+    }
+    
+    .timeline li:nth-child(even) .timeline-content {
+        margin-left: 50%;
+    }
+    
+    .timeline-content::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 0;
+        height: 0;
+        border: 12px solid transparent;
+        transform: translateY(-50%);
+    }
+    
+    .timeline li:nth-child(odd) .timeline-content::before {
+        right: -24px;
+        border-left-color: #ffffff;
+    }
+    
+    .timeline li:nth-child(even) .timeline-content::before {
+        left: -24px;
+        border-right-color: #ffffff;
+    }
+    
+    .timeline-year {
+        background: linear-gradient(135deg, #1a365d, #0052cc);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-block;
+        margin-bottom: 1rem;
+    }
+    
+    .timeline-content p {
+        margin: 0 0 1rem 0;
+        line-height: 1.6;
+        color: #343a40;
+    }
+    
+    .timeline-content p:last-child {
+        margin-bottom: 0;
+    }
+    
+    .timeline-sub-list {
+        list-style: none;
+        padding-left: 0;
+        margin: 1rem 0 0 0;
+    }
+    
+    .timeline-sub-list li {
+        background: #f8f9fa;
+        padding: 0.5rem 1rem;
+        margin-bottom: 0.5rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        color: #6c757d;
+        border-left: 3px solid #1a365d;
+    }
+    
+    .timeline-sub-list li:last-child {
+        margin-bottom: 0;
+    }
+    
+    .highlight {
+        background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        color: #856404;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 600;
+        margin-top: 1rem;
+        display: inline-block;
+    }
+    
+    .timeline-content:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+        .timeline ul::before {
+            left: 20px;
+        }
+        
+        .timeline-content {
+            width: calc(100% - 60px);
+            margin-left: 60px !important;
+        }
+        
+        .timeline li:nth-child(odd) .timeline-content::before,
+        .timeline li:nth-child(even) .timeline-content::before {
+            left: -24px;
+            border-right-color: #ffffff;
+            border-left-color: transparent;
+        }
+    }
+  </style>
 </head>
 <body>
   <header class="header"></header>
@@ -15,104 +172,128 @@
 
   <!-- 메인 콘텐츠 -->
   <main>
-    <section class="course-section">
+    <section class="page-section">
       <div class="container">
         <div class="content-card">
           <div class="section-title">
             <h2>기관연혁</h2>
             <p>신동탄간호학원의 성장 과정</p>
           </div>
-          <div class="timeline">
-            <ul>
-              <li>
-                <div class="timeline-content">
-                  <div class="timeline-year">2017. 03</div>
-                  <p>신동탄간호학원 개원 및 보건복지부 주관 간호조무사 교육기관 인증 획득</p>
-                </div>
-              </li>
-              <li>
-                <div class="timeline-content">
-                  <div class="timeline-year">2018. 03</div>
-                  <p>간호조무사 일반과정(1기) 첫 개강 - 봄 학기</p>
-                </div>
-              </li>
-              <li>
-                <div class="timeline-content">
-                  <div class="timeline-year">2018. 09</div>
-                  <p>간호조무사 국비과정(1기) 첫 개강 - 가을 학기</p>
-                  <ul class="timeline-sub-list">
-                    <li>이후 매년 봄(상반기), 가을(하반기) 정기 개강</li>
-                    <li>일반과정(야간반) 및 국비과정 운영</li>
-                    <li>2025년 현재, 15기 운영 중</li>
-                  </ul>
-                </div>
-              </li>
-              <li>
-                <div class="timeline-content">
-                  <div class="timeline-year">2019. 07</div>
-                  <p>한국간호교육평가원의 「간호조무사 교육훈련기관 지정·평가」 통과</p>
-                  <ul class="timeline-sub-list">
-                    <li>이후 매 2년 마다 보건복지부 관련 지정평가 통과</li>
-                  </ul>
-                </div>
-              </li>
-              <li>
-                <div class="timeline-content">
-                  <div class="timeline-year">2020. 01</div>
-                  <p>병원서비스코디네이터 과정 개설 및 운영 시작</p>
-                   <ul class="timeline-sub-list">
-                    <li>환자 응대, 병원 이미지메이킹, 커뮤니케이션 역량 향상 교육</li>
-                    <li>이후 매년 봄(상반기), 가을(하반기) 과정 운영</li>
-                  </ul>
-                </div>
-              </li>
-              <li>
-                <div class="timeline-content">
-                  <div class="timeline-year">2021. 01</div>
-                  <p>심폐소생술(BLS) 이수 과정 도입</p>
-                   <ul class="timeline-sub-list">
-                    <li>응급 상황 대응능력 강화</li>
-                    <li>모든 간호조무사 훈련생 대상 실습 진행</li>
-                  </ul>
-                  <p class="highlight">고용노동부 이수자평가 A등급 획득</p>
-                </div>
-              </li>
-              <li>
-                <div class="timeline-content">
-                  <div class="timeline-year">2021. 03</div>
-                  <p>코로나19 대응을 위한 온라인 비대면 학습 시스템 도입</p>
-                </div>
-              </li>
-              <li>
-                <div class="timeline-content">
-                  <div class="timeline-year">2023. 01</div>
-                  <p class="highlight">고용노동부 5년 우수훈련기관 선정</p>
-                </div>
-              </li>
+          <div class="card-content">
+            <h3 class="subsection-title">학원 연혁</h3>
+            <div class="timeline">
+              <ul>
                 <li>
-                <div class="timeline-content">
-                  <div class="timeline-year">2023. 12</div>
-                  <p>간호조무사 국가시험 누적 합격률 <span class="highlight">98% 달성</span></p>
-                </div>
-              </li>
-              <li>
-                <div class="timeline-content">
-                  <div class="timeline-year">2025. 03</div>
-                  <p>간호조무사 양성과정 15기 개강</p>
-                  <ul class="timeline-sub-list">
-                    <li>일반과정과 국비과정 모두 정기 운영 중</li>
-                    <li>병원서비스코디네이터 및 심폐소생술, 병원동행매니저 과정 병행 운영</li>
-                  </ul>
-                </div>
-              </li>
-            </ul>
+                  <div class="timeline-content">
+                    <div class="timeline-year">2017. 03</div>
+                    <p>신동탄간호학원 개원 및 보건복지부 주관 간호조무사 교육기관 인증 획득</p>
+                  </div>
+                </li>
+                <li>
+                  <div class="timeline-content">
+                    <div class="timeline-year">2018. 03</div>
+                    <p>간호조무사 일반과정(1기) 첫 개강 - 봄 학기</p>
+                  </div>
+                </li>
+                <li>
+                  <div class="timeline-content">
+                    <div class="timeline-year">2018. 09</div>
+                    <p>간호조무사 국비과정(1기) 첫 개강 - 가을 학기</p>
+                    <ul class="timeline-sub-list">
+                      <li>이후 매년 봄(상반기), 가을(하반기) 정기 개강</li>
+                      <li>일반과정(야간반) 및 국비과정 운영</li>
+                      <li>2025년 현재, 15기 운영 중</li>
+                    </ul>
+                  </div>
+                </li>
+                <li>
+                  <div class="timeline-content">
+                    <div class="timeline-year">2019. 07</div>
+                    <p>한국간호교육평가원의 「간호조무사 교육훈련기관 지정·평가」 통과</p>
+                    <ul class="timeline-sub-list">
+                      <li>이후 매 2년 마다 보건복지부 관련 지정평가 통과</li>
+                    </ul>
+                  </div>
+                </li>
+                <li>
+                  <div class="timeline-content">
+                    <div class="timeline-year">2020. 01</div>
+                    <p>병원서비스코디네이터 과정 개설 및 운영 시작</p>
+                     <ul class="timeline-sub-list">
+                      <li>환자 응대, 병원 이미지메이킹, 커뮤니케이션 역량 향상 교육</li>
+                      <li>이후 매년 봄(상반기), 가을(하반기) 과정 운영</li>
+                    </ul>
+                  </div>
+                </li>
+                <li>
+                  <div class="timeline-content">
+                    <div class="timeline-year">2021. 01</div>
+                    <p>심폐소생술(BLS) 이수 과정 도입</p>
+                     <ul class="timeline-sub-list">
+                      <li>응급 상황 대응능력 강화</li>
+                      <li>모든 간호조무사 훈련생 대상 실습 진행</li>
+                    </ul>
+                    <p class="highlight">고용노동부 이수자평가 A등급 획득</p>
+                  </div>
+                </li>
+                <li>
+                  <div class="timeline-content">
+                    <div class="timeline-year">2021. 03</div>
+                    <p>코로나19 대응을 위한 온라인 비대면 학습 시스템 도입</p>
+                  </div>
+                </li>
+                <li>
+                  <div class="timeline-content">
+                    <div class="timeline-year">2023. 01</div>
+                    <p class="highlight">고용노동부 5년 우수훈련기관 선정</p>
+                  </div>
+                </li>
+                  <li>
+                  <div class="timeline-content">
+                    <div class="timeline-year">2023. 12</div>
+                    <p>간호조무사 국가시험 누적 합격률 <span class="highlight">98% 달성</span></p>
+                  </div>
+                </li>
+                <li>
+                  <div class="timeline-content">
+                    <div class="timeline-year">2025. 03</div>
+                    <p>간호조무사 양성과정 15기 개강</p>
+                    <ul class="timeline-sub-list">
+                      <li>일반과정과 국비과정 모두 정기 운영 중</li>
+                      <li>병원서비스코디네이터 및 심폐소생술, 병원동행매니저 과정 병행 운영</li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="footer"></footer>
+  <!-- COMP-FOOTER-01: 글로벌 푸터 -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <p>상호명: 신동탄간호학원</p>
+          <p>사업자등록번호: 602-91-03887</p>
+          <p>대표자: 김예람</p>
+          <br/>
+          <p>전화번호: 031-8003-2456</p>
+          <p>팩스번호: 050-4062-2456</p>
+          <p>이메일: nurse8003@naver.com</p>
+          <br/>
+          <p>주소: 경기도 화성시 메타폴리스로38, 천년프라자 401호</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 신동탄간호학원. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
   <script src="script.js"></script>
 </body>
 </html> 

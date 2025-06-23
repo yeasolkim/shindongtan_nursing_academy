@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>구인 - 신동탄간호학원</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="common-pages.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
@@ -50,6 +51,8 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
     .total-posts {
       font-size: 0.95rem;
@@ -85,7 +88,6 @@
     }
     .board-list {
       border-top: 2px solid #333;
-      border-bottom: 1px solid #ddd;
     }
     .board-header, .board-row {
       display: grid;
@@ -177,6 +179,17 @@
       .board-header, .board-row { grid-template-columns: 40px 1fr 80px; }
       .board-header .author, .board-row .author { display: none; }
     }
+    @media (max-width: 576px) {
+      .search-bar { 
+        width: 100%;
+      }
+      .search-bar input {
+        flex-grow: 1;
+      }
+      .board-controls { 
+        justify-content: center; 
+      }
+    }
   </style>
 </head>
 <body>
@@ -231,7 +244,27 @@
     </div>
   </main>
 
-  <footer class="footer"></footer>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <p>상호명: 신동탄간호학원</p>
+          <p>사업자등록번호: 602-91-03887</p>
+          <p>대표자: 김예람</p>
+          <br/>
+          <p>전화번호: 031-8003-2456</p>
+          <p>팩스번호: 050-4062-2456</p>
+          <p>이메일: nurse8003@naver.com</p>
+          <br/>
+          <p>주소: 경기도 화성시 메타폴리스로38, 천년프라자 401호</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 신동탄간호학원. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
   <script src="script.js"></script>
 </body>
 </html> 

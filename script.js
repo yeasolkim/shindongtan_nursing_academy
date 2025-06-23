@@ -267,67 +267,47 @@ function activateCurrentMenu() {
  */
 function setupMobileMenu() {
   const header = document.querySelector('.header');
-  if (!header) return;
+  const toggleButton = document.querySelector('.mobile-menu-toggle');
+  const mainMenu = document.querySelector('.main-menu');
 
-  // 모바일 메뉴 토글 버튼 생성
-  const mobileMenuToggle = document.createElement('div');
-  mobileMenuToggle.className = 'mobile-menu-toggle';
-  mobileMenuToggle.innerHTML = `
-    <span></span>
-    <span></span>
-    <span></span>
-  `;
-  
-  // 헤더에 토글 버튼 추가
-  const headerContent = header.querySelector('.header-content');
-  if (headerContent) {
-    headerContent.appendChild(mobileMenuToggle);
+  if (!header || !toggleButton || !mainMenu) {
+    console.warn('모바일 메뉴 구성 요소(헤더, 토글 버튼, 메인 메뉴)를 찾을 수 없습니다.');
+    return;
   }
 
-  const mainMenu = header.querySelector('.main-menu');
-  
-  if (mobileMenuToggle && mainMenu) {
-    // 전체 메뉴 토글
-    mobileMenuToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      header.classList.toggle('mobile-active');
-      mainMenu.classList.toggle('mobile-open');
-    });
+  // 메뉴 항목 클릭 시 서브메뉴 토글 (모바일 전용)
+  mainMenu.querySelectorAll('.menu-item > a').forEach(menuLink => {
+    const menuItem = menuLink.parentElement;
+    const submenu = menuItem.querySelector('.submenu-container');
+    if (submenu) {
+      menuLink.addEventListener('click', (event) => {
+        if (window.innerWidth <= 768) {
+          event.preventDefault();
+          menuItem.classList.toggle('submenu-open');
+        }
+      });
+    }
+  });
 
-    // 메인 메뉴 아이템 클릭 시 서브메뉴 토글
-    const menuItems = mainMenu.querySelectorAll('.menu-item');
-    menuItems.forEach(item => {
-      const menuLink = item.querySelector('.menu-link');
-      const submenuContainer = item.querySelector('.submenu-container');
-      
-      if (menuLink && submenuContainer) {
-        menuLink.addEventListener('click', (e) => {
-          e.preventDefault();
-          
-          // 다른 메뉴 아이템들의 서브메뉴 닫기
-          menuItems.forEach(otherItem => {
-            if (otherItem !== item) {
-              otherItem.classList.remove('submenu-open');
-            }
-          });
-          
-          // 현재 메뉴 아이템의 서브메뉴 토글
-          item.classList.toggle('submenu-open');
-        });
-      }
-    });
+  // 햄버거 메뉴 토글
+  toggleButton.addEventListener('click', () => {
+    mainMenu.classList.toggle('mobile-open');
+    header.classList.toggle('mobile-active');
+    
+    const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+    toggleButton.setAttribute('aria-expanded', !isExpanded);
+    toggleButton.setAttribute('aria-label', isExpanded ? '메뉴 열기' : '메뉴 닫기');
+  });
 
-    // 메뉴 외부 클릭 시 메뉴 닫기
-    document.addEventListener('click', (e) => {
-      if (!header.contains(e.target)) {
-        header.classList.remove('mobile-active');
-        mainMenu.classList.remove('mobile-open');
-        menuItems.forEach(item => {
-          item.classList.remove('submenu-open');
-        });
-      }
-    });
-  }
+  // 메뉴 외부 클릭 시 닫기
+  document.addEventListener('click', (event) => {
+    if (!header.contains(event.target)) {
+      mainMenu.classList.remove('mobile-open');
+      header.classList.remove('mobile-active');
+      toggleButton.setAttribute('aria-expanded', 'false');
+      toggleButton.setAttribute('aria-label', '메뉴 열기');
+    }
+  });
 }
 
 /**

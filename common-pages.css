@@ -393,36 +393,32 @@
   .page-hero .hero-content h1 {
     font-size: 2.5rem;
   }
-  
   .page-hero .hero-content p {
     font-size: 1.1rem;
   }
-  
   .breadcrumbs {
-    flex-direction: column;
     gap: 0.5rem;
+    font-size: 0.9rem;
   }
-  
   .section-title h2 {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
-  
+  .section-title p {
+    font-size: 1rem;
+  }
   .content-grid,
   .content-grid-2,
   .content-grid-3 {
     grid-template-columns: 1fr;
   }
-  
   .content-card,
   .icon-card {
     padding: 2rem;
   }
-  
   .content-card h3,
   .icon-card h3 {
     font-size: 1.2rem;
   }
-  
   .form-container {
     padding: 2rem;
     margin: 0 1rem;

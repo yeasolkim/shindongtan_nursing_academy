@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>강사진 소개 - 신동탄간호학원</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="instructors.css">
+  <link rel="stylesheet" href="common-pages.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="instructors.css">
 </head>
 <body>
   <header class="header"></header>
@@ -15,28 +16,53 @@
 
   <!-- 메인 콘텐츠 -->
   <main>
-    <section class="course-section" id="instructors-section">
+    <section class="page-section" id="instructors-section">
       <div class="container">
-        <!-- 강사 목록 뷰 -->
-        <div id="instructor-list-view">
-          <div class="section-title">
-            <h2>전문 강사진</h2>
-            <p>풍부한 경험과 전문성을 갖춘 강사진</p>
+        <div class="content-card">
+          <!-- 강사 목록 뷰 -->
+          <div id="instructor-list-view">
+            <div class="section-title">
+              <h2>전문 강사진</h2>
+              <p>풍부한 경험과 전문성을 갖춘 강사진</p>
+            </div>
+            <div class="card-content">
+              <div id="instructor-grid" class="instructor-grid">
+                <!-- 강사 카드 여기에 동적으로 추가됩니다. -->
+              </div>
+            </div>
           </div>
-          <div id="instructor-grid" class="instructor-grid">
-            <!-- 강사 카드 여기에 동적으로 추가됩니다. -->
-          </div>
-        </div>
 
-        <!-- 강사 상세 정보 뷰 (초기에는 숨겨짐) -->
-        <div id="instructor-detail-view" style="display: none;">
-          <!-- 상세 정보 여기에 동적으로 추가됩니다. -->
+          <!-- 강사 상세 정보 뷰 (초기에는 숨겨짐) -->
+          <div id="instructor-detail-view" style="display: none;">
+            <!-- 상세 정보 여기에 동적으로 추가됩니다. -->
+          </div>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="footer"></footer>
+  <!-- COMP-FOOTER-01: 글로벌 푸터 -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <p>상호명: 신동탄간호학원</p>
+          <p>사업자등록번호: 602-91-03887</p>
+          <p>대표자: 김예람</p>
+          <br/>
+          <p>전화번호: 031-8003-2456</p>
+          <p>팩스번호: 050-4062-2456</p>
+          <p>이메일: nurse8003@naver.com</p>
+          <br/>
+          <p>주소: 경기도 화성시 메타폴리스로38, 천년프라자 401호</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 신동탄간호학원. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
   <script src="script.js"></script>
 </body>
 </html> 

@@ -5,35 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Q&A - 신동탄간호학원</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="history.css">
+  <link rel="stylesheet" href="common-pages.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    .qa-main {
-      padding: 4rem 0;
-      background-color: #f8f9fa;
-    }
-    .qa-container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-    .section-title-bar {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-    .section-title-bar h2 {
-      font-size: 2.2rem;
-      font-weight: 600;
-      color: #333;
-    }
-    .section-title-bar p {
-      font-size: 1.1rem;
-      color: #666;
-      margin-top: 0.5rem;
-    }
+    /* Q&A 페이지 전용 스타일 */
     .accordion-container {
-      border-top: 2px solid #333;
+      border-top: 2px solid #1a365d;
+      margin-top: 2rem;
     }
     .accordion-item {
       border-bottom: 1px solid #e0e0e0;
@@ -46,10 +25,10 @@
       transition: background-color 0.3s;
     }
     .accordion-item:hover .accordion-header {
-      background-color: #f0f2f5;
+      background-color: #f8f9fa;
     }
     .accordion-item.active .accordion-header {
-      background-color: #e9eef5;
+      background-color: #f0f2f5;
       color: #1a365d;
     }
     .accordion-header .q-icon {
@@ -76,7 +55,7 @@
       max-height: 0;
       overflow: hidden;
       transition: max-height 0.4s ease-out, padding 0.4s ease-out;
-      background-color: #fff;
+      background-color: #f8f9fa;
     }
     .answer-wrapper {
       display: flex;
@@ -103,109 +82,135 @@
   <div id="page-hero-container"></div>
 
   <!-- 메인 콘텐츠 -->
-  <main class="qa-main">
-    <div class="qa-container">
-      <div class="section-title-bar animate-on-scroll">
-        <h2>자주 묻는 질문</h2>
-        <p>수강생들이 가장 궁금해하는 질문들을 모았습니다.</p>
+  <main>
+    <section class="page-section">
+      <div class="container">
+        <div class="content-card">
+          <div class="section-title">
+            <h2>자주 묻는 질문</h2>
+            <p>수강생들이 가장 궁금해하는 질문들을 모았습니다.</p>
+          </div>
+          <div class="card-content">
+            <div class="accordion-container">
+              <!-- Q&A 항목 1 -->
+              <div class="accordion-item animate-on-scroll">
+                <div class="accordion-header">
+                  <span class="q-icon">Q</span>
+                  <h3>간호조무사 자격증, 누구나 취득할 수 있나요?</h3>
+                  <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="accordion-content">
+                  <div class="answer-wrapper">
+                    <span class="a-icon">A</span>
+                    <p>네, 고등학교 졸업 이상의 학력을 가진 분이라면 성별이나 나이에 관계없이 누구나 도전할 수 있습니다. 
+                    다만, 관련 법령에 따라 정신질환자, 마약·대마 또는 향정신성의약품 중독자 등 결격사유에 해당되지 않아야 합니다. 
+                    자세한 자격 요건은 학원으로 문의주시면 친절하게 상담해 드립니다.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Q&A 항목 2 -->
+              <div class="accordion-item animate-on-scroll">
+                <div class="accordion-header">
+                  <span class="q-icon">Q</span>
+                  <h3>교육 과정은 어떻게 구성되어 있나요?</h3>
+                  <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="accordion-content">
+                  <div class="answer-wrapper">
+                    <span class="a-icon">A</span>
+                    <p>간호조무사 국가고시 응시자격을 위한 표준 교육과정은 총 1,520시간으로 구성됩니다.
+                    - 이론수업: 740시간 (기초간호학, 보건간호학, 공중보건학 등)
+                    - 실습수업: 780시간 (의원, 병원, 종합병원 등 의료기관 현장 실습)
+                    
+                    신동탄간호학원은 최신 시설에서의 체계적인 이론 교육과 협력 병원에서의 내실 있는 실습 교육을 통해 최고의 교육을 제공합니다.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Q&A 항목 3 -->
+              <div class="accordion-item animate-on-scroll">
+                <div class="accordion-header">
+                  <span class="q-icon">Q</span>
+                  <h3>국비지원(국민내일배움카드) 혜택을 받을 수 있나요?</h3>
+                  <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="accordion-content">
+                  <div class="answer-wrapper">
+                    <span class="a-icon">A</span>
+                    <p>네, 저희 신동탄간호학원은 고용노동부 인증 우수훈련기관으로, 국민내일배움카드를 통해 수강료 지원을 받으실 수 있습니다.
+                    지원 대상 및 유형에 따라 자비부담금에 차이가 있으니, 거주지 관할 고용센터에 방문하시거나 HRD-Net 홈페이지를 통해 카드 발급 가능 여부를 먼저 확인해 보시는 것을 추천합니다. 
+                    국비지원 관련 절차가 복잡하게 느껴지신다면 학원으로 문의주세요. 처음부터 끝까지 상세히 안내해 드립니다.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Q&A 항목 4 -->
+              <div class="accordion-item animate-on-scroll">
+                <div class="accordion-header">
+                  <span class="q-icon">Q</span>
+                  <h3>병원 실습은 어떻게 진행되나요?</h3>
+                  <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="accordion-content">
+                  <div class="answer-wrapper">
+                    <span class="a-icon">A</span>
+                    <p>본원은 동탄, 수원, 용인 지역의 우수한 병원들과 산학협력을 맺고 있어, 학생들이 쾌적하고 체계적인 환경에서 실습에만 집중할 수 있도록 지원합니다. 
+                    의원급부터 병원급, 종합병원급까지 다양한 의료기관에서 풍부한 임상 경험을 쌓을 수 있습니다. 실습지 배정은 학생의 거주지와 희망을 최대한 고려하여 진행됩니다.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Q&A 항목 5 -->
+              <div class="accordion-item animate-on-scroll">
+                <div class="accordion-header">
+                  <span class="q-icon">Q</span>
+                  <h3>수료 후 취업 지원도 해주시나요?</h3>
+                  <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="accordion-content">
+                  <div class="answer-wrapper">
+                    <span class="a-icon">A</span>
+                    <p>물론입니다. 신동탄간호학원은 수료생들의 성공적인 취업을 위해 1:1 맞춤형 취업 지원 시스템을 운영하고 있습니다.
+                    - 이력서 및 자기소개서 클리닉
+                    - 실전 모의면접
+                    - 협력 병원 및 우수 의료기관 취업 연계
+                    - 취업/진학 정보 제공
+                    
+                    수료 후에도 언제든지 도움을 받으실 수 있습니다.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
       </div>
-      
-      <div class="accordion-container">
-        <!-- Q&A 항목 1 -->
-        <div class="accordion-item animate-on-scroll">
-          <div class="accordion-header">
-            <span class="q-icon">Q</span>
-            <h3>간호조무사 자격증, 누구나 취득할 수 있나요?</h3>
-            <i class="fas fa-chevron-down toggle-icon"></i>
-          </div>
-          <div class="accordion-content">
-            <div class="answer-wrapper">
-              <span class="a-icon">A</span>
-              <p>네, 고등학교 졸업 이상의 학력을 가진 분이라면 성별이나 나이에 관계없이 누구나 도전할 수 있습니다. 
-              다만, 관련 법령에 따라 정신질환자, 마약·대마 또는 향정신성의약품 중독자 등 결격사유에 해당되지 않아야 합니다. 
-              자세한 자격 요건은 학원으로 문의주시면 친절하게 상담해 드립니다.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q&A 항목 2 -->
-        <div class="accordion-item animate-on-scroll">
-          <div class="accordion-header">
-            <span class="q-icon">Q</span>
-            <h3>교육 과정은 어떻게 구성되어 있나요?</h3>
-            <i class="fas fa-chevron-down toggle-icon"></i>
-          </div>
-          <div class="accordion-content">
-            <div class="answer-wrapper">
-              <span class="a-icon">A</span>
-              <p>간호조무사 국가고시 응시자격을 위한 표준 교육과정은 총 1,520시간으로 구성됩니다.
-              - 이론수업: 740시간 (기초간호학, 보건간호학, 공중보건학 등)
-              - 실습수업: 780시간 (의원, 병원, 종합병원 등 의료기관 현장 실습)
-              
-              신동탄간호학원은 최신 시설에서의 체계적인 이론 교육과 협력 병원에서의 내실 있는 실습 교육을 통해 최고의 교육을 제공합니다.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q&A 항목 3 -->
-        <div class="accordion-item animate-on-scroll">
-          <div class="accordion-header">
-            <span class="q-icon">Q</span>
-            <h3>국비지원(국민내일배움카드) 혜택을 받을 수 있나요?</h3>
-            <i class="fas fa-chevron-down toggle-icon"></i>
-          </div>
-          <div class="accordion-content">
-            <div class="answer-wrapper">
-              <span class="a-icon">A</span>
-              <p>네, 저희 신동탄간호학원은 고용노동부 인증 우수훈련기관으로, 국민내일배움카드를 통해 수강료 지원을 받으실 수 있습니다.
-              지원 대상 및 유형에 따라 자비부담금에 차이가 있으니, 거주지 관할 고용센터에 방문하시거나 HRD-Net 홈페이지를 통해 카드 발급 가능 여부를 먼저 확인해 보시는 것을 추천합니다. 
-              국비지원 관련 절차가 복잡하게 느껴지신다면 학원으로 문의주세요. 처음부터 끝까지 상세히 안내해 드립니다.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q&A 항목 4 -->
-        <div class="accordion-item animate-on-scroll">
-          <div class="accordion-header">
-            <span class="q-icon">Q</span>
-            <h3>병원 실습은 어떻게 진행되나요?</h3>
-            <i class="fas fa-chevron-down toggle-icon"></i>
-          </div>
-          <div class="accordion-content">
-            <div class="answer-wrapper">
-              <span class="a-icon">A</span>
-              <p>본원은 동탄, 수원, 용인 지역의 우수한 병원들과 산학협력을 맺고 있어, 학생들이 쾌적하고 체계적인 환경에서 실습에만 집중할 수 있도록 지원합니다. 
-              의원급부터 병원급, 종합병원급까지 다양한 의료기관에서 풍부한 임상 경험을 쌓을 수 있습니다. 실습지 배정은 학생의 거주지와 희망을 최대한 고려하여 진행됩니다.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q&A 항목 5 -->
-        <div class="accordion-item animate-on-scroll">
-          <div class="accordion-header">
-            <span class="q-icon">Q</span>
-            <h3>수료 후 취업 지원도 해주시나요?</h3>
-            <i class="fas fa-chevron-down toggle-icon"></i>
-          </div>
-          <div class="accordion-content">
-            <div class="answer-wrapper">
-              <span class="a-icon">A</span>
-              <p>물론입니다. 신동탄간호학원은 수료생들의 성공적인 취업을 위해 1:1 맞춤형 취업 지원 시스템을 운영하고 있습니다.
-              - 이력서 및 자기소개서 클리닉
-              - 실전 모의면접
-              - 협력 병원 및 우수 의료기관 취업 연계
-              - 취업/진학 정보 제공
-              
-              수료 후에도 언제든지 도움을 받으실 수 있습니다.</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
+    </section>
   </main>
 
-  <footer class="footer"></footer>
+  <!-- COMP-FOOTER-01: 글로벌 푸터 -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <p>상호명: 신동탄간호학원</p>
+          <p>사업자등록번호: 602-91-03887</p>
+          <p>대표자: 김예람</p>
+          <br/>
+          <p>전화번호: 031-8003-2456</p>
+          <p>팩스번호: 050-4062-2456</p>
+          <p>이메일: nurse8003@naver.com</p>
+          <br/>
+          <p>주소: 경기도 화성시 메타폴리스로38, 천년프라자 401호</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 신동탄간호학원. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
   <script src="script.js"></script>
 </body>
 </html> 
