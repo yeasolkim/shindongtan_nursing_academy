@@ -138,7 +138,7 @@ main {
 /* 2.1 Hero Section v2 */
 .hero-v2 {
   padding: 5rem 2rem;
-  background: url('shindongtan/resource/main_background.jpg') no-repeat center center/cover;
+  background: url('shindongtan/resource/nurse.png') no-repeat center center/cover;
   text-align: center;
   position: relative;
   border-radius: 16px;
@@ -335,7 +335,7 @@ main {
 .social-link-card.kakao { background-color: #FEE500; color: #191919; }
 .social-link-card.instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white; }
 .social-link-card.blog { background-color: #03C75A; color: white; }
-.social-link-card.cafe { background-color: #8D5A33; color: white; } /* 네이버 카페 색상 변경 */
+.social-link-card.cafe { background-color: #03C75A; color: white; } /* 네이버 카페 색상 변경 */
 .social-link-card.talk { background-color: #00D564; color: white; }
 
 /* 2.4 커뮤니티 미리보기 (Community Preview) */
