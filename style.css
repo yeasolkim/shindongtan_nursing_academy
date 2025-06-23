@@ -613,7 +613,10 @@ main {
   .section-title { font-size: 1.3rem; }
   .section-subtitle { font-size: 0.85rem; }
   .social-links-grid { grid-template-columns: repeat(2, 1fr); }
-  .social-link-card { font-size: 0.85rem; }
+  .social-link-card { 
+    font-size: 0.85rem;
+    padding: 1rem 0.5rem;
+  }
   .social-link-card i { font-size: 1.3rem; }
   
   /* Community Preview */
@@ -641,7 +644,10 @@ main {
   .info-link-text p { font-size: 0.8rem; }
   
   .social-links-grid { grid-template-columns: 1fr; }
-  .social-link-card { font-size: 0.8rem; }
+  .social-link-card {
+    font-size: 0.8rem;
+    padding: 0.8rem 0.5rem;
+  }
   
   .section-title { font-size: 1.2rem; }
   .section-subtitle { font-size: 0.8rem; }
