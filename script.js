@@ -31,10 +31,160 @@ async function loadComponent(selector, url, callback) {
       if (callback) callback();
     } else {
       console.error(`'${url}' 파일 로드 실패:`, response.statusText);
+      // 로딩 실패 시 기본 콘텐츠 표시
+      if (selector.includes('header')) {
+        element.innerHTML = getDefaultHeader();
+      } else if (selector.includes('footer')) {
+        element.innerHTML = getDefaultFooter();
+      }
     }
   } catch (error) {
     console.error(`'${url}' 파일 로드 중 오류 발생:`, error);
+    // 네트워크 오류 시 기본 콘텐츠 표시
+    if (selector.includes('header')) {
+      element.innerHTML = getDefaultHeader();
+    } else if (selector.includes('footer')) {
+      element.innerHTML = getDefaultFooter();
+    }
   }
+}
+
+/**
+ * 기본 헤더 HTML을 반환합니다.
+ */
+function getDefaultHeader() {
+  return `
+    <div class="header-top">
+      <div class="container">
+        <div class="header-top-left">
+          <span><i class="fas fa-phone"></i> 031-8003-1004</span>
+          <span><i class="fas fa-envelope"></i> nurse8003@naver.com</span>
+        </div>
+        <div class="header-top-right">
+          <a href="https://pf.kakao.com/_ExlqgC" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-comment"></i> 카카오톡 상담
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="header-main">
+      <div class="container">
+        <div class="logo">
+          <a href="index.html">
+            <img src="shindongtan/resource/logo.png" alt="신동탄간호학원">
+          </a>
+        </div>
+        <nav class="main-menu">
+          <ul>
+            <li class="menu-item">
+              <a href="#" class="menu-link">학원소개</a>
+              <div class="submenu">
+                <a href="academy_introduction.html">인사말</a>
+                <a href="academy_history.html">연혁</a>
+                <a href="academy_instructors.html">강사진</a>
+                <a href="academy_facilities.html">시설안내</a>
+                <a href="academy_location.html">오시는 길</a>
+              </div>
+            </li>
+            <li class="menu-item">
+              <a href="#" class="menu-link">교육안내</a>
+              <div class="submenu">
+                <a href="education_course-nursing-assistant.html">간호조무사 교육과정</a>
+                <a href="education_course-coordinator.html">병원코디네이터</a>
+                <a href="education_course-psychological-counselor.html">심리상담사</a>
+                <a href="education_course-hospital-companion.html">병원동행 매니저</a>
+                <a href="education_course-insurance-evaluation.html">보험심사평가사 2급</a>
+                <a href="education_course-efr.html">EFR</a>
+                <a href="education_course-exam-info.html">국가시험 안내</a>
+              </div>
+            </li>
+            <li class="menu-item">
+              <a href="#" class="menu-link">모집안내</a>
+              <div class="submenu">
+                <a href="recruitment_recruit-info.html">모집안내</a>
+                <a href="recruitment_funding-info.html">국비지원안내</a>
+              </div>
+            </li>
+            <li class="menu-item">
+              <a href="#" class="menu-link">취업/진학</a>
+              <div class="submenu">
+                <a href="job_info.html">진학</a>
+                <a href="job_employment.html">취업</a>
+              </div>
+            </li>
+            <li class="menu-item">
+              <a href="#" class="menu-link">커뮤니티</a>
+              <div class="submenu">
+                <a href="community_notice.html">공지사항</a>
+                <a href="community_qa.html">Q&A</a>
+                <a href="community_gallery.html">갤러리</a>
+                <a href="community_jobs.html">취업/구인</a>
+              </div>
+            </li>
+          </ul>
+        </nav>
+        <div class="mobile-menu-toggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * 기본 푸터 HTML을 반환합니다.
+ */
+function getDefaultFooter() {
+  return `
+    <div class="footer-content">
+      <div class="container">
+        <div class="footer-section">
+          <h4>신동탄간호학원</h4>
+          <p>경기도 화성시 메타폴리스로 38 (반송동)<br>천년프라자 401호</p>
+          <p>전화: 031-8003-1004<br>이메일: nurse8003@naver.com</p>
+        </div>
+        <div class="footer-section">
+          <h4>교육과정</h4>
+          <ul>
+            <li><a href="education_course-nursing-assistant.html">간호조무사</a></li>
+            <li><a href="education_course-coordinator.html">병원코디네이터</a></li>
+            <li><a href="education_course-psychological-counselor.html">심리상담사</a></li>
+            <li><a href="education_course-efr.html">EFR</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>바로가기</h4>
+          <ul>
+            <li><a href="academy_location.html">오시는 길</a></li>
+            <li><a href="recruitment_funding-info.html">국비지원</a></li>
+            <li><a href="community_notice.html">공지사항</a></li>
+            <li><a href="community_qa.html">Q&A</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>소셜미디어</h4>
+          <div class="social-links">
+            <a href="https://pf.kakao.com/_ExlqgC" target="_blank" rel="noopener noreferrer">
+              <i class="fas fa-comment"></i>
+            </a>
+            <a href="https://www.instagram.com/ok1004.co.kr/profilecard/?igsh=ZG11bW9oZHoyeTl3" target="_blank" rel="noopener noreferrer">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://cafe.naver.com/shindongtannrs" target="_blank" rel="noopener noreferrer">
+              <i class="fas fa-coffee"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 2024 신동탄간호학원. All rights reserved.</p>
+      </div>
+    </div>
+  `;
 }
 
 // =============================================================================
