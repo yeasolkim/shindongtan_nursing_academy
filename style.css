@@ -82,7 +82,7 @@ nav {
   text-decoration: none;
   color: #333;
   font-weight: 600;
-  font-size: 1.43rem;
+  font-size: 0.715rem;
   padding: 0.8rem 1.2rem;
   border-radius: 8px;
   transition: all 0.3s ease;
@@ -148,7 +148,7 @@ nav {
   text-decoration: none;
   transition: all 0.3s ease;
   font-weight: 500;
-  font-size: 1.3rem;
+  font-size: 0.65rem;
   line-height: 1.4;
   writing-mode: horizontal-tb;
   text-orientation: mixed;
@@ -241,7 +241,7 @@ nav {
     overflow: visible;
     text-overflow: clip;
     padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+    font-size: 0.45rem;
     width: 100%;
   }
   
