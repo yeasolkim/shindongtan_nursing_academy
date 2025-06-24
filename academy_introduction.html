@@ -85,7 +85,7 @@
     }
 
     .strengths-list {
-        list-style: none;
+        list-style: none !important;
         padding: 0;
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -102,6 +102,7 @@
         color: #343a40;
         transition: all 0.3s ease;
         border-left: 5px solid #dcdcdc;
+        list-style: none !important;
     }
     
     .strengths-list li:hover {
@@ -114,6 +115,11 @@
         color: #1a365d;
         font-size: 1.5rem;
         margin-right: 1rem;
+    }
+
+    /* strengths-list의 삼각형 마커 완전 제거 */
+    .strengths-list li::before {
+      content: none !important;
     }
 
     /* 미션 & 비전 섹션 */
@@ -548,12 +554,12 @@
             <section class="strengths-section">
                 <h3 class="subsection-title">신동탄간호학원만의 특별함</h3>
                 <ul class="strengths-list">
-                    <li><i class="fas fa-check-circle"></i> 10년 이상의 병원과 교육 경험을 바탕으로 하는 현장감 있는 원장 직강!!</li>
-                    <li><i class="fas fa-check-circle"></i> 공신력 있는 교육과정의 심리상담사 취득!!</li>
-                    <li><i class="fas fa-check-circle"></i> 병원서비스코디네이터 자격 취득으로 서비스마인드까지 겸비!!</li>
-                    <li><i class="fas fa-check-circle"></i> 주간반과 야간반 수강으로 바쁜 시간 내에 국가시험 취득기준 740시간 이수!!</li>
-                    <li><i class="fas fa-check-circle"></i> 질 좋은 강의를 원장 직강으로 하여 저렴한 비용에 수강!!</li>
-                    <li><i class="fas fa-check-circle"></i> 국제표준규약 기준의 가이드라인에 따른 심폐소생술 국제라이센스(EFR) 수료!!</li>
+                    <li><i class="fas fa-check-circle"></i> 20년 이상의 병원과 교육 경험을 바탕으로 하는 현장감 있는 원장 직강</li>
+                    <li><i class="fas fa-check-circle"></i> 공신력 있는 교육과정의 심리상담사 취득</li>
+                    <li><i class="fas fa-check-circle"></i> 병원서비스코디네이터 자격 취득으로 서비스마인드까지 겸비</li>
+                    <li><i class="fas fa-check-circle"></i> 주간반과 야간반 수강으로 바쁜 시간 내에 국가시험 취득기준 740시간 이수</li>
+                    <li><i class="fas fa-check-circle"></i> 질 좋은 강의를 원장 직강으로 하여 저렴한 비용에 수강</li>
+                    <li><i class="fas fa-check-circle"></i> 국제표준규약 기준의 가이드라인에 따른 심폐소생술 국제라이센스(EFR) 수료</li>
                 </ul>
             </section>
 

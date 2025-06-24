@@ -825,6 +825,26 @@ main {
   body[data-page^="community_"] #page-hero-container {
     display: none !important;
   }
+
+  body[data-page="job_employment.html"] #page-hero-container {
+    display: none !important;
+  }
+
+  body[data-page="job_info.html"] #page-hero-container {
+    display: none !important;
+  }
+
+  body[data-page^="recruitment_"] #page-hero-container {
+    display: none !important;
+  }
+
+  body[data-page^="academy_"] #page-hero-container {
+    display: none !important;
+  }
+
+  body[data-page^="education_"] #page-hero-container {
+    display: none !important;
+  }
 }
 
 /* 6.3 작은 모바일 (Small Mobile) - 480px 이하 */

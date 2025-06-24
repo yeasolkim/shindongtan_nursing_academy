@@ -62,33 +62,21 @@
         padding: 2rem;
         box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07);
         position: relative;
-        width: 45%;
-        margin-left: 5%;
+        width: 60%;
+        margin-left: auto;
+        margin-right: auto;
         transition: all 0.3s ease;
     }
     
-    .timeline li:nth-child(even) .timeline-content {
-        margin-left: 50%;
+    .timeline li:nth-child(even) .timeline-content,
+    .timeline li:nth-child(odd) .timeline-content {
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
     
     .timeline-content::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        width: 0;
-        height: 0;
-        border: 12px solid transparent;
-        transform: translateY(-50%);
-    }
-    
-    .timeline li:nth-child(odd) .timeline-content::before {
-        right: -24px;
-        border-left-color: #ffffff;
-    }
-    
-    .timeline li:nth-child(even) .timeline-content::before {
-        left: -24px;
-        border-right-color: #ffffff;
+        display: none !important;
+        content: '' !important;
     }
     
     .timeline-year {
@@ -149,6 +137,13 @@
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
     
+    /* 타임라인 각 항목 왼쪽 삼각형(장식) 완전 제거 */
+    .timeline > ul > li::before,
+    .timeline li::before {
+      display: none !important;
+      content: '' !important;
+    }
+    
     @media (max-width: 768px) {
         /* 페이지 헤더 부분 축소 */
         .section-title h2 {
@@ -194,10 +189,9 @@
         }
         
         .timeline-content {
-            width: calc(100% - 45px);
-            margin-left: 45px !important;
-            padding: 1.2rem;
-            border-radius: 10px;
+            width: 95%;
+            margin-left: auto !important;
+            margin-right: auto !important;
         }
         
         .timeline li:nth-child(odd) .timeline-content::before,
@@ -321,30 +315,21 @@
                   <div class="timeline-content">
                     <div class="timeline-year">2018. 09</div>
                     <p>간호조무사 국비과정(1기) 첫 개강 - 가을 학기</p>
-                    <ul class="timeline-sub-list">
-                      <li>이후 매년 봄(상반기), 가을(하반기) 정기 개강</li>
-                      <li>일반과정(야간반) 및 국비과정 운영</li>
-                      <li>2025년 현재, 15기 운영 중</li>
-                    </ul>
+                
                   </div>
                 </li>
                 <li>
                   <div class="timeline-content">
                     <div class="timeline-year">2019. 07</div>
                     <p>한국간호교육평가원의 「간호조무사 교육훈련기관 지정·평가」 통과</p>
-                    <ul class="timeline-sub-list">
-                      <li>이후 매 2년 마다 보건복지부 관련 지정평가 통과</li>
-                    </ul>
+                    
                   </div>
                 </li>
                 <li>
                   <div class="timeline-content">
                     <div class="timeline-year">2020. 01</div>
                     <p>병원서비스코디네이터 과정 개설 및 운영 시작</p>
-                     <ul class="timeline-sub-list">
-                      <li>환자 응대, 병원 이미지메이킹, 커뮤니케이션 역량 향상 교육</li>
-                      <li>이후 매년 봄(상반기), 가을(하반기) 과정 운영</li>
-                    </ul>
+                   
                   </div>
                 </li>
                 <li>
@@ -370,12 +355,7 @@
                     <p class="highlight">고용노동부 5년 우수훈련기관 선정</p>
                   </div>
                 </li>
-                  <li>
-                  <div class="timeline-content">
-                    <div class="timeline-year">2023. 12</div>
-                    <p>간호조무사 국가시험 누적 합격률 <span class="highlight">98% 달성</span></p>
-                  </div>
-                </li>
+             
                 <li>
                   <div class="timeline-content">
                     <div class="timeline-year">2025. 03</div>
