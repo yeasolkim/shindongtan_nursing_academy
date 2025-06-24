@@ -696,7 +696,7 @@ main {
     gap: 0.5rem;
   }
   .footer-copyright, .admin-footer-link {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
   }
 
   .social-links-section { padding: 3.5rem 1.5rem; }
@@ -800,169 +800,264 @@ main {
   }
 }
 
-.social-links-grid { 
-  gap: 0.8rem;
-  max-width: 350px;
-}
-
-.social-link-card {
-  padding: 1.2rem;
-}
-
-.social-link-card:nth-child(5) {
-  width: 60%;
-}
-
-/* 2.4 커뮤니티 미리보기 (Community Preview) */
-.community-preview-section {
-}
-
-/* 2.3 Social Links Section */
 .social-links-section {
-  padding: 5rem 2rem;
-  background-color: #ffffff;
-  text-align: center;
-}
-
-.social-links-section .section-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 1rem;
-}
-
-.social-links-section .section-subtitle {
-  font-size: 1.1rem;
-  color: #7f8c8d;
-  max-width: 600px;
-  margin: 0 auto 3rem auto;
+  background: #f7fafd;
+  padding: 3rem 1rem 2rem 1rem;
+  border-radius: 18px;
+  margin-bottom: 2rem;
 }
 
 .social-links-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  justify-content: center;
+  align-items: stretch;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.social-link-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+  flex: 1 1 180px;
+  max-width: 220px;
+  padding: 1.1rem 1.2rem;
+  background: #fff;
+  border: 2px solid #e3eaf5;
+  border-radius: 14px;
+  text-decoration: none;
+  box-shadow: 0 2px 12px rgba(44, 62, 80, 0.06);
+  transition: 
+    border-color 0.2s, 
+    box-shadow 0.2s, 
+    transform 0.15s;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #34495e;
+  position: relative;
+  overflow: hidden;
+}
+
+.social-link-card:hover {
+  box-shadow: 0 6px 24px rgba(44, 62, 80, 0.13);
+  transform: translateY(-3px) scale(1.03);
+  border-color: #b3c6e6;
+  background: #f5faff;
+}
+
+.social-link-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.social-link-inner i {
+  margin-right: 0.7em;
+  font-size: 1.5rem;
+  transition: color 0.2s;
+}
+
+.social-link-inner span {
+  font-size: 1.08rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* 브랜드 컬러 포인트 */
+.social-link-card.kakao {
+  border-color: #fae100;
+}
+.social-link-card.kakao .social-link-inner i {
+  color: #3C1E1E;
+}
+.social-link-card.kakao:hover {
+  background: #fffbe7;
+  border-color: #ffe066;
+}
+
+.social-link-card.instagram {
+  border-color: #e1306c;
+}
+.social-link-card.instagram .social-link-inner i {
+  color: #e1306c;
+}
+.social-link-card.instagram:hover {
+  background: #fff0f6;
+  border-color: #f783ac;
+}
+
+.social-link-card.cafe {
+  border-color: #03c75a;
+}
+.social-link-card.cafe .social-link-inner i {
+  color: #03c75a;
+}
+.social-link-card.cafe:hover {
+  background: #eafff3;
+  border-color: #63e6be;
+}
+
+.social-link-card.blog {
+  border-color: #03c75a;
+}
+.social-link-card.blog .social-link-inner i {
+  color: #03c75a;
+}
+.social-link-card.blog:hover {
+  background: #eafff3;
+  border-color: #63e6be;
+}
+
+/* 모바일 최적화 */
+@media (max-width: 600px) {
+  .social-links-section {
+    padding: 2rem 0.5rem 1.2rem 0.5rem;
+    border-radius: 10px;
+  }
+  .social-links-grid {
+    gap: 0.7rem;
+  }
+  .social-link-card {
+    min-width: 120px;
+    max-width: 100%;
+    padding: 0.8rem 0.7rem;
+    font-size: 0.98rem;
+    border-radius: 9px;
+  }
+  .social-link-inner i {
+    font-size: 1.2rem;
+    margin-right: 0.5em;
+  }
+  .social-link-inner span {
+    font-size: 0.98rem;
+  }
+}
+
+.community-preview-section {
+  padding: 3rem 1rem;
+  background: #f7fafd;
+  border-radius: 18px;
+  margin-bottom: 2rem;
+}
+
+.preview-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
   max-width: 1100px;
   margin: 0 auto;
 }
 
-.social-link-card {
-  background-color: #f8f9fa;
-  border: 1px solid #f1f3f5;
-  border-radius: 12px;
+.preview-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(44, 62, 80, 0.06);
   padding: 1.5rem;
   display: flex;
-  align-items: center;
-  text-decoration: none;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex-direction: column;
+  min-height: 320px;
 }
 
-.social-link-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(44, 62, 80, 0.08);
-}
-
-.social-link-card i {
-  font-size: 1.8rem;
-  margin-right: 1.25rem;
-  transition: color 0.3s ease;
-}
-
-.social-link-card span {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #34495e;
-  text-align: left;
-}
-
-/* Individual Icon Colors */
-.social-link-card.kakao i { color: #3C1E1E; }
-.social-link-card.instagram i { color: #E1306C; }
-.social-link-card.blog i { color: #03C75A; }
-.social-link-card.cafe i { color: #03C75A; }
-
-.community-preview-section {
-    padding: 4rem 2rem;
-    background-color: #f8f9fa;
-}
-.preview-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-}
-.preview-card {
-    background-color: #ffffff;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.05);
-}
 .preview-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid #e9ecef;
-    padding-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 0.7rem;
 }
+
 .preview-title h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #1a365d;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1a365d;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 .preview-title p {
-    font-size: 0.85rem;
-    color: #666;
-    margin-top: 0.25rem;
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.25rem;
 }
 .preview-more-btn {
-    text-decoration: none;
-    color: #3498db;
-    font-weight: 500;
-    transition: color 0.3s ease;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  background: #1a365d;
+  padding: 0.4rem 0.95rem;
+  transition: background 0.2s, color 0.2s;
+  border: none;
+  box-shadow: 0 2px 8px rgba(26,54,93,0.07);
+  display: inline-block;
 }
 .preview-more-btn:hover {
-    color: #1a365d;
+  background: #162c4a;
+  color: #fff;
 }
+
 .preview-list .preview-item {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid #f1f5f9;
-    text-decoration: none;
-    color: #333;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f1f5f9;
+  text-decoration: none;
+  color: #333;
+  transition: background 0.15s;
 }
 .preview-list .preview-item:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 .preview-list .preview-item:hover .title {
-    color: #1a365d;
+  color: #1a365d;
 }
 .preview-item-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: #e9ecef;
-    color: #555;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 1rem;
-    font-size: 0.9rem;
-    transition: background-color 0.3s, color 0.3s;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e9ecef;
+  color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  font-size: 0.9rem;
+  transition: background 0.2s, color 0.2s;
 }
 .preview-list .preview-item:hover .preview-item-icon {
-    background-color: #3498db;
-    color: #ffffff;
+  background: #1a365d;
+  color: #fff;
 }
 .preview-item-text .title {
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-    transition: color 0.3s ease;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  transition: color 0.2s;
 }
 .preview-item-text .meta {
-    font-size: 0.8rem;
-    color: #777;
+  font-size: 0.8rem;
+  color: #777;
+}
+
+/* 반응형 */
+@media (max-width: 900px) {
+  .preview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .community-preview-section {
+    padding: 1.2rem 0.3rem;
+    border-radius: 10px;
+  }
+  .preview-card {
+    padding: 1rem;
+    border-radius: 9px;
+    min-height: 0;
+  }
 }

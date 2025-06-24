@@ -193,11 +193,33 @@
     }
 
     @media (max-width: 480px) {
-      .content-card { padding: 1rem 0.5rem; }
-      #map { height: 300px; }
-      .contact-summary { padding: 1.5rem 1rem; }
-      .contact-summary h3 { font-size: 1.4rem; }
-      .transport-info h3, .hours-notice h3 { font-size: 1.2rem; }
+      .content-card { padding: 0.5rem 0.2rem; }
+      .section-title h2 { font-size: 1rem; }
+      .section-title p { font-size: 0.7rem; }
+      .card-content { padding: 0; }
+
+      .location-map-container { margin-bottom: 1.2rem; }
+      #map { height: 200px; border-radius: 8px; }
+
+      .contact-summary { padding: 0.7rem 0.3rem; border-radius: 8px; margin-bottom: 1.2rem; }
+      .contact-summary h3 { font-size: 1.05rem; margin-bottom: 1rem; }
+      .contact-summary h3::after { width: 30px; height: 2px; }
+
+      .contact-grid { gap: 0.5rem; }
+      .contact-item { padding: 0.5rem; border-radius: 7px; }
+      .contact-item .icon { width: 28px; height: 28px; font-size: 0.8rem; margin-right: 0.5rem; }
+      .contact-item .label { font-size: 0.65rem; }
+      .contact-item .value { font-size: 0.8rem; }
+
+      .details-grid { gap: 0.7rem; }
+      .transport-info, .hours-notice { padding: 0.7rem; border-radius: 8px; }
+      .transport-info h3, .hours-notice h3 { font-size: 0.85rem; margin-bottom: 0.5rem; }
+      .transport-info ul { font-size: 0.7rem; }
+      .transport-info li { padding: 0.3rem 0; }
+      .hours-notice .hours p { font-size: 0.7rem; margin-bottom: 0.2rem; }
+      .hours-notice .notice { padding: 0.5rem; border-radius: 6px; }
+      .hours-notice .notice h4 { font-size: 0.8rem; margin-bottom: 0.2rem; }
+      .hours-notice .notice p { font-size: 0.7rem; margin-bottom: 0.1rem; }
     }
   </style>
 </head>

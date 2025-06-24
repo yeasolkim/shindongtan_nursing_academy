@@ -9,43 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    .jobs-main {
-      padding: 4rem 0;
-      background-color: #ffffff;
-    }
-    .jobs-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 2rem;
-      display: flex;
-      gap: 2rem;
-    }
-    .jobs-content-wrapper {
-      flex: 1;
-      min-width: 0;
-    }
-    .section-title-bar {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-    .section-title-bar h2 {
-      font-size: 2.2rem;
-      font-weight: 600;
-      color: #333;
-      position: relative;
-      display: inline-block;
-      padding-bottom: 0.5rem;
-    }
-    .section-title-bar h2::before {
-      content: '';
-      position: absolute;
-      top: -15px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 50px;
-      height: 3px;
-      background-color: #1a365d;
-    }
     .board-controls {
       display: flex;
       justify-content: space-between;
@@ -57,6 +20,7 @@
     .total-posts {
       font-size: 0.95rem;
       color: #555;
+      font-weight: 500;
     }
     .search-bar {
       display: flex;
@@ -164,23 +128,12 @@
       color: white;
       border-color: #1a365d;
     }
-    /* Quick Contact Sidebar */
-    .quick-contact-sidebar { width: 240px; flex-shrink: 0; }
-    .contact-box { border: 1px solid #e9e9e9; margin-bottom: 1rem; text-align: center; padding: 1.5rem 1rem; }
-    .contact-box h3 { font-size: 1.1rem; font-weight: 600; margin: 0 0 1rem; color: #1a365d; }
-    .contact-box .phone-number { font-size: 1.3rem; font-weight: 700; color: #333; }
-    .contact-box .kakao-link { display: block; background-color: #ffeb00; padding: 1rem; text-decoration: none; color: #3c1e1e; font-weight: 600; }
-    @media (max-width: 1200px) { .quick-contact-sidebar { display: none; } }
     @media (max-width: 992px) {
       .board-header, .board-row { grid-template-columns: 60px 1fr 100px 100px; }
       .board-header .views, .board-row .views { display: none; }
     }
     @media (max-width: 768px) {
-      .board-header, .board-row { 
-        grid-template-columns: 35px 1fr 75px; 
-        font-size: 0.85rem;
-        padding: 0.7rem 0;
-      }
+      .board-header, .board-row { grid-template-columns: 35px 1fr 75px; }
       .board-header .author, .board-row .author { display: none; }
       
       .board-controls {
@@ -197,34 +150,40 @@
       
       .search-bar select, .search-bar input {
         width: 100%;
-        padding: 0.7rem;
-        font-size: 0.9rem;
+        padding: 0.8rem;
+        font-size: 1rem;
       }
       
       .search-bar button {
         width: 100%;
-        padding: 0.7rem;
-        font-size: 0.9rem;
+        padding: 0.8rem;
+        font-size: 1rem;
       }
       
       .total-posts {
         text-align: center;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
+      }
+      
+      .board-header, .board-row {
+        padding: 0.6rem 0;
+        font-size: 0.8rem;
       }
       
       .board-row .title {
-        padding: 0 0.5rem;
-        font-size: 0.85rem;
+        padding: 0 0.3rem;
+        font-size: 0.8rem;
+        line-height: 1.2;
       }
       
       .board-row.notice .number {
-        padding: 2px 6px;
-        font-size: 0.7rem;
+        padding: 1px 4px;
+        font-size: 0.65rem;
       }
       
       .pagination button {
-        width: 34px;
-        height: 34px;
+        width: 38px;
+        height: 38px;
         font-size: 0.85rem;
       }
     }
@@ -236,13 +195,57 @@
       }
       
       .board-row .title {
-        padding: 0 0.3rem;
+        padding: 0 0.2rem;
         font-size: 0.75rem;
+        line-height: 1.1;
       }
       
       .board-row.notice .number {
-        padding: 1px 4px;
+        padding: 1px 3px;
         font-size: 0.6rem;
+      }
+      
+      .search-bar select, .search-bar input {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+      }
+      
+      .search-bar button {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+      }
+      
+      .total-posts {
+        font-size: 0.8rem;
+      }
+      
+      .pagination button {
+        width: 34px;
+        height: 34px;
+        font-size: 0.8rem;
+      }
+      
+      .pagination {
+        gap: 0.1rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .board-header, .board-row { 
+        grid-template-columns: 22px 1fr 55px; 
+        font-size: 0.7rem;
+        padding: 0.4rem 0;
+      }
+      
+      .board-row .title {
+        padding: 0 0.15rem;
+        font-size: 0.7rem;
+        line-height: 1.1;
+      }
+      
+      .board-row.notice .number {
+        padding: 1px 2px;
+        font-size: 0.55rem;
       }
       
       .search-bar select, .search-bar input {
@@ -262,29 +265,26 @@
       .pagination button {
         width: 30px;
         height: 30px;
-        font-size: 0.8rem;
-      }
-      
-      .pagination {
-        gap: 0.1rem;
+        font-size: 0.75rem;
       }
     }
     
-    @media (max-width: 480px) {
+    @media (max-width: 400px) {
       .board-header, .board-row { 
-        grid-template-columns: 22px 1fr 55px; 
-        font-size: 0.7rem;
-        padding: 0.4rem 0;
+        grid-template-columns: 20px 1fr 50px; 
+        font-size: 0.65rem;
+        padding: 0.35rem 0;
       }
       
       .board-row .title {
-        padding: 0 0.2rem;
-        font-size: 0.7rem;
+        padding: 0 0.1rem;
+        font-size: 0.65rem;
+        line-height: 1.1;
       }
       
       .board-row.notice .number {
-        padding: 1px 3px;
-        font-size: 0.55rem;
+        padding: 1px 2px;
+        font-size: 0.5rem;
       }
       
       .search-bar select, .search-bar input {
@@ -304,44 +304,6 @@
       .pagination button {
         width: 28px;
         height: 28px;
-        font-size: 0.75rem;
-      }
-    }
-    
-    @media (max-width: 400px) {
-      .board-header, .board-row { 
-        grid-template-columns: 20px 1fr 50px; 
-        font-size: 0.65rem;
-        padding: 0.35rem 0;
-      }
-      
-      .board-row .title {
-        padding: 0 0.15rem;
-        font-size: 0.65rem;
-      }
-      
-      .board-row.notice .number {
-        padding: 1px 2px;
-        font-size: 0.5rem;
-      }
-      
-      .search-bar select, .search-bar input {
-        padding: 0.45rem;
-        font-size: 0.75rem;
-      }
-      
-      .search-bar button {
-        padding: 0.45rem;
-        font-size: 0.75rem;
-      }
-      
-      .total-posts {
-        font-size: 0.65rem;
-      }
-      
-      .pagination button {
-        width: 26px;
-        height: 26px;
         font-size: 0.7rem;
       }
     }
@@ -351,52 +313,48 @@
   <header class="header"></header>
   <div id="page-hero-container"></div>
 
-  <main class="jobs-main">
-    <div class="jobs-container">
-      <div class="jobs-content-wrapper">
-  
-        
-        <div class="board-controls">
-          <div class="total-posts" id="total-posts-counter"></div>
-          <div class="search-bar">
-            <select id="jobs-search-type">
-              <option value="title">제목</option>
-              <option value="content">내용</option>
-              <option value="title_content">제목+내용</option>
-            </select>
-            <input type="text" id="jobs-search-input" placeholder="검색어를 입력하세요">
-            <button id="jobs-search-btn">검색</button>
+  <main>
+    <section class="page-section">
+      <div class="container">
+        <div class="content-card">
+          <div class="section-title">
+            <h2>취업/구인</h2>
+    
           </div>
-        </div>
+          <div class="card-content">
+            <div class="board-controls">
+              <div class="total-posts" id="total-posts-counter"></div>
+              <div class="search-bar">
+                <select id="jobs-search-type">
+                  <option value="title">제목</option>
+                  <option value="content">내용</option>
+                  <option value="title_content">제목+내용</option>
+                </select>
+                <input type="text" id="jobs-search-input" placeholder="검색어를 입력하세요">
+                <button id="jobs-search-btn">검색</button>
+              </div>
+            </div>
 
-        <div class="board-list" id="jobs-list">
-          <div class="board-header">
-            <div class="number">번호</div>
-            <div class="title">제목</div>
-            <div class="author">작성자</div>
-            <div class="date">날짜</div>
-            <div class="views">조회</div>
-          </div>
-          <!-- 게시물 목록이 여기에 동적으로 삽입됩니다. -->
-        </div>
+            <div class="board-list" id="jobs-list">
+              <div class="board-header">
+                <div class="number">번호</div>
+                <div class="title">제목</div>
+                <div class="author">작성자</div>
+                <div class="date">날짜</div>
+                <div class="views">조회</div>
+              </div>
+              <!-- 게시물 목록이 여기에 동적으로 삽입됩니다. -->
+            </div>
 
-        <div class="board-bottom">
-          <div class="pagination" id="pagination">
-            <!-- 페이지네이션 버튼이 여기에 동적으로 삽입됩니다. -->
+            <div class="board-bottom">
+              <div class="pagination" id="pagination">
+                <!-- 페이지네이션 버튼이 여기에 동적으로 삽입됩니다. -->
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      
-      <aside class="quick-contact-sidebar">
-        <div class="contact-box">
-          <h3>문의 전화</h3>
-          <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
-        </div>
-        <div class="contact-box" style="padding: 0;">
-            <a href="#" class="kakao-link"><strong>KakaoTalk</strong><span>플러스 친구</span></a>
-        </div>
-      </aside>
-    </div>
+    </section>
   </main>
 
   <footer class="footer">

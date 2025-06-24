@@ -25,9 +25,31 @@
         transform: translateX(-50%);
         width: 80px;
         height: 4px;
-        background-color: #0052cc;
+        background-color: #1a365d !important;
         border-radius: 2px;
     }
+    
+    /* 메인 제목 스타일 */
+    .main-title {
+        font-size: 2.5rem;
+        color: #1a365d;
+        text-align: center;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+    
+    .main-description {
+        font-size: 1.2rem;
+        color: #555;
+        text-align: center;
+        margin-bottom: 3rem;
+        line-height: 1.6;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
     .process-flow-section {
         margin-bottom: 4rem;
     }
@@ -54,7 +76,7 @@
     }
     .process-step h4 {
         margin: 0 0 0.5rem 0;
-        color: #0052cc;
+        color: #1a365d !important;
         font-size: 1.1rem;
     }
     .process-step p {
@@ -64,14 +86,11 @@
     }
     .process-arrow {
         font-size: 2rem;
-        color: #0052cc;
+        color: #1a365d !important;
     }
     @media (max-width: 992px) {
         .process-flow-diagram {
             flex-direction: column;
-        }
-        .process-arrow {
-            transform: rotate(90deg);
         }
     }
     .table-responsive {
@@ -118,56 +137,183 @@
 
     /* 모바일 최적화 */
     @media (max-width: 768px) {
-        .subsection-title {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
+        .main-title {
+            font-size: 1.4rem !important;
+            margin-bottom: 0.8rem !important;
+            padding: 0 1rem !important;
         }
-
+        
+        .main-description {
+            font-size: 0.9rem !important;
+            margin-bottom: 2rem !important;
+            padding: 0 1rem !important;
+        }
+        
+        .subsection-title {
+            font-size: 1.1rem !important;
+            margin-bottom: 1.1rem !important;
+        }
+        .process-flow-diagram {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 0 !important;
+            width: 100% !important;
+        }
         .process-step {
-            width: 100%;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+            width: 100% !important;
+            min-width: 0 !important;
+            padding: 0.4rem 0.2rem !important;
+            font-size: 0.8rem !important;
+            border-radius: 7px !important;
+            margin: 0 !important;
+            box-shadow: 0 1px 1.5px rgba(44,62,80,0.04) !important;
+            min-height: 54px !important;
+            height: 54px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
         }
         .process-step h4 {
-            flex-shrink: 0;
-            margin: 0;
+            font-size: 0.85rem !important;
+        }
+        .process-step p {
+            font-size: 0.75rem !important;
         }
         .process-arrow {
-            margin: 0.5rem 0;
+            width: 100%;
+            text-align: center;
+            font-size: 1.2rem !important;
+            color: #1a365d !important;
+            margin: 0.1rem 0 0.1rem 0;
+            padding: 0;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
         .curriculum-table th, .curriculum-table td {
-            padding: 0.75rem;
-            font-size: 0.9rem;
+            font-size: 0.75rem !important;
+            padding: 0.5rem !important;
         }
         .curriculum-table .details-list {
-            font-size: 0.85rem;
+            font-size: 0.7rem !important;
         }
     }
 
     @media (max-width: 480px) {
-        .content-card {
-            padding-left: 0.5rem;
-            padding-right: 0.5rem;
-        }
-        .subsection-title {
-            font-size: 1.3rem;
-        }
-        .process-step {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.25rem;
-        }
-        .curriculum-table th, .curriculum-table td {
-            padding: 0.5rem;
-            font-size: 0.8rem;
-            white-space: normal;
-        }
-        .curriculum-table thead th {
-            font-size: 0.85rem;
-        }
+      .main-title {
+        font-size: 1.2rem !important;
+        margin-bottom: 0.6rem !important;
+        padding: 0 0.8rem !important;
+      }
+      
+      .main-description {
+        font-size: 0.8rem !important;
+        margin-bottom: 1.5rem !important;
+        padding: 0 0.8rem !important;
+      }
+      
+      .process-flow-diagram {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0 !important;
+        width: 100% !important;
+      }
+      .process-step {
+        width: 100% !important;
+        min-width: 0 !important;
+        padding: 0.4rem 0.2rem !important;
+        font-size: 0.7rem !important;
+        border-radius: 7px !important;
+        margin: 0 !important;
+        box-shadow: 0 1px 1.5px rgba(44,62,80,0.04) !important;
+        min-height: 54px !important;
+        height: 54px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+      }
+      .process-step h4 {
+        font-size: 0.7rem !important;
+      }
+      .process-step p {
+        font-size: 0.6rem !important;
+      }
+      .process-arrow {
+        font-size: 1rem !important;
+      }
+      .curriculum-table th, .curriculum-table td {
+        font-size: 0.6rem !important;
+        padding: 0.3rem !important;
+      }
+      .curriculum-table .details-list {
+        font-size: 0.55rem !important;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .process-flow-diagram {
+        align-items: stretch;
+      }
+      .process-step {
+        height: 120px;
+        min-height: 120px;
+        max-height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+      .process-step h4, .process-step p {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        margin-bottom: 0.2em;
+      }
+      .process-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 120px;
+        min-width: 40px;
+        font-size: 2rem;
+        color: #1a365d;
+        margin: 0;
+        padding: 0;
+      }
+      .curriculum-table {
+        table-layout: auto !important;
+        width: 100%;
+      }
+      .curriculum-table th,
+      .curriculum-table td {
+        white-space: normal;
+      }
+      .curriculum-table th:nth-child(1),
+      .curriculum-table td:nth-child(1) {
+        min-width: 70px;
+        text-align: center;
+        white-space: nowrap;
+      }
+      .curriculum-table th:nth-child(2),
+      .curriculum-table td:nth-child(2) {
+        min-width: 90px;
+        text-align: left;
+        vertical-align: top;
+      }
+      .curriculum-table th:nth-child(3),
+      .curriculum-table td:nth-child(3) {
+        min-width: 120px;
+      }
+      .curriculum-table th:nth-child(4),
+      .curriculum-table td:nth-child(4) {
+        min-width: 60px;
+        text-align: center;
+        white-space: nowrap;
+      }
     }
   </style>
 </head>
@@ -180,11 +326,12 @@
     <section class="page-section">
       <div class="container">
         <div class="content-card">
-          <div class="section-title">
-            <h2>간호조무사 교육과정</h2>
-            <p>미래를 향한 첫걸음, 전문 간호 인력 양성</p>
-          </div>
+          
           <div class="card-content">
+            <!-- 메인 제목 및 설명 -->
+            <h1 class="main-title">간호조무사 교육과정</h1>
+            <p class="main-description">국가공인 간호조무사 자격 취득 과정입니다.</p>
+            
             <div class="process-flow-section">
               <h3 class="subsection-title">간호조무사 교육과정 순서도</h3>
               <div class="process-flow-diagram">
@@ -192,17 +339,17 @@
                   <h4>입학</h4>
                   <p>(6개월)</p>
                 </div>
-                <div class="process-arrow">&rarr;</div>
+                <div class="process-arrow"><span class="arrow-desktop">&rarr;</span><span class="arrow-mobile" style="display:none;">&darr;</span></div>
                 <div class="process-step">
                   <h4>이론 교육</h4>
                   <p>(740시간 이상 이수)</p>
                 </div>
-                <div class="process-arrow">&rarr;</div>
+                <div class="process-arrow"><span class="arrow-desktop">&rarr;</span><span class="arrow-mobile" style="display:none;">&darr;</span></div>
                 <div class="process-step">
                   <h4>병원실습</h4>
                   <p>(병원 400시간, 의원 380시간)</p>
                 </div>
-                <div class="process-arrow">&rarr;</div>
+                <div class="process-arrow"><span class="arrow-desktop">&rarr;</span><span class="arrow-mobile" style="display:none;">&darr;</span></div>
                 <div class="process-step">
                   <h4>요점정리/문제풀이</h4>
                   <p>(2개월)</p>
@@ -227,7 +374,7 @@
                       <td rowspan="12">기초간호학 개요</td>
                       <td>간호관리</td>
                       <td>1.간호 변천의 역사적 고찰 2.간호체계 3.간호조무사의 직업윤리와 태도 4.병원의 기능과 간호조무사의 업무</td>
-                      <td rowspan="17" style="text-align:center; vertical-align: middle;">740</td>
+                      <td rowspan="21" style="text-align:center; vertical-align: middle;">740</td>
                     </tr>
                     <tr>
                       <td>기초해부 생리</td>
@@ -298,28 +445,24 @@
                     <tr>
                         <td>인구와 출산</td>
                         <td>1.인구의 정의와 분류 2.인구구조조사 및 생명표 3.인구증가에 따른 문제와 대책 4.가족계획</td>
-                        <td style="text-align:center; vertical-align: middle;"></td>
                     </tr>
                     <tr>
                         <td>모자보건</td>
                         <td>1.모자보건(모자보건의 이해, 모자보건사업, 모자보건센터의 역할, 모자보건사업의 추진방향) 2.학교보건</td>
-                        <td style="text-align:center; vertical-align: middle;"></td>
                     </tr>
                      <tr>
                         <td>지역사회보건</td>
                         <td>1.지역사회 간호의 개요 2.지역사회 간호요원 3.지역사회 간호사업의 미래 4.지역사회 정신보건 5.지역사회 간호활동 6.지역사회 간호전달체계</td>
-                        <td style="text-align:center; vertical-align: middle;"></td>
                     </tr>
                     <tr>
                         <td>의료관계법규</td>
                         <td>1.의료법 2.감염병의 예방 및 관리에 관한 법률 3.정신건강증진 및 정신질환자 복지서비스 지원에 관한 법률 4.결핵예방법 5.구강보건법 6.혈액관리법 7.등록:간호조무사 및 의료유사업자에 관한 규칙</td>
-                        <td style="text-align:center; vertical-align: middle;"></td>
                     </tr>
                     <tr>
                         <td>현장실습</td>
                         <td>병,의원급 의료기관</td>
                         <td>기본간호실무 자신과 기술을 익혀 현장실무능력을 함양</td>
-                        <td style="text-align:center; vertical-align: middle;">780</td>
+                        <td>780</td>
                     </tr>
                   </tbody>
                 </table>
@@ -354,5 +497,24 @@
   </footer>
 
   <script src="script.js"></script>
+  <script>
+    // 모바일 환경에서 화살표 방향 전환
+    function updateProcessArrows() {
+      const isMobile = window.innerWidth <= 768;
+      document.querySelectorAll('.process-arrow').forEach(function(arrow) {
+        const desktop = arrow.querySelector('.arrow-desktop');
+        const mobile = arrow.querySelector('.arrow-mobile');
+        if (isMobile) {
+          desktop.style.display = 'none';
+          mobile.style.display = 'inline';
+        } else {
+          desktop.style.display = 'inline';
+          mobile.style.display = 'none';
+        }
+      });
+    }
+    window.addEventListener('resize', updateProcessArrows);
+    window.addEventListener('DOMContentLoaded', updateProcessArrows);
+  </script>
 </body>
 </html> 

@@ -782,9 +782,7 @@ async function initGalleryPage() {
 
     function renderList(items, page) {
       console.log('renderList 호출됨, 아이템 수:', items.length, '페이지:', page);
-      const header = listContainer.querySelector('.board-header');
       listContainer.innerHTML = '';
-      listContainer.appendChild(header);
 
       const start = (page - 1) * itemsPerPage;
       const end = start + itemsPerPage;
@@ -805,17 +803,14 @@ async function initGalleryPage() {
       const row = document.createElement('div');
       row.className = 'board-row';
       row.innerHTML = `
-        <div class="number">${itemNumber}</div>
-        <div class="thumbnail">
-          <img src="${item.image}" alt="${item.title}" class="thumbnail">
-        </div>
+        <img class="thumbnail" src="${item.image}" alt="${item.title}">
         <div class="title-section">
           <a href="community_gallery_detail.html?id=${item.id}" class="title">${item.title}</a>
           <div class="description">${item.content || ''}</div>
+          <div class="meta-info">
+            <span class="date">${item.date}</span>
+          </div>
         </div>
-        <div class="author">${item.author}</div>
-        <div class="date">${item.date}</div>
-        <div class="views">${item.views || 0}</div>
       `;
       return row;
     }
@@ -1047,9 +1042,9 @@ async function initJobsPage() {
 
     function createRow(item, itemNumber) {
       const row = document.createElement('div');
-      row.className = 'board-row';
+      row.className = `board-row ${item.isNotice ? 'notice' : ''}`;
       row.innerHTML = `
-        <div class="number">${itemNumber}</div>
+        <div class="number">${item.isNotice ? '공지' : itemNumber}</div>
         <div class="title"><a href="community_jobs_detail.html?id=${item.id}">${item.title}</a></div>
         <div class="author">${item.author}</div>
         <div class="date">${item.date}</div>

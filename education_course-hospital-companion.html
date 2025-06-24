@@ -24,7 +24,7 @@
         display: inline-block;
     }
     .subsection-title .highlight {
-        color: #0052cc;
+        color: #1a365d;
         font-weight: 700;
         margin-right: 0.5rem;
     }
@@ -41,10 +41,15 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 1rem;
+        list-style-type: none !important;
+    }
+    .role-list li::marker,
+    .role-list li:before {
+        content: none !important;
     }
     .role-list li {
         background-color: #f8f9fa;
-        border-left: 4px solid #0052cc;
+        border-left: 4px solid #1a365d;
         padding: 1rem 1.5rem;
         border-radius: 8px;
         font-weight: 500;
@@ -87,6 +92,7 @@
             padding: 0.8rem 1rem;
             font-size: 0.95rem;
             text-align: left;
+            border-left: 4px solid #1a365d;
         }
         
         .role-list li:hover {
@@ -122,6 +128,8 @@
         .role-list li {
             padding: 0.7rem 0.8rem;
             font-size: 0.9rem;
+        }
+    }
   </style>
 </head>
 <body>

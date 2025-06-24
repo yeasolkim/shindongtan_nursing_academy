@@ -33,36 +33,27 @@
         margin-bottom: 1rem;
     }
     .course-list {
-        list-style: none;
+        list-style-type: none !important;
         padding: 0;
         margin: 0;
-        counter-reset: course-counter;
+    }
+    .course-list li::marker,
+    .course-list li:before {
+        content: none !important;
     }
     .course-list li {
         background-color: #f8f9fa;
         border: 1px solid #e9ecef;
-        border-left: 5px solid #1a365d;
         padding: 1rem 1.5rem;
         margin-bottom: 1rem;
         border-radius: 8px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        display: flex;
-        align-items: center;
-        counter-increment: course-counter;
-        gap: 1.5rem;
+        display: block;
+        border-left: 4px solid #1a365d;
     }
-    .course-list li::before {
-        content: counter(course-counter);
-        background-color: #1a365d;
-        color: white;
-        font-weight: 700;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
+    .course-list li span {
+        display: block;
+        margin-left: 0;
     }
     
     /* 모바일 최적화 */
@@ -76,71 +67,59 @@
         }
         
         .subsection-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.6rem;
-        }
-        
-        .subsection p {
-            font-size: 1rem;
-            line-height: 1.7;
-            margin-bottom: 0.8rem;
-        }
-        
-        .course-list li {
-            padding: 0.8rem 1rem;
-            margin-bottom: 0.8rem;
-            gap: 1rem;
-        }
-        
-        .course-list li::before {
-            width: 25px;
-            height: 25px;
-            font-size: 0.9rem;
-        }
-        
-        .course-list li span {
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-    }
-    
-    @media (max-width: 480px) {
-        .course-section {
-            padding-bottom: 1.5rem;
-        }
-        
-        .subsection {
-            margin-bottom: 2rem;
-        }
-        
-        .subsection-title {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             margin-bottom: 0.8rem;
             padding-bottom: 0.5rem;
         }
         
         .subsection p {
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             line-height: 1.6;
             margin-bottom: 0.7rem;
         }
         
         .course-list li {
-            padding: 0.7rem 0.8rem;
+            padding: 0.7rem 0.7rem;
             margin-bottom: 0.7rem;
-            gap: 0.8rem;
-        }
-        
-        .course-list li::before {
-            width: 22px;
-            height: 22px;
-            font-size: 0.8rem;
+            border-left: 3px solid #1a365d;
         }
         
         .course-list li span {
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             line-height: 1.5;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .course-section {
+            padding-bottom: 1.2rem;
+        }
+        
+        .subsection {
+            margin-bottom: 1.2rem;
+        }
+        
+        .subsection-title {
+            font-size: 1.05rem;
+            margin-bottom: 0.6rem;
+            padding-bottom: 0.4rem;
+        }
+        
+        .subsection p {
+            font-size: 0.85rem;
+            line-height: 1.45;
+            margin-bottom: 0.5rem;
+        }
+        
+        .course-list li {
+            padding: 0.5rem 0.5rem;
+            margin-bottom: 0.5rem;
+            border-left: 2.5px solid #1a365d;
+        }
+        
+        .course-list li span {
+            font-size: 0.85rem;
+            line-height: 1.4;
         }
     }
   </style>

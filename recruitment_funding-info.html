@@ -34,28 +34,34 @@
             margin: 1.5rem 0;
         }
         
-        .flow-row {
-            flex-direction: column;
-            gap: 0.8rem;
+        .flow-row, .flow-row.reverse {
+            flex-direction: column !important;
+            gap: 0.5rem !important;
+            align-items: stretch !important;
         }
         
         .flow-step {
-            padding: 0.8rem;
-            font-size: 0.9rem;
-            text-align: center;
+            width: 100% !important;
+            min-width: 0 !important;
+            padding: 0.7rem 0.5rem !important;
+            font-size: 0.92rem !important;
+            text-align: center !important;
+            border-radius: 10px !important;
         }
         
-        .flow-arrow {
-            transform: rotate(90deg);
-            margin: 0.5rem 0;
-        }
-        
-        .flow-connector {
-            margin: 1rem 0;
-        }
-        
-        .arrow-down {
-            transform: rotate(90deg);
+        .flow-arrow, .arrow-down {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            font-size: 2.1rem !important;
+            color: #1a365d !important;
+            margin: 0.2rem 0 0.2rem 0 !important;
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+            height: 2.2rem !important;
+            width: 100% !important;
+            text-align: center !important;
         }
         
         .info-card-grid {
@@ -97,7 +103,7 @@
         }
         
         .site-links a {
-            color: #0052cc;
+            color: #1a365d;
             text-decoration: none;
         }
         
@@ -128,20 +134,18 @@
         }
         
         .flowchart {
-            margin: 1.2rem 0;
-        }
-        
-        .flow-row {
-            gap: 0.6rem;
+            margin: 1rem 0;
         }
         
         .flow-step {
-            padding: 0.7rem;
-            font-size: 0.85rem;
+            font-size: 0.85rem !important;
+            padding: 0.5rem 0.3rem !important;
+            border-radius: 8px !important;
         }
         
-        .flow-arrow {
-            margin: 0.3rem 0;
+        .flow-arrow, .arrow-down {
+            font-size: 1.5rem !important;
+            height: 1.7rem !important;
         }
         
         .info-card {
@@ -177,6 +181,190 @@
             margin-top: 0.8rem;
         }
     }
+    .flow-arrow .arrow-desktop {
+        font-size: 2rem;
+        color: #1a365d;
+        font-weight: bold;
+        display: inline;
+    }
+    @media (max-width: 768px) {
+        .flow-arrow .arrow-desktop {
+            content: '→';
+            font-size: 1.5rem;
+            display: inline;
+        }
+        .flow-arrow.special-arrow .arrow-desktop {
+            content: '→';
+        }
+    }
+    .flowchart-2row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 2.5rem 0;
+    }
+    .flowchart-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .flow-step {
+      background: #f9fcff;
+      border: 2px solid #1a365d;
+      border-radius: 10px;
+      padding: 1.1rem 1.5rem;
+      min-width: 150px;
+      text-align: center;
+      font-size: 1.05rem;
+      color: #1a365d;
+      font-weight: 500;
+      box-shadow: 0 2px 8px rgba(26,54,93,0.07);
+      transition: box-shadow 0.2s;
+    }
+    .flow-step.highlight {
+      color: #b02a37;
+      border-color: #b02a37;
+      font-weight: 700;
+      background: #fff6f7;
+    }
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      min-height: 48px;
+      font-size: 2.1rem;
+      font-weight: bold;
+    }
+    .flow-arrow.right::before {
+      content: '>>';
+      color: #1a365d;
+    }
+    .flow-arrow.left::before {
+      content: '<<';
+      color: #1a365d;
+    }
+    .flowchart-arrow-down {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 2.2rem;
+      font-size: 2.2rem;
+      color: #1a365d;
+      margin: 0.2rem 0 0.2rem 0;
+    }
+    .flowchart-arrow-down::before {
+      content: '\2193';
+      font-size: 2.2rem;
+      color: #1a365d;
+    }
+    @media (max-width: 1024px) {
+      .flow-step { min-width: 120px; font-size: 0.98rem; padding: 0.8rem 0.5rem; }
+    }
+    @media (max-width: 768px) {
+      .flowchart-row { flex-wrap: wrap; gap: 0.2rem; }
+      .flow-step { min-width: 0; width: 100%; font-size: 0.95rem; }
+      .flow-arrow, .flowchart-arrow-down { font-size: 1.3rem; height: 1.5rem; }
+    }
+    @media (max-width: 480px) {
+      .flow-step { font-size: 0.85rem; padding: 0.5rem 0.2rem; }
+    }
+    .flowchart-single {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 1.2rem;
+      margin: 3rem 0 2rem 0;
+      background: linear-gradient(90deg, #f7fafd 0%, #fafdff 100%);
+      padding: 2.2rem 1.2rem 2.2rem 1.2rem;
+      border-radius: 22px;
+      box-shadow: 0 4px 32px rgba(26,54,93,0.07);
+    }
+    .flow-step {
+      background: #fff;
+      border: 2.5px solid #1a365d;
+      border-radius: 16px;
+      padding: 1.3rem 2.1rem;
+      min-width: 170px;
+      text-align: center;
+      font-size: 1.13rem;
+      color: #1a365d;
+      font-weight: 600;
+      box-shadow: 0 4px 18px rgba(26,54,93,0.10);
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.15s;
+      position: relative;
+      z-index: 1;
+    }
+    .flow-step.highlight {
+      color: #b02a37;
+      border-color: #b02a37;
+      font-weight: 700;
+      background: #fff6f7;
+    }
+    .flow-step:hover {
+      box-shadow: 0 8px 32px rgba(26,54,93,0.18);
+      border-color: #274b7a;
+      transform: translateY(-4px) scale(1.03);
+    }
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      min-height: 48px;
+      font-size: 2.3rem;
+      font-weight: bold;
+      color: #1a365d;
+      transition: color 0.2s;
+      margin: 0 0.2rem;
+      user-select: none;
+    }
+    .flow-arrow::before {
+      content: '→';
+      color: #1a365d;
+      font-size: 2.3rem;
+      font-weight: 700;
+      filter: drop-shadow(0 1px 0 #fff);
+    }
+    @media (max-width: 1024px) {
+      .flow-step { min-width: 120px; font-size: 0.98rem; padding: 0.8rem 0.5rem; }
+      .flowchart-single { gap: 0.5rem; padding: 1.2rem 0.5rem; }
+    }
+    @media (max-width: 768px) {
+      .flowchart-single {
+        flex-direction: column;
+        gap: 0.2rem;
+        align-items: stretch;
+        background: none;
+        box-shadow: none;
+        padding: 0;
+        border-radius: 0;
+      }
+      .flow-step {
+        min-width: 0;
+        width: 100%;
+        font-size: 0.95rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(26,54,93,0.07);
+        padding: 0.9rem 0.5rem;
+      }
+      .flow-arrow {
+        font-size: 1.3rem;
+        height: 1.5rem;
+        min-width: 0;
+        margin: 0;
+      }
+      .flow-arrow::before {
+        content: '↓';
+        font-size: 1.3rem;
+      }
+    }
+    @media (max-width: 480px) {
+      .flow-step { font-size: 0.85rem; padding: 0.5rem 0.2rem; }
+    }
   </style>
 </head>
 <body>
@@ -203,32 +391,26 @@
             <!-- Section 2: Flowchart -->
             <div class="funding-section">
                 <h3 class="section-subtitle"><i class="fas fa-sitemap"></i> 국민내일배움카드 지원절차</h3>
-                <div class="flowchart">
-                    <div class="flow-row">
-                        <div class="flow-step"><span>거주지 관할<br>고용센터 방문</span></div>
-                        <div class="flow-arrow">&raquo;</div>
-                        <div class="flow-step"><span>구직등록<br>교육동영상 시청<br>훈련과정 탐색</span></div>
-                        <div class="flow-arrow">&raquo;</div>
-                        <div class="flow-step"><span>훈련상담</span></div>
-                        <div class="flow-arrow">&raquo;</div>
-                        <div class="flow-step"><span>개인훈련계획서<br>작성</span></div>
-                        <div class="flow-arrow">&raquo;</div>
-                        <div class="flow-step"><span>내일배움카드<br>발급</span></div>
-                    </div>
-                    <div class="flow-connector">
-                        <div class="arrow-down">&raquo;</div>
-                    </div>
-                    <div class="flow-row reverse">
-                        <div class="flow-step"><span>훈련수강</span></div>
-                        <div class="flow-arrow">&laquo;</div>
-                        <div class="flow-step"><span>자비부담액<br>결제</span></div>
-                        <div class="flow-arrow">&laquo;</div>
-                        <div class="flow-step"><span>수강신청</span></div>
-                        <div class="flow-arrow">&laquo;</div>
-                        <div class="flow-step"><span>내일배움카드<br>수령</span></div>
-                        <div class="flow-arrow">&laquo;</div>
-                        <div class="flow-step"><span>카드발급<br>(신용카드 또는<br>체크카드)</span></div>
-                    </div>
+                <div class="flowchart-single">
+                  <div class="flow-step">거주지 관할<br>고용센터방문</div>
+                  <div class="flow-arrow"></div>
+                  <div class="flow-step">구직등록<br>교육동영상 시청<br>훈련과정 탐색</div>
+                  <div class="flow-arrow"></div>
+                  <div class="flow-step">훈련상담</div>
+                  <div class="flow-arrow"></div>
+                  <div class="flow-step">개인훈련계획서 작성</div>
+                  <div class="flow-arrow"></div>
+                  <div class="flow-step">내일배움카드 발급</div>
+                  <div class="flow-arrow"></div>
+                  <div class="flow-step">카드발급<br>(신용카드 또는 체크카드)</div>
+                  <div class="flow-arrow"></div>
+                  <div class="flow-step">내일배움카드 수령</div>
+                  <div class="flow-arrow"></div>
+                  <div class="flow-step">수강신청</div>
+                  <div class="flow-arrow"></div>
+                  <div class="flow-step">자비부담액 결제</div>
+                  <div class="flow-arrow"></div>
+                  <div class="flow-step highlight">훈련수강</div>
                 </div>
                 <p class="note">※ 계좌카드 신청 후 수령 시까지 최소 2주 정도의 기간이 소요되며, 계좌카드를 수령한 이후 훈련수강 가능합니다.</p>
             </div>
