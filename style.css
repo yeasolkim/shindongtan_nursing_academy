@@ -361,14 +361,14 @@ main {
 .footer-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0.6rem 0 0.3rem 0;
 }
 
 .footer-main {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2.5rem;
-  padding-bottom: 2.5rem;
+  gap: 0.7rem;
+  padding: 0.3rem 0 0.3rem 0;
   border-bottom: 1px solid #2d3748;
 }
 
@@ -379,20 +379,23 @@ main {
 }
 
 .footer-logo img {
-  height: 50px;
-  margin-right: 1rem;
+  width: 38px;
+  height: 38px;
+  margin-right: 0.4rem;
 }
 
 .footer-logo span {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #ffffff;
+  font-size: 0.92rem;
+}
+
+.footer-section {
+  padding: 0.08rem 0.2rem 0.08rem 0.2rem;
 }
 
 .footer-section h4 {
-  font-size: 1.1rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.15rem;
   color: #ffffff;
   position: relative;
   padding-bottom: 0.75rem;
@@ -412,14 +415,14 @@ main {
 .footer-social-item {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.08rem;
 }
 
 .footer-contact-item i,
 .footer-social-item i {
   color: #ffffff;
-  margin-right: 0.75rem;
-  font-size: 1.1rem;
+  margin-right: 0.15rem;
+  font-size: 0.9rem;
   width: 20px;
   text-align: center;
 }
@@ -430,7 +433,7 @@ main {
 
 .footer-social-links {
   display: flex;
-  gap: 1rem;
+  gap: 0.15rem;
 }
 
 .footer-social-item {
@@ -451,7 +454,7 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 2rem;
+  padding: 0.1rem 0 0.05rem 0;
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -690,60 +693,51 @@ main {
     font-size: 2rem;
   }
 
-  .footer {
-    padding: 2.5rem 1rem;
+  .footer-container {
+    font-size: 0.75rem;
+    padding: 0.18rem 0 0.08rem 0;
   }
   .footer-main {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem;
+    padding: 0.08rem 0 0.08rem 0;
   }
-  .footer-logo {
-    justify-content: center;
-  }
-  .footer-logo img {
-    height: 35px;
+  .footer-section {
+    padding: 0.04rem 0.12rem 0.04rem 0.12rem;
+    margin-bottom: 0.12rem;
   }
   .footer-logo span {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
   .footer-section h4 {
-    font-size: 0.9rem;
-    margin-bottom: 0.8rem;
-  }
-  .footer-section p,
-  .footer-contact-item span {
     font-size: 0.8rem;
+    margin-bottom: 0.08rem;
   }
-  .footer-section h4::after {
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  .footer-contact-item,
-  .footer-social-item {
-    justify-content: center;
-    gap: 0.5rem;
+  .footer-contact-item {
+    font-size: 0.75rem;
+    margin-bottom: 0.04rem;
   }
   .footer-contact-item i {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    margin-right: 0.08rem;
   }
   .footer-social-links {
-    justify-content: center;
-    gap: 0.8rem;
+    gap: 0.08rem;
+    justify-content: flex-start;
   }
-  .footer-social-item a {
-    width: 32px;
-    height: 32px;
-    font-size: 0.9rem;
+  .footer-social-item a i {
+    font-size: 0.8rem;
   }
   .footer-bottom {
+    padding: 0.04rem 0 0.02rem 0;
     flex-direction: column;
-    text-align: center;
-    margin-top: 2rem;
-    gap: 0.5rem;
+    align-items: flex-start;
   }
   .footer-copyright, .admin-footer-link {
     font-size: 0.7rem;
+    margin-left: 0;
+    margin-top: 0.08rem;
   }
 
   .social-links-section { padding: 3.5rem 1.5rem; }
@@ -783,6 +777,53 @@ main {
   }
   .preview-item-text .meta {
     font-size: 0.8rem;
+  }
+
+  body[data-page^='education_'] #page-hero-container,
+  body[data-page^='education_'] .hero-v2,
+  body[data-page^='education_'] .page-hero,
+  body[data-page^='job_'] #page-hero-container,
+  body[data-page^='job_'] .hero-v2,
+  body[data-page^='job_'] .page-hero,
+  body[data-page^='recruitment_'] #page-hero-container,
+  body[data-page^='recruitment_'] .hero-v2,
+  body[data-page^='recruitment_'] .page-hero,
+  body[data-page^='recruitment_'] .section-title {
+    /* display: none !important; */
+  }
+  body[data-page='job_info.html'] .section-title {
+    /* display: block !important; */
+  }
+
+  body[data-page^='recruitment_'] .section-title {
+    /* display: none !important; */
+  }
+
+  body[data-page^='recruitment_'] .section-title {
+    /* display: none !important; */
+  }
+
+  body[data-page^='recruitment_'] .section-title {
+    /* display: none !important; */
+  }
+
+  body[data-page^='community_'] .section-title {
+    /* display: none !important; */
+  }
+
+  body[data-page^='education_'] .section-title,
+  body[data-page^='job_'] .section-title,
+  body[data-page^='recruitment_'] .section-title,
+  body[data-page^='community_'] .section-title {
+    /* display: none !important; */
+  }
+
+  body[data-page="community_notice.html"] #page-hero-container {
+    display: none !important;
+  }
+
+  body[data-page^="community_"] #page-hero-container {
+    display: none !important;
   }
 }
 
@@ -1283,3 +1324,15 @@ main {
     vertical-align: middle !important;
   }
 }
+
+/* 기존에 section-title을 모바일에서 숨기던 코드를 주석 처리 또는 삭제 */
+/*
+@media (max-width: 768px) {
+  body[data-page^="education_"] .section-title,
+  body[data-page^="job_"] .section-title,
+  body[data-page^="recruitment_"] .section-title,
+  body[data-page^="community_"] .section-title {
+    display: none !important;
+  }
+}
+*/
