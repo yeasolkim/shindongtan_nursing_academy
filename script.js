@@ -1631,7 +1631,6 @@ function renderLatestQA(qaData) {
   
   const qaHTML = qaData.map(qa => {
     const question = qa.question || '질문 없음';
-    const category = qa.category || '기타';
     
     return `
       <a href="community_qa.html" class="preview-item">
@@ -1640,10 +1639,6 @@ function renderLatestQA(qaData) {
         </div>
         <div class="preview-item-text">
           <span class="title">${question}</span>
-          <div class="meta">
-            <i class="fas fa-tag"></i>
-            <span>${category}</span>
-          </div>
         </div>
       </a>
     `;
@@ -1773,32 +1768,32 @@ async function loadLatestQA() {
       console.log('기본 Q&A 데이터 로드 완료:', latestQA.length, '개');
       return latestQA;
     } else {
-      // 기본 Q&A 데이터
+      // community_qa.html의 상위 5개 질문으로 기본 Q&A 데이터 업데이트
       const defaultQA = [
         {
-          question: "간호조무사 자격증, 누구나 취득할 수 있나요?",
-          answer: "네, 고등학교 졸업 이상의 학력을 가진 분이라면 성별이나 나이에 관계없이 누구나 도전할 수 있습니다.",
+          question: "1. 간호란 무엇인가요?",
+          answer: "간호는 단순히 병을 치료하는 행위를 넘어서 환자의 신체적 상태뿐 아니라 정신적, 정서적, 사회적 배경까지 고려하여 돌보는 '전인간호(comprehensive nursing)'입니다.",
+          category: "기본개념"
+        },
+        {
+          question: "2. 간호조무사의 역할은 어떤가요?",
+          answer: "간호조무사는 의사나 간호사의 지시에 따라 환자의 건강을 보조하는 역할을 수행하는 보건의료인의 중요한 일원입니다.",
+          category: "역할"
+        },
+        {
+          question: "3. 간호조무사의 업무 범위는 어떻게 되나요?",
+          answer: "진료 보조, 간호 보조, 의료물품 관리, 행정 업무, 교육 및 상담 등 다양한 업무를 수행합니다.",
+          category: "업무"
+        },
+        {
+          question: "4. 간호조무사 자격증은 어떻게 취득하나요?",
+          answer: "고등학교 졸업 이상의 학력을 소지하고, 보건복지부 지정 교육훈련기관에서 총 1,520시간의 이론 및 실습 교육을 이수한 후 국가시험에 합격하면 자격증이 발급됩니다.",
           category: "자격증"
         },
         {
-          question: "교육 과정은 어떻게 구성되어 있나요?",
-          answer: "간호조무사 국가고시 응시자격을 위한 표준 교육과정은 총 1,520시간으로 구성됩니다.",
-          category: "교육과정"
-        },
-        {
-          question: "국비지원(국민내일배움카드) 혜택을 받을 수 있나요?",
-          answer: "네, 저희 신동탄간호학원은 고용노동부 인증 우수훈련기관으로, 국민내일배움카드를 통해 수강료 지원을 받으실 수 있습니다.",
-          category: "국비지원"
-        },
-        {
-          question: "병원 실습은 어떻게 진행되나요?",
-          answer: "본원은 동탄, 수원, 용인 지역의 우수한 병원들과 산학협력을 맺고 있어, 학생들이 쾌적하고 체계적인 환경에서 실습에만 집중할 수 있도록 지원합니다.",
+          question: "5. 실습은 어떤 식으로 진행되나요?",
+          answer: "학원 내 실습과 의료기관 실습으로 나뉘며, 현장 적응력을 높이는 데 중점을 둡니다.",
           category: "실습"
-        },
-        {
-          question: "수료 후 취업 지원도 해주시나요?",
-          answer: "물론입니다. 신동탄간호학원은 수료생들의 성공적인 취업을 위해 1:1 맞춤형 취업 지원 시스템을 운영하고 있습니다.",
-          category: "취업"
         }
       ];
       console.log('기본 Q&A 데이터 생성 완료:', defaultQA.length, '개');
