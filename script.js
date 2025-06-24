@@ -293,7 +293,7 @@ function setupMobileMenu() {
   }
 
   // 메뉴 항목 클릭 시 서브메뉴 토글 (모바일 전용)
-  mainMenu.querySelectorAll('.menu-item > a').forEach(menuLink => {
+  mainMenu.querySelectorAll('ul .menu-item > a').forEach(menuLink => {
     const menuItem = menuLink.parentElement;
     const submenu = menuItem.querySelector('.submenu-container');
     if (submenu) {
@@ -1764,36 +1764,41 @@ async function loadLatestQA() {
     
     // Q&A 데이터가 있으면 반환, 없으면 기본 데이터 생성
     if (db.qa && db.qa.length > 0) {
-      const latestQA = db.qa.slice(0, 5); // 최신 5개만
-      console.log('기본 Q&A 데이터 로드 완료:', latestQA.length, '개');
+      const latestQA = db.qa.slice(0, 7); // 최신 7개만
+      console.log('Q&A 데이터 로드 완료:', latestQA.length, '개');
       return latestQA;
     } else {
-      // community_qa.html의 상위 5개 질문으로 기본 Q&A 데이터 업데이트
+      // 기본 Q&A 데이터 생성 (fallback)
       const defaultQA = [
         {
-          question: "1. 간호란 무엇인가요?",
-          answer: "간호는 단순히 병을 치료하는 행위를 넘어서 환자의 신체적 상태뿐 아니라 정신적, 정서적, 사회적 배경까지 고려하여 돌보는 '전인간호(comprehensive nursing)'입니다.",
-          category: "기본개념"
-        },
-        {
-          question: "2. 간호조무사의 역할은 어떤가요?",
-          answer: "간호조무사는 의사나 간호사의 지시에 따라 환자의 건강을 보조하는 역할을 수행하는 보건의료인의 중요한 일원입니다.",
-          category: "역할"
-        },
-        {
-          question: "3. 간호조무사의 업무 범위는 어떻게 되나요?",
-          answer: "진료 보조, 간호 보조, 의료물품 관리, 행정 업무, 교육 및 상담 등 다양한 업무를 수행합니다.",
-          category: "업무"
-        },
-        {
-          question: "4. 간호조무사 자격증은 어떻게 취득하나요?",
+          id: 1,
+          question: "간호조무사 자격증은 어떻게 취득하나요?",
           answer: "고등학교 졸업 이상의 학력을 소지하고, 보건복지부 지정 교육훈련기관에서 총 1,520시간의 이론 및 실습 교육을 이수한 후 국가시험에 합격하면 자격증이 발급됩니다.",
           category: "자격증"
         },
         {
-          question: "5. 실습은 어떤 식으로 진행되나요?",
-          answer: "학원 내 실습과 의료기관 실습으로 나뉘며, 현장 적응력을 높이는 데 중점을 둡니다.",
+          id: 2,
+          question: "국민내일배움카드(국비) 지원이 가능한가요?",
+          answer: "네, 가능합니다. 국민내일배움카드는 고용노동부에서 지원하는 국비지원 제도이며, 조건만 충족하면 대부분의 국민이 신청할 수 있습니다.",
+          category: "국비지원"
+        },
+        {
+          id: 3,
+          question: "실습은 어떤 식으로 진행되나요?",
+          answer: "실습은 크게 학원 내 실습과 의료기관 실습으로 나뉘며, 현장 적응력을 높이는 데 중점을 둡니다.",
           category: "실습"
+        },
+        {
+          id: 4,
+          question: "신동탄간호학원의 취업률은 어떤가요?",
+          answer: "신동탄간호학원은 체계적인 교육과 밀착형 취업 관리를 통해 높은 취업률을 자랑합니다. 최근 기준 93.3% 이상의 취업률을 보이고 있습니다.",
+          category: "취업"
+        },
+        {
+          id: 5,
+          question: "간호조무사 급여는 어느 정도 되나요?",
+          answer: "간호조무사의 급여는 근무하는 지역, 의료기관의 규모, 경력 등에 따라 차이가 있습니다. 신입 기준 평균 월급 190~220만 원 수준입니다.",
+          category: "급여"
         }
       ];
       console.log('기본 Q&A 데이터 생성 완료:', defaultQA.length, '개');

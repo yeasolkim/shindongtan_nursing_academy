@@ -239,10 +239,16 @@ main {
   padding: 1rem 0.8rem;
   border-radius: 16px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-height: 140px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, transform 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
 }
 
 .info-link-card:hover {
@@ -261,14 +267,19 @@ main {
   flex-shrink: 0;
   font-size: 1.3rem;
   margin-right: 0;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.info-link-text {
+  flex: 1;
+  margin-bottom: 1rem;
 }
 
 .info-link-text h4 {
   font-size: 0.9rem;
   font-weight: 600;
   color: #ffffff;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.3rem;
 }
 
 .info-link-text p {
@@ -283,14 +294,12 @@ main {
   margin-top: auto;
   padding: 0.4rem 0.8rem;
   font-size: 0.8rem;
-  text-decoration: none;
-  font-weight: 600;
-  color: #ffffff;
-  background-color: transparent;
-  border: 2px solid #ffffff;
-  border-radius: 50px;
-  white-space: nowrap;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  align-self: flex-start;
+  position: relative;
+  z-index: 1;
 }
 
 .info-link-button:hover {
@@ -300,11 +309,26 @@ main {
 
 .info-link-button span {
   display: inline;
+  vertical-align: middle;
 }
 
 .info-link-button i {
   font-size: 0.8rem;
   margin-left: 0.25rem;
+  vertical-align: middle;
+}
+
+.info-link-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
 }
 
 /* =================================== */
@@ -493,10 +517,6 @@ main {
 
   .logo-image { height: 50px; }
 
-  .header-content > nav {
-    display: none;
-  }
-
   /* 모바일에서 "학원소개" 메뉴 텍스트 숨기기 */
   .menu-link-academy {
     font-size: 0;
@@ -620,25 +640,29 @@ main {
     gap: 0.6rem;
   }
   .info-link-card {
-    padding: 1rem 0.8rem;
+    display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    padding: 0.8rem 0.5rem;
+    min-height: 100px;
   }
   .info-link-icon {
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
+    margin-left: 0;
     margin-right: 0;
-    margin-bottom: 0.5rem;
-    font-size: 1.3rem;
   }
   .info-link-text {
-    text-align: center;
-    margin-bottom: 0.5rem;
+    width: 100%;
   }
   .info-link-text h4 {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     margin-bottom: 0.2rem;
   }
   .info-link-text p {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     margin-bottom: 0;
   }
   .info-link-button {
@@ -646,6 +670,9 @@ main {
     margin-top: auto;
     padding: 0.4rem 0.8rem;
     font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
   }
   .info-link-button span {
     display: inline;
@@ -792,6 +819,9 @@ main {
     padding: 0.3rem 0.6rem;
     font-size: 0.75rem;
     border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
   }
   .info-link-button i {
     font-size: 0.75rem;
@@ -1137,5 +1167,119 @@ main {
     padding: 1rem;
     border-radius: 9px;
     min-height: 0;
+  }
+}
+
+@media (min-width: 992px) {
+  .logo-image {
+    height: 80px;
+  }
+  .menu-link {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  .submenu a {
+    font-size: 1rem;
+  }
+  .main-menu > ul {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    align-items: center;
+    justify-content: flex-end;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .hero-v2-title {
+    font-size: 2.4rem;
+  }
+  .hero-v2-subtitle {
+    font-size: 1.25rem;
+  }
+  .feature-card h3 {
+    font-size: 1.25rem;
+  }
+  .feature-card p {
+    font-size: 1.05rem;
+  }
+  .feature-icon {
+    font-size: 2.5rem;
+  }
+  
+  /* Info Links Section - 데스크톱 최적화 */
+  .info-links-section {
+    padding: 1.2rem 0.5rem;
+  }
+  .info-links-grid {
+    gap: 0.7rem;
+    max-width: 1000px;
+  }
+  .info-link-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.7rem 0.7rem;
+    border-radius: 12px;
+    min-height: 60px;
+  }
+  .info-link-icon {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .info-link-text {
+    width: 100%;
+  }
+  .info-link-text h4 {
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+  .info-link-text p {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+  .info-links-section .info-link-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.6rem !important;
+    font-size: 1.08rem !important;
+    padding: 0.7rem 1.8rem !important;
+    height: 2.8rem !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+    border-radius: 2rem !important;
+    box-sizing: border-box !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    position: relative !important;
+    z-index: 1 !important;
+  }
+  .info-links-section .info-link-button:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #1a365d !important;
+    border-color: rgba(255, 255, 255, 0.95) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
+  }
+  .info-links-section .info-link-button span {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    line-height: 1.2 !important;
+  }
+  .info-links-section .info-link-button i {
+    display: inline-flex !important;
+    align-items: center !important;
+    font-size: 1.15em !important;
+    margin-left: 0.3rem !important;
+    vertical-align: middle !important;
   }
 }
