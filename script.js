@@ -1899,3 +1899,17 @@ async function initNoticeDetailPage() {
     detailContainer.innerHTML = '<p style="text-align: center; padding: 2rem;">게시글을 불러오는 데 실패했습니다.</p>';
   }
 }
+
+// education_, job_, recruitment_, community_ 페이지에서 모바일 환경에서 data-page 속성 자동 추가
+(function() {
+  var isMobile = window.matchMedia('(max-width: 768px)').matches;
+  var page = location.pathname.split('/').pop();
+  if (isMobile && (
+    page.startsWith('education_') ||
+    page.startsWith('job_') ||
+    page.startsWith('recruitment_') ||
+    page.startsWith('community_')
+  )) {
+    document.body.setAttribute('data-page', page);
+  }
+})();
