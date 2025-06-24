@@ -18,9 +18,9 @@
       "id": "lee-yong-hee",
       "name": "이용희",
       "title": "원장",
-      "image": "shindongtan/resource/teacher_info.jpg",
+      "image": "shindongtan/resource/이용희.jpeg",
       "details": [
-        "아주대학교 간호학 석사 수료",
+        "아주대학교 간호학 석사 졸업",
         "심리상담사 2급 자격증 보유",
         "한국간호사 및 미국간호사 자격증 보유 (뉴욕)",
         "직업능력개발 훈련교사 자격증 보유",
@@ -38,64 +38,137 @@
       "id": "jung-hee-young",
       "name": "정희영",
       "title": "원장",
-      "image": "shindongtan/resource/teacher.jpg",
-      "details": []
+      "image": "shindongtan/resource/정희영.jpg",
+      "details": [
+        "춘해보건대학 간호학 학사 수료",
+        "간호사 및 보건교사 자격증 보유",
+        "심폐소생술 전문가 지도 자격증 보유",
+        "직업능력개발 훈련교사 자격증 보유",
+        "치과 간호 기술 라이센스 보유",
+        "병원서비스 코디네이터 강사 과정 수료",
+        "요양보호사 1급 자격증 보유",
+        "종합병원 수술실 간호사 10년 경력 (前)",
+        "분당간호학원 외래강사 (前)",
+        "삼성간호학원 교무과장 (前)",
+        "간호조무사 훈련과정 운영 경력 10년 (前)",
+        "고등학교 간호과 담임 (2014~2018) (前)"
+      ]
     },
     {
       "id": "kim-do-yoon",
       "name": "김도윤",
       "title": "의사",
-      "image": "shindongtan/resource/teacher.jpg",
-      "details": []
+      "image": "shindongtan/resource/김도윤.jpg",
+      "details": [
+        "신동탄간호학원 자문위원",
+        "전북대학교 치의과대학",
+        "치아교정 전문의",
+        "서울 베스트덴 치과원장(現)"
+        ]
     },
     {
       "id": "kim-hye-young",
       "name": "김혜영",
       "title": "교수",
-      "image": "shindongtan/resource/teacher.jpg",
-      "details": []
+      "image": "shindongtan/resource/김혜영.jpg",
+      "details": [
+        "신동탄간호학원 자문위원",
+        "이화여대 간호학 박사 과정(中)",
+        "노인전문간호사 면허증 보유",
+        "NCLEX-RN(미국간호사 자격증) 보유 (뉴욕)",
+        "대구 동산의료원 간호사 2년 경력(前)",
+        "순천향대학교 응급실 간호사 10년 경력(前)",
+        "청운대학교 간호학과 임상간호대 교수 (現)"
+
+      ]
     },
     {
-      "id": "ha-yeon-bong",
-      "name": "하연봉",
+      "id": "lee-ju-mi",
+      "name": "이주미",
       "title": "강사",
-      "image": "shindongtan/resource/teacher.jpg",
-      "details": []
+      "image": "shindongtan/resource/이주미.jpg",
+      "details": [
+        "공주대학교 간호학과 졸업",
+        "간호사면허증 취득",
+        "국립경찰병원 근무",
+        "성모병원 근무",
+        "병원서비스코디 취득",
+        "신동탄간호학원 기초간호, 보건 강사"
+
+      ]
     },
     {
       "id": "kang-yeon-sim",
       "name": "강연심",
       "title": "강사",
-      "image": "shindongtan/resource/teacher.jpg",
-      "details": []
+      "image": "shindongtan/resource/강연심.jpg",
+      "details": [
+        "제주한라대학교 간호학 학사 수료",
+        "간호사 면허증(1987년) 취득",
+        "교원자격증(1987년) 취득",
+        "경희요양병원 2년 간호사 경력(前)",
+        "효성 프라임 요양병원 3년 수간호사 경력(前)",
+        "<현> 신동탄간호학원 성인, 노인, 응급, 모성 강사"
+
+      ]
     },
     {
       "id": "choi-xx",
       "name": "최**",
       "title": "강사",
-      "image": "shindongtan/resource/logo.png",
-      "details": []
+      "image": "shindongtan/resource/profile.png",
+      "details": [
+        "보건, 공중, 기초강의",
+        "간호학원 강사 경력 10년",
+        "보건교사 자격증 보유",
+        "간호학원 전임강사 (前)"
+
+      ]
     },
     {
-      "id": "kwon-seung-mi",
-      "name": "권승미",
+      "id": "lee-seon-hye",
+      "name": "이선혜",
       "title": "강사",
-      "image": "shindongtan/resource/logo.png",
-      "details": []
+      "image": "shindongtan/resource/이선혜.jpg",
+      "details": [
+        "예수대학교 간호학과 수료",
+        "간호사면허증 취득",
+        "동탄시티병원 근무",
+        "광교린병원 근무",
+        "노블요양병원 근무",
+        "동안산병원 근무",
+        "현) 신동탄간호학원 기본간호, 기초 강사"
+
+      ]
     },
     {
       "id": "jang-soo-jung",
       "name": "장수정",
       "title": "강사",
-      "image": "shindongtan/resource/teacher.jpg",
-      "details": []
+      "image": "shindongtan/resource/정수정.jpg",
+      "details": [
+        "대동대학교 간호학과 졸업",
+        "간호사 면허 취득",
+        "보건교사 자격증 취득",
+        "보육교사 1급 자격증 취득",
+        "한독병원 중환자실 근무(1989~~1995년)",
+        "동탄성모우리이비인후과, 동탄경희선한의원 근무(2019~~2021년)",
+        "보건, 기초간호임상실무, 기초강의"
+
+      ]
     },
     {
       "id": "kim-eun-ha",
       "name": "김은하",
       "title": "강사",
-      "image": "shindongtan/resource/must2.png",
-      "details": []
+      "image": "shindongtan/resource/profile.png",
+      "details": [
+        "적십자 간호대학 졸업",
+        "간호사 면허증 취득",
+        "혈액투석 간호사 경력(前)",
+        "<현> 신동탄간호학원 기초간호 강사"
+
+      ]
     }
   ],
   "gallery": [
