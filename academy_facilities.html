@@ -167,6 +167,45 @@
             border-radius: 6px;
         }
     }
+    /* 푸터가 잘리지 않도록 상위 요소 및 푸터에 강제 스타일 적용 */
+    html, body {
+      height: auto !important;
+      min-height: 100% !important;
+      overflow-x: hidden !important;
+    }
+    main, .container, .content-card {
+      overflow: visible !important;
+      border-radius: 0 !important;
+      margin-bottom: 0 !important;
+    }
+    footer.footer {
+      position: static !important;
+      width: 100% !important;
+      left: 0 !important;
+      bottom: 0 !important;
+      z-index: 1 !important;
+    }
+    footer-container {
+      min-height: 180px !important;
+      padding: 2.5rem 0 1.5rem 0 !important;
+    }
+    .footer-main {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      justify-content: space-between !important;
+      gap: 2rem !important;
+    }
+    .footer-section {
+      min-width: 220px !important;
+      margin-bottom: 1.2rem !important;
+    }
+    .footer-bottom {
+      padding: 0.7rem 0 0.3rem 0 !important;
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      flex-wrap: wrap !important;
+    }
   </style>
 </head>
 <body>
@@ -201,29 +240,84 @@
       </div>
     </section>
   </main>
+<!-- footer 숨김
+  <footer class="footer"></footer>-->
 
-  <!-- COMP-FOOTER-01: 글로벌 푸터 -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section">
-          <p>상호명: 신동탄간호학원</p>
-          <p>사업자등록번호: 602-91-03887</p>
-          <p>대표자: 김예람</p>
-          <br/>
-          <p>전화번호: 031-8003-2456</p>
-          <p>팩스번호: 050-4062-2456</p>
-          <p>이메일: nurse8003@naver.com</p>
-          <br/>
-          <p>주소: 경기도 화성시 메타폴리스로38, 천년프라자 401호</p>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2024 신동탄간호학원. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
+  <!-- Supabase 스크립트 추가 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+  <script src="supabase-config.js"></script>
+  <script>
+  // 헤더/푸터/히어로 비동기 로드
+  document.addEventListener('DOMContentLoaded', function() {
+    // 헤더
+    fetch('header.html')
+      .then(res => res.text())
+      .then(html => {
+        document.querySelector('header.header').outerHTML = html;
+      });
+    // 푸터
+    fetch('footer.html')
+      .then(res => res.text())
+      .then(html => {
+        document.querySelector('footer.footer').outerHTML = html;
+      });
+    // 페이지 히어로
+    fetch('page-hero.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('page-hero-container').innerHTML = html;
+        // 히어로 텍스트 동적 설정
+        if (document.getElementById('page-title'))
+          document.getElementById('page-title').textContent = '시설안내';
+        if (document.getElementById('page-description'))
+          document.getElementById('page-description').textContent = '최신 시설을 갖춘 교육 환경';
+        if (document.getElementById('breadcrumb-path'))
+          document.getElementById('breadcrumb-path').textContent = '학원소개 > 시설안내';
+        const badge = document.querySelector('.badge-text');
+        if (badge) badge.textContent = '학원소개';
+      });
+  });
+  // Supabase에서 시설 이미지 목록 불러오기 및 슬라이더 렌더링
+  async function loadFacilityImages() {
+    if (!window.supabaseClient) return;
+    const { data: facilities, error } = await window.supabaseClient
+      .from('facilities')
+      .select('*')
+      .order('order', { ascending: true });
+    if (error || !facilities) return;
+    renderFacilitySlider(facilities);
+  }
 
-  <script src="script.js"></script>
+  function renderFacilitySlider(facilities) {
+    const mainImg = document.getElementById('slider-main-image');
+    const thumbnails = document.getElementById('slider-thumbnails');
+    let current = 0;
+    if (!facilities.length) return;
+    function show(idx) {
+      current = idx;
+      mainImg.src = facilities[idx].image_url;
+      mainImg.alt = facilities[idx].alt || '';
+      Array.from(thumbnails.children).forEach((thumb, i) => {
+        thumb.classList.toggle('active', i === idx);
+      });
+    }
+    thumbnails.innerHTML = '';
+    facilities.forEach((item, idx) => {
+      const thumb = document.createElement('img');
+      thumb.src = item.image_url;
+      thumb.alt = item.alt || '';
+      thumb.className = 'thumbnail' + (idx === 0 ? ' active' : '');
+      thumb.onclick = () => show(idx);
+      thumbnails.appendChild(thumb);
+    });
+    show(0);
+    document.getElementById('slider-prev-btn').onclick = () => show((current - 1 + facilities.length) % facilities.length);
+    document.getElementById('slider-next-btn').onclick = () => show((current + 1) % facilities.length);
+    document.getElementById('facilities-slider').classList.add('loaded');
+  }
+
+  // 페이지 로드시 시설 이미지 불러오기
+  document.addEventListener('DOMContentLoaded', loadFacilityImages);
+  </script>
 </body>
 </html>

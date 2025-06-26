@@ -610,6 +610,9 @@ document.addEventListener('DOMContentLoaded', async function() {
   });
 
   console.log("신동탄간호학원 스크립트 초기화 완료.");
+
+  // 팝업 초기화 추가
+  initPopup();
 });
 
 /**
@@ -624,82 +627,78 @@ async function initInstructorsPage() {
   const grid = document.getElementById('instructor-grid');
 
   try {
-    const localInstructors = JSON.parse(localStorage.getItem('shindongtan_instructors')) || [];
-    const response = await fetch('db.json');
-    const db = await response.json();
-    const dbInstructors = db.instructors || [];
-
-    const deletedIds = JSON.parse(localStorage.getItem('shindongtan_deleted_items')) || {};
-    const deletedInstructorIds = new Set(deletedIds.instructors || []);
-
-    const filteredDbInstructors = dbInstructors.filter(i => !deletedInstructorIds.has(i.id));
-
-    const localIds = new Set(localInstructors.map(i => String(i.id)));
-    const uniqueDbInstructors = filteredDbInstructors.filter(i => !localIds.has(String(i.id)));
-
-    const instructors = [...localInstructors, ...uniqueDbInstructors].sort((a, b) => a.id - b.id);
-
-    if (!instructors || instructors.length === 0) {
-      grid.innerHTML = '<p>등록된 강사 정보가 없습니다.</p>';
-      return;
-    }
-
-    // 강사 목록 렌더링
-    grid.innerHTML = instructors.map(instructor => `
-      <div class="instructor-card">
-        <div class="img-container">
-          <img src="${instructor.image}" alt="${instructor.name} ${instructor.title}">
-        </div>
-        <div class="name">${instructor.name}</div>
-        <div class="title">${instructor.title}</div>
-        <button class="details-btn" data-id="${instructor.id}">자세히 보기</button>
-      </div>
-    `).join('');
-
-    // '자세히 보기' 버튼 이벤트 리스너
-    grid.addEventListener('click', (e) => {
-      if (e.target.classList.contains('details-btn')) {
-        const instructorId = e.target.dataset.id;
-        const instructor = instructors.find(i => String(i.id) === instructorId);
-        if (instructor) {
-          showDetailView(instructor);
-        }
-      }
-    });
-
-    // 상세 뷰 렌더링 및 표시
-    const showDetailView = (instructor) => {
-      detailView.innerHTML = `
-        <div class="instructor-detail-container">
-          <div class="back-to-list">
-            <i class="fas fa-arrow-left"></i>
-            <span>목록으로 돌아가기</span>
-          </div>
-          <div class="detail-content">
-            <div class="detail-img-container">
-              <img src="${instructor.image}" alt="${instructor.name} ${instructor.title}">
-            </div>
-            <div class="detail-info">
-              <div class="name">${instructor.name}</div>
-              <div class="title">${instructor.title}</div>
-              <ul class="details-list">
-                ${instructor.details.map(detail => `<li>${detail}</li>`).join('')}
-              </ul>
-            </div>
-          </div>
-        </div>
-      `;
+    // Supabase에서 강사 정보 가져오기
+    if (window.db && window.db.instructors) {
+      const instructors = await window.db.instructors.getAll();
+      console.log('Supabase에서 강사 정보 로드 완료:', instructors.length, '명');
       
-      listView.style.display = 'none';
-      detailView.style.display = 'block';
+      if (!instructors || instructors.length === 0) {
+        grid.innerHTML = '<p>등록된 강사 정보가 없습니다.</p>';
+        return;
+      }
 
-      // '목록으로 돌아가기' 버튼 이벤트 리스너
-      detailView.querySelector('.back-to-list').addEventListener('click', () => {
-        detailView.style.display = 'none';
-        listView.style.display = 'block';
-        detailView.innerHTML = '';
+      // 강사 목록 렌더링
+      grid.innerHTML = instructors.map(instructor => `
+        <div class="instructor-card">
+          <div class="img-container">
+            <img src="${instructor.image}" alt="${instructor.name} ${instructor.title}">
+          </div>
+          <div class="name">${instructor.name}</div>
+          <div class="title">${instructor.title}</div>
+          <button class="details-btn" data-id="${instructor.id}">자세히 보기</button>
+        </div>
+      `).join('');
+
+      // '자세히 보기' 버튼 이벤트 리스너
+      grid.addEventListener('click', (e) => {
+        if (e.target.classList.contains('details-btn')) {
+          const instructorId = e.target.dataset.id;
+          const instructor = instructors.find(i => String(i.id) === instructorId);
+          if (instructor) {
+            showDetailView(instructor);
+          }
+        }
       });
-    };
+
+      // 상세 뷰 렌더링 및 표시
+      const showDetailView = (instructor) => {
+        detailView.innerHTML = `
+          <div class="instructor-detail-container">
+            <div class="back-to-list">
+              <i class="fas fa-arrow-left"></i>
+              <span>목록으로 돌아가기</span>
+            </div>
+            <div class="detail-content">
+              <div class="detail-img-container">
+                <img src="${instructor.image}" alt="${instructor.name} ${instructor.title}">
+              </div>
+              <div class="detail-info">
+                <div class="name">${instructor.name}</div>
+                <div class="title">${instructor.title}</div>
+                <ul class="details-list">
+                  ${instructor.details.map(detail => `<li>${detail}</li>`).join('')}
+                </ul>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        listView.style.display = 'none';
+        detailView.style.display = 'block';
+
+        // '목록으로 돌아가기' 버튼 이벤트 리스너
+        detailView.querySelector('.back-to-list').addEventListener('click', () => {
+          detailView.style.display = 'none';
+          listView.style.display = 'block';
+          detailView.innerHTML = '';
+        });
+      };
+
+    } else {
+      // Supabase가 없는 경우 에러 메시지 표시
+      console.error('Supabase 데이터베이스에 연결할 수 없습니다.');
+      grid.innerHTML = '<p>강사 정보를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.</p>';
+    }
 
   } catch (error) {
     console.error('강사 정보 페이지 초기화 오류:', error);
@@ -1678,69 +1677,56 @@ async function loadLatestNotices() {
   try {
     console.log('공지사항 데이터 로드 시작...');
     
-    // localStorage에서 공지사항 데이터 가져오기
-    const localNotices = getLocalNotices();
-    console.log('로컬 공지사항:', localNotices.length, '개');
-    
-    // 삭제된 ID 목록 가져오기
-    const deletedIds = JSON.parse(localStorage.getItem('shindongtan_deleted_items')) || {};
-    const deletedNoticeIds = new Set(deletedIds.notices || []);
-    console.log('삭제된 공지사항 ID:', Array.from(deletedNoticeIds));
-    
-    // db.json에서 기본 데이터 가져오기
-    const response = await fetch('db.json');
-    if (!response.ok) {
-      throw new Error(`db.json 로드 실패: ${response.status} ${response.statusText}`);
+    // Supabase에서 공지사항 데이터 가져오기
+    if (window.db && window.db.notices) {
+      const notices = await window.db.notices.getLatest(5);
+      console.log('Supabase에서 공지사항 로드 완료:', notices.length, '개');
+      return notices;
+    } else {
+      // Supabase가 없는 경우 기존 db.json 사용
+      const response = await fetch('db.json');
+      if (!response.ok) {
+        throw new Error(`db.json 로드 실패: ${response.status} ${response.statusText}`);
+      }
+      const db = await response.json();
+      
+      // 공지사항 데이터가 있으면 반환, 없으면 기본 데이터 생성
+      if (db.notices && db.notices.length > 0) {
+        const latestNotices = db.notices.slice(0, 5); // 최신 5개만
+        console.log('db.json에서 공지사항 로드 완료:', latestNotices.length, '개');
+        return latestNotices;
+      } else {
+        // 기본 공지사항 데이터 생성 (fallback)
+        const defaultNotices = [
+          {
+            id: 1,
+            title: "2024년 간호조무사 교육과정 모집 안내",
+            content: "2024년 간호조무사 교육과정 모집이 시작되었습니다. 국민내일배움카드 지원으로 부담없이 수강하실 수 있습니다.",
+            author: "관리자",
+            date: "2024-01-15",
+            views: 156
+          },
+          {
+            id: 2,
+            title: "2024년 국가시험 일정 안내",
+            content: "2024년 간호조무사 국가시험 일정이 발표되었습니다. 수험생 여러분의 많은 관심 바랍니다.",
+            author: "관리자",
+            date: "2024-01-10",
+            views: 203
+          },
+          {
+            id: 3,
+            title: "겨울방학 특별 프로그램 안내",
+            content: "겨울방학을 맞아 특별 프로그램을 운영합니다. 실습 중심의 교육으로 실무 능력을 향상시킬 수 있습니다.",
+            author: "관리자",
+            date: "2024-01-05",
+            views: 89
+          }
+        ];
+        console.log('기본 공지사항 데이터 생성 완료:', defaultNotices.length, '개');
+        return defaultNotices;
+      }
     }
-    const db = await response.json();
-    const defaultNotices = db.notices || [];
-    console.log('기본 공지사항:', defaultNotices.length, '개');
-    
-    // 삭제된 항목 필터링
-    const activeLocalNotices = localNotices.filter(notice => {
-      // isDeleted 필드가 true인 경우 제외
-      if (notice.isDeleted === true) {
-        return false;
-      }
-      // 삭제된 ID 목록에 있는 경우 제외
-      if (deletedNoticeIds.has(notice.id)) {
-        return false;
-      }
-      return true;
-    });
-    
-    const activeDefaultNotices = defaultNotices.filter(notice => {
-      // isDeleted 필드가 true인 경우 제외
-      if (notice.isDeleted === true) {
-        return false;
-      }
-      // 삭제된 ID 목록에 있는 경우 제외
-      if (deletedNoticeIds.has(notice.id)) {
-        return false;
-      }
-      return true;
-    });
-    
-    console.log('활성 로컬 공지사항:', activeLocalNotices.length, '개');
-    console.log('활성 기본 공지사항:', activeDefaultNotices.length, '개');
-    
-    // 두 데이터 소스 병합 (로컬 데이터가 우선)
-    const localIds = new Set(activeLocalNotices.map(n => n.id));
-    const uniqueDefaultNotices = activeDefaultNotices.filter(n => !localIds.has(n.id));
-    const allActiveNotices = [...activeLocalNotices, ...uniqueDefaultNotices];
-    
-    // 날짜순으로 정렬 (최신순)
-    allActiveNotices.sort((a, b) => {
-      const dateA = new Date(a.date || 0);
-      const dateB = new Date(b.date || 0);
-      return dateB - dateA;
-    });
-    
-    // 최신 5개만 반환
-    const latestNotices = allActiveNotices.slice(0, 5);
-    console.log('최신 공지사항 5개 로드 완료');
-    
-    return latestNotices;
     
   } catch (error) {
     console.error('공지사항 로드 중 오류:', error);

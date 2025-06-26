@@ -841,7 +841,7 @@ main {
   body[data-page^="academy_"] #page-hero-container {
     display: none !important;
   }
-
+  
   body[data-page^="education_"] #page-hero-container {
     display: none !important;
   }
@@ -856,7 +856,7 @@ main {
   .feature-card { padding: 0.8rem; }
   .feature-card h3 { font-size: 0.85rem; margin-bottom: 0.4rem; }
   .feature-card p { font-size: 0.75rem; }
-  
+
   /* Info Links - 작은 모바일 최적화 */
   .info-links-section { padding: 1rem 0.5rem; }
   .info-links-grid {
