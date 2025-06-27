@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="common-pages.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
     .board-controls {
       display: flex;
@@ -45,6 +46,12 @@
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s;
+      height: 42px;
+      line-height: 1.2;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
     .search-bar button:hover {
       background-color: #152c4a;
@@ -214,21 +221,36 @@
       }
       
       .search-bar {
-        width: 100%;
-        flex-direction: column;
-        gap: 0.5rem;
+        flex-wrap: wrap !important;
+        gap: 0.2rem !important;
       }
       
-      .search-bar select, .search-bar input {
-        width: 100%;
-        padding: 0.7rem;
-        font-size: 0.9rem;
+      .search-bar span[style*="background:#e0e0e0"] {
+        display: none !important;
       }
-      
+      .filter-row {
+        display: flex !important;
+        gap: 0.3rem !important;
+        width: 100% !important;
+      }
+      #items-per-page, #sort-order {
+        width: 100% !important;
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        font-size: 0.8rem !important;
+        padding: 0.4rem 0.5rem !important;
+        margin-bottom: 0.2rem;
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+        box-sizing: border-box;
+      }
+      /* 나머지 select/input/button은 100% */
+      .search-bar select:not(#items-per-page):not(#sort-order),
+      .search-bar input,
       .search-bar button {
         width: 100%;
-        padding: 0.7rem;
-        font-size: 0.9rem;
+        min-width: 0;
+        box-sizing: border-box;
       }
       
       .total-posts {
@@ -316,14 +338,20 @@
         padding-top: 0.25rem;
       }
       
-      .search-bar select, .search-bar input {
-        padding: 0.5rem;
-        font-size: 0.8rem;
+      .search-bar select, .search-bar input, .search-bar button {
+        padding: 0.3rem 0.3rem;
+        font-size: 0.75rem;
+        min-width: 55px;
       }
       
-      .search-bar button {
-        padding: 0.5rem;
-        font-size: 0.8rem;
+      #items-per-page, #sort-order, #gallery-search-type {
+        min-width: 55px !important;
+        font-size: 0.75rem !important;
+        padding: 0.3rem 0.3rem !important;
+      }
+      .search-bar span[style*="background:#e0e0e0"] {
+        height: 14px !important;
+        margin: 0 0.1rem !important;
       }
       
       .total-posts {
@@ -381,6 +409,62 @@
         font-size: 0.7rem;
       }
     }
+    @media (min-width: 769px) {
+      .search-bar input, .search-bar select {
+        height: 42px;
+        font-size: 0.95rem;
+      }
+      .search-bar button {
+        height: 42px;
+        min-width: 70px;
+        font-size: 0.95rem;
+        padding: 0 1.2rem;
+      }
+    }
+    
+    /* Quick Contact Sidebar */
+    .quick-contact-sidebar {
+      position: fixed;
+      top: 50%;
+      right: 40px;
+      width: 240px;
+      z-index: 100;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      background: #fff;
+      transform: translateY(-50%);
+    }
+    .contact-box { 
+      margin-bottom: 1rem; 
+      text-align: center; 
+      padding: 1.5rem 1rem; 
+    }
+    .contact-box h3 { 
+      font-size: 1.1rem; 
+      font-weight: 600; 
+      margin: 0 0 1rem; 
+      color: #1a365d; 
+    }
+    .contact-box .phone-number { 
+      font-size: 1.3rem; 
+      font-weight: 700; 
+      color: #333; 
+    }
+    .contact-box .kakao-link { 
+      display: block; 
+      background-color: #ffeb00; 
+      padding: 1rem; 
+      text-decoration: none; 
+      color: #3c1e1e; 
+      font-weight: 600; 
+      transition: background-color 0.3s;
+    }
+    .contact-box .kakao-link:hover {
+      background-color: #fdd835;
+    }
+    @media (max-width: 1200px) {
+      .quick-contact-sidebar { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -398,7 +482,22 @@
           <div class="card-content">
             <div class="board-controls">
               <div class="total-posts" id="total-posts-counter"></div>
-              <div class="search-bar">
+              <div class="search-bar" style="flex-wrap:nowrap; align-items:center; gap:0.5rem; width:100%;">
+                <div class="filter-row" style="display:flex; gap:0.5rem; width:100%;">
+                  <select id="items-per-page" style="min-width:110px; flex:1;">
+                    <option value="10">10개씩 보기</option>
+                    <option value="20">20개씩 보기</option>
+                    <option value="30">30개씩 보기</option>
+                  </select>
+                  <span style="width:1px; height:28px; background:#e0e0e0; display:inline-block; margin:0 0.5rem;"></span>
+                  <select id="sort-order" style="min-width:110px; flex:1;">
+                    <option value="created_at_desc">최신순</option>
+                    <option value="created_at_asc">오래된순</option>
+                    <option value="views_desc">조회수순</option>
+                    <option value="title_asc">제목순</option>
+                  </select>
+                </div>
+                <span style="width:1px; height:28px; background:#e0e0e0; display:inline-block; margin:0 0.5rem;"></span>
                 <select id="gallery-search-type">
                   <option value="title">제목</option>
                   <option value="content">내용</option>
@@ -437,6 +536,16 @@
     </section>
   </main>
 
+  <aside class="quick-contact-sidebar">
+    <div class="contact-box">
+      <h3>문의 전화</h3>
+      <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
+    </div>
+    <div class="contact-box" style="padding: 0;">
+      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
+    </div>
+  </aside>
+
   <!-- COMP-FOOTER-01: 글로벌 푸터 -->
   <footer class="footer">
     <div class="container">
@@ -459,6 +568,7 @@
     </div>
   </footer>
 
+  <script src="supabase-config.js"></script>
   <script src="script.js"></script>
 </body>
 </html> 

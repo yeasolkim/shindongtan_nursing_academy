@@ -377,6 +377,83 @@
       border-radius: 0 4px 4px 0;
     }
     
+    /* FAQ 관리 스타일 */
+    .faq-admin-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .faq-admin-item {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .faq-admin-item:hover {
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      border-color: #334a6c;
+    }
+    
+    .faq-admin-item .faq-question {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #334a6c;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+    }
+    
+    .faq-admin-item .faq-answer {
+      font-size: 0.9rem;
+      color: #495057;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      max-height: 100px;
+      overflow-y: auto;
+      white-space: pre-line;
+    }
+    
+    .faq-admin-item .faq-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .faq-admin-item .button-secondary,
+    .faq-admin-item .button-danger {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+      border-radius: 4px;
+      min-width: unset;
+      margin: 0;
+    }
+    
+    .faq-admin-item .delete-btn {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 24px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .faq-admin-item .delete-btn:hover {
+      background-color: #c82333;
+      transform: scale(1.1);
+    }
+    
     /* 모바일 최적화 스타일 */
     @media (max-width: 768px) {
       body {
@@ -617,6 +694,36 @@
         height: 22px;
         margin: 0 0.5px;
       }
+      
+      /* FAQ 관리 모바일 최적화 */
+      .faq-admin-list {
+        gap: 0.8rem;
+      }
+      
+      .faq-admin-item {
+        padding: 1rem;
+      }
+      
+      .faq-admin-item .faq-question {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .faq-admin-item .faq-answer {
+        font-size: 0.85rem;
+        max-height: 80px;
+        margin-bottom: 0.8rem;
+      }
+      
+      .faq-admin-item .faq-actions {
+        gap: 0.3rem;
+      }
+      
+      .faq-admin-item .button-secondary,
+      .faq-admin-item .button-danger {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+      }
     }
     
     @media (max-width: 480px) {
@@ -820,6 +927,7 @@
       <button class="tab-link" data-tab="tab-jobs">구인 게시판 관리</button>
       <button class="tab-link" data-tab="tab-gallery">갤러리 관리</button>
       <button class="tab-link" data-tab="tab-notice">공지사항 관리</button>
+      <button class="tab-link" data-tab="tab-faq">FAQ 관리</button>
       <button class="tab-link" data-tab="tab-popups">팝업 관리</button>
     </div>
 
@@ -907,9 +1015,7 @@
         <div class="admin-card">
             <h3>신규 갤러리 게시물 작성</h3>
             <button id="add-gallery-btn" class="button-primary">글쓰기</button>
-            <div class="alert-info" style="margin-top: 15px;">
-              <strong>참고:</strong> 고용량의 이미지를 많이 추가하면 브라우저 저장 공간이 가득 차 오류가 발생할 수 있습니다. 이미지를 최적화(압축)한 후 업로드하는 것을 권장합니다.
-            </div>
+           
         </div>
         <div class="admin-card">
           <h3>갤러리 게시물 목록</h3>
@@ -937,20 +1043,59 @@
         </div>
         <div class="admin-card">
           <h3>공지사항 목록</h3>
+          <!-- 검색/정렬 바: 한 줄, 넓은 간격, 명확한 순서 -->
+          <div id="notice-filter-bar" style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
+            <select id="notice-search-type" style="min-width: 90px;">
+              <option value="title">제목</option>
+              <option value="content">내용</option>
+              <option value="title_content">제목+내용</option>
+            </select>
+            <input type="text" id="notice-search-input" placeholder="검색어 입력" style="flex:1; min-width: 180px;">
+            <select id="notice-sort-order" style="min-width: 90px;">
+              <option value="created_at_desc">최신순</option>
+              <option value="created_at_asc">오래된순</option>
+              <option value="title_asc">제목순</option>
+            </select>
+            <button id="notice-search-btn" class="button-secondary">검색</button>
+          </div>
           <table class="jobs-table" id="notice-list-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th style="width:60px;">ID</th>
                 <th>제목</th>
-                <th>유형</th>
-                <th>작성일</th>
-                <th>조회수</th>
-                <th>작업</th>
+                <th style="width:120px;">작성일</th>
+                <th style="width:80px;">조회수</th>
+                <th style="width:100px;">작업</th>
               </tr>
             </thead>
             <tbody id="notice-list"></tbody>
           </table>
         </div>
+    </div>
+
+    <!-- FAQ 관리 탭 -->
+    <div id="tab-faq" class="tab-content">
+      <div class="admin-card">
+        <h3>신규 FAQ 추가</h3>
+        <form id="faq-form" class="admin-form">
+          <input type="hidden" id="faq-id">
+          <div class="form-group">
+            <label for="faq-question">질문</label>
+            <input type="text" id="faq-question" required maxlength="200" placeholder="질문을 입력하세요">
+          </div>
+          <div class="form-group">
+            <label for="faq-answer">답변</label>
+            <textarea id="faq-answer" rows="8" required placeholder="답변을 입력하세요"></textarea>
+            <small>줄바꿈은 \n으로 표시되며, 웹페이지에서는 자동으로 줄바꿈됩니다.</small>
+          </div>
+          <button type="submit" class="button-primary">저장하기</button>
+          <button type="button" id="cancel-faq-edit" class="button-secondary" style="display: none;">취소</button>
+        </form>
+      </div>
+      <div class="admin-card">
+        <h3>FAQ 목록</h3>
+        <div id="faq-list"></div>
+      </div>
     </div>
 
     <!-- 팝업 관리 탭 -->
@@ -1039,6 +1184,7 @@
           <label for="modal-content-input">내용</label>
           <textarea id="modal-content-input" rows="10" required></textarea>
         </div>
+        <!-- 연락처 입력란 완전 삭제 -->
         <div class="form-group" id="modal-notice-group" style="display: none;">
           <label>
             <input type="checkbox" id="modal-is-notice-checkbox"> 중요 공지
@@ -1234,6 +1380,15 @@
     });
     // 팝업 목록에서 수정 버튼 클릭 시에도 미리보기 반영 (admin.js에서 폼 값 세팅 후 setPopupPreviewFromForm(imgUrl) 호출 필요)
     window.setPopupPreviewFromForm = setPopupPreviewFromForm;
+
+    function initializeAdminPanel() {
+        console.log("Initializing admin panel...");
+        loadInstructors();
+        loadFacilities();
+        renderGalleryList();
+        renderJobList();
+        renderNoticeList();
+    }
   </script>
 </body>
 </html> 

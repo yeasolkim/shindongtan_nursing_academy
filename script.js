@@ -15,6 +15,22 @@ function getCurrentPage() {
 }
 
 /**
+ * UTC 날짜를 한국 시간으로 변환하여 YYYY-MM-DD 형식으로 반환합니다.
+ * @param {string} utcDateStr - UTC 날짜 문자열
+ * @returns {string} 한국 시간 기준 날짜 (YYYY-MM-DD)
+ */
+function formatKoreaDate(utcDateStr) {
+  if (!utcDateStr) return '';
+  const utcDate = new Date(utcDateStr);
+  // UTC -> KST 변환 (UTC+9)
+  const kstDate = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
+  const yyyy = kstDate.getFullYear();
+  const mm = String(kstDate.getMonth() + 1).padStart(2, '0');
+  const dd = String(kstDate.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+/**
  * HTML 컴포넌트를 비동기적으로 로드하여 페이지에 삽입합니다.
  * @param {string} selector - 콘텐츠를 삽입할 요소의 CSS 셀렉터
  * @param {string} url - 로드할 HTML 파일의 URL
@@ -186,6 +202,44 @@ function getDefaultFooter() {
       </div>
     </div>
   `;
+}
+
+/**
+ * Supabase에서 조회수를 증가시키는 함수
+ * @param {string} tableName - 테이블 이름 (jobs, notices, gallery)
+ * @param {number} postId - 게시물 ID
+ */
+async function incrementViewCount(tableName, postId) {
+  try {
+    // Supabase에서 현재 조회수 가져오기
+    const { data: currentPost, error: fetchError } = await window.supabaseClient
+      .from(tableName)
+      .select('views')
+      .eq('id', postId)
+      .single();
+    
+    if (fetchError) {
+      console.error(`${tableName} 조회수 조회 실패:`, fetchError);
+      return;
+    }
+    
+    // 조회수 증가
+    const newViews = (currentPost.views || 0) + 1;
+    const { error: updateError } = await window.supabaseClient
+      .from(tableName)
+      .update({ views: newViews })
+      .eq('id', postId);
+    
+    if (updateError) {
+      console.error(`${tableName} 조회수 증가 실패:`, updateError);
+      return;
+    }
+    
+    console.log(`${tableName} ID ${postId} 조회수 증가: ${newViews}`);
+    
+  } catch (error) {
+    console.error(`${tableName} 조회수 증가 중 오류:`, error);
+  }
 }
 
 // =============================================================================
@@ -612,7 +666,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   console.log("신동탄간호학원 스크립트 초기화 완료.");
 
   // 팝업 초기화 추가
-  initPopup();
+  //initPopup();
 });
 
 /**
@@ -734,7 +788,7 @@ function initLocationMap() {
 }
 
 /**
- * 갤러리 페이지 초기화
+ * 갤러리 페이지 초기화 (Supabase 연동)
  */
 async function initGalleryPage() {
   console.log('initGalleryPage 함수 시작');
@@ -743,129 +797,129 @@ async function initGalleryPage() {
     console.error('gallery-list 요소를 찾을 수 없습니다.');
     return;
   }
-  console.log('gallery-list 요소 찾음:', listContainer);
-
   try {
-    const dbItems = (await (await fetch('db.json')).json()).gallery || [];
-    const localItems = getLocalGallery();
-
-    const deletedIds = JSON.parse(localStorage.getItem('shindongtan_deleted_items')) || {};
-    const deletedGalleryIds = new Set(deletedIds.gallery || []);
-    
-    const filteredDbItems = dbItems.filter(item => !deletedGalleryIds.has(item.id));
-
-    const localItemsIds = new Set(localItems.map(item => item.id));
-    const uniqueDbItems = filteredDbItems.filter(item => !localItemsIds.has(item.id));
-    
-    const allItems = [...localItems, ...uniqueDbItems].sort((a, b) => b.id - a.id);
-    const galleryViews = getGalleryViews();
-
-    console.log('갤러리 아이템 수:', allItems.length);
-
-    // Add view counts from localStorage
-    allItems.forEach(item => {
-        const storedViews = galleryViews[item.id];
-        if (storedViews) {
-            item.views = storedViews;
-        }
-    });
-
+    // Supabase에서 갤러리 데이터 불러오기
+    const allItems = await db.gallery.getAll();
     let currentPage = 1;
-    const itemsPerPage = 10;
-
+    let itemsPerPage = 10;
+    let sortOrder = 'created_at_desc';
+    let filteredItems = [...allItems];
     const searchInput = document.getElementById('gallery-search-input');
     const searchBtn = document.getElementById('gallery-search-btn');
     const paginationContainer = document.getElementById('pagination');
     const totalPostsCounter = document.getElementById('total-posts-counter');
     const searchTypeSelect = document.getElementById('gallery-search-type');
+    const itemsPerPageSelect = document.getElementById('items-per-page');
+    const sortOrderSelect = document.getElementById('sort-order');
 
-    function renderList(items, page) {
-      console.log('renderList 호출됨, 아이템 수:', items.length, '페이지:', page);
-      listContainer.innerHTML = '';
-
-      const start = (page - 1) * itemsPerPage;
-      const end = start + itemsPerPage;
-      const paginatedItems = items.slice(start, end);
-
-      console.log('페이지네이션된 아이템:', paginatedItems);
-
-      paginatedItems.forEach((item, index) => {
-        const itemNumber = items.length - start - index;
-        const row = createRow(item, itemNumber);
-        listContainer.appendChild(row);
-      });
-      
-      totalPostsCounter.textContent = `총 ${items.length}개`;
-    }
-
-    function createRow(item, itemNumber) {
-      const row = document.createElement('div');
-      row.className = 'board-row';
-      row.innerHTML = `
-        <img class="thumbnail" src="${item.image}" alt="${item.title}">
-        <div class="title-section">
-          <a href="community_gallery_detail.html?id=${item.id}" class="title">${item.title}</a>
-          <div class="description">${item.content || ''}</div>
-          <div class="meta-info">
-            <span class="date">${item.date}</span>
-          </div>
-        </div>
-      `;
-      return row;
-    }
-
-    function setupPagination(items, page) {
-      paginationContainer.innerHTML = '';
-      const pageCount = Math.ceil(items.length / itemsPerPage);
-      if (pageCount <= 1) return;
-
-      for (let i = 1; i <= pageCount; i++) {
-        const pageBtn = document.createElement('button');
-        pageBtn.innerText = i;
-        if (i === page) pageBtn.classList.add('active');
-        pageBtn.addEventListener('click', () => {
-          currentPage = i;
-          renderList(items, currentPage);
-          setupPagination(items, currentPage);
-        });
-        paginationContainer.appendChild(pageBtn);
+    function sortItems(items, order) {
+      let sorted = [...items];
+      switch (order) {
+        case 'created_at_desc':
+          sorted.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+          break;
+        case 'created_at_asc':
+          sorted.sort((a, b) => (a.created_at || '').localeCompare(b.created_at || ''));
+          break;
+        case 'views_desc':
+          sorted.sort((a, b) => (b.views || 0) - (a.views || 0));
+          break;
+        case 'title_asc':
+          sorted.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+          break;
+        default:
+          break;
       }
+      return sorted;
     }
-    
-    function performSearch() {
-        const searchTerm = searchInput.value.toLowerCase().trim();
-        const searchType = searchTypeSelect.value;
-        
-        const filteredItems = allItems.filter(item => {
-            if (!searchTerm) return true;
-            const title = item.title.toLowerCase();
-            const content = (item.content || '').toLowerCase();
-            switch (searchType) {
-                case 'title':
-                    return title.includes(searchTerm);
-                case 'content':
-                    return content.includes(searchTerm);
-                case 'title_content':
-                    return title.includes(searchTerm) || content.includes(searchTerm);
-                default:
-                    return true;
-            }
+
+    function performSearchAndRender() {
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      const searchType = searchTypeSelect.value;
+      filteredItems = allItems.filter(item => {
+        if (!searchTerm) return true;
+        const title = (item.title || '').toLowerCase();
+        const content = (item.description || '').toLowerCase();
+        switch (searchType) {
+          case 'title':
+            return title.includes(searchTerm);
+          case 'content':
+            return content.includes(searchTerm);
+          case 'title_content':
+            return title.includes(searchTerm) || content.includes(searchTerm);
+          default:
+            return true;
+        }
+      });
+      filteredItems = sortItems(filteredItems, sortOrder);
+      currentPage = 1;
+      renderList(filteredItems, currentPage);
+      setupPagination(filteredItems, currentPage);
+    }
+
+    searchBtn.addEventListener('click', performSearchAndRender);
+    searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') performSearchAndRender(); });
+    itemsPerPageSelect.addEventListener('change', function() {
+      itemsPerPage = parseInt(this.value, 10);
+      renderList(filteredItems, 1);
+      setupPagination(filteredItems, 1);
+    });
+    sortOrderSelect.addEventListener('change', function() {
+      sortOrder = this.value;
+      filteredItems = sortItems(filteredItems, sortOrder);
+      renderList(filteredItems, 1);
+      setupPagination(filteredItems, 1);
+    });
+
+    // 렌더링 함수
+    function renderList(items, page) {
+      const startIdx = (page - 1) * itemsPerPage;
+      const endIdx = startIdx + itemsPerPage;
+      const pageItems = items.slice(startIdx, endIdx);
+      listContainer.innerHTML = pageItems.map(item => {
+        // Supabase Storage public URL 변환
+        let imageUrl = item.image;
+        if (imageUrl && !imageUrl.startsWith('http')) {
+          // v2 방식으로 수정
+          const { data } = db.storage.from('gallery-images').getPublicUrl(imageUrl);
+          imageUrl = data.publicUrl;
+        }
+        return `
+          <div class="board-row">
+            <img class="thumbnail" src="${imageUrl || ''}" alt="썸네일">
+            <div class="title-section">
+              <a href="community_gallery_detail.html?id=${item.id}" class="title" onclick="incrementViewCount('gallery', ${item.id})">${item.title || ''}</a>
+              <div class="description">${item.description || ''}</div>
+              <div class="meta-info">
+                <span class="date">${formatKoreaDate(item.created_at)}</span>
+                <span class="views" style="margin-left:8px;"><i class="fas fa-eye"></i> ${item.views || 0}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      totalPostsCounter.textContent = `총 ${items.length}건`;
+    }
+    function setupPagination(items, page) {
+      const totalPages = Math.ceil(items.length / itemsPerPage);
+      const pagination = [];
+      for (let i = 1; i <= totalPages; i++) {
+        pagination.push(`<button class="${i === page ? 'active' : ''}" data-page="${i}">${i}</button>`);
+      }
+      paginationContainer.innerHTML = pagination.join('');
+      paginationContainer.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const p = parseInt(this.dataset.page);
+          renderList(items, p);
+          setupPagination(items, p);
         });
-
-        currentPage = 1;
-        renderList(filteredItems, currentPage);
-        setupPagination(filteredItems, currentPage);
+      });
     }
-    
-    searchBtn.addEventListener('click', performSearch);
-    searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') performSearch(); });
-
-    // Initial Render
-    console.log('초기 렌더링 시작');
-    renderList(allItems, currentPage);
-    setupPagination(allItems, currentPage);
+    // 초기 렌더링
+    filteredItems = sortItems(filteredItems, sortOrder);
+    renderList(filteredItems, currentPage);
+    setupPagination(filteredItems, currentPage);
     console.log('initGalleryPage 함수 완료');
-
   } catch (error) {
     console.error('갤러리 페이지 초기화 오류:', error);
     listContainer.innerHTML += '<p style="text-align: center; padding: 2rem;">게시물을 불러오는 데 실패했습니다.</p>';
@@ -873,80 +927,67 @@ async function initGalleryPage() {
 }
 
 /**
- * 갤러리 상세 페이지 초기화
+ * 갤러리 상세 페이지 초기화 (Supabase 연동)
  */
 async function initGalleryDetailPage() {
-  console.log('initGalleryDetailPage 함수 시작');
-  
-  const urlParams = new URLSearchParams(window.location.search);
-  const postId = parseInt(urlParams.get('id'));
-  
-  if (!postId) {
-    console.error('게시물 ID가 없습니다.');
-    return;
-  }
+  const detailContainer = document.getElementById('gallery-detail-view');
+  if (!detailContainer) return;
 
   try {
-    const dbItems = (await (await fetch('db.json')).json()).gallery || [];
-    const localItems = getLocalGallery();
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = parseInt(urlParams.get('id'));
+    if (!postId) throw new Error('잘못된 접근입니다.');
 
-    const deletedIds = JSON.parse(localStorage.getItem('shindongtan_deleted_items')) || {};
-    const deletedGalleryIds = new Set(deletedIds.gallery || []);
-
-    const filteredDbItems = dbItems.filter(item => !deletedGalleryIds.has(item.id));
-
-    const localItemsIds = new Set(localItems.map(item => item.id));
-    const uniqueDbItems = filteredDbItems.filter(item => !localItemsIds.has(item.id));
-    
-    const allItems = [...localItems, ...uniqueDbItems].sort((a, b) => b.id - a.id);
-    
+    // Supabase에서 전체 gallery 데이터 가져오기
+    const allItems = await db.gallery.getAll();
+    // 현재 게시물 찾기
     const currentItem = allItems.find(item => item.id === postId);
-    if (!currentItem) {
-      console.error('게시물을 찾을 수 없습니다:', postId);
-      document.getElementById('gallery-detail-container').innerHTML = '<p>게시물을 찾을 수 없습니다.</p>';
-      return;
-    }
+    if (!currentItem) throw new Error('게시글을 찾을 수 없습니다.');
 
     // 조회수 증가
-    incrementGalleryView(postId);
+    await incrementViewCount('gallery', postId);
+
+    // 최신순 정렬로 이전/다음글 계산
+    const sortedItems = allItems.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+    const currentIndex = sortedItems.findIndex(item => item.id === postId);
+    const prevPost = currentIndex > 0 ? sortedItems[currentIndex - 1] : null;
+    const nextPost = currentIndex < sortedItems.length - 1 ? sortedItems[currentIndex + 1] : null;
+
+    // Supabase Storage public URL 변환
+    let imageUrl = currentItem.image;
+    if (imageUrl && !imageUrl.startsWith('http')) {
+      const { data } = db.storage.from('gallery-images').getPublicUrl(imageUrl);
+      imageUrl = data.publicUrl;
+    }
 
     // 페이지 내용 업데이트
     document.getElementById('gallery-detail-title').textContent = currentItem.title;
-    document.getElementById('gallery-detail-author').textContent = currentItem.author;
-    document.getElementById('gallery-detail-date').textContent = currentItem.date;
+    document.getElementById('gallery-detail-author').textContent = currentItem.author || '';
+    document.getElementById('gallery-detail-date').textContent = formatKoreaDate(currentItem.created_at);
     document.getElementById('gallery-detail-views').textContent = currentItem.views || 0;
-    document.getElementById('gallery-detail-image').src = currentItem.image;
+    document.getElementById('gallery-detail-image').src = imageUrl;
     document.getElementById('gallery-detail-image').alt = currentItem.title;
-    document.getElementById('gallery-detail-text').textContent = currentItem.content || '';
+    document.getElementById('gallery-detail-text').textContent = currentItem.description || '';
 
-    // 이전/다음 글 설정
-    const currentIndex = allItems.findIndex(item => item.id === postId);
-    const prevItem = allItems[currentIndex + 1];
-    const nextItem = allItems[currentIndex - 1];
-
-    const prevButton = document.getElementById('prev-button');
-    const nextButton = document.getElementById('next-button');
-
-    if (prevItem) {
-      prevButton.href = `community_gallery_detail.html?id=${prevItem.id}`;
-      prevButton.classList.remove('disabled');
-    } else {
-      prevButton.href = '#';
-      prevButton.classList.add('disabled');
+    // 이전/다음글 네비게이션 추가
+    const navContainer = document.getElementById('gallery-detail-nav');
+    if (navContainer) {
+      navContainer.innerHTML = `
+        <ul class="post-nav">
+          <li>
+            <div class="nav-label">이전글</div>
+            ${nextPost ? `<a href="community_gallery_detail.html?id=${nextPost.id}" class="nav-title" onclick="incrementViewCount('gallery', ${nextPost.id})">${nextPost.title}</a>` : '<span>이전글이 없습니다.</span>'}
+          </li>
+          <li>
+            <div class="nav-label">다음글</div>
+            ${prevPost ? `<a href="community_gallery_detail.html?id=${prevPost.id}" class="nav-title" onclick="incrementViewCount('gallery', ${prevPost.id})">${prevPost.title}</a>` : '<span>다음글이 없습니다.</span>'}
+          </li>
+        </ul>
+      `;
     }
-
-    if (nextItem) {
-      nextButton.href = `community_gallery_detail.html?id=${nextItem.id}`;
-      nextButton.classList.remove('disabled');
-    } else {
-      nextButton.href = '#';
-      nextButton.classList.add('disabled');
-    }
-
-    console.log('initGalleryDetailPage 함수 완료');
-
   } catch (error) {
     console.error('갤러리 상세 페이지 초기화 오류:', error);
+    detailContainer.innerHTML = '<p style="text-align: center; padding: 4rem;">게시물을 불러오는 데 실패했습니다.</p>';
   }
 }
 
@@ -981,82 +1022,112 @@ function incrementJobView(postId) {
 }
 
 /**
- * 취업/구인정보 페이지 초기화
+ * 취업/구인정보 페이지 초기화 (Supabase 연동)
  */
 async function initJobsPage() {
   const listContainer = document.getElementById('jobs-list');
   if (!listContainer) return;
 
   try {
-    const dbItems = (await (await fetch('db.json')).json()).jobs || [];
-    const localItems = getLocalJobs();
-    
-    const deletedIds = JSON.parse(localStorage.getItem('shindongtan_deleted_items')) || {};
-    const deletedJobIds = new Set(deletedIds.jobs || []);
-
-    const filteredDbItems = dbItems.filter(item => !deletedJobIds.has(item.id));
-
-    const localItemsIds = new Set(localItems.map(item => item.id));
-    const uniqueDbItems = filteredDbItems.filter(item => !localItemsIds.has(item.id));
-
-    const allItems = [...localItems, ...uniqueDbItems].sort((a, b) => b.id - a.id);
-    const jobViews = getJobViews();
-
-    // Add view counts from localStorage
-    allItems.forEach(item => {
-        const storedViews = jobViews[item.id];
-        if (storedViews) {
-            item.views = storedViews;
-        }
-    });
-
-    const totalItemCount = allItems.length;
-    
+    // Supabase에서 jobs 데이터 불러오기
+    const allItems = await db.jobs.getAll();
     let currentPage = 1;
-    const itemsPerPage = 10;
-
+    let itemsPerPage = 10;
+    let sortOrder = 'created_at_desc';
+    let filteredItems = [...allItems];
     const searchInput = document.getElementById('jobs-search-input');
     const searchBtn = document.getElementById('jobs-search-btn');
     const paginationContainer = document.getElementById('pagination');
     const totalPostsCounter = document.getElementById('total-posts-counter');
     const searchTypeSelect = document.getElementById('jobs-search-type');
+    // 정렬/페이지당개수 select는 필요시 추가 구현
 
+    function sortItems(items, order) {
+      let sorted = [...items];
+      switch (order) {
+        case 'created_at_desc':
+          sorted.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+          break;
+        case 'created_at_asc':
+          sorted.sort((a, b) => (a.created_at || '').localeCompare(b.created_at || ''));
+          break;
+        case 'views_desc':
+          sorted.sort((a, b) => (b.views || 0) - (a.views || 0));
+          break;
+        case 'title_asc':
+          sorted.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+          break;
+        default:
+          break;
+      }
+      return sorted;
+    }
+
+    function performSearchAndRender() {
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      const searchType = searchTypeSelect.value;
+      filteredItems = allItems.filter(item => {
+        if (!searchTerm) return true;
+        const title = (item.title || '').toLowerCase();
+        const content = (item.description || item.content || '').toLowerCase();
+        switch (searchType) {
+          case 'title':
+            return title.includes(searchTerm);
+          case 'content':
+            return content.includes(searchTerm);
+          case 'title_content':
+            return title.includes(searchTerm) || content.includes(searchTerm);
+          default:
+            return true;
+        }
+      });
+      filteredItems = sortItems(filteredItems, sortOrder);
+      currentPage = 1;
+      renderList(filteredItems, currentPage);
+      setupPagination(filteredItems, currentPage);
+    }
+
+    searchBtn.addEventListener('click', performSearchAndRender);
+    searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') performSearchAndRender(); });
+    // 정렬/페이지당개수 select 이벤트 필요시 추가
+
+    // 렌더링 함수
     function renderList(items, page) {
+      // 중요공지 먼저, 그 안에서 최신순, 일반공지도 최신순
+      items = [...items].sort((a, b) => {
+        if ((b.isnotice || b.isNotice ? 1 : 0) !== (a.isnotice || a.isNotice ? 1 : 0)) {
+          return (b.isnotice || b.isNotice ? 1 : 0) - (a.isnotice || a.isNotice ? 1 : 0);
+        }
+        return (b.date || b.created_at || '').localeCompare(a.date || a.created_at || '');
+      });
       const header = listContainer.querySelector('.board-header');
       listContainer.innerHTML = '';
       listContainer.appendChild(header);
-
       const start = (page - 1) * itemsPerPage;
       const end = start + itemsPerPage;
       const paginatedItems = items.slice(start, end);
-
       paginatedItems.forEach((item, index) => {
-        const itemNumber = items.length - start - index; // Recalculate based on filtered items
+        const itemNumber = items.length - start - index;
         const row = createRow(item, itemNumber);
         listContainer.appendChild(row);
       });
-      
       totalPostsCounter.textContent = `총 ${items.length}개`;
     }
-
     function createRow(item, itemNumber) {
       const row = document.createElement('div');
       row.className = `board-row ${item.isNotice ? 'notice' : ''}`;
       row.innerHTML = `
         <div class="number">${item.isNotice ? '공지' : itemNumber}</div>
-        <div class="title"><a href="community_jobs_detail.html?id=${item.id}">${item.title}</a></div>
-        <div class="author">${item.author}</div>
-        <div class="date">${item.date}</div>
+        <div class="title"><a href="community_jobs_detail.html?id=${item.id}" onclick="incrementViewCount('jobs', ${item.id})">${item.title}</a></div>
+        <div class="date">${formatKoreaDate(item.date || item.created_at)}</div>
         <div class="views">${item.views || 0}</div>
       `;
       return row;
     }
-
     function setupPagination(items, page) {
       paginationContainer.innerHTML = '';
       const pageCount = Math.ceil(items.length / itemsPerPage);
       if (pageCount <= 1) return;
-
       for (let i = 1; i <= pageCount; i++) {
         const pageBtn = document.createElement('button');
         pageBtn.innerText = i;
@@ -1069,39 +1140,10 @@ async function initJobsPage() {
         paginationContainer.appendChild(pageBtn);
       }
     }
-    
-    function performSearch() {
-        const searchTerm = searchInput.value.toLowerCase().trim();
-        const searchType = searchTypeSelect.value;
-        
-        const filteredItems = allItems.filter(item => {
-            if (!searchTerm) return true; // Show all if search term is empty
-            const title = item.title.toLowerCase();
-            const content = item.content.toLowerCase();
-            switch (searchType) {
-                case 'title':
-                    return title.includes(searchTerm);
-                case 'content':
-                    return content.includes(searchTerm);
-                case 'title_content':
-                    return title.includes(searchTerm) || content.includes(searchTerm);
-                default:
-                    return true;
-            }
-        });
-
-        currentPage = 1;
-        renderList(filteredItems, currentPage);
-        setupPagination(filteredItems, currentPage);
-    }
-    
-    searchBtn.addEventListener('click', performSearch);
-    searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') performSearch(); });
-
-    // Initial Render
-    renderList(allItems, currentPage);
-    setupPagination(allItems, currentPage);
-
+    // 초기 렌더링
+    filteredItems = sortItems(filteredItems, sortOrder);
+    renderList(filteredItems, currentPage);
+    setupPagination(filteredItems, currentPage);
   } catch (error) {
     console.error('취업/구인정보 페이지 초기화 오류:', error);
     listContainer.innerHTML += '<p style="text-align: center; padding: 2rem;">게시물을 불러오는 데 실패했습니다.</p>';
@@ -1109,7 +1151,7 @@ async function initJobsPage() {
 }
 
 /**
- * 취업/구인정보 상세 페이지 초기화
+ * 취업/구인정보 상세 페이지 초기화 (Supabase 연동)
  */
 async function initJobsDetailPage() {
   const viewContainer = document.getElementById('post-detail-view');
@@ -1118,69 +1160,51 @@ async function initJobsDetailPage() {
   try {
     const urlParams = new URLSearchParams(window.location.search);
     const postId = parseInt(urlParams.get('id'));
+    if (!postId) throw new Error('잘못된 접근입니다.');
 
-    if (isNaN(postId)) throw new Error('Invalid post ID.');
+    // Supabase에서 전체 jobs 데이터 가져오기
+    const allItems = await db.jobs.getAll();
+    // 현재 게시물 찾기
+    const post = allItems.find(item => item.id === postId);
+    if (!post) throw new Error('게시글을 찾을 수 없습니다.');
 
-    // Increment view count before fetching data to ensure it's up-to-date
-    incrementJobView(postId);
-    
-    const dbPosts = (await (await fetch('db.json')).json()).jobs || [];
-    const localPosts = getLocalJobs();
+    // 조회수 증가
+    await incrementViewCount('jobs', postId);
 
-    const deletedIds = JSON.parse(localStorage.getItem('shindongtan_deleted_items')) || {};
-    const deletedJobIds = new Set(deletedIds.jobs || []);
-
-    const filteredDbPosts = dbPosts.filter(item => !deletedJobIds.has(item.id));
-
-    const localItemsIds = new Set(localPosts.map(item => item.id));
-    const uniqueDbItems = filteredDbPosts.filter(item => !localItemsIds.has(item.id));
-    
-    const allPosts = [...localPosts, ...uniqueDbItems];
-    const jobViews = getJobViews();
-
-    const post = allPosts.find(item => item.id === postId);
-
-    if (!post) throw new Error('Post not found.');
-    
-    // Apply the latest view count
-    post.views = jobViews[postId] || post.views || 0;
-
-    // Sort all non-notice posts for correct next/prev navigation
-    const sortedAllPosts = allPosts.sort((a, b) => b.id - a.id);
-    const currentIndex = sortedAllPosts.findIndex(item => item.id === postId);
-
-    const prevPost = currentIndex > 0 ? sortedAllPosts[currentIndex - 1] : null;
-    const nextPost = currentIndex < sortedAllPosts.length - 1 ? sortedAllPosts[currentIndex + 1] : null;
+    // 최신순 정렬로 이전/다음글 계산
+    const sortedItems = allItems.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+    const currentIndex = sortedItems.findIndex(item => item.id === postId);
+    const prevPost = currentIndex > 0 ? sortedItems[currentIndex - 1] : null;
+    const nextPost = currentIndex < sortedItems.length - 1 ? sortedItems[currentIndex + 1] : null;
 
     viewContainer.innerHTML = `
       <div class="post-view">
         <div class="post-header">
           <h2>${post.title}</h2>
           <div class="post-meta">
-            <span><i class="fas fa-user"></i> ${post.author}</span>
-            <span><i class="fas fa-calendar-alt"></i> ${post.date}</span>
-            <span><i class="fas fa-eye"></i> ${post.views}</span>
+            <span><i class="fas fa-user"></i> ${post.author || ''}</span>
+            <span><i class="fas fa-calendar-alt"></i> ${formatKoreaDate(post.date || post.created_at)}</span>
+            <span><i class="fas fa-eye"></i> ${post.views || 0}</span>
           </div>
         </div>
         <div class="post-body">
-          ${post.content.replace(/\n/g, '<br>')}
+          ${(post.content || post.description || '').replace(/\n/g, '<br>')}
         </div>
       </div>
       <ul class="post-nav">
         <li>
             <div class="nav-label">이전글</div>
-            ${nextPost ? `<a href="community_jobs_detail.html?id=${nextPost.id}" class="nav-title">${nextPost.title}</a>` : '<span>이전글이 없습니다.</span>'}
+            ${nextPost ? `<a href="community_jobs_detail.html?id=${nextPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${nextPost.id})">${nextPost.title}</a>` : '<span>이전글이 없습니다.</span>'}
         </li>
         <li>
             <div class="nav-label">다음글</div>
-            ${prevPost ? `<a href="community_jobs_detail.html?id=${prevPost.id}" class="nav-title">${prevPost.title}</a>` : '<span>다음글이 없습니다.</span>'}
+            ${prevPost ? `<a href="community_jobs_detail.html?id=${prevPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${prevPost.id})">${prevPost.title}</a>` : '<span>다음글이 없습니다.</span>'}
         </li>
       </ul>
       <div class="post-footer">
         <a href="community_jobs.html" class="list-button">목록</a>
       </div>
     `;
-
   } catch (error) {
     console.error('취업/구인정보 상세 페이지 초기화 오류:', error);
     viewContainer.innerHTML = '<p style="text-align: center; padding: 4rem;">게시물을 불러오는 데 실패했습니다.</p>';
@@ -1262,7 +1286,7 @@ async function initEmploymentPage() {
 }
 
 /**
- * 시설 둘러보기 페이지 초기화 (이미지 슬라이더)
+ * 시설 둘러보기 페이지 초기화 (Supabase 연동)
  */
 async function initFacilitiesPage() {
     const sliderWrapper = document.getElementById('facilities-slider');
@@ -1274,22 +1298,9 @@ async function initFacilitiesPage() {
     const nextBtn = document.getElementById('slider-next-btn');
 
     try {
-        const localFacilities = JSON.parse(localStorage.getItem('shindongtan_facilities')) || [];
-        const response = await fetch('db.json');
-        const db = await response.json();
-        const dbFacilities = db.facilities || [];
-
-        const deletedIds = JSON.parse(localStorage.getItem('shindongtan_deleted_items')) || {};
-        const deletedFacilityIds = new Set(deletedIds.facilities || []);
-
-        const filteredDbFacilities = dbFacilities.filter(f => !deletedFacilityIds.has(f.id));
-
-        const localIds = new Set(localFacilities.map(f => String(f.id)));
-        const uniqueDbFacilities = filteredDbFacilities.filter(f => !localIds.has(String(f.id)));
-
-        const facilities = [...localFacilities, ...uniqueDbFacilities].sort((a, b) => a.id - b.id);
-
-        if (facilities.length === 0) {
+        // Supabase에서 시설 이미지 불러오기
+        const facilities = await db.facilities.getAll();
+        if (!facilities || facilities.length === 0) {
             sliderWrapper.innerHTML = '<p>현재 등록된 시설 이미지가 없습니다. 관리자 페이지에서 추가해주세요.</p>';
             sliderWrapper.classList.add('loaded');
             return;
@@ -1306,8 +1317,8 @@ async function initFacilitiesPage() {
             currentIndex = index;
 
             const facility = facilities[currentIndex];
-            mainImage.src = facility.src;
-            mainImage.alt = facility.alt;
+            mainImage.src = facility.src || facility.image_url;
+            mainImage.alt = facility.alt || '';
 
             // Update active thumbnail
             document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
@@ -1319,8 +1330,8 @@ async function initFacilitiesPage() {
         thumbnailsContainer.innerHTML = '';
         facilities.forEach((facility, index) => {
             const thumb = document.createElement('img');
-            thumb.src = facility.src;
-            thumb.alt = facility.alt;
+            thumb.src = facility.src || facility.image_url;
+            thumb.alt = facility.alt || '';
             thumb.className = 'thumbnail';
             thumb.addEventListener('click', () => showImage(index));
             thumbnailsContainer.appendChild(thumb);
@@ -1344,40 +1355,20 @@ async function initFacilitiesPage() {
 }
 
 /**
- * 공지사항 페이지 초기화
+ * 공지사항 페이지 초기화 (Supabase 연동)
  */
 async function initNoticePage() {
   const listContainer = document.getElementById('notice-list');
   if (!listContainer) return;
 
   try {
-    const dbItems = (await (await fetch('db.json')).json()).notices || [];
-    const localItems = getLocalNotices();
+    // Supabase에서 공지사항 데이터 가져오기
+    const { data: allItems, error } = await window.supabaseClient
+      .from('notices')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
 
-    const deletedIds = JSON.parse(localStorage.getItem('shindongtan_deleted_items')) || {};
-    const deletedNoticeIds = new Set(deletedIds.notices || []);
-
-    const filteredDbItems = dbItems.filter(item => !deletedNoticeIds.has(item.id));
-
-    const localItemsIds = new Set(localItems.map(item => item.id));
-    const uniqueDbItems = filteredDbItems.filter(item => !localItemsIds.has(item.id));
-
-    const allItems = [...localItems, ...uniqueDbItems].sort((a, b) => {
-        if (a.isNotice !== b.isNotice) return a.isNotice ? -1 : 1;
-        return b.id - a.id;
-    });
-    const noticeViews = getNoticeViews();
-
-    // Add view counts from localStorage
-    allItems.forEach(item => {
-        const storedViews = noticeViews[item.id];
-        if (storedViews) {
-            item.views = storedViews;
-        }
-    });
-
-    const totalItemCount = allItems.length;
-    
     let currentPage = 1;
     const itemsPerPage = 10;
 
@@ -1388,6 +1379,13 @@ async function initNoticePage() {
     const searchTypeSelect = document.getElementById('notice-search-type');
 
     function renderList(items, page) {
+      // 중요공지 먼저, 그 안에서 최신순, 일반공지도 최신순
+      items = [...items].sort((a, b) => {
+        if ((b.isnotice || b.isNotice ? 1 : 0) !== (a.isnotice || a.isNotice ? 1 : 0)) {
+          return (b.isnotice || b.isNotice ? 1 : 0) - (a.isnotice || a.isNotice ? 1 : 0);
+        }
+        return (b.date || b.created_at || '').localeCompare(a.date || a.created_at || '');
+      });
       const header = listContainer.querySelector('.board-header');
       listContainer.innerHTML = '';
       listContainer.appendChild(header);
@@ -1401,21 +1399,17 @@ async function initNoticePage() {
         const row = createRow(item, itemNumber);
         listContainer.appendChild(row);
       });
-      
       totalPostsCounter.textContent = `총 ${items.length}개`;
     }
 
     function createRow(item, itemNumber) {
       const row = document.createElement('div');
       row.className = 'board-row';
-      if (item.isNotice) {
-        row.classList.add('notice');
-      }
+      if (item.isnotice || item.isNotice) row.classList.add('notice');
       row.innerHTML = `
-        <div class="number">${item.isNotice ? '공지' : itemNumber}</div>
-        <div class="title"><a href="community_notice_detail.html?id=${item.id}">${item.title}</a></div>
-        <div class="author">${item.author}</div>
-        <div class="date">${item.date}</div>
+        <div class="number">${item.isnotice || item.isNotice ? '공지' : itemNumber}</div>
+        <div class="title"><a href="community_notice_detail.html?id=${item.id}" onclick="incrementViewCount('notices', ${item.id})">${(item.isnotice || item.isNotice) ? '📢 <span style=\"color:#d92121;font-weight:600;\">중요</span> ' : ''}${item.title}</a></div>
+        <div class="date">${formatKoreaDate(item.date || item.created_at)}</div>
         <div class="views">${item.views || 0}</div>
       `;
       return row;
@@ -1425,7 +1419,6 @@ async function initNoticePage() {
       paginationContainer.innerHTML = '';
       const pageCount = Math.ceil(items.length / itemsPerPage);
       if (pageCount <= 1) return;
-
       for (let i = 1; i <= pageCount; i++) {
         const pageBtn = document.createElement('button');
         pageBtn.innerText = i;
@@ -1438,46 +1431,137 @@ async function initNoticePage() {
         paginationContainer.appendChild(pageBtn);
       }
     }
-    
-    function performSearch() {
-        const searchTerm = searchInput.value.toLowerCase().trim();
-        const searchType = searchTypeSelect.value;
-        
-        const filteredItems = allItems.filter(item => {
-            if (!searchTerm) return true;
-            const title = item.title.toLowerCase();
-            const content = item.content.toLowerCase();
-            switch (searchType) {
-                case 'title':
-                    return title.includes(searchTerm);
-                case 'content':
-                    return content.includes(searchTerm);
-                case 'title_content':
-                    return title.includes(searchTerm) || content.includes(searchTerm);
-                default:
-                    return true;
-            }
-        });
 
-        currentPage = 1;
-        renderList(filteredItems, currentPage);
-        setupPagination(filteredItems, currentPage);
+    function performSearch() {
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      const searchType = searchTypeSelect.value;
+      const filteredItems = allItems.filter(item => {
+        if (!searchTerm) return true;
+        const title = (item.title || '').toLowerCase();
+        const content = (item.content || '').toLowerCase();
+        switch (searchType) {
+          case 'title':
+            return title.includes(searchTerm);
+          case 'content':
+            return content.includes(searchTerm);
+          case 'title_content':
+            return title.includes(searchTerm) || content.includes(searchTerm);
+          default:
+            return true;
+        }
+      });
+      currentPage = 1;
+      renderList(filteredItems, currentPage);
+      setupPagination(filteredItems, currentPage);
     }
-    
+
     searchBtn.addEventListener('click', performSearch);
     searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') performSearch(); });
 
     // Initial Render
     renderList(allItems, currentPage);
     setupPagination(allItems, currentPage);
-
   } catch (error) {
     console.error('공지사항 페이지 초기화 오류:', error);
     listContainer.innerHTML += '<p style="text-align: center; padding: 2rem;">게시물을 불러오는 데 실패했습니다.</p>';
   }
 }
 
-// 공지사항 관련 유틸리티 함수들
+/**
+ * 공지사항 상세 페이지 초기화 (Supabase 연동)
+ */
+async function initNoticeDetailPage() {
+  const detailContainer = document.getElementById('notice-detail-view');
+  if (!detailContainer) return;
+
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = parseInt(urlParams.get('id'));
+    if (!postId) throw new Error('잘못된 접근입니다.');
+
+    // Supabase에서 전체 notices 데이터 가져오기
+    const allItems = await db.notices.getAll();
+    // 현재 게시물 찾기
+    const post = allItems.find(item => item.id === postId);
+    if (!post) throw new Error('게시글을 찾을 수 없습니다.');
+
+    // 조회수 증가
+    await incrementViewCount('notices', postId);
+
+    // 최신순 정렬로 이전/다음글 계산
+    const sortedItems = allItems.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+    const currentIndex = sortedItems.findIndex(item => item.id === postId);
+    const prevPost = currentIndex > 0 ? sortedItems[currentIndex - 1] : null;
+    const nextPost = currentIndex < sortedItems.length - 1 ? sortedItems[currentIndex + 1] : null;
+
+    // 상세 페이지 HTML 생성
+    detailContainer.innerHTML = `
+      <div class="post-view">
+        <div class="post-header">
+          <h2>${post.title}</h2>
+          <div class="post-meta">
+            <span><i class="fas fa-user"></i> ${post.author || '관리자'}</span>
+            <span><i class="fas fa-calendar"></i> ${formatKoreaDate(post.date || post.created_at)}</span>
+            <span><i class="fas fa-eye"></i> ${post.views || 0}회</span>
+          </div>
+        </div>
+        <div class="post-body">
+          ${post.content}
+        </div>
+        <div class="post-footer">
+          <a href="community_notice.html" class="list-button">목록으로</a>
+        </div>
+      </div>
+    `;
+  } catch (error) {
+    console.error('공지사항 상세 페이지 초기화 오류:', error);
+    detailContainer.innerHTML = '<p style="text-align: center; padding: 4rem;">게시물을 불러오는 데 실패했습니다.</p>';
+  }
+}
+
+/**
+ * 홈페이지 최신 소식 섹션을 초기화합니다.
+ */
+async function initLatestNews() {
+  try {
+    console.log('최신 소식 섹션 초기화 시작...');
+    // Supabase에서 공지사항과 Q&A 데이터를 병렬로 로드
+    const [notices, qaData] = await Promise.all([
+      window.db.notices.getLatest(5),
+      window.db.qa.getLatest(7)
+    ]);
+    // 공지사항 렌더링
+    renderLatestNotices(notices);
+    // Q&A 렌더링
+    renderLatestQA(qaData);
+    console.log('최신 소식 섹션 초기화 완료');
+  } catch (error) {
+    console.error('최신 소식 로드 중 오류 발생:', error);
+    // 에러 상태 표시
+    const noticesContainer = document.getElementById('latest-notices');
+    const qaContainer = document.getElementById('latest-qa');
+    if (noticesContainer) {
+      noticesContainer.innerHTML = `
+        <div class="news-error">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>공지사항을 불러오는 중 문제가 발생했습니다.</span>
+        </div>
+      `;
+    }
+    if (qaContainer) {
+      qaContainer.innerHTML = `
+        <div class="news-error">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Q&A를 불러오는 중 문제가 발생했습니다.</span>
+        </div>
+      `;
+    }
+  }
+}
+
+/**
+ * 공지사항 관련 유틸리티 함수들
+ */
 function getLocalNotices() {
   const stored = localStorage.getItem('shindongtan_notices');
   return stored ? JSON.parse(stored) : [];
@@ -1528,59 +1612,6 @@ function incrementGalleryView(postId) {
 }
 
 /**
- * 홈페이지 최신 소식 섹션을 초기화합니다.
- */
-async function initLatestNews() {
-  try {
-    console.log('최신 소식 섹션 초기화 시작...');
-    
-    // 공지사항과 Q&A 데이터를 병렬로 로드
-    const [notices, qaData] = await Promise.all([
-      loadLatestNotices(),
-      loadLatestQA()
-    ]);
-    
-    // 공지사항 렌더링
-    renderLatestNotices(notices);
-    
-    // Q&A 렌더링
-    renderLatestQA(qaData);
-    
-    console.log('최신 소식 섹션 초기화 완료');
-    
-  } catch (error) {
-    console.error('최신 소식 로드 중 오류 발생:', error);
-    
-    // 에러 상태 표시
-    const noticesContainer = document.getElementById('latest-notices');
-    const qaContainer = document.getElementById('latest-qa');
-    
-    if (noticesContainer) {
-      noticesContainer.innerHTML = `
-        <div class="news-error">
-          <i class="fas fa-exclamation-triangle"></i>
-          <span>공지사항을 불러오는 중 문제가 발생했습니다.</span>
-        </div>
-      `;
-    }
-    
-    if (qaContainer) {
-      qaContainer.innerHTML = `
-        <div class="news-error">
-          <i class="fas fa-exclamation-triangle"></i>
-          <span>Q&A를 불러오는 중 문제가 발생했습니다.</span>
-        </div>
-      `;
-    }
-  }
-}
-
-/**
- * 최신 소식 섹션의 이벤트를 설정합니다. (이제 사용되지 않음)
- */
-// function setupLatestNewsEvents() { ... }
-
-/**
  * 최신 공지사항을 렌더링합니다.
  */
 function renderLatestNotices(notices) {
@@ -1594,7 +1625,7 @@ function renderLatestNotices(notices) {
   
   const noticesHTML = notices.map(notice => {
     const title = notice.title || '제목 없음';
-    const date = notice.date ? formatDate(notice.date) : '날짜 없음';
+    const date = notice.date ? formatKoreaDate(notice.date) : '날짜 없음';
     const isNotice = notice.isNotice || false;
     
     return `
@@ -1794,95 +1825,6 @@ async function loadLatestQA() {
   } catch (error) {
     console.error('Q&A 로드 중 오류:', error);
     return [];
-  }
-}
-
-/**
- * 공지사항 상세 페이지를 초기화합니다.
- */
-async function initNoticeDetailPage() {
-  const detailContainer = document.getElementById('post-detail-view');
-  if (!detailContainer) return;
-
-  try {
-    // URL에서 게시글 ID 가져오기
-    const urlParams = new URLSearchParams(window.location.search);
-    const postId = parseInt(urlParams.get('id'));
-    
-    if (!postId) {
-      detailContainer.innerHTML = '<p style="text-align: center; padding: 2rem;">잘못된 접근입니다.</p>';
-      return;
-    }
-
-    // 데이터베이스와 로컬 스토리지에서 게시글 찾기
-    const dbItems = (await (await fetch('db.json')).json()).notices || [];
-    const localItems = getLocalNotices();
-    const allItems = [...localItems, ...dbItems];
-    
-    const post = allItems.find(item => item.id === postId);
-    
-    if (!post) {
-      detailContainer.innerHTML = '<p style="text-align: center; padding: 2rem;">게시글을 찾을 수 없습니다.</p>';
-      return;
-    }
-
-    // 조회수 증가
-    incrementNoticeView(postId);
-
-    // 현재 게시글의 인덱스 찾기
-    const currentIndex = allItems.findIndex(item => item.id === postId);
-    const prevPost = currentIndex < allItems.length - 1 ? allItems[currentIndex + 1] : null;
-    const nextPost = currentIndex > 0 ? allItems[currentIndex - 1] : null;
-
-    // 상세 페이지 HTML 생성
-    const detailHTML = `
-      <div class="post-view">
-        <div class="post-header">
-          <h2>${post.title}</h2>
-          <div class="post-meta">
-            <span><i class="fas fa-user"></i> ${post.author}</span>
-            <span><i class="fas fa-calendar"></i> ${post.date}</span>
-            <span><i class="fas fa-eye"></i> ${post.views || 0}회</span>
-          </div>
-        </div>
-        <div class="post-body">
-          ${post.content}
-        </div>
-        <ul class="post-nav">
-          ${prevPost ? `
-            <li>
-              <span class="nav-label">이전글</span>
-              <a href="community_notice_detail.html?id=${prevPost.id}" class="nav-title">${prevPost.title}</a>
-            </li>
-          ` : `
-            <li>
-              <span class="nav-label">이전글</span>
-              <span class="nav-title" style="color: #999;">이전 글이 없습니다.</span>
-            </li>
-          `}
-          ${nextPost ? `
-            <li>
-              <span class="nav-label">다음글</span>
-              <a href="community_notice_detail.html?id=${nextPost.id}" class="nav-title">${nextPost.title}</a>
-            </li>
-          ` : `
-            <li>
-              <span class="nav-label">다음글</span>
-              <span class="nav-title" style="color: #999;">다음 글이 없습니다.</span>
-            </li>
-          `}
-        </ul>
-        <div class="post-footer">
-          <a href="community_notice.html" class="list-button">목록으로</a>
-        </div>
-      </div>
-    `;
-
-    detailContainer.innerHTML = detailHTML;
-
-  } catch (error) {
-    console.error('공지사항 상세 페이지 초기화 오류:', error);
-    detailContainer.innerHTML = '<p style="text-align: center; padding: 2rem;">게시글을 불러오는 데 실패했습니다.</p>';
   }
 }
 

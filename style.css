@@ -356,6 +356,7 @@ main {
   color: #e2e8f0;
   padding: 4rem 0;
   font-size: 0.9rem;
+  width: 100%;
 }
 
 .footer-container {
@@ -1356,3 +1357,206 @@ main {
   }
 }
 */
+
+/* =================================== */
+/* 7. FAQ 아코디언 (FAQ Accordion)      */
+/* =================================== */
+.accordion-container {
+  max-width: 100%;
+  margin: 0 auto;
+  background: transparent;
+}
+
+.accordion-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  background: white;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: block !important;
+  opacity: 1 !important;
+  color: #222 !important;
+}
+
+.accordion-item:last-child {
+  margin-bottom: 0;
+}
+
+.accordion-header {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  cursor: pointer;
+  background: #f8fafc;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.accordion-header:hover {
+  background: #edf2f7;
+}
+
+.accordion-header .q-icon {
+  background: #1a365d;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.accordion-header h3 {
+  flex: 1;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+  line-height: 1.4;
+}
+
+.accordion-header .toggle-icon {
+  color: #718096;
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+  margin-left: 1rem;
+}
+
+.accordion-item.active .toggle-icon {
+  transform: rotate(180deg);
+}
+
+.accordion-content {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  transition: all 0.3s ease !important;
+  background: white !important;
+  padding: 0 !important;
+  display: block !important;
+}
+
+.accordion-item.active .accordion-content {
+  max-height: 1000px !important;
+  padding: 1.5rem !important;
+  display: block !important;
+}
+
+.answer-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.answer-wrapper .a-icon {
+  background: #38a169;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+.answer-wrapper .answer-content {
+  flex: 1;
+  color: #4a5568;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.faq-section-title {
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #1a365d;
+}
+
+.faq-section-subtitle {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #718096;
+  font-size: 1.1rem;
+}
+
+.faq-loading {
+  text-align: center;
+  padding: 2rem;
+  color: #718096;
+  font-style: italic;
+}
+
+.faq-error {
+  text-align: center;
+  padding: 2rem;
+  color: #e53e3e;
+  background: #fed7d7;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  .accordion-container {
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  .accordion-header {
+    font-size: 1rem;
+    padding: 0.8rem 0;
+  }
+  
+  .accordion-header .q-icon {
+    font-size: 1.1rem;
+    margin-right: 0.7rem;
+  }
+  
+  .accordion-header h3 {
+    font-size: 0.98rem;
+    line-height: 1.5;
+    font-weight: 600;
+  }
+  
+  .accordion-content {
+    font-size: 0.9rem;
+  }
+  
+  .accordion-item.active .accordion-content {
+    padding: 0.8rem;
+  }
+  
+  .answer-wrapper {
+    padding: 1.1rem 0.7rem 1.3rem 2.1rem;
+  }
+  
+  .answer-wrapper .a-icon {
+    font-size: 1.1rem;
+    margin-right: 0.7rem;
+  }
+  
+  .answer-wrapper .answer-content {
+    font-size: 0.92rem;
+  }
+  
+  .faq-section-title {
+    font-size: 1.5rem;
+  }
+  
+  .faq-section-subtitle {
+    font-size: 1rem;
+  }
+}

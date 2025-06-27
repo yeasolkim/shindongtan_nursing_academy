@@ -146,6 +146,19 @@ const db = {
       if (error) throw error;
       return data;
     }
+  },
+
+  // 시설(갤러리) 관련 함수
+  facilities: {
+    // 모든 시설 이미지 가져오기
+    async getAll() {
+      const { data, error } = await supabaseClient
+        .from('facilities')
+        .select('*')
+        .order('order', { ascending: true });
+      if (error) throw error;
+      return data;
+    }
   }
 };
 

@@ -94,12 +94,18 @@
     }
     
     /* Quick Contact Sidebar */
-    .quick-contact-sidebar { 
-      width: 240px; 
-      flex-shrink: 0; 
+    .quick-contact-sidebar {
+      position: fixed;
+      top: 50%;
+      right: 40px;
+      width: 240px;
+      z-index: 100;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      background: #fff;
+      transform: translateY(-50%);
     }
     .contact-box { 
-      border: 1px solid #e9e9e9; 
       margin-bottom: 1rem; 
       text-align: center; 
       padding: 1.5rem 1rem; 
@@ -128,10 +134,8 @@
       background-color: #fdd835;
     }
     
-    @media (max-width: 1200px) { 
-      .quick-contact-sidebar { 
-        display: none; 
-      } 
+    @media (max-width: 1200px) {
+      .quick-contact-sidebar { display: none; }
     }
     
     /* 모바일 최적화 */
@@ -384,6 +388,8 @@
   </main>
 
   <footer class="footer"></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="supabase-config.js"></script>
   <script src="script.js"></script>
 </body>
 </html> 

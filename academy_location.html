@@ -107,9 +107,10 @@
     
     /* 교통편 및 운영시간 */
     .details-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
+      /* display: grid; */
+      /* grid-template-columns: 1fr 1fr; */
+      /* gap: 2rem; */
+      width: 100%;
     }
 
     .transport-info, .hours-notice {
@@ -160,6 +161,11 @@
       color: #e53e3e;
       font-weight: 600;
       margin-bottom: 0.5rem;
+    }
+    
+    .hours-notice {
+      width: 100%;
+      box-sizing: border-box;
     }
     
     /* 반응형 디자인 */
@@ -280,7 +286,7 @@
             </div>
             
             <div class="details-grid">
-              <!-- 교통편 정보 -->
+              <!-- 교통편 정보 
               <div class="transport-info">
                 <h3><i class="fas fa-bus"></i> 대중교통 이용</h3>
                 <ul>
@@ -288,7 +294,7 @@
                   <li><strong>버스:</strong> 동탄역 정류장 하차 (간선버스 1000번, 지선버스 5000번)</li>
                   <li><strong>마을버스:</strong> 동탄1번, 동탄2번 버스 이용</li>
                 </ul>
-              </div>
+              </div>-->
 
               <!-- 운영시간 및 주의사항 -->
               <div class="hours-notice">

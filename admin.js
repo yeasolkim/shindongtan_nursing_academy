@@ -62,9 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Initializing admin panel...");
         loadInstructors();
         loadFacilities();
-        loadBoardData('jobs');
-        loadBoardData('gallery');
-        loadBoardData('notices');
+        renderGalleryList();
+        renderJobList();
+        renderNoticeList();
+        loadFAQList();
     }
 
     // --- Utility Functions ---
@@ -505,7 +506,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 페이지 로드시 시설 이미지 목록 불러오기
     if (facilityList) loadFacilities();
 
-    // --- Board (Jobs, Gallery, Notice) Management ---
+    // --- Jobs Management (Supabase 연동) ---
     const modal = document.getElementById('post-modal');
     const modalForm = document.getElementById('modal-form');
     const modalTitle = document.getElementById('modal-title');
@@ -561,307 +562,172 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    async function loadBoardData(type) {
-        const config = boardConfig[type];
-        const items = await getMergedData(config.storageKey, type);
-        const listEl = config.listEl;
+    // --- Gallery Management (Supabase 연동) ---
+    async function loadGalleryList() {
+        const { data, error } = await window.supabaseClient
+            .from('gallery')
+            .select('*')
+            .order('created_at', { ascending: false });
+        if (error) {
+            boardConfig.gallery.listEl.innerHTML = '<tr><td colspan="6">갤러리 목록을 불러오지 못했습니다.</td></tr>';
+            return [];
+        }
+        return data;
+    }
+    async function renderGalleryList() {
+        const items = await loadGalleryList();
+        const listEl = boardConfig.gallery.listEl;
         listEl.innerHTML = '';
-
         items.forEach(item => {
             const tr = document.createElement('tr');
-            let columns = `
+            tr.innerHTML = `
                 <td>${item.id}</td>
-                ${type === 'gallery' ? `<td><img src="${item.image || ''}" width="50" height="40" style="object-fit: cover;"></td>` : ''}
+                <td><img src="${getGalleryImageUrl(item.image)}" width="50" height="40" style="object-fit: cover;"></td>
                 <td>${item.title}</td>
-                ${type === 'notices' ? `<td>${item.isNotice ? '<strong>중요</strong>' : '일반'}</td>` : ''}
-                <td>${item.date}</td>
+                <td>${formatKoreaDate(item.created_at)}</td>
                 <td>${item.views || 0}</td>
                 <td class="actions">
                     <button class="button-secondary" data-id="${item.id}">수정</button>
                     <button class="button-danger" data-id="${item.id}">삭제</button>
                 </td>`;
-            if (type === 'jobs') {
-                 columns = `
-                    <td>${item.id}</td>
-                    <td>${item.title}</td>
-                    <td>${item.date}</td>
-                    <td>${item.views || 0}</td>
-                    <td class="actions">
-                       <button class="button-secondary" data-id="${item.id}">수정</button>
-                       <button class="button-danger" data-id="${item.id}">삭제</button>
-                    </td>`;
-            }
-
-            tr.innerHTML = columns;
-            tr.querySelector('.button-secondary').addEventListener('click', () => showEditModal(type, item.id));
-            tr.querySelector('.button-danger').addEventListener('click', () => deleteBoardItem(type, item.id));
+            tr.querySelector('.button-secondary').addEventListener('click', () => showEditGalleryModal(item));
+            tr.querySelector('.button-danger').addEventListener('click', () => deleteGalleryItem(item));
             listEl.appendChild(tr);
         });
     }
-
-    function showAddModal(type) {
-        const config = boardConfig[type];
+    function getGalleryImageUrl(imagePath) {
+        if (!imagePath) return '';
+        if (imagePath.startsWith('http')) return imagePath;
+        const { data } = window.supabaseClient.storage.from('gallery-images').getPublicUrl(imagePath);
+        return data.publicUrl;
+    }
+    async function showAddGalleryModal() {
         modalForm.reset();
         document.getElementById('modal-post-id').value = '';
-        document.getElementById('modal-post-type').value = type;
-        modalTitle.textContent = `새 ${config.title} 작성`;
-        
-        modalImageGroup.style.display = type === 'gallery' ? 'block' : 'none';
-        modalNoticeGroup.style.display = type === 'notices' ? 'block' : 'none';
-        
-        // 기존 이미지 미리보기 제거
+        document.getElementById('modal-post-type').value = 'gallery';
+        modalTitle.textContent = '새 갤러리 작성';
+        modalImageGroup.style.display = 'block';
+        modalNoticeGroup.style.display = 'none';
         const existingPreview = document.querySelector('.current-image-preview');
-        if (existingPreview) {
-            existingPreview.remove();
-        }
-        
+        if (existingPreview) existingPreview.remove();
         modal.style.display = 'block';
     }
-
-    async function showEditModal(type, id) {
-        const config = boardConfig[type];
-        const items = await getMergedData(config.storageKey, type);
-        const item = items.find(i => String(i.id) === String(id));
-        
-        console.log('showEditModal - ID:', id, 'Type:', typeof id);
-        console.log('showEditModal - Found item:', item);
-        
-        if (!item) {
-            console.error('수정할 항목을 찾을 수 없습니다:', id);
-            alert('수정할 항목을 찾을 수 없습니다.');
-            return;
-        }
-        
-        showAddModal(type); // Reset and show
-        modalTitle.textContent = `${config.title} 수정`;
+    async function showEditGalleryModal(item) {
+        showAddGalleryModal();
+        modalTitle.textContent = '갤러리 수정';
         document.getElementById('modal-post-id').value = String(item.id);
         document.getElementById('modal-title-input').value = item.title;
-        document.getElementById('modal-content-input').value = item.content;
-        
-        if (type === 'gallery') {
-            // 갤러리 수정 시 기존 이미지 표시
-            const imageInput = document.getElementById('modal-image-input');
-            const imagePreview = document.createElement('div');
-            imagePreview.className = 'current-image-preview';
-            imagePreview.innerHTML = `
-                <p><strong>현재 이미지:</strong></p>
-                <img src="${item.image || ''}" alt="현재 이미지" style="max-width: 200px; max-height: 150px; object-fit: cover; border: 1px solid #ddd; margin: 10px 0;">
-                <p><small>새 이미지를 선택하지 않으면 현재 이미지가 유지됩니다.</small></p>
-            `;
-            
-            // 기존 미리보기 제거 후 새로 추가
-            const existingPreview = imageInput.parentNode.querySelector('.current-image-preview');
-            if (existingPreview) {
-                existingPreview.remove();
-            }
-            imageInput.parentNode.appendChild(imagePreview);
-        }
-        
-        if (type === 'notices') {
-            document.getElementById('modal-is-notice-checkbox').checked = item.isNotice || false;
-        }
+        // <br>을 줄바꿈으로 변환
+        document.getElementById('modal-content-input').value = (item.description || '').replace(/<br\s*\/?\>/gi, '\n');
+        // 기존 이미지 표시
+        const imageInput = document.getElementById('modal-image-input');
+        const imagePreview = document.createElement('div');
+        imagePreview.className = 'current-image-preview';
+        imagePreview.innerHTML = `
+            <p><strong>현재 이미지:</strong></p>
+            <img src="${getGalleryImageUrl(item.image)}" alt="현재 이미지" style="max-width: 200px; max-height: 150px; object-fit: cover; border: 1px solid #ddd; margin: 10px 0;">
+            <p><small>새 이미지를 선택하지 않으면 현재 이미지가 유지됩니다.</small></p>
+        `;
+        const existingPreview = imageInput.parentNode.querySelector('.current-image-preview');
+        if (existingPreview) existingPreview.remove();
+        imageInput.parentNode.appendChild(imagePreview);
+        imageInput.setAttribute('data-existing-url', item.image || '');
     }
-
-    modalForm.addEventListener('submit', async (e) => {
-        console.log('Modal form submit event triggered!');
+    async function handleGalleryFormSubmit(e) {
         e.preventDefault();
-        
-        try {
-            const id = document.getElementById('modal-post-id').value;
-            const type = document.getElementById('modal-post-type').value;
-            const config = boardConfig[type];
-            
-            console.log('Form submit - ID:', id, 'Type:', typeof id);
-            console.log('Form submit - Type:', type);
-            console.log('Form submit - Config:', config);
-            
-            if (!config) {
-                console.error('Invalid board type:', type);
-                alert('잘못된 게시판 유형입니다.');
+        const id = document.getElementById('modal-post-id').value;
+        const title = document.getElementById('modal-title-input').value;
+        // 줄바꿈을 <br>로 변환
+        const description = document.getElementById('modal-content-input').value.replace(/\n/g, '<br>');
+        const fileInput = document.getElementById('modal-image-input');
+        let imageUrl = '';
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+            const fileName = `${Date.now()}_${file.name}`;
+            const { data: uploadData, error: uploadError } = await window.supabaseClient
+                .storage
+                .from('gallery-images')
+                .upload(fileName, file, { upsert: true });
+            if (uploadError) {
+                alert('이미지 업로드 실패: ' + uploadError.message);
                 return;
             }
-            
-            let items = getFromStorage(config.storageKey);
-            const allItems = await getMergedData(config.storageKey, type);
-            const dbItems = allItems.filter(i => !items.find(l => l.id === i.id));
-
-            console.log('Current localStorage items:', items);
-            console.log('All items (merged):', allItems);
-
-            const data = {
-                title: document.getElementById('modal-title-input').value.trim(),
-                content: document.getElementById('modal-content-input').value.trim(),
-            };
-
-            console.log('Form data:', data);
-
-            // 필수 필드 검증
-            if (!data.title || !data.content) {
-                alert('제목과 내용을 모두 입력해주세요.');
-                return;
-            }
-
-            if (type === 'gallery') {
-                const imageFile = document.getElementById('modal-image-input').files[0];
-                console.log('Image file:', imageFile);
-                
-                if (imageFile) {
-                    console.log('Converting image to base64...');
-                    try {
-                        data.image = await fileToBase64(imageFile);
-                        console.log('Image converted successfully, length:', data.image.length);
-                    } catch (error) {
-                        console.error('Image conversion failed:', error);
-                        alert('이미지 변환 중 오류가 발생했습니다.');
-                        return;
-                    }
-                } else if (id) {
-                    // 수정 시 새 이미지가 선택되지 않았으면 기존 이미지 유지
-                    const existingItem = allItems.find(i => String(i.id) === String(id));
-                    if (existingItem && existingItem.image) {
-                        data.image = existingItem.image;
-                        console.log('Using existing image');
-                    } else {
-                        console.log('No existing image found');
-                    }
-                }
-            }
-            
-            if (type === 'notices') {
-                data.isNotice = document.getElementById('modal-is-notice-checkbox').checked;
-            }
-
-            if (id) { // Edit
-                console.log('Editing item with ID:', id);
-                
-                // 먼저 localStorage에서 찾기
-                let existing = items.find(i => String(i.id) === String(id));
-                
-                // localStorage에 없으면 db에서 찾아서 localStorage로 복사
-                if (!existing) {
-                    const dbItem = allItems.find(i => String(i.id) === String(id));
-                    if (dbItem) {
-                        console.log('Item found in db, copying to localStorage:', dbItem);
-                        existing = { ...dbItem }; // 복사본 생성
-                        items.push(existing);
-                    }
-                }
-                
-                console.log('Found existing item:', existing);
-                if (existing) {
-                    Object.assign(existing, data);
-                    console.log('Updated item:', existing);
-                } else {
-                    console.error('수정할 항목을 찾을 수 없습니다:', id);
-                    alert('수정할 항목을 찾을 수 없습니다. 페이지를 새로고침하고 다시 시도해주세요.');
-                    return;
-                }
-            } else { // Add
-                console.log('Adding new item');
-                data.id = getNextId(items, dbItems);
-                data.date = new Date().toISOString().split('T')[0];
-                data.author = '관리자';
-                data.views = 0;
-                items.push(data);
-                console.log('New item added:', data);
-            }
-
-            console.log('Saving to storage...');
-            saveToStorage(config.storageKey, items);
-            console.log('Reloading board data...');
-            await loadBoardData(type);
-            console.log('Closing modal...');
-            modal.style.display = 'none';
-            
-            // 성공 메시지
-            if (id) {
-                alert('수정이 완료되었습니다.');
-            } else {
-                alert('새 게시물이 등록되었습니다.');
-            }
-            
-        } catch (error) {
-            console.error('Form submission error:', error);
-            alert('저장 중 오류가 발생했습니다: ' + error.message);
-        }
-    });
-
-    console.log('Modal form event listener attached successfully');
-
-    // 백업용 버튼 클릭 이벤트 리스너 추가
-    const modalSubmitBtn = modalForm.querySelector('button[type="submit"]');
-    if (modalSubmitBtn) {
-        modalSubmitBtn.addEventListener('click', (e) => {
-            console.log('Modal submit button clicked!');
-            console.log('Button element:', modalSubmitBtn);
-            console.log('Form element:', modalForm);
-            
-            // 폼 제출 이벤트가 트리거되지 않을 경우를 대비한 백업
-            setTimeout(() => {
-                if (modal.style.display !== 'none') {
-                    console.log('Form submit event did not trigger, manually triggering...');
-                    const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
-                    modalForm.dispatchEvent(submitEvent);
-                }
-            }, 100);
-        });
-        console.log('Modal submit button event listener attached');
-    } else {
-        console.error('Modal submit button not found!');
-    }
-
-    // 추가 백업: 폼 내부의 모든 버튼에 클릭 이벤트 추가
-    modalForm.addEventListener('click', (e) => {
-        if (e.target.type === 'submit') {
-            console.log('Submit button clicked via form click event');
-        }
-    });
-
-    async function deleteBoardItem(type, id) {
-        const config = boardConfig[type];
-        if (!confirm(`정말로 이 ${config.title} 게시물을 삭제하시겠습니까?`)) return;
-        let items = getFromStorage(config.storageKey);
-        
-        const initialCount = items.length;
-        items = items.filter(i => String(i.id) !== String(id));
-
-        if (items.length < initialCount) {
-            saveToStorage(config.storageKey, items);
-            await loadBoardData(type);
-            alert('게시물이 삭제되었습니다.');
+            const { data: urlData } = window.supabaseClient
+                .storage
+                .from('gallery-images')
+                .getPublicUrl(fileName);
+            imageUrl = urlData.publicUrl;
         } else {
-            // 원본 데이터 삭제 처리
-            const deletedIds = getDeletedIds();
-            if (!deletedIds[type]) deletedIds[type] = [];
-            deletedIds[type].push(parseInt(id));
-            saveDeletedIds(deletedIds);
-            
-            await loadBoardData(type);
-            alert('게시물이 삭제되었습니다.');
+            imageUrl = document.getElementById('modal-image-input').getAttribute('data-existing-url') || '';
         }
+        if (id) {
+            await window.supabaseClient
+                .from('gallery')
+                .update({ title, description, image: imageUrl })
+                .eq('id', id);
+        } else {
+            await window.supabaseClient
+                .from('gallery')
+                .insert([{ title, description, image: imageUrl }]);
+        }
+        document.getElementById('post-modal').style.display = 'none';
+        renderGalleryList();
+        
+        // 갤러리 탭 활성화 유지
+        const tabs = document.querySelectorAll('.tab-link');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(t => t.classList.remove('active'));
+        const galleryTab = document.querySelector('[data-tab="gallery-tab"]');
+        if (galleryTab) {
+            galleryTab.classList.add('active');
+        }
+        
+        tabContents.forEach(content => {
+            content.classList.toggle('active', content.id === 'gallery-tab');
+        });
     }
+    async function deleteGalleryItem(item) {
+        console.log('삭제 함수 진입:', item);
+        if (!confirm('정말로 이 갤러리 게시물을 삭제하시겠습니까?')) return;
+        // Storage 이미지 삭제
+        if (item.image && item.image.startsWith('http')) {
+            const url = new URL(item.image);
+            const path = decodeURIComponent(url.pathname.split('/object/public/')[1]);
+            await window.supabaseClient.storage.from('gallery-images').remove([path]);
+        }
+        await window.supabaseClient.from('gallery').delete().eq('id', item.id);
+        console.log('삭제 후 renderGalleryList 호출');
+        await renderGalleryList();
+        console.log('renderGalleryList 완료');
+    }
+    // 글쓰기 버튼 연결
+    boardConfig.gallery.addBtn.addEventListener('click', showAddGalleryModal);
     
-    // Attach event listeners for add buttons
-    Object.keys(boardConfig).forEach(type => {
-        boardConfig[type].addBtn.addEventListener('click', () => showAddModal(type));
-    });
-
-    closeModalBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
-        // 모달 닫을 때 이미지 미리보기 정리
-        const existingPreview = document.querySelector('.current-image-preview');
-        if (existingPreview) {
-            existingPreview.remove();
+    // 구인 게시판 글쓰기 버튼 연결
+    boardConfig.jobs.addBtn.addEventListener('click', showAddJobModal);
+    
+    // 모달 닫기(x) 버튼 이벤트 연결
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+    }
+    // 모달 바깥 클릭 시 닫기
+    window.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
         }
     });
-    window.addEventListener('click', (e) => {
-        if (e.target == modal) {
-            modal.style.display = 'none';
-            // 모달 닫을 때 이미지 미리보기 정리
-            const existingPreview = document.querySelector('.current-image-preview');
-            if (existingPreview) {
-                existingPreview.remove();
-            }
+    // 모달 폼 제출 이벤트 연결 (공지사항/구인/갤러리 구분)
+    modalForm.addEventListener('submit', async function(e) {
+        const type = document.getElementById('modal-post-type').value;
+        if (type === 'notices') {
+            await handleNoticeFormSubmit(e);
+        } else if (type === 'jobs') {
+            await handleJobFormSubmit(e);
+        } else if (type === 'gallery') {
+            await handleGalleryFormSubmit(e);
         }
     });
 
@@ -1067,6 +933,426 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- Jobs Management (Supabase 연동) ---
+    async function loadJobList() {
+        const { data, error } = await window.supabaseClient
+            .from('jobs')
+            .select('*')
+            .order('created_at', { ascending: false });
+        if (error) {
+            boardConfig.jobs.listEl.innerHTML = '<tr><td colspan="8">구인 목록을 불러오지 못했습니다.</td></tr>';
+            return [];
+        }
+        return data;
+    }
+    async function renderJobList() {
+        const items = await loadJobList();
+        const listEl = boardConfig.jobs.listEl;
+        listEl.innerHTML = '';
+        items.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${item.id}</td>
+                <td>${item.title}</td>
+                <td>${formatKoreaDate(item.created_at)}</td>
+                <td>${item.views || 0}</td>
+                <td class="actions">
+                    <button class="button-secondary" data-id="${item.id}">수정</button>
+                    <button class="button-danger" data-id="${item.id}">삭제</button>
+                </td>`;
+            tr.querySelector('.button-secondary').addEventListener('click', () => showEditJobModal(item));
+            tr.querySelector('.button-danger').addEventListener('click', () => deleteJobItem(item));
+            listEl.appendChild(tr);
+        });
+    }
+    async function handleJobFormSubmit(e) {
+        e.preventDefault();
+        const id = document.getElementById('modal-post-id').value;
+        const title = document.getElementById('modal-title-input').value;
+        // 줄바꿈을 <br>로 변환
+        const description = document.getElementById('modal-content-input').value.replace(/\n/g, '<br>');
+        if (id) {
+            await window.supabaseClient
+                .from('jobs')
+                .update({ title, description })
+                .eq('id', id);
+        } else {
+            await window.supabaseClient
+                .from('jobs')
+                .insert([{ title, description }]);
+        }
+        document.getElementById('post-modal').style.display = 'none';
+        renderJobList();
+        
+        // 구인 탭 활성화 유지
+        const tabs = document.querySelectorAll('.tab-link');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(t => t.classList.remove('active'));
+        const jobTab = document.querySelector('[data-tab="tab-jobs"]');
+        if (jobTab) {
+            jobTab.classList.add('active');
+        }
+        
+        tabContents.forEach(content => {
+            content.classList.toggle('active', content.id === 'tab-jobs');
+        });
+    }
+    async function deleteJobItem(item) {
+        if (!confirm('정말로 이 구인 게시물을 삭제하시겠습니까?')) return;
+        await window.supabaseClient.from('jobs').delete().eq('id', item.id);
+        await renderJobList();
+    }
+    
+    // showAddJobModal: 구인 게시판 추가 모달 표시
+    async function showAddJobModal() {
+        modalForm.reset();
+        document.getElementById('modal-post-id').value = '';
+        document.getElementById('modal-post-type').value = 'jobs';
+        modalTitle.textContent = '새 구인 게시물 작성';
+        modalImageGroup.style.display = 'none';
+        modalNoticeGroup.style.display = 'none';
+        modal.style.display = 'block';
+    }
+    
+    // showEditJobModal: 구인 게시판 수정 모달 표시
+    async function showEditJobModal(item) {
+        modalForm.reset();
+        document.getElementById('modal-post-id').value = String(item.id);
+        document.getElementById('modal-post-type').value = 'jobs';
+        modalTitle.textContent = '구인 게시물 수정';
+        modalImageGroup.style.display = 'none';
+        modalNoticeGroup.style.display = 'none';
+        document.getElementById('modal-title-input').value = item.title || '';
+        // <br>을 줄바꿈으로 변환
+        document.getElementById('modal-content-input').value = (item.description || item.content || '').replace(/<br\s*\/?\>/gi, '\n');
+        modal.style.display = 'block';
+    }
+    // --- Notices Management (Supabase 연동) ---
+    async function loadNoticeList() {
+        const { data, error } = await window.supabaseClient
+            .from('notices')
+            .select('*')
+            .order('created_at', { ascending: false });
+        if (error) {
+            boardConfig.notices.listEl.innerHTML = '<tr><td colspan="7">공지사항 목록을 불러오지 못했습니다.</td></tr>';
+            return [];
+        }
+        return data;
+    }
+    async function renderNoticeList(searchTerm = '', searchType = 'title', sortOrder = 'created_at_desc') {
+        let items = await loadNoticeList();
+        // 검색 필터
+        if (searchTerm) {
+            const term = searchTerm.toLowerCase();
+            items = items.filter(item => {
+                const title = (item.title || '').toLowerCase();
+                const content = (item.content || '').toLowerCase();
+                if (searchType === 'title') return title.includes(term);
+                if (searchType === 'content') return content.includes(term);
+                if (searchType === 'title_content') return title.includes(term) || content.includes(term);
+                return true;
+            });
+        }
+        // 정렬
+        items.sort((a, b) => {
+            if ((b.isnotice ? 1 : 0) !== (a.isnotice ? 1 : 0)) {
+                return (b.isnotice ? 1 : 0) - (a.isnotice ? 1 : 0);
+            }
+            return (b.date || b.created_at || '').localeCompare(a.date || a.created_at || '');
+        });
+        const listEl = boardConfig.notices.listEl;
+        listEl.innerHTML = '';
+        items.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${item.id}</td>
+                <td>${item.isnotice ? '📢 <span style=\"color:#d92121;font-weight:600;\">중요</span> ' : ''}${item.title}</td>
+                <td>${formatKoreaDate(item.date || item.created_at)}</td>
+                <td>${item.views || 0}</td>
+                <td class=\"actions\">
+                    <button class=\"button-secondary\" data-id=\"${item.id}\">수정</button>
+                    <button class=\"button-danger\" data-id=\"${item.id}\">삭제</button>
+                </td>`;
+            tr.querySelector('.button-secondary').addEventListener('click', () => showEditNoticeModal(item));
+            tr.querySelector('.button-danger').addEventListener('click', () => deleteNoticeItem(item));
+            listEl.appendChild(tr);
+        });
+    }
+    function setupNoticeSearchSortUI() {
+        // 테이블 thead에 필터 행 추가 코드 제거
+        // 대신 notice-filter-bar의 각 요소에 이벤트 연결
+        const searchBtn = document.getElementById('notice-search-btn');
+        const searchInput = document.getElementById('notice-search-input');
+        const searchTypeSelect = document.getElementById('notice-search-type');
+        const sortOrderSelect = document.getElementById('notice-sort-order');
+        if (!searchBtn || !searchInput || !searchTypeSelect || !sortOrderSelect) return;
+        function doSearch() {
+            const type = searchTypeSelect.value;
+            const term = searchInput.value;
+            const order = sortOrderSelect.value;
+            renderNoticeList(term, type, order);
+        }
+        searchBtn.onclick = doSearch;
+        searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') doSearch(); });
+        sortOrderSelect.onchange = doSearch;
+    }
+    // 페이지 로드시 UI 세팅
+    setupNoticeSearchSortUI();
+    renderNoticeList();
+    // handleNoticeFormSubmit에서 author 관련 코드 제거
+    async function handleNoticeFormSubmit(e) {
+        e.preventDefault();
+        const id = document.getElementById('modal-post-id').value;
+        const title = document.getElementById('modal-title-input').value;
+        // 줄바꿈을 <br>로 변환
+        const content = document.getElementById('modal-content-input').value.replace(/\n/g, '<br>');
+        const isnotice = document.getElementById('modal-is-notice-checkbox')?.checked || false;
+        
+        try {
+            if (id) {
+                await window.supabaseClient
+                    .from('notices')
+                    .update({ title, content, isnotice })
+                    .eq('id', id);
+                alert('공지사항이 수정되었습니다.');
+            } else {
+                await window.supabaseClient
+                    .from('notices')
+                    .insert([{ title, content, isnotice }]);
+                alert('공지사항이 등록되었습니다.');
+            }
+            document.getElementById('post-modal').style.display = 'none';
+            renderNoticeList();
+            
+            // 공지사항 탭 활성화 유지
+            const tabs = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            const noticeTab = document.querySelector('[data-tab="tab-notice"]');
+            if (noticeTab) {
+                noticeTab.classList.add('active');
+            }
+            
+            tabContents.forEach(content => {
+                content.classList.toggle('active', content.id === 'tab-notice');
+            });
+            
+        } catch (error) {
+            console.error('공지사항 저장 실패:', error);
+            alert('공지사항 저장 중 오류가 발생했습니다.');
+        }
+    }
+    async function deleteNoticeItem(item) {
+        if (!confirm('정말로 이 공지사항을 삭제하시겠습니까?')) return;
+        await window.supabaseClient.from('notices').delete().eq('id', item.id);
+        await renderNoticeList();
+    }
+    // showEditNoticeModal에서 author 관련 코드 제거
+    async function showEditNoticeModal(item) {
+        modalForm.reset();
+        document.getElementById('modal-post-id').value = String(item.id);
+        document.getElementById('modal-post-type').value = 'notices';
+        modalTitle.textContent = '공지사항 수정';
+        modalImageGroup.style.display = 'none';
+        modalNoticeGroup.style.display = 'block';
+        document.getElementById('modal-title-input').value = item.title || '';
+        // <br>을 줄바꿈으로 변환
+        document.getElementById('modal-content-input').value = (item.content || '').replace(/<br\s*\/?\>/gi, '\n');
+        if(document.getElementById('modal-is-notice-checkbox')) document.getElementById('modal-is-notice-checkbox').checked = !!item.isNotice;
+        modal.style.display = 'block';
+    }
+    // showAddNoticeModal에서 author 관련 코드 제거
+    function showAddNoticeModal() {
+        document.getElementById('modal-title').textContent = '새 공지사항 작성';
+        document.getElementById('modal-post-type').value = 'notices';
+        document.getElementById('modal-post-id').value = '';
+        document.getElementById('modal-title-input').value = '';
+        document.getElementById('modal-content-input').value = '';
+        document.getElementById('modal-notice-group').style.display = 'block';
+        document.getElementById('modal-is-notice-checkbox').checked = false;
+        document.getElementById('post-modal').style.display = 'block';
+    }
+    if (boardConfig.notices.addBtn) {
+        boardConfig.notices.addBtn.addEventListener('click', showAddNoticeModal);
+    }
+
+    // --- FAQ Management ---
+    const faqForm = document.getElementById('faq-form');
+    const faqList = document.getElementById('faq-list');
+    const cancelFaqEditBtn = document.getElementById('cancel-faq-edit');
+
+    // FAQ 목록 불러오기
+    async function loadFAQList() {
+        try {
+            const { data, error } = await window.supabaseClient
+                .from('qa')
+                .select('*')
+                .order('created_at', { ascending: true });
+            
+            if (error) {
+                console.error('FAQ 목록 로드 실패:', error);
+                return;
+            }
+            
+            renderFAQList(data);
+        } catch (error) {
+            console.error('FAQ 목록 로드 중 오류:', error);
+        }
+    }
+
+    // FAQ 목록 렌더링
+    function renderFAQList(faqs) {
+        if (!faqList) return;
+        
+        faqList.innerHTML = '';
+        
+        if (faqs.length === 0) {
+            faqList.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">등록된 FAQ가 없습니다.</p>';
+            return;
+        }
+        
+        faqs.forEach(faq => {
+            const faqItem = document.createElement('div');
+            faqItem.className = 'faq-admin-item';
+            faqItem.innerHTML = `
+                <div class="faq-question">${faq.question}</div>
+                <div class="faq-answer">${faq.answer}</div>
+                <div style="font-size: 0.85rem; color: #6c757d; margin-bottom: 0.5rem;">작성일: ${formatKoreaDate(faq.created_at)}</div>
+                <div class="faq-actions">
+                    <button class="button-secondary" onclick="editFAQ(${faq.id})">수정</button>
+                    <button class="button-danger" onclick="deleteFAQ(${faq.id})">삭제</button>
+                </div>
+                <button class="delete-btn" onclick="deleteFAQ(${faq.id})" title="삭제">×</button>
+            `;
+            faqList.appendChild(faqItem);
+        });
+    }
+
+    // FAQ 추가/수정 폼 제출
+    faqForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const faqId = document.getElementById('faq-id').value;
+        const question = document.getElementById('faq-question').value.trim();
+        const answer = document.getElementById('faq-answer').value.trim();
+        
+        if (!question || !answer) {
+            alert('질문과 답변을 모두 입력해주세요.');
+            return;
+        }
+        
+        try {
+            if (faqId) {
+                // 수정
+                const { error } = await window.supabaseClient
+                    .from('qa')
+                    .update({ question, answer })
+                    .eq('id', faqId);
+                
+                if (error) throw error;
+                alert('FAQ가 수정되었습니다.');
+            } else {
+                // 추가
+                const { error } = await window.supabaseClient
+                    .from('qa')
+                    .insert([{ question, answer }]);
+                
+                if (error) throw error;
+                alert('FAQ가 추가되었습니다.');
+            }
+            
+            // 폼 초기화
+            faqForm.reset();
+            document.getElementById('faq-id').value = '';
+            cancelFaqEditBtn.style.display = 'none';
+            
+            // 목록 새로고침
+            loadFAQList();
+            
+        } catch (error) {
+            console.error('FAQ 저장 실패:', error);
+            alert('FAQ 저장 중 오류가 발생했습니다.');
+        }
+    });
+
+    // FAQ 수정 모드
+    window.editFAQ = async function(id) {
+        try {
+            const { data: faq, error } = await window.supabaseClient
+                .from('qa')
+                .select('*')
+                .eq('id', id)
+                .single();
+            
+            if (error || !faq) {
+                alert('FAQ 정보를 찾을 수 없습니다.');
+                return;
+            }
+            
+            document.getElementById('faq-id').value = faq.id;
+            document.getElementById('faq-question').value = faq.question;
+            document.getElementById('faq-answer').value = faq.answer;
+            
+            cancelFaqEditBtn.style.display = 'inline-block';
+            
+            // 폼으로 스크롤
+            document.getElementById('faq-form').scrollIntoView({ behavior: 'smooth' });
+            
+        } catch (error) {
+            console.error('FAQ 수정 모드 전환 실패:', error);
+            alert('FAQ 수정 모드 전환 중 오류가 발생했습니다.');
+        }
+    };
+
+    // FAQ 삭제
+    window.deleteFAQ = async function(id) {
+        if (!confirm('정말로 이 FAQ를 삭제하시겠습니까?')) {
+            return;
+        }
+        
+        try {
+            const { error } = await window.supabaseClient
+                .from('qa')
+                .delete()
+                .eq('id', id);
+            
+            if (error) throw error;
+            
+            alert('FAQ가 삭제되었습니다.');
+            loadFAQList();
+            
+        } catch (error) {
+            console.error('FAQ 삭제 실패:', error);
+            alert('FAQ 삭제 중 오류가 발생했습니다.');
+        }
+    };
+
+    // FAQ 수정 취소
+    cancelFaqEditBtn.addEventListener('click', () => {
+        faqForm.reset();
+        document.getElementById('faq-id').value = '';
+        cancelFaqEditBtn.style.display = 'none';
+    });
+
+    // --- End FAQ Management ---
+
     // Initial call
     checkLogin();
 });
+
+// 한국 시간 기준으로 created_at을 변환해서 표시하는 함수
+function formatKoreaDate(utcDateStr) {
+  if (!utcDateStr) return '';
+  const utcDate = new Date(utcDateStr);
+  // UTC -> KST 변환 (UTC+9)
+  const kstDate = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
+  const yyyy = kstDate.getFullYear();
+  const mm = String(kstDate.getMonth() + 1).padStart(2, '0');
+  const dd = String(kstDate.getDate()).padStart(2, '0');
+  const hh = String(kstDate.getHours()).padStart(2, '0');
+  const min = String(kstDate.getMinutes()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+}
+

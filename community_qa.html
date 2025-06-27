@@ -9,242 +9,50 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    /* Q&A 페이지 전용 스타일 */
-    .accordion-container {
-      border-top: 2px solid #1a365d;
-      margin-top: 2rem;
+    /* Q&A 페이지 전용 스타일 - Quick Contact Sidebar만 유지 */
+    
+    /* Quick Contact Sidebar */
+    .quick-contact-sidebar {
+      position: fixed;
+      top: 50%;
+      right: 40px;
+      width: 240px;
+      z-index: 100;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      background: #fff;
+      transform: translateY(-50%);
     }
-    .accordion-item {
-      border-bottom: 1px solid #e0e0e0;
+    .contact-box { 
+      margin-bottom: 1rem; 
+      text-align: center; 
+      padding: 1.5rem 1rem; 
     }
-    .accordion-header {
-      display: flex;
-      align-items: center;
-      padding: 1.5rem 1rem;
-      cursor: pointer;
+    .contact-box h3 { 
+      font-size: 1.1rem; 
+      font-weight: 600; 
+      margin: 0 0 1rem; 
+      color: #1a365d; 
+    }
+    .contact-box .phone-number { 
+      font-size: 1.3rem; 
+      font-weight: 700; 
+      color: #333; 
+    }
+    .contact-box .kakao-link { 
+      display: block; 
+      background-color: #ffeb00; 
+      padding: 1rem; 
+      text-decoration: none; 
+      color: #3c1e1e; 
+      font-weight: 600; 
       transition: background-color 0.3s;
     }
-    .accordion-item:hover .accordion-header {
-      background-color: #f8f9fa;
+    .contact-box .kakao-link:hover {
+      background-color: #fdd835;
     }
-    .accordion-item.active .accordion-header {
-      background-color: #f0f2f5;
-      color: #1a365d;
-    }
-    .accordion-header .q-icon {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #1a365d;
-      margin-right: 1.5rem;
-      flex-shrink: 0;
-    }
-    .accordion-header h3 {
-      flex-grow: 1;
-      font-size: 1.1rem;
-      font-weight: 500;
-      margin: 0;
-    }
-    .accordion-header .toggle-icon {
-      font-size: 1.2rem;
-      transition: transform 0.3s ease;
-    }
-    .accordion-item.active .toggle-icon {
-      transform: rotate(180deg);
-    }
-    .accordion-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease-out, padding 0.4s ease-out;
-      background-color: #f8f9fa;
-    }
-    .answer-wrapper {
-      display: flex;
-      padding: 1.5rem 2rem 2rem 2rem;
-      border-top: 1px dashed #ddd;
-    }
-    .answer-wrapper .a-icon {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #1a365d;
-      margin-right: 1.5rem;
-    }
-    .answer-wrapper p {
-      margin: 0;
-      line-height: 1.8;
-      font-size: 1rem;
-      color: #444;
-      white-space: pre-line;
-    }
-    
-    /* 모바일 최적화 */
-    @media (max-width: 768px) {
-      .accordion-header {
-        padding: 1.1rem 0.7rem !important;
-        align-items: flex-start;
-        background: #f7fafd !important;
-        border-radius: 8px 8px 0 0 !important;
-        margin-bottom: 0.2rem !important;
-      }
-      .accordion-header .q-icon {
-        font-size: 1.1rem !important;
-        margin-right: 0.7rem !important;
-        color: #1a365d !important;
-      }
-      .accordion-header h3 {
-        font-size: 0.98rem !important;
-        line-height: 1.5 !important;
-        font-weight: 600 !important;
-        color: #1a365d !important;
-        margin-right: 0.5rem !important;
-        word-break: keep-all !important;
-      }
-      .accordion-header .toggle-icon {
-        font-size: 1.1rem !important;
-        margin-top: 0.1rem !important;
-        flex-shrink: 0;
-      }
-      .accordion-item.active .accordion-header {
-        background: #eaf2fb !important;
-        color: #1a365d !important;
-      }
-      .accordion-content {
-        background: #fff !important;
-        border-radius: 0 0 8px 8px !important;
-        margin-bottom: 0.7rem !important;
-        box-shadow: 0 2px 8px rgba(26,54,93,0.04) !important;
-      }
-      .answer-wrapper {
-        display: block !important;
-        padding: 1.1rem 0.7rem 1.3rem 2.1rem !important;
-        border-top: 1px dashed #dbe3ec !important;
-        background: #fafdff !important;
-        border-radius: 0 0 8px 8px !important;
-        position: relative;
-      }
-      .answer-wrapper .a-icon {
-        font-size: 1.1rem !important;
-        color: #1a365d !important;
-        position: absolute;
-        left: 0.7rem;
-        top: 1.1rem;
-        font-weight: 700;
-      }
-      .answer-wrapper p, .answer-wrapper ul, .answer-wrapper ol {
-        font-size: 0.92rem !important;
-        line-height: 1.7 !important;
-        color: #333 !important;
-        margin: 0 0 0.5rem 0 !important;
-        word-break: keep-all !important;
-      }
-      .answer-wrapper ul, .answer-wrapper ol {
-        padding-left: 1.1em !important;
-        margin-bottom: 0.5rem !important;
-      }
-      .answer-wrapper li {
-        margin-bottom: 0.3rem !important;
-        font-size: 0.92rem !important;
-        line-height: 1.6 !important;
-      }
-    }
-    
-    @media (max-width: 576px) {
-      .accordion-header {
-        padding: 1rem 0.6rem;
-      }
-      
-      .accordion-header .q-icon {
-        font-size: 1.2rem;
-        margin-right: 0.8rem;
-      }
-      
-      .accordion-header h3 {
-        font-size: 0.95rem;
-        line-height: 1.3;
-      }
-      
-      .accordion-header .toggle-icon {
-        font-size: 1rem;
-      }
-      
-      .answer-wrapper {
-        padding: 1rem 0.8rem 1.3rem 0.8rem;
-      }
-      
-      .answer-wrapper .a-icon {
-        font-size: 1.2rem;
-        margin-right: 0.8rem;
-      }
-      
-      .answer-wrapper p {
-        font-size: 0.9rem;
-        line-height: 1.6;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .accordion-header {
-        padding: 0.9rem 0.5rem;
-      }
-      
-      .accordion-header .q-icon {
-        font-size: 1.1rem;
-        margin-right: 0.7rem;
-      }
-      
-      .accordion-header h3 {
-        font-size: 0.9rem !important;
-      }
-      
-      .accordion-header .toggle-icon {
-        font-size: 0.95rem;
-      }
-      
-      .answer-wrapper {
-        padding: 0.8rem 0.4rem 1rem 1.5rem !important;
-      }
-      
-      .answer-wrapper .a-icon {
-        left: 0.4rem;
-        top: 0.8rem;
-      }
-      
-      .answer-wrapper p, .answer-wrapper ul, .answer-wrapper ol, .answer-wrapper li {
-        font-size: 0.85rem !important;
-      }
-    }
-    
-    @media (max-width: 400px) {
-      .accordion-header {
-        padding: 0.8rem 0.4rem;
-      }
-      
-      .accordion-header .q-icon {
-        font-size: 1rem;
-        margin-right: 0.6rem;
-      }
-      
-      .accordion-header h3 {
-        font-size: 0.85rem;
-        line-height: 1.3;
-      }
-      
-      .accordion-header .toggle-icon {
-        font-size: 0.9rem;
-      }
-      
-      .answer-wrapper {
-        padding: 0.8rem 0.5rem 1.1rem 0.5rem;
-      }
-      
-      .answer-wrapper .a-icon {
-        font-size: 1rem;
-        margin-right: 0.6rem;
-      }
-      
-      .answer-wrapper p {
-        font-size: 0.8rem;
-        line-height: 1.5;
-      }
+    @media (max-width: 1200px) {
+      .quick-contact-sidebar { display: none; }
     }
   </style>
 </head>
@@ -263,283 +71,23 @@
           </div>
           <div class="card-content">
             <div class="accordion-container">
-              <!-- 신동탄간호학원 자주 묻는 질문 (FAQ) -->
-
-              <div class="accordion-item animate-on-scroll">
-                <div class="accordion-header">
-                  <span class="q-icon">Q</span>
-                  <h3>간호란 무엇인가요?</h3>
-                  <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="accordion-content">
-                  <div class="answer-wrapper">
-                    <span class="a-icon">A</span>
-                    <p>간호는 단순히 병을 치료하는 행위를 넘어서 환자의 신체적 상태뿐 아니라 정신적, 정서적, 사회적 배경까지 고려하여 돌보는 '전인간호(comprehensive nursing)'입니다. 플로렌스 나이팅게일은 간호를 "환자가 건강을 회복하는 데 도움이 되도록 최선의 환경을 제공하는 것"이라 정의했고, 국제간호사협의회(ICN)는 간호를 "건강 상태와 관계없이 개인이 일상생활을 유지할 수 있도록 의지, 지식, 힘이 부족한 부분을 보충해주는 것"이라고 설명합니다. 결국 간호는 환자가 독립적인 삶을 회복하도록 돕는 과정이며, 환자마다 다르게 나타나는 반응과 요구를 정확히 파악하고 이를 충족시켜주는 맞춤형 접근이 필요합니다.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="accordion-item animate-on-scroll">
-                <div class="accordion-header">
-                  <span class="q-icon">Q</span>
-                  <h3>간호조무사의 역할은 어떤가요?</h3>
-                  <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="accordion-content">
-                  <div class="answer-wrapper">
-                    <span class="a-icon">A</span>
-                    <p>간호조무사는 의사나 간호사의 지시에 따라 환자의 건강을 보조하는 역할을 수행하는 보건의료인의 중요한 일원입니다. 사랑과 보호를 바탕으로, 질병 예방, 건강 교육, 신체검사 보조, 환자 상담, 환경적 건강관리 등 다양한 활동을 수행합니다. 또한, 환자와 면담을 통해 문제를 파악하고, 관찰 기술을 통해 건강 상태를 점검하며, 실무 현장에서의 정확한 판단과 실행 능력이 요구됩니다. 이를 위해 생리학뿐만 아니라 심리학, 사회학 등 다양한 지식이 필요하며, 다양한 임상기술과 사람에 대한 이해도 함께 갖춰야 합니다.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="accordion-item animate-on-scroll">
-                <div class="accordion-header">
-                  <span class="q-icon">Q</span>
-                  <h3>간호조무사의 업무 범위는 어떻게 되나요?</h3>
-                  <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="accordion-content">
-                  <div class="answer-wrapper">
-                    <span class="a-icon">A</span>
-                    <p>간호조무사의 업무는 매우 폭넓고 실질적입니다. 주 업무는 다음과 같습니다:</p>
-                    <ul>
-                      <li>진료 보조: 환자의 혈압, 맥박, 체온, 호흡 등을 측정하고 기록하며, 주사, 약물 투여, 드레싱 교체 등의 업무를 수행합니다.</li>
-                      <li>간호 보조: 환자 상태 관찰, 병실 환경 정리, 식사 보조, 침구 교체 등 환자 돌봄 전반을 지원합니다.</li>
-                      <li>의료물품 관리: 사용한 기구 및 물품의 세척, 소독, 정리 보관 등을 수행합니다.</li>
-                      <li>행정 업무: 접수 및 수납, 각종 서류 작성, 의료기록 정리 등의 병원 행정 보조를 담당합니다.</li>
-                      <li>교육 및 상담: 환자와 보호자에게 질병, 치료, 약물 복용법 등에 대해 교육하거나 심리적 안정과 지지를 제공합니다.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div class="accordion-item animate-on-scroll">
-                <div class="accordion-header">
-                  <span class="q-icon">Q</span>
-                  <h3>간호조무사 자격증은 어떻게 취득하나요?</h3>
-                  <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="accordion-content">
-                  <div class="answer-wrapper">
-                    <span class="a-icon">A</span>
-                    <ol>
-                      <li>고등학교 졸업 이상의 학력을 소지해야 합니다.</li>
-                      <li>보건복지부 지정 간호조무사 교육훈련기관에서 총 1,520시간의 이론 및 실습 교육을 이수해야 합니다. (이론 740시간, 실습 780시간)</li>
-                      <li>교육 이수 후 국가시험에 응시하여 합격하면 자격증이 발급됩니다.</li>
-                      <li>발급된 자격증은 의료기관, 복지시설 등에서 정식으로 간호조무사로서 활동할 수 있는 기반이 됩니다.</li>
-                    </ol>
-                  </div>
-                </div>
-              </div>
-
-              <div class="accordion-item animate-on-scroll">
-                <div class="accordion-header">
-                  <span class="q-icon">Q</span>
-                  <h3>실습은 어떤 식으로 진행되나요?</h3>
-                  <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="accordion-content">
-                  <div class="answer-wrapper">
-                    <span class="a-icon">A</span>
-                    <p>실습은 크게 학원 내 실습과 의료기관 실습으로 나뉘며, 현장 적응력을 높이는 데 중점을 둡니다.<br>▶ 학원 실습: 혈압 및 혈당 측정, 심폐소생술(CPR), 근육주사, 혈관주사 등 실무에 직접 필요한 기술을 원장님이 1:1로 개별 지도를 통해 반복 훈련시켜 드립니다. 이 과정을 통해 실제 병원에 입사했을 때 즉시 업무 수행이 가능하도록 준비됩니다.<br>▶ 의료기관 실습:</p>
-                    <ul>
-                      <li>외래실습: 신체계측, 체온·맥박 측정, 진료 전 처치 보조, 검사 보조, 소독물품 정리 등</li>
-                      <li>병동실습: 병실 정돈, 침대 정리, 식사 보조, 검체 운반, 환자 이송, 활력징후 체크 등<br>실습은 실제 병원 환경에서 이루어져 실무 감각을 익히는 데 매우 유익합니다.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div class="accordion-item animate-on-scroll">
-                <div class="accordion-header">
-                  <span class="q-icon">Q</span>
-                  <h3>국민내일배움카드(국비) 지원이 가능한가요?</h3>
-                  <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="accordion-content">
-                  <div class="answer-wrapper">
-                    <span class="a-icon">A</span>
-                    <p>네, 가능합니다. 국민내일배움카드는 고용노동부에서 지원하는 국비지원 제도이며, 조건만 충족하면 대부분의 국민이 신청할 수 있습니다.</p>
-                    <ul>
-                      <li>지원대상: 실업자, 경력단절 여성, 저소득 자영업자, 재직자 등 (단, 일부 공무원, 고소득자 제외)</li>
-                      <li>지원금액: 5년간 300~500만 원까지 지원 가능하며, 간호조무사 과정은 평균 약 300만 원 지원됩니다.</li>
-                      <li>출석 관리: 출석률에 따라 훈련비와 훈련장려금이 매월 차등 지급됩니다.</li>
-                      <li>보충수업: 결석, 지각, 조퇴 등으로 부족한 수업시간은 야간반(17:20~22:00)을 통해 보완할 수 있어 걱정 없이 이수 가능합니다.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div class="accordion-item animate-on-scroll">
-                <div class="accordion-header">
-                  <span class="q-icon">Q</span>
-                  <h3>국비 자부담금이 학원마다 다른 이유는?</h3>
-                  <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="accordion-content">
-                  <div class="answer-wrapper">
-                    <span class="a-icon">A</span>
-                    <p>국비 자부담금은 훈련기관이 고용노동부에 신청하는 훈련비 기준에 따라 달라지며, 학원마다 교육환경, 강사료, 운영비 구조가 다르기 때문에 차이가 생깁니다. 신동탄간호학원은 원장님이 직접 실습과 강의를 진행하시기 때문에 외부 강사 인건비가 들지 않아, 보다 경제적인 비용으로 질 높은 교육을 제공합니다. 따라서 저희 학원은 합리적인 자부담금으로도 만족도 높은 수업을 제공하고 있습니다.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="accordion-item animate-on-scroll">
-                <div class="accordion-header">
-                  <span class="q-icon">Q</span>
-                  <h3>국민내일배움카드 신청 절차는?</h3>
-                  <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="accordion-content">
-                  <div class="answer-wrapper">
-                    <span class="a-icon">A</span>
-                    <ol>
-                      <li>HRD-Net 홈페이지에서 회원가입 후 구직등록 (실업자 대상)</li>
-                      <li>국민내일배움카드 발급 신청 (온라인/고용센터)</li>
-                      <li>고용센터 심사 후 승인 → 카드 발급</li>
-                      <li>훈련과정 검색 → 간호조무사 과정 선택 후 진단 상담 진행</li>
-                      <li>상담 완료 후 수강 신청 및 자부담금 결제</li>
-                      <li>훈련 개시 → 교육 이수 후 시험 응시 → 자격증 취득 및 취업<br>※ 자세한 절차나 서류 준비가 어려우시면 언제든 학원으로 문의 주세요. 친절히 도와드립니다.</li>
-                    </ol>
-                  </div>
-                </div>
-              </div>
-
-              <div class="accordion-item animate-on-scroll">
-                <div class="accordion-header">
-                  <span class="q-icon">Q</span>
-                  <h3>간호조무사 전망은 어떤가요?</h3>
-                  <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="accordion-content">
-                  <div class="answer-wrapper">
-                    <span class="a-icon">A</span>
-                    <p>간호조무사는 고령화 사회로 진입하는 우리나라에서 수요가 점점 높아지는 직업입니다.</p>
-                    <ul>
-                      <li>의료기관 증가: 병·의원 수의 꾸준한 증가로 인해 고용 수요 지속 증가</li>
-                      <li>고령화: 65세 이상 인구 비율이 급격히 증가하며, 노인 대상 간호·돌봄 서비스 필요성 확대</li>
-                      <li>정부 정책: 간호·간병통합서비스 확산, 방문간호 제도 강화 등으로 간호조무사 역할 확대</li>
-                      <li>통계 기반 예측: 2016년 18만 명에서 2026년 22만 명 이상으로 연평균 2.2% 이상 증가 전망</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div class="accordion-item animate-on-scroll">
-                <div class="accordion-header">
-                  <span class="q-icon">Q</span>
-                  <h3>신동탄간호학원의 취업률은 어떤가요?</h3>
-                  <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="accordion-content">
-                  <div class="answer-wrapper">
-                    <span class="a-icon">A</span>
-                    <p>신동탄간호학원은 체계적인 교육과 밀착형 취업 관리를 통해 높은 취업률을 자랑합니다.</p>
-                    <ul>
-                      <li>최근 기준 93.3% 이상의 취업률</li>
-                      <li>연령별 취업처:
-                        <ul>
-                          <li>20대: 성형외과, 피부과, 치과</li>
-                          <li>30~40대: 내과, 정형외과, 외과</li>
-                          <li>50~60대: 요양병원, 산후조리원, 한의원, 한방병원 등</li>
-                        </ul>
-                      </li>
-                      <li>우수학생은 학원장이 직접 추천하여 빠른 취업 가능</li>
-                      <li>졸업 후에도 취업 상담을 통해 지속적인 도움 제공</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div class="accordion-item animate-on-scroll">
-                <div class="accordion-header">
-                  <span class="q-icon">Q</span>
-                  <h3>급여는 어느 정도 되나요?</h3>
-                  <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="accordion-content">
-                  <div class="answer-wrapper">
-                    <span class="a-icon">A</span>
-                    <p>간호조무사의 급여는 근무하는 지역, 의료기관의 규모, 경력 등에 따라 차이가 있습니다.</p>
-                    <ul>
-                      <li>신입 기준: 평균 월급 190~220만 원 수준</li>
-                      <li>중견 이상 경력자: 250~300만 원 이상도 가능</li>
-                      <li>연봉 기준: 하위 25% 약 2,170만 원, 중간값 약 2,520만 원, 상위 25% 약 2,980만 원 (잡코리아 기준)</li>
-                      <li>투약 가능 여부나 야간근무 가능 여부에 따라 급여 격차 발생</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div class="accordion-item animate-on-scroll">
-                <div class="accordion-header">
-                  <span class="q-icon">Q</span>
-                  <h3>간호조무사에 어울리는 적성은?</h3>
-                  <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="accordion-content">
-                  <div class="answer-wrapper">
-                    <span class="a-icon">A</span>
-                    <p>간호조무사는 사람을 상대하는 직업이기 때문에 다음과 같은 성향이 중요합니다:</p>
-                    <ul>
-                      <li>배려심과 공감 능력: 환자의 고통과 불안을 이해하고 따뜻하게 응대할 수 있는 태도</li>
-                      <li>책임감과 성실함: 환자의 생명과 건강에 영향을 미치기 때문에 항상 신중한 자세 유지</li>
-                      <li>빠른 상황판단: 돌발 상황에 침착하게 대처하고, 지시에 즉각 반응할 수 있는 능력</li>
-                      <li>예의와 협조심: 팀 의료 환경에서 협업을 중시하며, 교양과 예절을 갖춘 행동이 필요함</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div class="accordion-item animate-on-scroll">
-                <div class="accordion-header">
-                  <span class="q-icon">Q</span>
-                  <h3>자격증 취득 후 진로는 어떻게 되나요?</h3>
-                  <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="accordion-content">
-                  <div class="answer-wrapper">
-                    <span class="a-icon">A</span>
-                    <p>간호조무사의 진로는 매우 다양합니다.</p>
-                    <ul>
-                      <li>의료기관: 종합병원, 병원, 의원, 치과의원, 한의원, 한방병원, 요양병원 등</li>
-                      <li>보건기관: 보건소, 보건지소, 정신보건시설, 건강관리센터 등</li>
-                      <li>사회복지시설: 장애인복지관, 노인복지센터, 산후조리원, 어린이집, 유치원 등</li>
-                      <li>방문간호: 관련 교육(700시간) 이수 후 장기요양기관의 방문간호 업무 가능</li>
-                      <li>창업: 경력 축적 후 개인 건강관리 센터나 관련 사업 진출 가능</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div class="accordion-item animate-on-scroll">
-                <div class="accordion-header">
-                  <span class="q-icon">Q</span>
-                  <h3>원장님이 직접 실습과 취업을 관리하신다던데요?</h3>
-                  <i class="fas fa-chevron-down toggle-icon"></i>
-                </div>
-                <div class="accordion-content">
-                  <div class="answer-wrapper">
-                    <span class="a-icon">A</span>
-                    <p>맞습니다! 신동탄간호학원은 원장님이 직접 모든 교육 과정을 책임지고 지도하십니다.</p>
-                    <ul>
-                      <li>이론+실습 직접 지도: 대학병원 출신 원장님의 실무 중심 교육으로 학습효율 극대화</li>
-                      <li>실습 퀄리티: 실습 도중에도 현장 사례를 통한 반복 교육으로 실전 감각 향상</li>
-                      <li>개별 취업 상담: 수료 후 적성과 지역 등을 고려해 1:1로 취업 상담 진행</li>
-                      <li>추천 시스템 운영: 우수 훈련생은 협약된 병·의원에 바로 추천 취업 연결 가능</li>
-                      <li>수료 후 관리까지 책임: 단순 교육이 아닌 인생 진로를 함께 고민해드리는 '진짜 교육'이 이루어집니다.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
+              <!-- FAQ 데이터는 Supabase에서 동적으로 로드됩니다 -->
             </div>
           </div>
         </div>
       </div>
     </section>
   </main>
+
+  <aside class="quick-contact-sidebar">
+    <div class="contact-box">
+      <h3>문의 전화</h3>
+      <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
+    </div>
+    <div class="contact-box" style="padding: 0;">
+      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
+    </div>
+  </aside>
 
   <!-- COMP-FOOTER-01: 글로벌 푸터 -->
   <footer class="footer">
@@ -562,7 +110,107 @@
       </div>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="supabase-config.js"></script>
+  
+  <!-- FAQ 데이터 로드 스크립트 -->
+  <script>
+    // FAQ 데이터를 Supabase에서 불러와서 화면에 표시
+    async function loadFAQData() {
+      try {
+        console.log('FAQ 데이터 로딩 중...');
+        if (!window.supabaseClient) {
+          console.error('Supabase 클라이언트가 초기화되지 않았습니다!');
+          return;
+        }
+        const { data, error } = await window.supabaseClient
+          .from('qa')
+          .select('*')
+          .order('created_at', { ascending: true });
 
+        if (error) {
+          console.error('FAQ 데이터 로드 실패:', error);
+          return;
+        }
+        console.log('FAQ 데이터 로드 완료:', data);
+
+        const accordionContainer = document.querySelector('.accordion-container');
+        if (!accordionContainer) {
+          console.error('아코디언 컨테이너를 찾을 수 없습니다!');
+          return;
+        }
+
+        // 기존 FAQ(테스트용)는 유지, Supabase 데이터만 추가
+        data.forEach((faq, index) => {
+          const item = document.createElement('div');
+          item.className = 'accordion-item animate-on-scroll';
+          item.innerHTML = `
+            <div class="accordion-header">
+              <span class="q-icon">Q</span>
+              <h3>${faq.question}</h3>
+              <i class="fas fa-chevron-down toggle-icon"></i>
+            </div>
+            <div class="accordion-content">
+              <div class="answer-wrapper">
+                <span class="a-icon">A</span>
+                <div class="answer-content">${faq.answer.replace(/\n/g, '<br>')}</div>
+              </div>
+            </div>
+          `;
+          accordionContainer.appendChild(item);
+        });
+
+        initializeAccordion();
+      } catch (error) {
+        console.error('FAQ 데이터 로드 중 오류 발생:', error);
+      }
+    }
+    
+    // 아코디언 기능 초기화
+    function initializeAccordion() {
+      console.log('아코디언 초기화 시작');
+      const accordionHeaders = document.querySelectorAll('.accordion-header');
+      console.log('찾은 아코디언 헤더 수:', accordionHeaders.length);
+      
+      accordionHeaders.forEach((header, index) => {
+        console.log(`아코디언 ${index + 1} 이벤트 리스너 추가`);
+        header.addEventListener('click', function() {
+          console.log('아코디언 클릭됨');
+          const accordionItem = this.parentElement;
+          const content = accordionItem.querySelector('.accordion-content');
+          const isActive = accordionItem.classList.contains('active');
+          
+          // 모든 아코디언 닫기
+          document.querySelectorAll('.accordion-item').forEach(item => {
+            item.classList.remove('active');
+            const itemContent = item.querySelector('.accordion-content');
+            itemContent.style.maxHeight = '0';
+            itemContent.style.padding = '0';
+          });
+          
+          // 클릭된 아코디언이 닫혀있었다면 열기
+          if (!isActive) {
+            accordionItem.classList.add('active');
+            content.style.maxHeight = content.scrollHeight + 'px';
+            content.style.padding = '1.5rem';
+            console.log('아코디언 열림');
+          }
+        });
+      });
+      console.log('아코디언 초기화 완료');
+    }
+    
+    // 페이지 로드 시 FAQ 데이터 로드
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM 로드 완료, FAQ 데이터 로드 시작');
+      console.log('Supabase 클라이언트 상태:', window.supabaseClient);
+      
+      // 약간의 지연을 두어 테스트용 FAQ가 먼저 렌더링되도록 함
+      setTimeout(() => {
+        loadFAQData();
+      }, 500); // 지연 시간을 늘림
+    });
+  </script>
   <script src="script.js"></script>
 </body>
 </html> 
