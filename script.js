@@ -740,6 +740,9 @@ async function initInstructorsPage() {
         listView.style.display = 'none';
         detailView.style.display = 'block';
 
+        // 스크롤을 최상단으로 이동
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
         // '목록으로 돌아가기' 버튼 이벤트 리스너
         detailView.querySelector('.back-to-list').addEventListener('click', () => {
           detailView.style.display = 'none';
@@ -930,9 +933,6 @@ async function initGalleryPage() {
  * 갤러리 상세 페이지 초기화 (Supabase 연동)
  */
 async function initGalleryDetailPage() {
-  const detailContainer = document.getElementById('gallery-detail-view');
-  if (!detailContainer) return;
-
   try {
     const urlParams = new URLSearchParams(window.location.search);
     const postId = parseInt(urlParams.get('id'));
@@ -969,25 +969,39 @@ async function initGalleryDetailPage() {
     document.getElementById('gallery-detail-image').alt = currentItem.title;
     document.getElementById('gallery-detail-text').textContent = currentItem.description || '';
 
-    // 이전/다음글 네비게이션 추가
-    const navContainer = document.getElementById('gallery-detail-nav');
-    if (navContainer) {
-      navContainer.innerHTML = `
-        <ul class="post-nav">
-          <li>
-            <div class="nav-label">이전글</div>
-            ${nextPost ? `<a href="community_gallery_detail.html?id=${nextPost.id}" class="nav-title" onclick="incrementViewCount('gallery', ${nextPost.id})">${nextPost.title}</a>` : '<span>이전글이 없습니다.</span>'}
-          </li>
-          <li>
-            <div class="nav-label">다음글</div>
-            ${prevPost ? `<a href="community_gallery_detail.html?id=${prevPost.id}" class="nav-title" onclick="incrementViewCount('gallery', ${prevPost.id})">${prevPost.title}</a>` : '<span>다음글이 없습니다.</span>'}
-          </li>
-        </ul>
-      `;
+    // 이전/다음글 네비게이션 업데이트
+    const prevButton = document.getElementById('prev-button');
+    const nextButton = document.getElementById('next-button');
+    
+    if (prevButton) {
+      if (nextPost) {
+        prevButton.href = `community_gallery_detail.html?id=${nextPost.id}`;
+        prevButton.onclick = () => incrementViewCount('gallery', nextPost.id);
+      } else {
+        prevButton.classList.add('disabled');
+        prevButton.href = '#';
+        prevButton.onclick = (e) => e.preventDefault();
+      }
     }
+    
+    if (nextButton) {
+      if (prevPost) {
+        nextButton.href = `community_gallery_detail.html?id=${prevPost.id}`;
+        nextButton.onclick = () => incrementViewCount('gallery', prevPost.id);
+      } else {
+        nextButton.classList.add('disabled');
+        nextButton.href = '#';
+        nextButton.onclick = (e) => e.preventDefault();
+      }
+    }
+    
   } catch (error) {
     console.error('갤러리 상세 페이지 초기화 오류:', error);
-    detailContainer.innerHTML = '<p style="text-align: center; padding: 4rem;">게시물을 불러오는 데 실패했습니다.</p>';
+    // 에러 메시지를 갤러리 내용 영역에 표시
+    const textElement = document.getElementById('gallery-detail-text');
+    if (textElement) {
+      textElement.innerHTML = '<p style="text-align: center; padding: 4rem; color: #666;">게시물을 불러오는 데 실패했습니다.</p>';
+    }
   }
 }
 

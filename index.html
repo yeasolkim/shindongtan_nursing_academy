@@ -131,239 +131,264 @@
   <script>
     // Supabase 기반 다중 팝업 동적 렌더링
     async function loadPopupsFromSupabase() {
-      if (!window.supabaseClient) return;
-      // 한국 시간 기준 오늘 날짜(YYYY-MM-DD)
-      const today = new Date();
-      const todayStr = today.getFullYear() + '-' +
-        String(today.getMonth() + 1).padStart(2, '0') + '-' +
-        String(today.getDate()).padStart(2, '0');
-      const { data: popups, error } = await window.supabaseClient
-        .from('popups')
-        .select('*')
-        .eq('is_active', true);
-      if (error || !popups) return;
-      popups.forEach(popup => {
-        // 기간 체크
-        if (popup.start_date && todayStr < popup.start_date) return;
-        if (popup.end_date && todayStr > popup.end_date) return;
-        // 오늘 하루 보지 않기 체크 (팝업별로 구분)
-        const dontShowKey = 'popupDontShowToday_' + popup.id;
-        if (localStorage.getItem(dontShowKey) === todayStr) return;
-        renderPopup(popup);
-      });
+      try {
+        if (!window.supabaseClient) {
+          console.warn('supabaseClient가 없습니다.');
+          return;
+        }
+        // 한국 시간 기준 오늘 날짜(YYYY-MM-DD)
+        const today = new Date();
+        const todayStr = today.getFullYear() + '-' +
+          String(today.getMonth() + 1).padStart(2, '0') + '-' +
+          String(today.getDate()).padStart(2, '0');
+        const { data: popups, error } = await window.supabaseClient
+          .from('popups')
+          .select('*')
+          .eq('is_active', true);
+        if (error) {
+          console.error('Supabase 팝업 데이터 조회 오류:', error);
+          return;
+        }
+        if (!popups || popups.length === 0) {
+          console.warn('팝업 데이터가 없습니다.');
+          return;
+        }
+        let shown = 0;
+        popups.forEach(popup => {
+          // 기간 체크
+          if (popup.start_date && todayStr < popup.start_date) return;
+          if (popup.end_date && todayStr > popup.end_date) return;
+          // 오늘 하루 보지 않기 체크 (팝업별로 구분)
+          const dontShowKey = 'popupDontShowToday_' + popup.id;
+          if (localStorage.getItem(dontShowKey) === todayStr) return;
+          try {
+            renderPopup(popup);
+            shown++;
+          } catch (e) {
+            console.error('renderPopup 오류:', e, popup);
+          }
+        });
+        if (shown === 0) {
+          console.warn('조건에 맞는 팝업이 없습니다.');
+        }
+      } catch (e) {
+        console.error('loadPopupsFromSupabase 전체 오류:', e);
+      }
     }
     function renderPopup(popup) {
-      // 팝업 컨테이너 생성
-      const popupDiv = document.createElement('div');
-      popupDiv.className = 'supabase-popup';
-      popupDiv.style.position = 'fixed';
-      popupDiv.style.left = (popup.position_x || 50) + '%';
-      popupDiv.style.top = (popup.position_y || 60) + '%';
-      popupDiv.style.transform = 'translate(-50%, -50%)';
-      popupDiv.style.zIndex = 99999;
-      popupDiv.style.background = 'rgba(255,255,255,0.85)';
-      popupDiv.style.borderRadius = '12px';
-      popupDiv.style.boxShadow = '0 8px 32px 0 rgba(51,74,108,0.18), 0 1.5px 8px 0 rgba(51,74,108,0.10)';
-      popupDiv.style.overflow = 'visible';
-      popupDiv.style.display = 'flex';
-      popupDiv.style.flexDirection = 'column';
-      popupDiv.style.alignItems = 'center';
-      popupDiv.style.justifyContent = 'center';
-      popupDiv.style.maxWidth = '90vw';
-      popupDiv.style.width = 'fit-content';
-      popupDiv.style.height = 'auto';
-      popupDiv.style.padding = '16px 16px 40px 16px';
-      popupDiv.style.border = '2px solid rgba(51,74,108,0.8)';
-      popupDiv.style.backdropFilter = 'blur(8px)';
-      // 닫기 버튼
-      const closeBtn = document.createElement('button');
-      closeBtn.className = 'close-btn';
-      closeBtn.innerHTML = '&times;';
-      closeBtn.style.position = 'absolute';
-      closeBtn.style.top = '18px';
-      closeBtn.style.right = '18px';
-      closeBtn.style.width = '38px';
-      closeBtn.style.height = '38px';
-      closeBtn.style.background = '#334a6c';
-      closeBtn.style.color = 'white';
-      closeBtn.style.border = 'none';
-      closeBtn.style.borderRadius = '50%';
-      closeBtn.style.cursor = 'pointer';
-      closeBtn.style.fontSize = '22px';
-      closeBtn.style.fontWeight = 'bold';
-      closeBtn.style.display = 'flex';
-      closeBtn.style.alignItems = 'center';
-      closeBtn.style.justifyContent = 'center';
-      closeBtn.style.transition = 'all 0.2s';
-      closeBtn.style.zIndex = 10;
-      closeBtn.style.boxShadow = '0 2px 8px rgba(51,74,108,0.12)';
-      closeBtn.onclick = () => popupDiv.remove();
-      // 오늘 하루 보지 않기
-      const checkboxDiv = document.createElement('div');
-      checkboxDiv.className = 'checkbox-container';
-      checkboxDiv.style.position = 'absolute';
-      checkboxDiv.style.bottom = '24px';
-      checkboxDiv.style.left = '28px';
-      checkboxDiv.style.display = 'flex';
-      checkboxDiv.style.alignItems = 'center';
-      checkboxDiv.style.gap = '10px';
-      checkboxDiv.style.zIndex = 10;
-      checkboxDiv.style.background = 'rgba(51,74,108,0.1)';
-      checkboxDiv.style.padding = '10px 18px';
-      checkboxDiv.style.borderRadius = '22px';
-      checkboxDiv.style.backdropFilter = 'blur(5px)';
-      checkboxDiv.style.fontSize = '15px';
-      checkboxDiv.style.color = '#334a6c';
-      checkboxDiv.style.boxShadow = '0 1.5px 6px rgba(51,74,108,0.08)';
-      const dontShowCheckbox = document.createElement('input');
-      dontShowCheckbox.type = 'checkbox';
-      dontShowCheckbox.id = 'dontShowToday_' + popup.id;
-      dontShowCheckbox.style.width = '18px';
-      dontShowCheckbox.style.height = '18px';
-      dontShowCheckbox.style.cursor = 'pointer';
-      dontShowCheckbox.style.accentColor = '#334a6c';
-      dontShowCheckbox.style.margin = '0 2px 0 0';
-      const dontShowLabel = document.createElement('label');
-      dontShowLabel.htmlFor = dontShowCheckbox.id;
-      dontShowLabel.textContent = '오늘 하루 보지 않기';
-      dontShowLabel.style.cursor = 'pointer';
-      dontShowLabel.style.userSelect = 'none';
-      dontShowLabel.style.fontWeight = '500';
-      dontShowCheckbox.onchange = function() {
-        if (this.checked) {
-          const todayStr = new Date().toISOString().slice(0, 10);
-          localStorage.setItem('popupDontShowToday_' + popup.id, todayStr);
-          popupDiv.remove();
+      try {
+        // 팝업 컨테이너 생성
+        const popupDiv = document.createElement('div');
+        popupDiv.className = 'supabase-popup';
+        // 팝업 컨테이너 스타일 개선
+        popupDiv.style.display = 'flex';
+        popupDiv.style.flexDirection = 'column';
+        popupDiv.style.alignItems = 'center';
+        popupDiv.style.background = 'rgba(255,255,255,0.97)';
+        popupDiv.style.borderRadius = '12px';
+        popupDiv.style.boxShadow = '0 4px 16px rgba(51,74,108,0.10)';
+        popupDiv.style.padding = '0';
+        popupDiv.style.width = 'fit-content';
+        popupDiv.style.maxWidth = '98vw';
+        popupDiv.style.maxHeight = '90vh';
+        popupDiv.style.overflow = 'visible';
+        popupDiv.style.position = 'fixed';
+        // 항상 중앙에, 최상위 z-index로 보이게
+        // popup.position_x, position_y(%)에 따라 위치 지정
+        setTimeout(() => {
+          const winW = window.innerWidth;
+          const winH = window.innerHeight;
+          const popW = popupDiv.offsetWidth;
+          const popH = popupDiv.offsetHeight;
+          // 퍼센트 → px 변환, 기본값 50%
+          let left = ((popup.position_x !== undefined ? popup.position_x : 50) / 100) * winW;
+          let top = ((popup.position_y !== undefined ? popup.position_y : 50) / 100) * winH;
+          // 화면 밖으로 나가지 않게 보정
+          left = Math.max(popW / 2 + 8, Math.min(left, winW - popW / 2 - 8));
+          top = Math.max(popH / 2 + 8, Math.min(top, winH - popH / 2 - 8));
+          popupDiv.style.left = left + 'px';
+          popupDiv.style.top = top + 'px';
+          popupDiv.style.transform = 'translate(-50%, -50%)';
+          popupDiv.style.zIndex = '99999';
+        }, 0);
+        // 닫기 버튼
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'close-btn';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.style.alignSelf = 'flex-end';
+        closeBtn.style.marginBottom = '2px';
+        closeBtn.style.marginTop = '6px';
+        closeBtn.style.marginRight = '8px';
+        closeBtn.style.width = '24px';
+        closeBtn.style.height = '24px';
+        closeBtn.style.background = '#334a6c';
+        closeBtn.style.color = 'white';
+        closeBtn.style.border = 'none';
+        closeBtn.style.borderRadius = '50%';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.style.fontSize = '16px';
+        closeBtn.style.fontWeight = 'bold';
+        closeBtn.style.display = 'flex';
+        closeBtn.style.alignItems = 'center';
+        closeBtn.style.justifyContent = 'center';
+        closeBtn.style.transition = 'all 0.2s';
+        closeBtn.onclick = () => popupDiv.remove();
+        // 오늘 하루 보지 않기 체크박스
+        const checkboxDiv = document.createElement('div');
+        checkboxDiv.className = 'checkbox-container';
+        checkboxDiv.style.marginTop = '2px';
+        checkboxDiv.style.alignSelf = 'center';
+        checkboxDiv.style.background = 'rgba(51,74,108,0.08)';
+        checkboxDiv.style.padding = '4px 10px';
+        checkboxDiv.style.borderRadius = '22px';
+        checkboxDiv.style.backdropFilter = 'blur(5px)';
+        checkboxDiv.style.fontSize = '13px';
+        checkboxDiv.style.color = '#334a6c';
+        checkboxDiv.style.boxShadow = '0 1.5px 6px rgba(51,74,108,0.08)';
+        checkboxDiv.style.display = 'flex';
+        checkboxDiv.style.alignItems = 'center';
+        checkboxDiv.style.gap = '10px';
+        const dontShowCheckbox = document.createElement('input');
+        dontShowCheckbox.type = 'checkbox';
+        dontShowCheckbox.id = 'dontShowToday_' + popup.id;
+        dontShowCheckbox.style.width = '15px';
+        dontShowCheckbox.style.height = '15px';
+        dontShowCheckbox.style.cursor = 'pointer';
+        dontShowCheckbox.style.accentColor = '#334a6c';
+        dontShowCheckbox.style.margin = '0 2px 0 0';
+        const dontShowLabel = document.createElement('label');
+        dontShowLabel.htmlFor = dontShowCheckbox.id;
+        dontShowLabel.textContent = '오늘 하루 보지 않기';
+        dontShowLabel.style.cursor = 'pointer';
+        dontShowLabel.style.userSelect = 'none';
+        dontShowLabel.style.fontWeight = '500';
+        dontShowLabel.style.fontSize = '13px';
+        dontShowCheckbox.onchange = function() {
+          if (this.checked) {
+            const todayStr = new Date().toISOString().slice(0, 10);
+            localStorage.setItem('popupDontShowToday_' + popup.id, todayStr);
+            popupDiv.remove();
+          }
+        };
+        checkboxDiv.appendChild(dontShowCheckbox);
+        checkboxDiv.appendChild(dontShowLabel);
+        // 이미지
+        const img = document.createElement('img');
+        img.src = popup.image_url;
+        img.alt = popup.title || '팝업';
+        img.style.display = 'block';
+        img.style.maxWidth = '96vw';
+        img.style.maxHeight = '70vh';
+        img.style.borderRadius = '8px';
+        img.style.boxShadow = '0 2px 12px rgba(51,74,108,0.10)';
+        img.style.background = '#f7f9fb';
+        img.style.margin = '0';
+        // 이미지 로드 후 팝업 크기 조정
+        img.onload = function() {
+          const w = popup.width ? Math.min(popup.width, window.innerWidth * 0.96) : Math.min(img.naturalWidth, window.innerWidth * 0.96);
+          const h = popup.height ? Math.min(popup.height, window.innerHeight * 0.7) : Math.min(img.naturalHeight, window.innerHeight * 0.7);
+          img.style.width = w + 'px';
+          img.style.height = h + 'px';
+          popupDiv.style.width = w + 'px';
+          popupDiv.style.height = 'auto';
+        };
+        // 팝업 내부에 요소 추가
+        popupDiv.appendChild(closeBtn);
+        if (popup.link) {
+          const a = document.createElement('a');
+          a.href = popup.link;
+          a.target = '_blank';
+          a.appendChild(img);
+          popupDiv.appendChild(a);
+        } else {
+          popupDiv.appendChild(img);
         }
-      };
-      checkboxDiv.appendChild(dontShowCheckbox);
-      checkboxDiv.appendChild(dontShowLabel);
-      // 이미지
-      const img = document.createElement('img');
-      img.src = popup.image_url;
-      img.alt = popup.title || '팝업';
-      img.style.display = 'block';
-      img.style.maxWidth = '100%';
-      img.style.maxHeight = '65vh';
-      img.style.objectFit = 'contain';
-      img.style.borderRadius = '12px';
-      img.style.boxShadow = '0 2px 12px rgba(51,74,108,0.10)';
-      img.style.background = '#f7f9fb';
-      img.style.marginBottom = '0.5rem';
-      if (popup.width) img.style.width = '100%';
-      if (popup.height) img.style.height = '100%';
-      // 링크
-      if (popup.link) {
-        const a = document.createElement('a');
-        a.href = popup.link;
-        a.target = '_blank';
-        a.appendChild(img);
-        popupDiv.appendChild(a);
-      } else {
-        popupDiv.appendChild(img);
+        popupDiv.appendChild(checkboxDiv);
+        document.body.appendChild(popupDiv);
+        console.log('팝업 append 완료:', popup);
+      } catch (e) {
+        console.error('renderPopup 함수 내부 오류:', e, popup);
       }
-      popupDiv.appendChild(closeBtn);
-      popupDiv.appendChild(checkboxDiv);
-      document.body.appendChild(popupDiv);
     }
     window.addEventListener('DOMContentLoaded', loadPopupsFromSupabase);
   </script>
   <style>
-    .supabase-popup .close-btn:hover {
-      background: #1e293b;
-      transform: scale(1.12);
-      box-shadow: 0 4px 16px rgba(51,74,108,0.18);
-    }
     .supabase-popup {
-      max-width: 90vw !important;
-      max-height: none !important;
-      width: fit-content !important;
-      height: auto !important;
-      overflow: visible !important;
-      padding: 16px 16px 40px 16px !important;
-      border: 2px solid rgba(51,74,108,0.8) !important;
-      background: rgba(255,255,255,0.85) !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      background: rgba(255,255,255,0.97) !important;
       border-radius: 12px !important;
-      box-shadow: 0 8px 32px 0 rgba(51,74,108,0.18), 0 1.5px 8px 0 rgba(51,74,108,0.10) !important;
-      font-family: 'Pretendard', 'Noto Sans KR', sans-serif !important;
-      backdrop-filter: blur(8px) !important;
+      box-shadow: 0 4px 16px rgba(51,74,108,0.10) !important;
+      padding: 0 !important;
+      width: fit-content !important;
+      max-width: 98vw !important;
+      max-height: 90vh !important;
+      box-sizing: border-box !important;
+      overflow: visible !important;
     }
     .supabase-popup img {
-      max-width: 100%;
-      max-height: 65vh;
-      width: auto;
-      height: auto;
-      object-fit: contain;
-      display: block;
-      margin: 0 auto 0.5rem auto;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(51,74,108,0.10);
-      background: #f7f9fb;
+      margin: 0 !important;
+      display: block !important;
+      border-radius: 8px !important;
+      box-shadow: 0 2px 12px rgba(51,74,108,0.10) !important;
+      background: #f7f9fb !important;
+      max-width: 96vw !important;
+      max-height: 70vh !important;
+      object-fit: contain !important;
     }
-    .supabase-popup .checkbox-container input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      cursor: pointer;
-      accent-color: #334a6c;
-      margin: 0 2px 0 0;
+    .supabase-popup .close-btn {
+      align-self: flex-end !important;
+      margin-bottom: 2px !important;
+      margin-top: 6px !important;
+      margin-right: 8px !important;
+      width: 24px !important;
+      height: 24px !important;
+      font-size: 16px !important;
+      min-width: 0 !important;
+      min-height: 0 !important;
+      padding: 0 !important;
     }
-    .supabase-popup .checkbox-container label {
-      cursor: pointer;
-      user-select: none;
-      font-weight: 500;
-      color: #334a6c;
-    }
-    .supabase-popup .checkbox-container {
-      background: rgba(51,74,108,0.1);
-      color: #334a6c;
-      box-shadow: 0 1.5px 6px rgba(51,74,108,0.08);
-      border-radius: 22px;
-      font-size: 15px;
-      padding: 10px 18px;
-      left: 28px !important;
-      bottom: 24px !important;
-    }
-    @media (max-width: 768px) {
-      .supabase-popup {
-        max-width: 98vw !important;
-        padding: 6px 1vw 12px 1vw !important;
-        border-radius: 8px !important;
-        background: rgba(255,255,255,0.8) !important;
-        backdrop-filter: blur(6px) !important;
-      }
-      .supabase-popup img {
-        max-width: 92vw;
-        max-height: 45vh;
-        border-radius: 8px;
-        width: 100%;
-        height: auto;
-        min-width: 180px;
-        min-height: 120px;
-      }
+    @media (max-width: 600px) {
       .supabase-popup .close-btn {
-        top: 8px !important;
-        right: 8px !important;
-        width: 30px !important;
-        height: 30px !important;
-        font-size: 18px !important;
+        width: 18px !important;
+        height: 18px !important;
+        font-size: 13px !important;
+        margin-top: 4px !important;
+        margin-right: 4px !important;
       }
       .supabase-popup .checkbox-container {
-        font-size: 11px;
-        padding: 4px 8px;
-        left: 6px !important;
-        bottom: 6px !important;
-        border-radius: 10px;
-        min-width: unset;
-        box-shadow: none;
+        padding: 2px 6px !important;
+        font-size: 11px !important;
       }
       .supabase-popup .checkbox-container input[type="checkbox"] {
-        width: 13px;
-        height: 13px;
+        width: 12px !important;
+        height: 12px !important;
       }
       .supabase-popup .checkbox-container label {
-        font-size: 11px;
-        font-weight: 400;
+        font-size: 11px !important;
       }
+    }
+    .supabase-popup .checkbox-container {
+      margin-top: 2px !important;
+      align-self: center !important;
+      background: rgba(51,74,108,0.08) !important;
+      padding: 4px 10px !important;
+      border-radius: 22px !important;
+      font-size: 13px !important;
+      color: #334a6c !important;
+      box-shadow: 0 1.5px 6px rgba(51,74,108,0.08) !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+      backdrop-filter: blur(5px) !important;
+    }
+    .supabase-popup .checkbox-container input[type="checkbox"] {
+      width: 15px !important;
+      height: 15px !important;
+    }
+    .supabase-popup .checkbox-container label {
+      font-size: 13px !important;
     }
     .footer-container {
       min-height: 180px !important;

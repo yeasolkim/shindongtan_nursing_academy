@@ -308,21 +308,6 @@
       }
     }
     /* 공지사항 상세/리스트 페이지 전용 스타일 (상세페이지와 동일하게) */
-    .post-main { 
-      padding: 4rem 0; 
-      background-color: #ffffff; 
-    }
-    .post-container { 
-      max-width: 1400px; 
-      margin: 0 auto; 
-      padding: 0 2rem; 
-      display: flex; 
-      gap: 2rem; 
-    }
-    .post-content-wrapper { 
-      flex: 1; 
-      min-width: 0; 
-    }
     .quick-contact-sidebar {
       position: fixed;
       top: 50%;
@@ -365,86 +350,64 @@
     @media (max-width: 1200px) {
       .quick-contact-sidebar { display: none; }
     }
-    /* 모바일 최적화 */
-    @media (max-width: 768px) {
-      .post-main {
-        padding: 2rem 0;
-      }
-      .post-container {
-        padding: 0 1rem;
-        flex-direction: column;
-        gap: 1rem;
-      }
-    }
-    @media (max-width: 576px) {
-      .post-main {
-        padding: 1.5rem 0;
-      }
-      .post-container {
-        padding: 0 0.8rem;
-      }
-    }
-    @media (max-width: 400px) {
-      .post-container {
-        padding: 0 0.5rem;
-      }
-    }
   </style>
 </head>
 <body>
   <header class="header"></header>
   <div id="page-hero-container"></div>
 
-  <main class="post-main">
-    <div class="post-container">
-      <div class="post-content-wrapper" id="notice-list-wrapper">
-        <!-- 기존 공지사항 리스트/검색/페이지네이션 등 모두 이 영역에 -->
-        <div class="section-title">
-          <h2>공지사항</h2>
-          <p>신동탄간호학원의 최신 소식을 전해드립니다.</p>
-        </div>
-        <div class="card-content">
-          <div class="board-controls">
-            <div class="total-posts" id="total-posts-counter"></div>
-            <div class="search-bar">
-              <select id="notice-search-type">
-                <option value="title">제목</option>
-                <option value="content">내용</option>
-                <option value="title_content">제목+내용</option>
-              </select>
-              <input type="text" id="notice-search-input" placeholder="검색어를 입력하세요">
-              <button id="notice-search-btn">검색</button>
-            </div>
+  <main>
+    <section class="page-section">
+      <div class="container">
+        <div class="content-card">
+          <div class="section-title">
+            <h2>공지사항</h2>
+            <p>신동탄간호학원의 최신 소식을 전해드립니다.</p>
           </div>
-
-          <div class="board-list" id="notice-list">
-            <div class="board-header">
-              <div class="number">번호</div>
-              <div class="title">제목</div>
-              <div class="date">날짜</div>
-              <div class="views">조회</div>
+          <div class="card-content">
+            <div class="board-controls">
+              <div class="total-posts" id="total-posts-counter"></div>
+              <div class="search-bar">
+                <select id="notice-search-type">
+                  <option value="title">제목</option>
+                  <option value="content">내용</option>
+                  <option value="title_content">제목+내용</option>
+                </select>
+                <input type="text" id="notice-search-input" placeholder="검색어를 입력하세요">
+                <button id="notice-search-btn">검색</button>
+              </div>
             </div>
-            <!-- 게시물 목록이 여기에 동적으로 삽입됩니다. -->
-          </div>
 
-          <div class="board-bottom">
-            <div class="pagination" id="pagination">
-              <!-- 페이지네이션 버튼이 여기에 동적으로 삽입됩니다. -->
+            <div class="board-list" id="notice-list">
+              <div class="board-header">
+                <div class="number">번호</div>
+                <div class="title">제목</div>
+                <div class="date">날짜</div>
+                <div class="views">조회</div>
+              </div>
+              <!-- 게시물 목록이 여기에 동적으로 삽입됩니다. -->
+            </div>
+
+            <div class="board-bottom">
+              <div class="pagination" id="pagination">
+                <!-- 페이지네이션 버튼이 여기에 동적으로 삽입됩니다. -->
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <aside class="quick-contact-sidebar">
-        <div class="contact-box">
-          <h3>문의 전화</h3>
-          <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
-        </div>
-        <div class="contact-box" style="padding: 0;">
-          <a href="#" class="kakao-link"><strong>KakaoTalk</strong><span>플러스 친구</span></a>
-        </div>
-      </aside>
-    </div>
+    </section>
   </main>
+
+  <aside class="quick-contact-sidebar">
+    <div class="contact-box">
+      <h3>문의 전화</h3>
+      <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
+    </div>
+    <div class="contact-box" style="padding: 0;">
+      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
+    </div>
+  </aside>
 
   <!-- COMP-FOOTER-01: 글로벌 푸터 -->
   <footer class="footer">
