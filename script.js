@@ -880,16 +880,12 @@ async function initGalleryPage() {
       const endIdx = startIdx + itemsPerPage;
       const pageItems = items.slice(startIdx, endIdx);
       listContainer.innerHTML = pageItems.map(item => {
-        // Supabase Storage public URL 변환
-        let imageUrl = item.image;
-        if (imageUrl && !imageUrl.startsWith('http')) {
-          // v2 방식으로 수정
-          const { data } = db.storage.from('gallery-images').getPublicUrl(imageUrl);
-          imageUrl = data.publicUrl;
-        }
+        let images = [];
+        try { images = JSON.parse(item.image); } catch { images = [item.image]; }
+        const thumbnail = images[0] || '';
         return `
           <div class="board-row">
-            <img class="thumbnail" src="${imageUrl || ''}" alt="썸네일">
+            <img class="thumbnail" src="${thumbnail}" alt="썸네일">
             <div class="title-section">
               <a href="community_gallery_detail.html?id=${item.id}" class="title" onclick="incrementViewCount('gallery', ${item.id})">${item.title || ''}</a>
               <div class="description">${item.description || ''}</div>
@@ -953,11 +949,19 @@ async function initGalleryDetailPage() {
     const prevPost = currentIndex > 0 ? sortedItems[currentIndex - 1] : null;
     const nextPost = currentIndex < sortedItems.length - 1 ? sortedItems[currentIndex + 1] : null;
 
-    // Supabase Storage public URL 변환
-    let imageUrl = currentItem.image;
-    if (imageUrl && !imageUrl.startsWith('http')) {
-      const { data } = db.storage.from('gallery-images').getPublicUrl(imageUrl);
-      imageUrl = data.publicUrl;
+    // 여러 이미지 모두 렌더링
+    let images = [];
+    try { images = JSON.parse(currentItem.image); } catch { images = [currentItem.image]; }
+    const imagesHtml = images.map(img => `<img src="${img}" alt="${currentItem.title}" style="max-width:100%;margin-bottom:1rem;">`).join('');
+    const imageGroupEl = document.getElementById('gallery-detail-image-group');
+    if (imageGroupEl) {
+      imageGroupEl.innerHTML = imagesHtml;
+    } else {
+      // fallback: 기존 단일 이미지 영역이 있다면 대체
+      const imageEl = document.getElementById('gallery-detail-image');
+      if (imageEl) {
+        imageEl.outerHTML = `<div id="gallery-detail-image-group">${imagesHtml}</div>`;
+      }
     }
 
     // 페이지 내용 업데이트
@@ -965,9 +969,8 @@ async function initGalleryDetailPage() {
     document.getElementById('gallery-detail-author').textContent = currentItem.author || '';
     document.getElementById('gallery-detail-date').textContent = formatKoreaDate(currentItem.created_at);
     document.getElementById('gallery-detail-views').textContent = currentItem.views || 0;
-    document.getElementById('gallery-detail-image').src = imageUrl;
-    document.getElementById('gallery-detail-image').alt = currentItem.title;
-    document.getElementById('gallery-detail-text').textContent = currentItem.description || '';
+    // <br>을 줄바꿈으로 변환하여 innerHTML로 표시
+    document.getElementById('gallery-detail-text').innerHTML = (currentItem.description || '').replace(/<br\s*\/?>/gi, '<br>');
 
     // 이전/다음글 네비게이션 업데이트
     const prevButton = document.getElementById('prev-button');

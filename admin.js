@@ -595,10 +595,18 @@ document.addEventListener('DOMContentLoaded', () => {
             listEl.appendChild(tr);
         });
     }
-    function getGalleryImageUrl(imagePath) {
-        if (!imagePath) return '';
-        if (imagePath.startsWith('http')) return imagePath;
-        const { data } = window.supabaseClient.storage.from('gallery-images').getPublicUrl(imagePath);
+    function getGalleryImageUrl(imageField) {
+        if (!imageField) return '';
+        let images = [];
+        try {
+            images = JSON.parse(imageField);
+        } catch {
+            images = [imageField];
+        }
+        const firstImage = images[0];
+        if (!firstImage) return '';
+        if (firstImage.startsWith('http')) return firstImage;
+        const { data } = window.supabaseClient.storage.from('gallery-images').getPublicUrl(firstImage);
         return data.publicUrl;
     }
     async function showAddGalleryModal() {
@@ -617,75 +625,127 @@ document.addEventListener('DOMContentLoaded', () => {
         modalTitle.textContent = '갤러리 수정';
         document.getElementById('modal-post-id').value = String(item.id);
         document.getElementById('modal-title-input').value = item.title;
-        // <br>을 줄바꿈으로 변환
-        document.getElementById('modal-content-input').value = (item.description || '').replace(/<br\s*\/?\>/gi, '\n');
-        // 기존 이미지 표시
+        document.getElementById('modal-content-input').value = (item.description || '').replace(/<br\s*\/?>/gi, '\n');
+        // 기존 이미지들 모두 미리보기로 보여주기
+        let images = [];
+        try {
+            images = JSON.parse(item.image);
+        } catch {
+            images = [item.image];
+        }
+        // 기존 이미지 URL을 galleryImageFiles에 넣고, 미리보기 렌더링
+        galleryImageFiles = images.map(url => ({ url }));
+        renderGalleryImagePreviews();
+        // 기존 이미지 표시(구버전 호환)
         const imageInput = document.getElementById('modal-image-input');
-        const imagePreview = document.createElement('div');
-        imagePreview.className = 'current-image-preview';
-        imagePreview.innerHTML = `
-            <p><strong>현재 이미지:</strong></p>
-            <img src="${getGalleryImageUrl(item.image)}" alt="현재 이미지" style="max-width: 200px; max-height: 150px; object-fit: cover; border: 1px solid #ddd; margin: 10px 0;">
-            <p><small>새 이미지를 선택하지 않으면 현재 이미지가 유지됩니다.</small></p>
-        `;
-        const existingPreview = imageInput.parentNode.querySelector('.current-image-preview');
-        if (existingPreview) existingPreview.remove();
-        imageInput.parentNode.appendChild(imagePreview);
         imageInput.setAttribute('data-existing-url', item.image || '');
     }
+    // 갤러리 이미지 파일 관리
+    let galleryImageFiles = [];
+
+    // 이미지 추가 버튼 클릭 시 파일 선택창 열기
+    const addImageBtn = document.getElementById('add-image-btn');
+    const modalImageInput = document.getElementById('modal-image-input');
+    const imagePreviewList = document.getElementById('image-preview-list');
+    if (addImageBtn && modalImageInput) {
+        addImageBtn.onclick = () => modalImageInput.click();
+        modalImageInput.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                if (!galleryImageFiles.some(f => f.name === file.name && f.size === file.size)) {
+                    galleryImageFiles.push(file);
+                }
+            });
+            renderGalleryImagePreviews();
+            e.target.value = '';
+        });
+    }
+    function renderGalleryImagePreviews() {
+        if (!imagePreviewList) return;
+        imagePreviewList.innerHTML = '';
+        galleryImageFiles.forEach((file, idx) => {
+            let imgSrc = '';
+            if (file instanceof File) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    addPreview(ev.target.result, idx);
+                };
+                reader.readAsDataURL(file);
+            } else if (file.url) {
+                imgSrc = file.url;
+                addPreview(imgSrc, idx);
+            }
+            function addPreview(src, idx) {
+                const div = document.createElement('div');
+                div.style.position = 'relative';
+                div.style.display = 'inline-block';
+                div.innerHTML = `
+                    <img src="${src}" style="width:80px;height:80px;object-fit:cover;border-radius:6px;border:1.5px solid #ccc;">
+                    <button type="button" class="delete-image-btn" data-idx="${idx}" style="position:absolute;top:2px;right:2px;background:#dc3545;color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:14px;">&times;</button>
+                `;
+                imagePreviewList.appendChild(div);
+                div.querySelector('.delete-image-btn').onclick = function() {
+                    galleryImageFiles.splice(idx, 1);
+                    renderGalleryImagePreviews();
+                };
+            }
+        });
+    }
+    // 갤러리 글쓰기/수정 진입 시 기존 파일 초기화
+    function resetGalleryImageFiles() {
+        galleryImageFiles = [];
+        renderGalleryImagePreviews();
+    }
+    // handleGalleryFormSubmit에서 galleryImageFiles만 업로드
     async function handleGalleryFormSubmit(e) {
         e.preventDefault();
         const id = document.getElementById('modal-post-id').value;
         const title = document.getElementById('modal-title-input').value;
-        // 줄바꿈을 <br>로 변환
         const description = document.getElementById('modal-content-input').value.replace(/\n/g, '<br>');
-        const fileInput = document.getElementById('modal-image-input');
-        let imageUrl = '';
-        if (fileInput && fileInput.files && fileInput.files[0]) {
-            const file = fileInput.files[0];
-            const fileName = `${Date.now()}_${file.name}`;
-            const { data: uploadData, error: uploadError } = await window.supabaseClient
-                .storage
-                .from('gallery-images')
-                .upload(fileName, file, { upsert: true });
-            if (uploadError) {
-                alert('이미지 업로드 실패: ' + uploadError.message);
-                return;
+        let imageUrls = [];
+        // 여러 파일 업로드
+        if (galleryImageFiles.length > 0) {
+            for (let file of galleryImageFiles) {
+                const fileName = sanitizeFileName(file.name);
+                const { data: uploadData, error: uploadError } = await window.supabaseClient
+                    .storage
+                    .from('gallery-images')
+                    .upload(fileName, file, { upsert: true });
+                if (uploadError) {
+                    alert('이미지 업로드 실패: ' + uploadError.message);
+                    return;
+                }
+                const { data: urlData } = window.supabaseClient
+                    .storage
+                    .from('gallery-images')
+                    .getPublicUrl(fileName);
+                imageUrls.push(urlData.publicUrl);
             }
-            const { data: urlData } = window.supabaseClient
-                .storage
-                .from('gallery-images')
-                .getPublicUrl(fileName);
-            imageUrl = urlData.publicUrl;
         } else {
-            imageUrl = document.getElementById('modal-image-input').getAttribute('data-existing-url') || '';
+            // 기존 이미지 유지 (수정 시)
+            const existing = document.getElementById('modal-image-input').getAttribute('data-existing-url');
+            if (existing) {
+                try {
+                    imageUrls = JSON.parse(existing);
+                } catch {
+                    imageUrls = [existing];
+                }
+            }
         }
+        const imageField = JSON.stringify(imageUrls);
         if (id) {
             await window.supabaseClient
                 .from('gallery')
-                .update({ title, description, image: imageUrl })
+                .update({ title, description, image: imageField })
                 .eq('id', id);
         } else {
             await window.supabaseClient
                 .from('gallery')
-                .insert([{ title, description, image: imageUrl }]);
+                .insert([{ title, description, image: imageField }]);
         }
         document.getElementById('post-modal').style.display = 'none';
         renderGalleryList();
-        
-        // 갤러리 탭 활성화 유지
-        const tabs = document.querySelectorAll('.tab-link');
-        const tabContents = document.querySelectorAll('.tab-content');
-        
-        tabs.forEach(t => t.classList.remove('active'));
-        const galleryTab = document.querySelector('[data-tab="gallery-tab"]');
-        if (galleryTab) {
-            galleryTab.classList.add('active');
-        }
-        
-        tabContents.forEach(content => {
-            content.classList.toggle('active', content.id === 'gallery-tab');
-        });
+        resetGalleryImageFiles();
     }
     async function deleteGalleryItem(item) {
         console.log('삭제 함수 진입:', item);
@@ -830,7 +890,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const fileInput = document.getElementById('popup-image');
         if (fileInput.files && fileInput.files[0]) {
             const file = fileInput.files[0];
-            const fileName = `popup_${Date.now()}_${file.name}`;
+            const fileName = sanitizeFileName(file.name);
             const { data, error } = await window.supabaseClient.storage.from(popupBucket).upload(fileName, file, { upsert: true });
             if (error) {
                 alert('이미지 업로드 실패: ' + error.message);
@@ -1354,5 +1414,11 @@ function formatKoreaDate(utcDateStr) {
   const hh = String(kstDate.getHours()).padStart(2, '0');
   const min = String(kstDate.getMinutes()).padStart(2, '0');
   return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+}
+
+// 파일명 안전하게 변환 (영문, 숫자, 일부 특수문자만 허용)
+function sanitizeFileName(name) {
+  const ext = name.split('.').pop();
+  return `${Date.now()}_${Math.random().toString(36).substr(2, 8)}.${ext}`;
 }
 
