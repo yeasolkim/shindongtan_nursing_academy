@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
+    
     .course-detail-section .content-card {
       padding: 40px;
     }
@@ -104,7 +105,13 @@
           margin-top: 15px;
         }
     }
-    /* subsection-title 스타일 (심리상담사 페이지와 동일하게) */
+
+    .subsection {
+        margin-bottom: 3.5rem;
+    }
+    .subsection:last-child {
+        margin-bottom: 0;
+    }
     .subsection-title {
         font-size: 1.8rem;
         color: #1a365d;
@@ -112,6 +119,87 @@
         padding-bottom: 0.8rem;
         border-bottom: 2px solid #e0e0e0;
         display: inline-block;
+    }
+    .subsection-title .highlight {
+        color: #1a365d;
+        font-weight: 700;
+        margin-right: 0.5rem;
+    }
+    .subsection > p {
+        color: #555;
+        line-height: 1.8;
+        font-size: 1.05rem;
+        margin-bottom: 1rem;
+    }
+    .subsection ul {
+        list-style: none;
+        padding-left: 0;
+    }
+    .subsection ul li {
+        font-size: 1rem;
+        color: #444;
+        line-height: 1.8;
+        margin-bottom: 0.5rem;
+    }
+    .subsection .note {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #dc3545;
+        text-align: right;
+    }
+    /* 모바일 최적화 */
+    @media (max-width: 768px) {
+        .subsection {
+            margin-bottom: 2.5rem;
+        }
+        .subsection-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.6rem;
+        }
+        .subsection-title .highlight {
+            font-size: 1.4rem;
+        }
+        .subsection > p {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 0.8rem;
+        }
+        .subsection ul li {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 0.4rem;
+        }
+        .subsection .note {
+            font-size: 0.85rem;
+            text-align: center;
+        }
+    }
+    @media (max-width: 480px) {
+        .subsection {
+            margin-bottom: 2rem;
+        }
+        .subsection-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.5rem;
+        }
+        .subsection-title .highlight {
+            font-size: 1.2rem;
+        }
+        .subsection > p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 0.7rem;
+        }
+        .subsection ul li {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 0.3rem;
+        }
+        .subsection .note {
+            font-size: 0.8rem;
+        }
     }
   </style>
 </head>
@@ -129,11 +217,11 @@
             <p> EFR(Emergency First Response)</p>
           </div>
 
-          <div class="course-description">
+          <div class="subsection">
             <h3 class="subsection-title">EFR(Emergency First Response)란?</h3>
             <p>국제표준규약 기준의 가이드라인에 따른 공신력 있는 미국의 심폐소생술협회입니다. 저희학원에 입학하신 후 취득이 가능합니다.</p>
             <p>Emergency First Response CPR & AED 교육은 심장과 관련된 생명을 위협하는 응급상황에 대해 배우게 됩니다.</p>
-            <ul class="efr-list">
+            <ul>
                 <li><strong>첫째, CPR – 심폐소생술.</strong> CPR은 정상적인 심장박동이 없을 때에도 두뇌와 중요 기관에 산소를 제공하게 됩니다.</li>
                 <li><strong>둘째, AED 사용법.</strong> AED는 자동 외부 제세동기(automated external defibrillator)를 의미하며 비정상 및 비효율적인 심장박동을 교정하게 됩니다.</li>
                 <li><strong>셋째, 질식 환자를 돕는 방법을 익히게 됩니다.</strong> 이러한 정확한 심폐소생술 후에 Emergency First Response Secondary Care (First Aid)는 응급 구조대(Emergency Medical Service, EMS)의 도움이 지연되거나 구조대가 출동할 수 없는 경우에 환자를 안심시키고, 통증을 경감시키면서 추가적인 피해의 위험을 줄이는 방법을 익히게 됩니다.</li>

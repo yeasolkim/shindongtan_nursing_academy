@@ -780,8 +780,6 @@ main {
     font-size: 0.8rem;
   }
 
-  body[data-page^='education_'] #page-hero-container,
-  body[data-page^='education_'] .hero-v2,
   body[data-page^='education_'] .page-hero,
   body[data-page^='job_'] #page-hero-container,
   body[data-page^='job_'] .hero-v2,
@@ -1560,3 +1558,12 @@ main {
     font-size: 1rem;
   }
 }
+
+body[data-page^='education_'] .section-title,
+body[data-page^='job_'] .section-title,
+body[data-page^='recruitment_'] .section-title,
+body[data-page^='community_'] .section-title {
+  /* display: none !important; */
+}
+
+/* page-hero-container 숨김 규칙 제거 - script.js에서 처리 */

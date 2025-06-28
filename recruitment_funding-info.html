@@ -365,6 +365,49 @@
     @media (max-width: 480px) {
       .flow-step { font-size: 0.85rem; padding: 0.5rem 0.2rem; }
     }
+    /* Quick Contact Sidebar */
+    .quick-contact-sidebar {
+      position: fixed;
+      top: 50%;
+      right: 40px;
+      width: 240px;
+      z-index: 100;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      background: #fff;
+      transform: translateY(-50%);
+    }
+    .contact-box { 
+      margin-bottom: 1rem; 
+      text-align: center; 
+      padding: 1.5rem 1rem; 
+    }
+    .contact-box h3 { 
+      font-size: 1.1rem; 
+      font-weight: 600; 
+      margin: 0 0 1rem; 
+      color: #1a365d; 
+    }
+    .contact-box .phone-number { 
+      font-size: 1.3rem; 
+      font-weight: 700; 
+      color: #333; 
+    }
+    .contact-box .kakao-link { 
+      display: block; 
+      background-color: #ffeb00; 
+      padding: 1rem; 
+      text-decoration: none; 
+      color: #3c1e1e; 
+      font-weight: 600; 
+      transition: background-color 0.3s;
+    }
+    .contact-box .kakao-link:hover {
+      background-color: #fdd835;
+    }
+    @media (max-width: 1200px) {
+      .quick-contact-sidebar { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -444,6 +487,16 @@
       </div>
     </section>
   </main>
+
+  <aside class="quick-contact-sidebar">
+    <div class="contact-box">
+      <h3>문의 전화</h3>
+      <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
+    </div>
+    <div class="contact-box" style="padding: 0;">
+      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
+    </div>
+  </aside>
 
   <footer class="footer"></footer>
   <script src="script.js"></script>

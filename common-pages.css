@@ -4,10 +4,11 @@
 .page-hero {
   background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
   color: white;
-  padding: 6rem 0 4rem;
+  padding: 1.2rem 0 0.8rem;
   text-align: center;
   position: relative;
   overflow: hidden;
+  min-height: 80px;
 }
 
 .page-hero::before {
@@ -27,16 +28,16 @@
 }
 
 .page-hero .hero-content h1 {
-  font-size: 3.5rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
   color: white;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .page-hero .hero-content p {
-  font-size: 1.3rem;
-  margin-bottom: 2rem;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
   opacity: 0.95;
   line-height: 1.6;
 }
@@ -79,6 +80,111 @@
   padding: 0.5rem 1rem;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 20px;
+}
+
+/* 페이지 히어로 추가 요소 스타일 */
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  background-image: url('shindongtan/resource/sub_banner_1.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero-pattern {
+  display: none;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(26, 54, 93, 0.8) 0%, rgba(45, 55, 72, 0.9) 100%);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 0.18rem 0.5rem;
+  border-radius: 25px;
+  margin-bottom: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.7rem;
+}
+
+.badge-icon {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.badge-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+  opacity: 0.95;
+}
+
+.hero-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.decoration-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.circle-1 {
+  width: 120px;
+  height: 120px;
+  top: 10%;
+  right: 10%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.circle-2 {
+  width: 80px;
+  height: 80px;
+  bottom: 20%;
+  left: 5%;
+  animation: float 8s ease-in-out infinite reverse;
+}
+
+.circle-3 {
+  width: 60px;
+  height: 60px;
+  top: 60%;
+  right: 20%;
+  animation: float 7s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
 }
 
 /* 메인 콘텐츠 섹션 공통 스타일 */
@@ -390,22 +496,37 @@
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .page-hero {
-    padding: 2rem 1rem 1.5rem;
-    background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
+    padding: 0.7rem 0.2rem 0.4rem;
+    min-height: 48px;
   }
   .page-hero .hero-content h1 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 0.8rem;
-    line-height: 1.3;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    font-size: 0.95rem;
+    margin-bottom: 0.3rem;
   }
   .page-hero .hero-content p {
-    font-size: 0.9rem;
-    margin-bottom: 1.5rem;
-    line-height: 1.4;
-    opacity: 0.9;
+    font-size: 0.7rem;
+    margin-bottom: 0.3rem;
   }
+  
+  /* 페이지 히어로 추가 요소 모바일 스타일 */
+  .hero-badge {
+    font-size: 0.6rem;
+    padding: 0.12rem 0.3rem;
+    margin-bottom: 0.2rem;
+  }
+  
+  .badge-icon {
+    font-size: 1rem;
+  }
+  
+  .badge-text {
+    font-size: 0.8rem;
+  }
+  
+  .decoration-circle {
+    display: none; /* 모바일에서는 장식 요소 숨김 */
+  }
+  
   .breadcrumbs {
     gap: 0.4rem;
     font-size: 0.75rem;
@@ -455,19 +576,33 @@
 
 @media (max-width: 480px) {
   .page-hero {
-    padding: 1.5rem 0.8rem 1rem;
+    padding: 0.4rem 0.1rem 0.2rem;
+    min-height: 28px;
   }
   
   .page-hero .hero-content h1 {
-    font-size: 1rem;
-    margin-bottom: 0.6rem;
-    line-height: 1.2;
+    font-size: 0.8rem;
+    margin-bottom: 0.15rem;
   }
   
   .page-hero .hero-content p {
-    font-size: 0.8rem;
-    margin-bottom: 1rem;
-    line-height: 1.3;
+    font-size: 0.6rem;
+    margin-bottom: 0.15rem;
+  }
+  
+  /* 페이지 히어로 추가 요소 작은 모바일 스타일 */
+  .hero-badge {
+    font-size: 0.5rem;
+    padding: 0.08rem 0.18rem;
+    margin-bottom: 0.1rem;
+  }
+  
+  .badge-icon {
+    font-size: 0.9rem;
+  }
+  
+  .badge-text {
+    font-size: 0.75rem;
   }
   
   .breadcrumbs {
