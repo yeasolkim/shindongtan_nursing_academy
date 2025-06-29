@@ -189,7 +189,6 @@
         popupDiv.style.boxShadow = '0 4px 16px rgba(51,74,108,0.10)';
         popupDiv.style.padding = '0';
         popupDiv.style.width = 'fit-content';
-        popupDiv.style.maxWidth = '98vw';
         popupDiv.style.maxHeight = '90vh';
         popupDiv.style.overflow = 'visible';
         popupDiv.style.position = 'fixed';
@@ -277,16 +276,15 @@
         img.src = popup.image_url;
         img.alt = popup.title || '팝업';
         img.style.display = 'block';
-        img.style.maxWidth = '96vw';
-        img.style.maxHeight = '70vh';
+        img.style.maxHeight = '90vh';
         img.style.borderRadius = '8px';
         img.style.boxShadow = '0 2px 12px rgba(51,74,108,0.10)';
         img.style.background = '#f7f9fb';
         img.style.margin = '0';
         // 이미지 로드 후 팝업 크기 조정
         img.onload = function() {
-          const w = popup.width ? Math.min(popup.width, window.innerWidth * 0.96) : Math.min(img.naturalWidth, window.innerWidth * 0.96);
-          const h = popup.height ? Math.min(popup.height, window.innerHeight * 0.7) : Math.min(img.naturalHeight, window.innerHeight * 0.7);
+          const w = popup.width ? popup.width : img.naturalWidth;
+          const h = popup.height ? Math.min(popup.height, window.innerHeight * 0.9) : Math.min(img.naturalHeight, window.innerHeight * 0.9);
           img.style.width = w + 'px';
           img.style.height = h + 'px';
           popupDiv.style.width = w + 'px';
@@ -322,7 +320,6 @@
       box-shadow: 0 4px 16px rgba(51,74,108,0.10) !important;
       padding: 0 !important;
       width: fit-content !important;
-      max-width: 98vw !important;
       max-height: 90vh !important;
       box-sizing: border-box !important;
       overflow: visible !important;
@@ -333,8 +330,7 @@
       border-radius: 8px !important;
       box-shadow: 0 2px 12px rgba(51,74,108,0.10) !important;
       background: #f7f9fb !important;
-      max-width: 96vw !important;
-      max-height: 70vh !important;
+      max-height: 90vh !important;
       object-fit: contain !important;
     }
     .supabase-popup .close-btn {

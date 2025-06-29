@@ -2573,6 +2573,51 @@
     .tab-content.active { 
       display: block; 
     }
+    /* 시설 관리 순서 변경 버튼 스타일 */
+    #tab-facilities .image-preview-item .move-up,
+    #tab-facilities .image-preview-item .move-down {
+      position: absolute;
+      background: #334a6c;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 24px;
+      text-align: center;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+    
+    #tab-facilities .image-preview-item .move-up {
+      top: 0.5rem;
+      left: 0.5rem;
+    }
+    
+    #tab-facilities .image-preview-item .move-down {
+      top: 0.5rem;
+      left: 2.5rem;
+    }
+    
+    #tab-facilities .image-preview-item .move-up:hover,
+    #tab-facilities .image-preview-item .move-down:hover {
+      background: #2c405e;
+      transform: scale(1.1);
+    }
+    
+    #tab-facilities .image-preview-item .move-up:disabled,
+    #tab-facilities .image-preview-item .move-down:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+    
+    #tab-facilities .image-preview-item .move-up:disabled:hover,
+    #tab-facilities .image-preview-item .move-down:disabled:hover {
+      transform: none;
+    }
   </style>
 </head>
 <body>
@@ -2644,6 +2689,13 @@
           <button type="button" id="cancel-instructor-edit" class="button-secondary" style="display: none;">취소</button>
         </form>
       </div>
+      <!-- 강사진 로딩 오버레이 -->
+      <div id="instructor-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
+        <div style="background:#fff;padding:2.5rem 2.5rem 2rem 2.5rem;border-radius:16px;box-shadow:0 4px 24px rgba(51,74,108,0.13);display:flex;flex-direction:column;align-items:center;gap:1.2rem;">
+          <div class="loader" style="border:6px solid #f3f3f3;border-top:6px solid #334a6c;border-radius:50%;width:48px;height:48px;animation:spin 1s linear infinite;"></div>
+          <span>강사 정보 저장 중입니다...</span>
+        </div>
+      </div>
       <div class="admin-card">
         <h3>등록된 강사 목록</h3>
         <div id="instructor-list" class="instructor-admin-list"></div>
@@ -2666,6 +2718,13 @@
           <button type="submit" class="button-primary">업로드</button>
         </form>
       </div>
+      <!-- 시설 사진 로딩 오버레이 -->
+      <div id="facility-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
+        <div style="background:#fff;padding:2.5rem 2.5rem 2rem 2.5rem;border-radius:16px;box-shadow:0 4px 24px rgba(51,74,108,0.13);display:flex;flex-direction:column;align-items:center;gap:1.2rem;">
+          <div class="loader" style="border:6px solid #f3f3f3;border-top:6px solid #334a6c;border-radius:50%;width:48px;height:48px;animation:spin 1s linear infinite;"></div>
+          <span>시설 사진 업로드 중입니다...</span>
+        </div>
+      </div>
       <div class="admin-card">
         <h3>등록된 시설 사진</h3>
         <div id="facility-list" class="image-previews"></div>
@@ -2677,6 +2736,13 @@
       <div class="admin-card">
           <h3>신규 구인 게시물 작성</h3>
           <button id="add-job-btn" class="button-primary">글쓰기</button>
+      </div>
+      <!-- 구인 게시판 로딩 오버레이 -->
+      <div id="jobs-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
+        <div style="background:#fff;padding:2.5rem 2.5rem 2rem 2.5rem;border-radius:16px;box-shadow:0 4px 24px rgba(51,74,108,0.13);display:flex;flex-direction:column;align-items:center;gap:1.2rem;">
+          <div class="loader" style="border:6px solid #f3f3f3;border-top:6px solid #334a6c;border-radius:50%;width:48px;height:48px;animation:spin 1s linear infinite;"></div>
+          <span>구인 게시물 저장 중입니다...</span>
+        </div>
       </div>
       <div class="admin-card">
         <h3>구인 게시물 목록</h3>
@@ -2702,6 +2768,7 @@
             <button id="add-gallery-btn" class="button-primary">글쓰기</button>
            
         </div>
+        <!-- 갤러리 로딩 오버레이는 이미 있음 -->
         <div class="admin-card">
           <h3>갤러리 게시물 목록</h3>
           <table class="jobs-table" id="gallery-list-table">
@@ -2725,6 +2792,13 @@
         <div class="admin-card">
             <h3>신규 공지사항 작성</h3>
             <button id="add-notice-btn" class="button-primary">글쓰기</button>
+        </div>
+        <!-- 공지사항 로딩 오버레이 -->
+        <div id="notice-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
+          <div style="background:#fff;padding:2.5rem 2.5rem 2rem 2.5rem;border-radius:16px;box-shadow:0 4px 24px rgba(51,74,108,0.13);display:flex;flex-direction:column;align-items:center;gap:1.2rem;">
+            <div class="loader" style="border:6px solid #f3f3f3;border-top:6px solid #334a6c;border-radius:50%;width:48px;height:48px;animation:spin 1s linear infinite;"></div>
+            <span>공지사항 저장 중입니다...</span>
+          </div>
         </div>
         <div class="admin-card">
           <h3>공지사항 목록</h3>
@@ -2776,6 +2850,13 @@
           <button type="submit" class="button-primary">저장하기</button>
           <button type="button" id="cancel-faq-edit" class="button-secondary" style="display: none;">취소</button>
         </form>
+      </div>
+      <!-- FAQ 로딩 오버레이 -->
+      <div id="faq-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
+        <div style="background:#fff;padding:2.5rem 2.5rem 2rem 2.5rem;border-radius:16px;box-shadow:0 4px 24px rgba(51,74,108,0.13);display:flex;flex-direction:column;align-items:center;gap:1.2rem;">
+          <div class="loader" style="border:6px solid #f3f3f3;border-top:6px solid #334a6c;border-radius:50%;width:48px;height:48px;animation:spin 1s linear infinite;"></div>
+          <span>FAQ 저장 중입니다...</span>
+        </div>
       </div>
       <div class="admin-card">
         <h3>FAQ 목록</h3>
@@ -2856,6 +2937,13 @@
           <button type="button" id="popup-cancel" class="button-secondary" style="display:none;">취소</button>
         </form>
       </div>
+      <!-- 팝업 로딩 오버레이 -->
+      <div id="popup-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
+        <div style="background:#fff;padding:2.5rem 2.5rem 2rem 2.5rem;border-radius:16px;box-shadow:0 4px 24px rgba(51,74,108,0.13);display:flex;flex-direction:column;align-items:center;gap:1.2rem;">
+          <div class="loader" style="border:6px solid #f3f3f3;border-top:6px solid #334a6c;border-radius:50%;width:48px;height:48px;animation:spin 1s linear infinite;"></div>
+          <span>팝업 저장 중입니다...</span>
+        </div>
+      </div>
       <div class="admin-card">
         <h3>팝업 목록</h3>
         <div id="popup-list"></div>
@@ -2883,6 +2971,14 @@
           <button type="button" id="add-image-btn" class="button-secondary">이미지 추가</button>
           <div id="image-preview-list" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;"></div>
           <small>여러 이미지를 첨부할 수 있습니다. (X버튼으로 삭제)</small>
+        </div>
+        <!-- 갤러리 업로드 로딩 오버레이 -->
+        <div id="gallery-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
+          <div style="background:#fff;padding:2.5rem 2.5rem 2rem 2.5rem;border-radius:16px;box-shadow:0 4px 24px rgba(51,74,108,0.13);display:flex;flex-direction:column;align-items:center;gap:1.2rem;">
+            <div class="loader" style="border:6px solid #f3f3f3;border-top:6px solid #334a6c;border-radius:50%;width:48px;height:48px;animation:spin 1s linear infinite;"></div>
+            <span>이미지 업로드 및 저장 중입니다...</span>
+          </div>
+          <style>@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}</style>
         </div>
         <div class="form-group">
           <label for="modal-content-input">내용</label>

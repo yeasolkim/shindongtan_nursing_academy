@@ -1567,3 +1567,8 @@ body[data-page^='community_'] .section-title {
 }
 
 /* page-hero-container 숨김 규칙 제거 - script.js에서 처리 */
+
+/* 푸터는 항상 좌측 정렬 */
+.footer, .footer * {
+  text-align: left !important;
+}

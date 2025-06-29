@@ -60,6 +60,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initializeAdminPanel() {
         console.log("Initializing admin panel...");
+        
+        // Supabase 연결 상태 확인
+        if (!window.supabaseClient) {
+            console.error('Supabase 클라이언트가 초기화되지 않았습니다.');
+            alert('Supabase 연결에 실패했습니다. 페이지를 새로고침해주세요.');
+            return;
+        }
+        
+        console.log('Supabase 클라이언트 상태:', window.supabaseClient);
+        
         loadInstructors();
         loadFacilities();
         renderGalleryList();
@@ -267,81 +277,56 @@ document.addEventListener('DOMContentLoaded', () => {
     // 강사 추가/수정
     instructorForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const id = document.getElementById('instructor-id').value;
-        const imageFile = document.getElementById('instructor-image').files[0];
-        let imageUrl = null;
-        let oldImageUrl = null;
-        const imageStatus = document.getElementById('instructor-image-status');
-        imageStatus.textContent = '';
-        if (id) {
-            // 기존 강사 정보에서 이미지 URL 조회
-            const { data: instructor, error } = await window.supabaseClient
-                .from('instructors')
-                .select('image')
-                .eq('id', id)
-                .single();
-            if (instructor) {
-                oldImageUrl = instructor.image;
-            }
-        }
-        if (imageFile) {
-            // 새 이미지 업로드 전, 기존 이미지 삭제 (기본 이미지가 아니면)
-            if (oldImageUrl && !oldImageUrl.includes('profile.png')) {
-                await deleteInstructorImage(oldImageUrl);
-            }
-            try {
-                imageStatus.textContent = '이미지 업로드 중...';
-                imageUrl = await uploadInstructorImage(imageFile);
-                imageStatus.textContent = '업로드 완료';
-                setTimeout(() => { imageStatus.textContent = ''; }, 1500);
-            } catch (uploadError) {
-                imageStatus.textContent = '이미지 업로드 실패: ' + (uploadError.message || uploadError);
-                imageStatus.style.color = '#d92121';
-                setTimeout(() => { imageStatus.textContent = ''; imageStatus.style.color = '#1e293b'; }, 3500);
-                return; // 업로드 실패 시 저장 중단
-            }
-        } else {
-            // 첨부파일이 없으면 기존 이미지 유지(수정 시) 또는 기본 프로필 이미지(신규)
-            if (id && oldImageUrl) {
-                imageUrl = oldImageUrl;
-            } else {
-                imageUrl = "https://wihirzfnqrvytzdnmdcc.supabase.co/storage/v1/object/public/instructor-images/profile.png";
-            }
-        }
-        // 여기서 imageUrl 값을 콘솔에 출력!
-        console.log('imageUrl:', imageUrl);
-        const instructorData = {
-            name: document.getElementById('instructor-name').value,
-            title: document.getElementById('instructor-title').value,
-            details: document.getElementById('instructor-details').value.split('\n'),
-            image: imageUrl
-        };
+        const loadingOverlay = document.getElementById('instructor-loading-overlay');
+        if (loadingOverlay) loadingOverlay.style.display = 'flex';
         try {
-            if (id) {
-                await window.supabaseClient
-                    .from('instructors')
-                    .update(instructorData)
-                    .eq('id', id);
-            } else {
-                // 새 강사 추가 시 order를 가장 큰 값 + 1로 지정
-                const { data: maxOrderData } = await window.supabaseClient
-                    .from('instructors')
-                    .select('order')
-                    .order('order', { ascending: false })
-                    .limit(1)
-                    .single();
-                const nextOrder = maxOrderData ? (maxOrderData.order + 1) : 1;
-                instructorData.order = nextOrder;
-                await window.supabaseClient
-                    .from('instructors')
-                    .insert([instructorData]);
+            const id = document.getElementById('instructor-id').value;
+            const name = document.getElementById('instructor-name').value;
+            const title = document.getElementById('instructor-title').value;
+            const details = document.getElementById('instructor-details').value.split('\n').filter(line => line.trim());
+            const imageFile = document.getElementById('instructor-image').files[0];
+            
+            let imageUrl = null;
+            if (imageFile) {
+                imageUrl = await uploadInstructorImage(imageFile);
             }
-            await loadInstructors();
-            instructorForm.reset();
-            cancelInstructorEditBtn.click();
-        } catch (error) {
-            alert('강사 정보 저장 중 오류가 발생했습니다.');
-            console.error('강사 저장 오류:', error);
+            
+            const instructorData = {
+                name,
+                title,
+                details,
+                ...(imageUrl && { image: imageUrl })
+            };
+            
+            try {
+                if (id) {
+                    await window.supabaseClient
+                        .from('instructors')
+                        .update(instructorData)
+                        .eq('id', id);
+                } else {
+                    // 새 강사 추가 시 order를 가장 큰 값 + 1로 지정
+                    const { data: maxOrderData } = await window.supabaseClient
+                        .from('instructors')
+                        .select('order')
+                        .order('order', { ascending: false })
+                        .limit(1)
+                        .single();
+                    const nextOrder = maxOrderData ? (maxOrderData.order + 1) : 1;
+                    instructorData.order = nextOrder;
+                    await window.supabaseClient
+                        .from('instructors')
+                        .insert([instructorData]);
+                }
+                await loadInstructors();
+                instructorForm.reset();
+                cancelInstructorEditBtn.click();
+            } catch (error) {
+                alert('강사 정보 저장 중 오류가 발생했습니다.');
+                console.error('강사 저장 오류:', error);
+            }
+        } finally {
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
         }
     });
 
@@ -414,92 +399,202 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 시설 이미지 목록 불러오기
     async function loadFacilities() {
-        const { data: facilities, error } = await window.supabaseClient
-            .from('facilities')
-            .select('*')
-            .order('order', { ascending: true });
-        if (error) {
-            facilityList.innerHTML = '<div class="error-message">시설 이미지를 불러오는 데 실패했습니다.</div>';
-            return;
+        try {
+            // Supabase 연결 상태 확인
+            if (!window.supabaseClient) {
+                console.error('Supabase 클라이언트가 초기화되지 않았습니다.');
+                facilityList.innerHTML = '<div class="error-message">Supabase 연결에 실패했습니다.</div>';
+                return;
+            }
+            
+            console.log('시설 목록 로딩 시작...');
+            
+            const { data: facilities, error } = await window.supabaseClient
+                .from('facilities')
+                .select('*')
+                .order('order', { ascending: true });
+            
+            console.log('시설 목록 로딩 결과:', { facilities, error });
+            
+            if (error) {
+                console.error('시설 목록 로드 실패:', error);
+                facilityList.innerHTML = '<div class="error-message">시설 이미지를 불러오는 데 실패했습니다: ' + error.message + '</div>';
+                return;
+            }
+            
+            facilityList.innerHTML = '';
+            
+            if (facilities.length === 0) {
+                facilityList.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">등록된 시설 사진이 없습니다.</p>';
+                return;
+            }
+            
+            facilities.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'image-preview-item';
+                div.innerHTML = `
+                    <img src="${item.image_url}" alt="${item.alt || ''}">
+                    <p>${item.alt || ''}</p>
+                    <button class="move-up" ${idx === 0 ? 'disabled' : ''}>▲</button>
+                    <button class="move-down" ${idx === facilities.length - 1 ? 'disabled' : ''}>▼</button>
+                    <button class="delete-btn">&times;</button>
+                `;
+                div.querySelector('.move-up').onclick = () => moveFacility(item.id, -1, facilities);
+                div.querySelector('.move-down').onclick = () => moveFacility(item.id, 1, facilities);
+                div.querySelector('.delete-btn').onclick = () => deleteFacility(item);
+                facilityList.appendChild(div);
+            });
+            
+            console.log('시설 목록 렌더링 완료');
+            
+        } catch (error) {
+            console.error('시설 목록 로드 중 오류:', error);
+            facilityList.innerHTML = '<div class="error-message">시설 이미지를 불러오는 데 실패했습니다: ' + error.message + '</div>';
         }
-        facilityList.innerHTML = '';
-        facilities.forEach((item, idx) => {
-            const div = document.createElement('div');
-            div.className = 'image-preview-item';
-            div.innerHTML = `
-                <img src="${item.image_url}" alt="${item.alt || ''}">
-                <p>${item.alt || ''}</p>
-                <button class="move-up" ${idx === 0 ? 'disabled' : ''}>▲</button>
-                <button class="move-down" ${idx === facilities.length - 1 ? 'disabled' : ''}>▼</button>
-                <button class="delete-btn">&times;</button>
-            `;
-            div.querySelector('.move-up').onclick = () => moveFacility(item.id, -1, facilities);
-            div.querySelector('.move-down').onclick = () => moveFacility(item.id, 1, facilities);
-            div.querySelector('.delete-btn').onclick = () => deleteFacility(item);
-            facilityList.appendChild(div);
-        });
     }
 
     // 이미지 업로드 및 row 추가
     async function addFacilityImage(file, alt) {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}.${fileExt}`;
-        const { error: uploadError } = await window.supabaseClient
-            .storage.from('facility-images')
-            .upload(fileName, file, { upsert: true });
-        if (uploadError) throw uploadError;
-        const publicUrl = window.supabaseClient.storage.from('facility-images').getPublicUrl(fileName).data.publicUrl;
-        // order 값: 가장 큰 값 + 1
-        const { data: maxOrderData } = await window.supabaseClient
-            .from('facilities')
-            .select('order')
-            .order('order', { ascending: false })
-            .limit(1)
-            .single();
-        const nextOrder = maxOrderData ? (maxOrderData.order + 1) : 1;
-        await window.supabaseClient
-            .from('facilities')
-            .insert([{ image_url: publicUrl, alt, order: nextOrder }]);
-        await loadFacilities();
+        try {
+            console.log('시설 이미지 업로드 시작:', { fileName: file.name, fileSize: file.size });
+            
+            if (!window.supabaseClient) {
+                throw new Error('Supabase 클라이언트가 초기화되지 않았습니다.');
+            }
+            
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}.${fileExt}`;
+            
+            console.log('Storage 업로드 시작:', fileName);
+            
+            // Storage에 이미지 업로드
+            const { error: uploadError } = await window.supabaseClient
+                .storage.from('facility-images')
+                .upload(fileName, file, { upsert: true });
+            
+            if (uploadError) {
+                console.error('Storage 업로드 실패:', uploadError);
+                throw uploadError;
+            }
+            
+            console.log('Storage 업로드 성공');
+            
+            // 공개 URL 가져오기
+            const publicUrl = window.supabaseClient.storage.from('facility-images').getPublicUrl(fileName).data.publicUrl;
+            console.log('공개 URL 생성:', publicUrl);
+            
+            // order 값: 가장 큰 값 + 1
+            const { data: maxOrderData } = await window.supabaseClient
+                .from('facilities')
+                .select('order')
+                .order('order', { ascending: false })
+                .limit(1);
+            
+            const newOrder = maxOrderData && maxOrderData.length > 0 ? maxOrderData[0].order + 1 : 1;
+            console.log('새로운 order 값:', newOrder);
+            
+            // DB에 row 추가
+            const { data: newFacility, error: insertError } = await window.supabaseClient
+                .from('facilities')
+                .insert([{
+                    image_url: publicUrl,
+                    alt: alt,
+                    order: newOrder
+                }])
+                .select()
+                .single();
+            
+            if (insertError) {
+                console.error('DB 삽입 실패:', insertError);
+                throw insertError;
+            }
+            
+            console.log('DB 삽입 성공:', newFacility);
+            
+            // 목록 새로고침
+            await loadFacilities();
+            
+        } catch (error) {
+            console.error('시설 이미지 업로드 실패:', error);
+            alert('이미지 업로드 중 오류가 발생했습니다: ' + error.message);
+        }
     }
 
     // 삭제
     async function deleteFacility(item) {
         if (!confirm('정말로 이 사진을 삭제하시겠습니까?')) return;
-        // 1. Storage에서 이미지 삭제
-        const url = new URL(item.image_url);
-        const path = decodeURIComponent(url.pathname.split('/object/public/')[1]);
-        await window.supabaseClient.storage.from('facility-images').remove([path]);
-        // 2. DB row 삭제
-        await window.supabaseClient.from('facilities').delete().eq('id', item.id);
-        await loadFacilities();
+        
+        try {
+            // 1. Storage에서 이미지 삭제
+            if (item.image_url) {
+                const url = new URL(item.image_url);
+                const path = decodeURIComponent(url.pathname.split('/object/public/')[1]);
+                if (path) {
+                    await window.supabaseClient.storage.from('facility-images').remove([path]);
+                }
+            }
+            
+            // 2. DB row 삭제
+            const { error } = await window.supabaseClient.from('facilities').delete().eq('id', item.id);
+            if (error) throw error;
+            
+            // 3. 목록 새로고침
+            await loadFacilities();
+            
+        } catch (error) {
+            console.error('시설 삭제 실패:', error);
+            alert('삭제 중 오류가 발생했습니다.');
+        }
     }
 
     // 순서 변경
     async function moveFacility(id, direction, facilities) {
-        const idx = facilities.findIndex(f => f.id === id);
-        if (idx === -1) return;
-        const swapIdx = idx + direction;
-        if (swapIdx < 0 || swapIdx >= facilities.length) return;
-        const curr = facilities[idx];
-        const target = facilities[swapIdx];
-        await window.supabaseClient.from('facilities').update({ order: target.order }).eq('id', curr.id);
-        await window.supabaseClient.from('facilities').update({ order: curr.order }).eq('id', target.id);
-        await loadFacilities();
+        try {
+            const idx = facilities.findIndex(f => f.id === id);
+            if (idx === -1) return;
+            const swapIdx = idx + direction;
+            if (swapIdx < 0 || swapIdx >= facilities.length) return;
+            
+            const curr = facilities[idx];
+            const target = facilities[swapIdx];
+            
+            // 순서 변경
+            await window.supabaseClient.from('facilities').update({ order: target.order }).eq('id', curr.id);
+            await window.supabaseClient.from('facilities').update({ order: curr.order }).eq('id', target.id);
+            
+            // 목록 새로고침
+            await loadFacilities();
+        } catch (error) {
+            console.error('시설 순서 변경 실패:', error);
+            alert('순서 변경 중 오류가 발생했습니다.');
+        }
     }
 
     // 폼 이벤트 연결
     if (facilityForm) {
         facilityForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const file = document.getElementById('facility-image').files[0];
-            const alt = document.getElementById('facility-alt').value;
-            if (!file) return;
+            const loadingOverlay = document.getElementById('facility-loading-overlay');
+            if (loadingOverlay) loadingOverlay.style.display = 'flex';
+            
             try {
+                const file = document.getElementById('facility-image').files[0];
+                const alt = document.getElementById('facility-alt').value;
+                
+                if (!file) {
+                    alert('사진을 선택해주세요.');
+                    return;
+                }
+                
+                console.log('시설 폼 제출:', { fileName: file.name, alt: alt });
                 await addFacilityImage(file, alt);
                 facilityForm.reset();
-            } catch (err) {
-                alert('시설 이미지 업로드 실패: ' + (err.message || err));
+                
+            } catch (error) {
+                console.error('시설 폼 제출 오류:', error);
+                alert('시설 사진 업로드 중 오류가 발생했습니다: ' + error.message);
+            } finally {
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
             }
         });
     }
@@ -699,53 +794,60 @@ document.addEventListener('DOMContentLoaded', () => {
     // handleGalleryFormSubmit에서 galleryImageFiles만 업로드
     async function handleGalleryFormSubmit(e) {
         e.preventDefault();
-        const id = document.getElementById('modal-post-id').value;
-        const title = document.getElementById('modal-title-input').value;
-        const description = document.getElementById('modal-content-input').value.replace(/\n/g, '<br>');
-        let imageUrls = [];
-        // 여러 파일 업로드
-        if (galleryImageFiles.length > 0) {
-            for (let file of galleryImageFiles) {
-                const fileName = sanitizeFileName(file.name);
-                const { data: uploadData, error: uploadError } = await window.supabaseClient
-                    .storage
-                    .from('gallery-images')
-                    .upload(fileName, file, { upsert: true });
-                if (uploadError) {
-                    alert('이미지 업로드 실패: ' + uploadError.message);
-                    return;
+        const loadingOverlay = document.getElementById('gallery-loading-overlay');
+        if (loadingOverlay) loadingOverlay.style.display = 'flex';
+        try {
+            const id = document.getElementById('modal-post-id').value;
+            const title = document.getElementById('modal-title-input').value;
+            const description = document.getElementById('modal-content-input').value.replace(/\n/g, '<br>');
+            let imageUrls = [];
+            // 여러 파일 업로드
+            if (galleryImageFiles.length > 0) {
+                for (let file of galleryImageFiles) {
+                    const fileName = sanitizeFileName(file.name);
+                    const { data: uploadData, error: uploadError } = await window.supabaseClient
+                        .storage
+                        .from('gallery-images')
+                        .upload(fileName, file, { upsert: true });
+                    if (uploadError) {
+                        alert('이미지 업로드 실패: ' + uploadError.message);
+                        if (loadingOverlay) loadingOverlay.style.display = 'none';
+                        return;
+                    }
+                    const { data: urlData } = window.supabaseClient
+                        .storage
+                        .from('gallery-images')
+                        .getPublicUrl(fileName);
+                    imageUrls.push(urlData.publicUrl);
                 }
-                const { data: urlData } = window.supabaseClient
-                    .storage
-                    .from('gallery-images')
-                    .getPublicUrl(fileName);
-                imageUrls.push(urlData.publicUrl);
-            }
-        } else {
-            // 기존 이미지 유지 (수정 시)
-            const existing = document.getElementById('modal-image-input').getAttribute('data-existing-url');
-            if (existing) {
-                try {
-                    imageUrls = JSON.parse(existing);
-                } catch {
-                    imageUrls = [existing];
+            } else {
+                // 기존 이미지 유지 (수정 시)
+                const existing = document.getElementById('modal-image-input').getAttribute('data-existing-url');
+                if (existing) {
+                    try {
+                        imageUrls = JSON.parse(existing);
+                    } catch {
+                        imageUrls = [existing];
+                    }
                 }
             }
+            const imageField = JSON.stringify(imageUrls);
+            if (id) {
+                await window.supabaseClient
+                    .from('gallery')
+                    .update({ title, description, image: imageField })
+                    .eq('id', id);
+            } else {
+                await window.supabaseClient
+                    .from('gallery')
+                    .insert([{ title, description, image: imageField }]);
+            }
+            document.getElementById('post-modal').style.display = 'none';
+            renderGalleryList();
+            resetGalleryImageFiles();
+        } finally {
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
         }
-        const imageField = JSON.stringify(imageUrls);
-        if (id) {
-            await window.supabaseClient
-                .from('gallery')
-                .update({ title, description, image: imageField })
-                .eq('id', id);
-        } else {
-            await window.supabaseClient
-                .from('gallery')
-                .insert([{ title, description, image: imageField }]);
-        }
-        document.getElementById('post-modal').style.display = 'none';
-        renderGalleryList();
-        resetGalleryImageFiles();
     }
     async function deleteGalleryItem(item) {
         console.log('삭제 함수 진입:', item);
@@ -781,13 +883,62 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     // 모달 폼 제출 이벤트 연결 (공지사항/구인/갤러리 구분)
     modalForm.addEventListener('submit', async function(e) {
-        const type = document.getElementById('modal-post-type').value;
-        if (type === 'notices') {
-            await handleNoticeFormSubmit(e);
-        } else if (type === 'jobs') {
-            await handleJobFormSubmit(e);
-        } else if (type === 'gallery') {
-            await handleGalleryFormSubmit(e);
+        e.preventDefault();
+        const postType = document.getElementById('modal-post-type').value;
+        let loadingOverlay = null;
+        
+        // 게시물 타입에 따라 적절한 로딩 오버레이 선택
+        if (postType === 'jobs') {
+            loadingOverlay = document.getElementById('jobs-loading-overlay');
+        } else if (postType === 'notices') {
+            loadingOverlay = document.getElementById('notice-loading-overlay');
+        } else if (postType === 'gallery') {
+            loadingOverlay = document.getElementById('gallery-loading-overlay');
+        }
+        
+        if (loadingOverlay) loadingOverlay.style.display = 'flex';
+        try {
+            const id = document.getElementById('modal-post-id').value;
+            const title = document.getElementById('modal-title-input').value;
+            const content = document.getElementById('modal-content-input').value;
+            
+            if (postType === 'jobs') {
+                if (id) {
+                    await window.supabaseClient
+                        .from('jobs')
+                        .update({ title, content })
+                        .eq('id', id);
+                } else {
+                    await window.supabaseClient
+                        .from('jobs')
+                        .insert([{ title, content }]);
+                }
+                await renderJobList();
+            } else if (postType === 'notices') {
+                const isNotice = document.getElementById('modal-is-notice-checkbox').checked;
+                if (id) {
+                    await window.supabaseClient
+                        .from('notices')
+                        .update({ title, content, is_notice: isNotice })
+                        .eq('id', id);
+                } else {
+                    await window.supabaseClient
+                        .from('notices')
+                        .insert([{ title, content, is_notice: isNotice }]);
+                }
+                await renderNoticeList();
+            } else if (postType === 'gallery') {
+                await handleGalleryFormSubmit(e);
+                return; // handleGalleryFormSubmit에서 이미 로딩 오버레이를 처리하므로 여기서는 return
+            }
+            
+            modal.style.display = 'none';
+            modalForm.reset();
+        } catch (error) {
+            alert('게시물 저장 중 오류가 발생했습니다.');
+            console.error('게시물 저장 오류:', error);
+        } finally {
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
         }
     });
 
@@ -874,56 +1025,78 @@ document.addEventListener('DOMContentLoaded', () => {
     const popupForm = document.getElementById('popup-form');
     popupForm && popupForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        const id = document.getElementById('popup-id').value;
-        const title = document.getElementById('popup-title').value;
-        const link = document.getElementById('popup-link').value;
-        const position_x = parseInt(document.getElementById('popup-pos-x').value) || 50;
-        const position_y = parseInt(document.getElementById('popup-pos-y').value) || 50;
-        const width = parseInt(document.getElementById('popup-width').value) || null;
-        const height = parseInt(document.getElementById('popup-height').value) || null;
-        const start_date = document.getElementById('popup-start-date').value || null;
-        const end_date = document.getElementById('popup-end-date').value || null;
-        const is_active = document.getElementById('popup-active').checked;
-        let image_url = null;
+        const loadingOverlay = document.getElementById('popup-loading-overlay');
+        if (loadingOverlay) loadingOverlay.style.display = 'flex';
+        try {
+            const id = document.getElementById('popup-id').value;
+            const title = document.getElementById('popup-title').value;
+            const link = document.getElementById('popup-link').value;
+            const position_x = parseInt(document.getElementById('popup-pos-x').value) || 50;
+            const position_y = parseInt(document.getElementById('popup-pos-y').value) || 50;
+            const width = parseInt(document.getElementById('popup-width').value) || null;
+            const height = parseInt(document.getElementById('popup-height').value) || null;
+            const start_date = document.getElementById('popup-start-date').value || null;
+            const end_date = document.getElementById('popup-end-date').value || null;
+            const is_active = document.getElementById('popup-active').checked;
+            let image_url = null;
 
-        // 이미지 업로드
-        const fileInput = document.getElementById('popup-image');
-        if (fileInput.files && fileInput.files[0]) {
-            const file = fileInput.files[0];
-            const fileName = sanitizeFileName(file.name);
-            const { data, error } = await window.supabaseClient.storage.from(popupBucket).upload(fileName, file, { upsert: true });
-            if (error) {
-                alert('이미지 업로드 실패: ' + error.message);
-                return;
+            // 이미지 업로드
+            const fileInput = document.getElementById('popup-image');
+            if (fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+                const fileName = sanitizeFileName(file.name);
+                const { data, error } = await window.supabaseClient.storage.from(popupBucket).upload(fileName, file, { upsert: true });
+                if (error) {
+                    alert('이미지 업로드 실패: ' + error.message);
+                    return;
+                }
+                image_url = `${window.supabaseClient.storage.from(popupBucket).getPublicUrl(fileName).data.publicUrl}`;
             }
-            image_url = `${window.supabaseClient.storage.from(popupBucket).getPublicUrl(fileName).data.publicUrl}`;
-        } else if (id) {
-            // 수정 시 이미지 변경 없으면 기존 이미지 유지
-            const { data } = await window.supabaseClient.from(popupTable).select('image_url').eq('id', id).single();
-            image_url = data?.image_url;
-        } else {
-            alert('이미지를 선택해 주세요.');
-            return;
-        }
 
-        const payload = { title, link, position_x, position_y, width, height, start_date, end_date, is_active, image_url };
+            const popupData = {
+                title,
+                link,
+                position_x,
+                position_y,
+                width,
+                height,
+                start_date,
+                end_date,
+                is_active,
+                ...(image_url && { image_url })
+            };
 
-        if (id) {
-            // 수정
-            const { error } = await window.supabaseClient.from(popupTable).update(payload).eq('id', id);
-            if (error) return alert('수정 실패: ' + error.message);
-            alert('팝업이 수정되었습니다.');
-        } else {
-            // 추가
-            const { error } = await window.supabaseClient.from(popupTable).insert([payload]);
-            if (error) return alert('등록 실패: ' + error.message);
-            alert('팝업이 등록되었습니다.');
+            if (id) {
+                await window.supabaseClient
+                    .from('popups')
+                    .update(popupData)
+                    .eq('id', id);
+            } else {
+                await window.supabaseClient
+                    .from('popups')
+                    .insert([popupData]);
+            }
+
+            await loadPopupList();
+            popupForm.reset();
+            document.getElementById('popup-cancel').click();
+            
+            // 팝업 미리보기 초기화
+            const popupImagePreview = document.getElementById('popup-image-preview');
+            if (popupImagePreview) {
+                popupImagePreview.innerHTML = '';
+            }
+            
+            // 미리보기 영역 초기화
+            if (window.setPopupPreviewFromForm) {
+                window.setPopupPreviewFromForm();
+            }
+        } catch (error) {
+            alert('팝업 저장 중 오류가 발생했습니다.');
+            console.error('팝업 저장 오류:', error);
+        } finally {
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
         }
-        popupForm.reset();
-        document.getElementById('popup-id').value = '';
-        document.getElementById('popup-image-preview').innerHTML = '';
-        document.getElementById('popup-cancel').style.display = 'none';
-        loadPopupList();
     });
 
     // 팝업 수정 버튼
@@ -1127,12 +1300,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${item.id}</td>
-                <td>${item.isnotice ? '📢 <span style=\"color:#d92121;font-weight:600;\">중요</span> ' : ''}${item.title}</td>
+                <td>${item.isnotice ? '📢 <span style="color:#d92121;font-weight:600;">중요</span> ' : ''}${item.title}</td>
                 <td>${formatKoreaDate(item.date || item.created_at)}</td>
                 <td>${item.views || 0}</td>
-                <td class=\"actions\">
-                    <button class=\"button-secondary\" data-id=\"${item.id}\">수정</button>
-                    <button class=\"button-danger\" data-id=\"${item.id}\">삭제</button>
+                <td class="actions">
+                    <button class="button-secondary" data-id="${item.id}">수정</button>
+                    <button class="button-danger" data-id="${item.id}">삭제</button>
                 </td>`;
             tr.querySelector('.button-secondary').addEventListener('click', () => showEditNoticeModal(item));
             tr.querySelector('.button-danger').addEventListener('click', () => deleteNoticeItem(item));
@@ -1293,47 +1466,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // FAQ 추가/수정 폼 제출
     faqForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        const faqId = document.getElementById('faq-id').value;
-        const question = document.getElementById('faq-question').value.trim();
-        const answer = document.getElementById('faq-answer').value.trim();
-        
-        if (!question || !answer) {
-            alert('질문과 답변을 모두 입력해주세요.');
-            return;
-        }
-        
+        const loadingOverlay = document.getElementById('faq-loading-overlay');
+        if (loadingOverlay) loadingOverlay.style.display = 'flex';
         try {
-            if (faqId) {
-                // 수정
-                const { error } = await window.supabaseClient
+            const id = document.getElementById('faq-id').value;
+            const question = document.getElementById('faq-question').value;
+            const answer = document.getElementById('faq-answer').value;
+            
+            if (id) {
+                await window.supabaseClient
                     .from('qa')
                     .update({ question, answer })
-                    .eq('id', faqId);
-                
-                if (error) throw error;
-                alert('FAQ가 수정되었습니다.');
+                    .eq('id', id);
             } else {
-                // 추가
-                const { error } = await window.supabaseClient
+                await window.supabaseClient
                     .from('qa')
                     .insert([{ question, answer }]);
-                
-                if (error) throw error;
-                alert('FAQ가 추가되었습니다.');
             }
             
-            // 폼 초기화
+            await loadFAQList();
             faqForm.reset();
-            document.getElementById('faq-id').value = '';
-            cancelFaqEditBtn.style.display = 'none';
-            
-            // 목록 새로고침
-            loadFAQList();
-            
+            cancelFaqEditBtn.click();
         } catch (error) {
-            console.error('FAQ 저장 실패:', error);
             alert('FAQ 저장 중 오류가 발생했습니다.');
+            console.error('FAQ 저장 오류:', error);
+        } finally {
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
         }
     });
 
@@ -1421,4 +1579,3 @@ function sanitizeFileName(name) {
   const ext = name.split('.').pop();
   return `${Date.now()}_${Math.random().toString(36).substr(2, 8)}.${ext}`;
 }
-

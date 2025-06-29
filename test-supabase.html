@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase 연결 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #log {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Supabase 연결 테스트</h1>
+    
+    <div class="test-section">
+        <h3>1. Supabase 클라이언트 초기화</h3>
+        <button onclick="testSupabaseInit()">클라이언트 초기화 테스트</button>
+        <div id="init-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. 시설 테이블 연결 테스트</h3>
+        <button onclick="testFacilitiesTable()">시설 테이블 조회</button>
+        <div id="facilities-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Storage 버킷 테스트</h3>
+        <button onclick="testStorageBucket()">Storage 버킷 확인</button>
+        <div id="storage-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. 로그</h3>
+        <button onclick="clearLog()">로그 지우기</button>
+        <div id="log"></div>
+    </div>
+
+    <!-- Supabase 스크립트 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+    <script src="supabase-config.js"></script>
+    
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.textContent += `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function clearLog() {
+            document.getElementById('log').textContent = '';
+        }
+        
+        async function testSupabaseInit() {
+            const resultDiv = document.getElementById('init-result');
+            resultDiv.innerHTML = '';
+            
+            try {
+                log('Supabase 클라이언트 초기화 테스트 시작');
+                
+                if (!window.supabaseClient) {
+                    throw new Error('Supabase 클라이언트가 초기화되지 않았습니다.');
+                }
+                
+                log('Supabase 클라이언트 확인됨');
+                resultDiv.innerHTML = '<span class="success">✅ Supabase 클라이언트가 정상적으로 초기화되었습니다.</span>';
+                
+                // 간단한 연결 테스트
+                const { data, error } = await window.supabaseClient.from('facilities').select('count').limit(1);
+                
+                if (error) {
+                    throw error;
+                }
+                
+                log('데이터베이스 연결 성공');
+                resultDiv.innerHTML += '<br><span class="success">✅ 데이터베이스 연결이 정상입니다.</span>';
+                
+            } catch (error) {
+                log('초기화 실패: ' + error.message, 'error');
+                resultDiv.innerHTML = '<span class="error">❌ 초기화 실패: ' + error.message + '</span>';
+            }
+        }
+        
+        async function testFacilitiesTable() {
+            const resultDiv = document.getElementById('facilities-result');
+            resultDiv.innerHTML = '';
+            
+            try {
+                log('시설 테이블 조회 테스트 시작');
+                
+                const { data, error } = await window.supabaseClient
+                    .from('facilities')
+                    .select('*')
+                    .order('order', { ascending: true });
+                
+                if (error) {
+                    throw error;
+                }
+                
+                log(`시설 테이블 조회 성공: ${data.length}개 항목`);
+                resultDiv.innerHTML = `<span class="success">✅ 시설 테이블 조회 성공: ${data.length}개 항목</span>`;
+                
+                if (data.length > 0) {
+                    resultDiv.innerHTML += '<br><strong>첫 번째 항목:</strong><br>';
+                    resultDiv.innerHTML += `<pre>${JSON.stringify(data[0], null, 2)}</pre>`;
+                }
+                
+            } catch (error) {
+                log('시설 테이블 조회 실패: ' + error.message, 'error');
+                resultDiv.innerHTML = '<span class="error">❌ 시설 테이블 조회 실패: ' + error.message + '</span>';
+            }
+        }
+        
+        async function testStorageBucket() {
+            const resultDiv = document.getElementById('storage-result');
+            resultDiv.innerHTML = '';
+            
+            try {
+                log('Storage 버킷 테스트 시작');
+                
+                const { data, error } = await window.supabaseClient
+                    .storage
+                    .from('facility-images')
+                    .list();
+                
+                if (error) {
+                    throw error;
+                }
+                
+                log(`Storage 버킷 확인 성공: ${data.length}개 파일`);
+                resultDiv.innerHTML = `<span class="success">✅ Storage 버킷 확인 성공: ${data.length}개 파일</span>`;
+                
+                if (data.length > 0) {
+                    resultDiv.innerHTML += '<br><strong>첫 번째 파일:</strong><br>';
+                    resultDiv.innerHTML += `<pre>${JSON.stringify(data[0], null, 2)}</pre>`;
+                }
+                
+            } catch (error) {
+                log('Storage 버킷 테스트 실패: ' + error.message, 'error');
+                resultDiv.innerHTML = '<span class="error">❌ Storage 버킷 테스트 실패: ' + error.message + '</span>';
+            }
+        }
+        
+        // 페이지 로드 시 자동 테스트
+        window.addEventListener('load', () => {
+            log('페이지 로드됨');
+            setTimeout(() => {
+                testSupabaseInit();
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 
