@@ -10,193 +10,429 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
+    /* 갤러리 페이지 전용 스타일 */
+    .gallery-page-wrapper {
+      background: #f9fbfd;
+      border-radius: 16px;
+      box-shadow: 0 4px 18px rgba(51,74,108,0.06);
+      overflow: hidden;
+    }
+    
+    .gallery-page-header {
+      background: linear-gradient(135deg, #f9fbfd 0%, #e7eaf0 100%);
+      border-bottom: 1.5px solid #cfd8e3;
+      padding: 2rem 2.5rem;
+    }
+    
+    .gallery-page-title {
+      font-size: 2.2rem;
+      color: #334a6c;
+      margin: 0 0 0.5rem 0;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+    
+    .gallery-page-subtitle {
+      font-size: 1.1rem;
+      color: #6c757d;
+      margin: 0;
+      font-weight: 500;
+    }
+    
     .board-controls {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin: 2rem 2.5rem 1.5rem 2.5rem;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: 1.5rem;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(51,74,108,0.07);
+      border: 1.5px solid #e9ecef;
     }
+    
+    .board-controls-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
     .total-posts {
-      font-size: 0.95rem;
-      color: #555;
+      font-size: 1rem;
+      color: #334a6c;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      background: #e7eaf0;
+      border-radius: 8px;
+      border: 1px solid #cfd8e3;
     }
+    
     .search-bar {
       display: flex;
+      gap: 0.8rem;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+    
+    .filter-row {
+      display: flex;
       gap: 0.5rem;
+      align-items: center;
     }
+    
     .search-bar select, .search-bar input {
-      padding: 0.6rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 0.9rem;
-    }
-    .search-bar select {
-      width: 120px;
-    }
-    .search-bar input {
-      width: 240px;
-    }
-    .search-bar button {
-      padding: 0.6rem 1.2rem;
-      border: none;
-      background-color: #1a365d;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      height: 42px;
-      line-height: 1.2;
+      padding: 0.7rem 1rem;
+      border: 1.5px solid #b0b8c1;
+      border-radius: 8px;
       font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      color: #334a6c;
+      background: #fff;
+      cursor: pointer;
+    }
+    
+    .search-bar select:focus, .search-bar input:focus {
+      outline: none;
+      border-color: #334a6c;
+      box-shadow: 0 0 0 3px rgba(51,74,108,0.1);
+    }
+    
+    .search-bar select {
+      min-width: 110px;
+    }
+    
+    .search-bar input {
+      width: 280px;
+      color: #212529;
+    }
+    
+    .search-bar button {
+      padding: 0.7rem 1.5rem;
+      border: none;
+      background: linear-gradient(135deg, #334a6c 0%, #2c405e 100%);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(51,74,108,0.15);
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 0.5rem;
     }
+    
     .search-bar button:hover {
-      background-color: #152c4a;
+      background: linear-gradient(135deg, #2c405e 0%, #1e293b 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(51,74,108,0.25);
     }
+    
+    .divider {
+      width: 1px;
+      height: 28px;
+      background: #e0e0e0;
+      display: inline-block;
+      margin: 0 0.5rem;
+    }
+    
     .board-list {
-      border-top: 2px solid #333;
+      margin: 0 2.5rem 2rem 2.5rem;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.5rem;
       padding-top: 1rem;
     }
-    .board-header {
-      display: none; /* 그리드 레이아웃에서는 헤더 숨김 */
-    }
+    
     .board-row {
       display: flex;
       flex-direction: column;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
+      border: 1.5px solid #e9ecef;
+      border-radius: 12px;
       overflow: hidden;
-      transition: transform 0.2s, box-shadow 0.2s;
-      background: white;
+      transition: all 0.3s ease;
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(51,74,108,0.07);
     }
+    
     .board-row:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(51,74,108,0.15);
+      border-color: #334a6c;
     }
+    
     .board-row .thumbnail {
       width: 100%;
       height: 200px;
       object-fit: cover;
       border-radius: 0;
       margin: 0;
+      transition: transform 0.3s ease;
     }
+    
+    .board-row:hover .thumbnail {
+      transform: scale(1.02);
+    }
+    
     .board-row .title-section {
-      padding: 1rem;
+      padding: 1.2rem;
       flex-grow: 1;
       display: flex;
       flex-direction: column;
     }
+    
     .board-row .title-section .title {
       font-weight: 600;
-      color: #333;
+      color: #334a6c;
       text-decoration: none;
       display: block;
-      margin-bottom: 0.5rem;
-      font-size: 1rem;
+      margin-bottom: 0.8rem;
+      font-size: 1.1rem;
       line-height: 1.4;
       word-break: keep-all;
+      transition: color 0.2s;
     }
+    
     .board-row .title-section .title:hover {
-      color: #1a365d;
+      color: #1e293b;
     }
+    
     .board-row .title-section .description {
-      font-size: 0.9rem;
-      color: #666;
+      font-size: 0.95rem;
+      color: #6c757d;
       line-height: 1.5;
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    
     .board-row .meta-info {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      font-size: 0.8rem;
-      color: #888;
+      font-size: 0.85rem;
+      color: #8a9ba8;
       margin-top: auto;
-      padding-top: 0.5rem;
-      border-top: 1px solid #f0f0f0;
+      padding-top: 0.8rem;
+      border-top: 1px solid #e7eaf0;
     }
+    
     .board-row .author {
       display: block;
+      font-weight: 500;
     }
+    
     .board-row .date {
       display: block;
     }
-    .board-row .views {
-      display: none; /* 그리드에서는 조회수 숨김 */
-    }
+    
     .board-bottom {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 2rem;
+      margin: 2rem 2.5rem;
     }
+    
     .pagination {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 0.2rem;
+      gap: 0.3rem;
+      background: #fff;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(51,74,108,0.07);
+      border: 1.5px solid #e9ecef;
     }
+    
     .pagination button {
-      width: 36px;
-      height: 36px;
-      border: 1px solid #ddd;
-      background-color: white;
+      width: 40px;
+      height: 40px;
+      border: 1.5px solid #e9ecef;
+      background: #fff;
       cursor: pointer;
-      transition: background-color 0.2s, border-color 0.2s;
+      transition: all 0.3s ease;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #495057;
     }
+    
     .pagination button:hover {
-      border-color: #1a365d;
-      color: #1a365d;
+      border-color: #334a6c;
+      color: #334a6c;
+      background: #f8f9fa;
+      transform: translateY(-1px);
     }
+    
     .pagination button.active {
-      background-color: #1a365d;
+      background: linear-gradient(135deg, #334a6c 0%, #2c405e 100%);
       color: white;
-      border-color: #1a365d;
+      border-color: #334a6c;
+      box-shadow: 0 2px 8px rgba(51,74,108,0.2);
     }
 
     /* 반응형 */
+    @media (max-width: 1400px) {
+      .board-list {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.3rem;
+      }
+      .board-row .thumbnail {
+        height: 190px;
+      }
+    }
+    
     @media (max-width: 1200px) {
       .board-list {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 1.2rem;
       }
       .board-row .thumbnail {
         height: 180px;
       }
     }
+    
     @media (max-width: 992px) {
       .board-list {
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 1rem;
       }
       .board-row .thumbnail {
         height: 160px;
       }
       .board-row .title-section .title {
-        font-size: 0.95rem;
+        font-size: 1rem;
       }
       .board-row .title-section .description {
-        font-size: 0.85rem;
+        font-size: 0.9rem;
+      }
+      
+      .gallery-page-header {
+        padding: 1.5rem 2rem;
+      }
+      
+      .gallery-page-title {
+        font-size: 1.8rem;
+      }
+      
+      .board-controls {
+        margin: 1.5rem 2rem 1rem 2rem;
+        padding: 1.2rem;
+      }
+      
+      .board-list {
+        margin: 0 2rem 1.5rem 2rem;
       }
     }
+    
     @media (max-width: 768px) {
       .board-list {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 0.8rem;
       }
       .board-row .thumbnail {
         height: 140px;
+      }
+      .board-row .title-section {
+        padding: 1rem;
+      }
+      .board-row .title-section .title {
+        font-size: 0.95rem;
+        margin-bottom: 0.6rem;
+      }
+      .board-row .title-section .description {
+        font-size: 0.85rem;
+        margin-bottom: 0.6rem;
+      }
+      .board-row .meta-info {
+        font-size: 0.8rem;
+        padding-top: 0.6rem;
+      }
+      
+      .gallery-page-header {
+        padding: 1.2rem 1.5rem;
+      }
+      
+      .gallery-page-title {
+        font-size: 1.5rem;
+      }
+      
+      .gallery-page-subtitle {
+        font-size: 1rem;
+      }
+      
+      .board-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+        margin: 1.2rem 1.5rem 1rem 1.5rem;
+        padding: 1rem;
+      }
+      
+      .search-bar {
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+      }
+      
+      .filter-row {
+        display: flex !important;
+        gap: 0.5rem !important;
+        width: 100% !important;
+      }
+      
+      .search-bar select, .search-bar input {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        padding: 0.8rem;
+        font-size: 1rem;
+      }
+      
+      .search-bar button {
+        width: 100%;
+        padding: 0.8rem;
+        font-size: 1rem;
+      }
+      
+      .divider {
+        display: none;
+      }
+      
+      .total-posts {
+        text-align: center;
+        font-size: 0.9rem;
+      }
+      
+      .pagination {
+        padding: 0.8rem 1rem;
+      }
+      
+      .pagination button {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+      }
+      
+      .board-bottom {
+        margin: 1.5rem 1.5rem;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .board-list {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 0.6rem;
+      }
+      .board-row .thumbnail {
+        height: 120px;
       }
       .board-row .title-section {
         padding: 0.8rem;
@@ -208,69 +444,47 @@
       .board-row .title-section .description {
         font-size: 0.8rem;
         margin-bottom: 0.4rem;
+        -webkit-line-clamp: 1;
       }
       .board-row .meta-info {
         font-size: 0.75rem;
         padding-top: 0.4rem;
       }
       
-      .board-controls {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 1rem;
+      .search-bar select, .search-bar input {
+        padding: 0.7rem;
+        font-size: 0.9rem;
       }
       
-      .search-bar {
-        flex-wrap: wrap !important;
-        gap: 0.2rem !important;
-      }
-      
-      .search-bar span[style*="background:#e0e0e0"] {
-        display: none !important;
-      }
-      .filter-row {
-        display: flex !important;
-        gap: 0.3rem !important;
-        width: 100% !important;
-      }
-      #items-per-page, #sort-order {
-        width: 100% !important;
-        flex: 1 1 0 !important;
-        min-width: 0 !important;
-        font-size: 0.8rem !important;
-        padding: 0.4rem 0.5rem !important;
-        margin-bottom: 0.2rem;
-        margin-right: 0 !important;
-        margin-left: 0 !important;
-        box-sizing: border-box;
-      }
-      /* 나머지 select/input/button은 100% */
-      .search-bar select:not(#items-per-page):not(#sort-order),
-      .search-bar input,
       .search-bar button {
-        width: 100%;
-        min-width: 0;
-        box-sizing: border-box;
+        padding: 0.7rem;
+        font-size: 0.9rem;
       }
       
       .total-posts {
-        text-align: center;
         font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
       }
       
       .pagination button {
-        width: 34px;
-        height: 34px;
+        width: 32px;
+        height: 32px;
         font-size: 0.85rem;
       }
+      
+      .pagination {
+        gap: 0.2rem;
+        padding: 0.6rem 0.8rem;
+      }
     }
-    @media (max-width: 576px) {
+    
+    @media (max-width: 480px) {
       .board-list {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 0.6rem;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 0.5rem;
       }
       .board-row .thumbnail {
-        height: 120px;
+        height: 100px;
       }
       .board-row .title-section {
         padding: 0.6rem;
@@ -282,45 +496,36 @@
       .board-row .title-section .description {
         font-size: 0.75rem;
         margin-bottom: 0.3rem;
-        -webkit-line-clamp: 1;
       }
       .board-row .meta-info {
         font-size: 0.7rem;
         padding-top: 0.3rem;
       }
       
-      .search-bar select, .search-bar input {
-        padding: 0.6rem;
-        font-size: 0.85rem;
-      }
-      
-      .search-bar button {
+      .search-bar select, .search-bar input, .search-bar button {
         padding: 0.6rem;
         font-size: 0.85rem;
       }
       
       .total-posts {
-        font-size: 0.75rem;
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
       }
       
       .pagination button {
-        width: 30px;
-        height: 30px;
+        width: 28px;
+        height: 28px;
         font-size: 0.8rem;
-      }
-      
-      .pagination {
-        gap: 0.1rem;
       }
     }
     
-    @media (max-width: 480px) {
+    @media (max-width: 400px) {
       .board-list {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 0.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.4rem;
       }
       .board-row .thumbnail {
-        height: 100px;
+        height: 90px;
       }
       .board-row .title-section {
         padding: 0.5rem;
@@ -338,87 +543,25 @@
         padding-top: 0.25rem;
       }
       
-      .search-bar select, .search-bar input, .search-bar button {
-        padding: 0.3rem 0.3rem;
-        font-size: 0.75rem;
-        min-width: 55px;
-      }
-      
-      #items-per-page, #sort-order, #gallery-search-type {
-        min-width: 55px !important;
-        font-size: 0.75rem !important;
-        padding: 0.3rem 0.3rem !important;
-      }
-      .search-bar span[style*="background:#e0e0e0"] {
-        height: 14px !important;
-        margin: 0 0.1rem !important;
-      }
-      
-      .total-posts {
-        font-size: 0.7rem;
-      }
-      
-      .pagination button {
-        width: 28px;
-        height: 28px;
-        font-size: 0.75rem;
-      }
-    }
-    
-    @media (max-width: 400px) {
-      .board-list {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 0.4rem;
-      }
-      .board-row .thumbnail {
-        height: 90px;
-      }
-      .board-row .title-section {
-        padding: 0.4rem;
-      }
-      .board-row .title-section .title {
-        font-size: 0.75rem;
-        margin-bottom: 0.2rem;
-      }
-      .board-row .title-section .description {
-        font-size: 0.65rem;
-        margin-bottom: 0.2rem;
-      }
-      .board-row .meta-info {
-        font-size: 0.6rem;
-        padding-top: 0.2rem;
-      }
-      
       .search-bar select, .search-bar input {
-        padding: 0.45rem;
-        font-size: 0.75rem;
+        padding: 0.5rem;
+        font-size: 0.8rem;
       }
       
       .search-bar button {
-        padding: 0.45rem;
-        font-size: 0.75rem;
+        padding: 0.5rem;
+        font-size: 0.8rem;
       }
       
       .total-posts {
-        font-size: 0.65rem;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
       }
       
       .pagination button {
         width: 26px;
         height: 26px;
-        font-size: 0.7rem;
-      }
-    }
-    @media (min-width: 769px) {
-      .search-bar input, .search-bar select {
-        height: 42px;
-        font-size: 0.95rem;
-      }
-      .search-bar button {
-        height: 42px;
-        min-width: 70px;
-        font-size: 0.95rem;
-        padding: 0 1.2rem;
+        font-size: 0.75rem;
       }
     }
     
@@ -475,36 +618,41 @@
     <section class="page-section">
       <div class="container">
         <div class="content-card">
-          <div class="section-title">
-            <h2>갤러리</h2>
-            <p>생생한 학원 생활의 모습을 사진으로 만나보세요.</p>
-          </div>
-          <div class="card-content">
+          <div class="gallery-page-wrapper">
+            <div class="gallery-page-header">
+              <h1 class="gallery-page-title">갤러리</h1>
+              <p class="gallery-page-subtitle">생생한 학원 생활의 모습을 사진으로 만나보세요.</p>
+            </div>
+            
             <div class="board-controls">
-              <div class="total-posts" id="total-posts-counter"></div>
-              <div class="search-bar" style="flex-wrap:nowrap; align-items:center; gap:0.5rem; width:100%;">
-                <div class="filter-row" style="display:flex; gap:0.5rem; width:100%;">
-                  <select id="items-per-page" style="min-width:110px; flex:1;">
+              <div class="board-controls-left">
+                <div class="total-posts" id="total-posts-counter">전체 0개</div>
+              </div>
+              <div class="search-bar">
+                <div class="filter-row">
+                  <select id="items-per-page">
                     <option value="10">10개씩 보기</option>
                     <option value="20">20개씩 보기</option>
                     <option value="30">30개씩 보기</option>
                   </select>
-                  <span style="width:1px; height:28px; background:#e0e0e0; display:inline-block; margin:0 0.5rem;"></span>
-                  <select id="sort-order" style="min-width:110px; flex:1;">
+                  <div class="divider"></div>
+                  <select id="sort-order">
                     <option value="created_at_desc">최신순</option>
                     <option value="created_at_asc">오래된순</option>
                     <option value="views_desc">조회수순</option>
                     <option value="title_asc">제목순</option>
                   </select>
                 </div>
-                <span style="width:1px; height:28px; background:#e0e0e0; display:inline-block; margin:0 0.5rem;"></span>
+                <div class="divider"></div>
                 <select id="gallery-search-type">
                   <option value="title">제목</option>
                   <option value="content">내용</option>
                   <option value="title_content">제목+내용</option>
                 </select>
                 <input type="text" id="gallery-search-input" placeholder="검색어를 입력하세요">
-                <button id="gallery-search-btn">검색</button>
+                <button id="gallery-search-btn">
+                  <i class="fas fa-search"></i> 검색
+                </button>
               </div>
             </div>
 

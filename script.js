@@ -880,15 +880,19 @@ async function initGalleryPage() {
       const endIdx = startIdx + itemsPerPage;
       const pageItems = items.slice(startIdx, endIdx);
       listContainer.innerHTML = pageItems.map(item => {
-        let images = [];
-        try { images = JSON.parse(item.image); } catch { images = [item.image]; }
+        // parseGalleryImages 함수를 사용하여 안전하게 첫 번째 이미지만 가져오기
+        const images = parseGalleryImages(item.image);
         const thumbnail = images[0] || '';
+        
+        // description에서 HTML 태그 제거하여 텍스트만 추출
+        const descriptionText = (item.description || '').replace(/<[^>]*>/g, '');
+        
         return `
           <div class="board-row">
             <img class="thumbnail" src="${thumbnail}" alt="썸네일">
             <div class="title-section">
               <a href="community_gallery_detail.html?id=${item.id}" class="title" onclick="incrementViewCount('gallery', ${item.id})">${item.title || ''}</a>
-              <div class="description">${item.description || ''}</div>
+              <div class="description">${descriptionText}</div>
               <div class="meta-info">
                 <span class="date">${formatKoreaDate(item.created_at)}</span>
                 <span class="views" style="margin-left:8px;"><i class="fas fa-eye"></i> ${item.views || 0}</span>
@@ -950,8 +954,7 @@ async function initGalleryDetailPage() {
     const nextPost = currentIndex < sortedItems.length - 1 ? sortedItems[currentIndex + 1] : null;
 
     // 여러 이미지 모두 렌더링
-    let images = [];
-    try { images = JSON.parse(currentItem.image); } catch { images = [currentItem.image]; }
+    const images = parseGalleryImages(currentItem.image);
     const imagesHtml = images.map(img => `<img src="${img}" alt="${currentItem.title}" style="max-width:100%;margin-bottom:1rem;">`).join('');
     const imageGroupEl = document.getElementById('gallery-detail-image-group');
     if (imageGroupEl) {
@@ -969,8 +972,8 @@ async function initGalleryDetailPage() {
     document.getElementById('gallery-detail-author').textContent = currentItem.author || '';
     document.getElementById('gallery-detail-date').textContent = formatKoreaDate(currentItem.created_at);
     document.getElementById('gallery-detail-views').textContent = currentItem.views || 0;
-    // <br>을 줄바꿈으로 변환하여 innerHTML로 표시
-    document.getElementById('gallery-detail-text').innerHTML = (currentItem.description || '').replace(/<br\s*\/?>/gi, '<br>');
+    // Quill 에디터 내용을 ql-editor 클래스로 감싸서 표시
+    document.getElementById('gallery-detail-text').innerHTML = `<div class="ql-editor">${currentItem.description || ''}</div>`;
 
     // 이전/다음글 네비게이션 업데이트
     const prevButton = document.getElementById('prev-button');
@@ -1057,7 +1060,7 @@ async function initJobsPage() {
     const paginationContainer = document.getElementById('pagination');
     const totalPostsCounter = document.getElementById('total-posts-counter');
     const searchTypeSelect = document.getElementById('jobs-search-type');
-    // 정렬/페이지당개수 select는 필요시 추가 구현
+    const itemsPerPageSelect = document.getElementById('items-per-page-select');
 
     function sortItems(items, order) {
       let sorted = [...items];
@@ -1104,10 +1107,6 @@ async function initJobsPage() {
       setupPagination(filteredItems, currentPage);
     }
 
-    searchBtn.addEventListener('click', performSearchAndRender);
-    searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') performSearchAndRender(); });
-    // 정렬/페이지당개수 select 이벤트 필요시 추가
-
     // 렌더링 함수
     function renderList(items, page) {
       // 중요공지 먼저, 그 안에서 최신순, 일반공지도 최신순
@@ -1128,24 +1127,44 @@ async function initJobsPage() {
         const row = createRow(item, itemNumber);
         listContainer.appendChild(row);
       });
-      totalPostsCounter.textContent = `총 ${items.length}개`;
+      totalPostsCounter.textContent = `전체 ${items.length}개`;
     }
+    
     function createRow(item, itemNumber) {
       const row = document.createElement('div');
       row.className = `board-row ${item.isNotice ? 'notice' : ''}`;
       row.innerHTML = `
         <div class="number">${item.isNotice ? '공지' : itemNumber}</div>
         <div class="title"><a href="community_jobs_detail.html?id=${item.id}" onclick="incrementViewCount('jobs', ${item.id})">${item.title}</a></div>
+        <div class="author">${item.author || '관리자'}</div>
         <div class="date">${formatKoreaDate(item.date || item.created_at)}</div>
         <div class="views">${item.views || 0}</div>
       `;
       return row;
     }
+    
     function setupPagination(items, page) {
       paginationContainer.innerHTML = '';
       const pageCount = Math.ceil(items.length / itemsPerPage);
       if (pageCount <= 1) return;
-      for (let i = 1; i <= pageCount; i++) {
+      
+      // 이전 페이지 버튼
+      if (page > 1) {
+        const prevBtn = document.createElement('button');
+        prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+        prevBtn.addEventListener('click', () => {
+          currentPage = page - 1;
+          renderList(items, currentPage);
+          setupPagination(items, currentPage);
+        });
+        paginationContainer.appendChild(prevBtn);
+      }
+      
+      // 페이지 번호 버튼들
+      const startPage = Math.max(1, page - 2);
+      const endPage = Math.min(pageCount, page + 2);
+      
+      for (let i = startPage; i <= endPage; i++) {
         const pageBtn = document.createElement('button');
         pageBtn.innerText = i;
         if (i === page) pageBtn.classList.add('active');
@@ -1156,7 +1175,31 @@ async function initJobsPage() {
         });
         paginationContainer.appendChild(pageBtn);
       }
+      
+      // 다음 페이지 버튼
+      if (page < pageCount) {
+        const nextBtn = document.createElement('button');
+        nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+        nextBtn.addEventListener('click', () => {
+          currentPage = page + 1;
+          renderList(items, currentPage);
+          setupPagination(items, currentPage);
+        });
+        paginationContainer.appendChild(nextBtn);
+      }
     }
+
+    // 게시글 개수 변경 이벤트
+    itemsPerPageSelect.addEventListener('change', function() {
+      itemsPerPage = parseInt(this.value);
+      currentPage = 1;
+      renderList(filteredItems, currentPage);
+      setupPagination(filteredItems, currentPage);
+    });
+
+    searchBtn.addEventListener('click', performSearchAndRender);
+    searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') performSearchAndRender(); });
+
     // 초기 렌더링
     filteredItems = sortItems(filteredItems, sortOrder);
     renderList(filteredItems, currentPage);
@@ -1387,13 +1430,14 @@ async function initNoticePage() {
     if (error) throw error;
 
     let currentPage = 1;
-    const itemsPerPage = 10;
+    let itemsPerPage = 10;
 
     const searchInput = document.getElementById('notice-search-input');
     const searchBtn = document.getElementById('notice-search-btn');
     const paginationContainer = document.getElementById('pagination');
     const totalPostsCounter = document.getElementById('total-posts-counter');
     const searchTypeSelect = document.getElementById('notice-search-type');
+    const itemsPerPageSelect = document.getElementById('items-per-page-select');
 
     function renderList(items, page) {
       // 중요공지 먼저, 그 안에서 최신순, 일반공지도 최신순
@@ -1416,7 +1460,7 @@ async function initNoticePage() {
         const row = createRow(item, itemNumber);
         listContainer.appendChild(row);
       });
-      totalPostsCounter.textContent = `총 ${items.length}개`;
+      totalPostsCounter.textContent = `전체 ${items.length}개`;
     }
 
     function createRow(item, itemNumber) {
@@ -1426,6 +1470,7 @@ async function initNoticePage() {
       row.innerHTML = `
         <div class="number">${item.isnotice || item.isNotice ? '공지' : itemNumber}</div>
         <div class="title"><a href="community_notice_detail.html?id=${item.id}" onclick="incrementViewCount('notices', ${item.id})">${(item.isnotice || item.isNotice) ? '📢 <span style=\"color:#d92121;font-weight:600;\">중요</span> ' : ''}${item.title}</a></div>
+        <div class="author">${item.author || '관리자'}</div>
         <div class="date">${formatKoreaDate(item.date || item.created_at)}</div>
         <div class="views">${item.views || 0}</div>
       `;
@@ -1436,7 +1481,24 @@ async function initNoticePage() {
       paginationContainer.innerHTML = '';
       const pageCount = Math.ceil(items.length / itemsPerPage);
       if (pageCount <= 1) return;
-      for (let i = 1; i <= pageCount; i++) {
+      
+      // 이전 페이지 버튼
+      if (page > 1) {
+        const prevBtn = document.createElement('button');
+        prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+        prevBtn.addEventListener('click', () => {
+          currentPage = page - 1;
+          renderList(items, currentPage);
+          setupPagination(items, currentPage);
+        });
+        paginationContainer.appendChild(prevBtn);
+      }
+      
+      // 페이지 번호 버튼들
+      const startPage = Math.max(1, page - 2);
+      const endPage = Math.min(pageCount, page + 2);
+      
+      for (let i = startPage; i <= endPage; i++) {
         const pageBtn = document.createElement('button');
         pageBtn.innerText = i;
         if (i === page) pageBtn.classList.add('active');
@@ -1446,6 +1508,18 @@ async function initNoticePage() {
           setupPagination(items, currentPage);
         });
         paginationContainer.appendChild(pageBtn);
+      }
+      
+      // 다음 페이지 버튼
+      if (page < pageCount) {
+        const nextBtn = document.createElement('button');
+        nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+        nextBtn.addEventListener('click', () => {
+          currentPage = page + 1;
+          renderList(items, currentPage);
+          setupPagination(items, currentPage);
+        });
+        paginationContainer.appendChild(nextBtn);
       }
     }
 
@@ -1471,6 +1545,14 @@ async function initNoticePage() {
       renderList(filteredItems, currentPage);
       setupPagination(filteredItems, currentPage);
     }
+
+    // 게시글 개수 변경 이벤트
+    itemsPerPageSelect.addEventListener('change', function() {
+      itemsPerPage = parseInt(this.value);
+      currentPage = 1;
+      renderList(allItems, currentPage);
+      setupPagination(allItems, currentPage);
+    });
 
     searchBtn.addEventListener('click', performSearch);
     searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') performSearch(); });
@@ -1523,7 +1605,7 @@ async function initNoticeDetailPage() {
           </div>
         </div>
         <div class="post-body">
-          ${post.content}
+          <div class="ql-editor">${post.content}</div>
         </div>
         <div class="post-footer">
           <a href="community_notice.html" class="list-button">목록으로</a>
@@ -1858,3 +1940,30 @@ async function loadLatestQA() {
     document.body.setAttribute('data-page', page);
   }
 })();
+
+// 갤러리 썸네일/상세 이미지 렌더링 시 기존 미리보기 모두 삭제
+function removeAllGalleryImagePreviews() {
+    document.querySelectorAll('.current-image-preview').forEach(el => el.remove());
+}
+
+// 기존 renderGalleryImagePreviews 함수(또는 갤러리 이미지 미리보기 렌더링 직전)에 아래 코드 추가 예시:
+// removeAllGalleryImagePreviews();
+// ...이후 새로 미리보기 렌더링...
+
+// parseGalleryImages 함수는 그대로 유지
+function parseGalleryImages(imageField) {
+    let images = [];
+    if (Array.isArray(imageField)) {
+        images = imageField;
+    } else if (typeof imageField === 'string') {
+        try {
+            images = JSON.parse(imageField);
+            if (!Array.isArray(images)) images = [images];
+        } catch {
+            images = [imageField];
+        }
+    } else {
+        images = [];
+    }
+    return images;
+}
