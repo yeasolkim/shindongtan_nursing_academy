@@ -216,32 +216,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 .select('*')
                 .order('order', { ascending: true });
             if (error) throw error;
-            instructorList.innerHTML = '';
+        instructorList.innerHTML = '';
             instructors.forEach((inst, idx) => {
-                const item = document.createElement('div');
-                item.className = 'instructor-admin-item';
-                item.innerHTML = `
-                    <div class="instructor-preview">
-                        <img src="${inst.image || 'shindongtan/resource/logo.png'}" alt="${inst.name}">
-                        <div class="instructor-info">
-                            <h4>${inst.name}</h4>
-                            <p>${inst.title}</p>
-                        </div>
+            const item = document.createElement('div');
+            item.className = 'instructor-admin-item';
+            item.innerHTML = `
+                <div class="instructor-preview">
+                    <img src="${inst.image || 'shindongtan/resource/logo.png'}" alt="${inst.name}">
+                    <div class="instructor-info">
+                        <h4>${inst.name}</h4>
+                        <p>${inst.title}</p>
                     </div>
-                    <div class="instructor-actions">
-                        <button class="button-secondary" data-id="${inst.id}">수정</button>
-                        <button class="button-danger" data-id="${inst.id}">삭제</button>
+                </div>
+                <div class="instructor-actions">
+                    <button class="button-secondary" data-id="${inst.id}">수정</button>
+                    <button class="button-danger" data-id="${inst.id}">삭제</button>
                         <button class="button-primary" data-id="${inst.id}">상세보기</button>
                         <button class="move-up button-secondary" data-id="${inst.id}" ${idx === 0 ? 'disabled' : ''}>▲</button>
                         <button class="move-down button-secondary" data-id="${inst.id}" ${idx === instructors.length - 1 ? 'disabled' : ''}>▼</button>
-                    </div>`;
-                item.querySelector('.button-secondary').addEventListener('click', () => editInstructor(inst.id));
-                item.querySelector('.button-danger').addEventListener('click', () => deleteInstructor(inst.id));
+                </div>`;
+            item.querySelector('.button-secondary').addEventListener('click', () => editInstructor(inst.id));
+            item.querySelector('.button-danger').addEventListener('click', () => deleteInstructor(inst.id));
                 item.querySelector('.button-primary').addEventListener('click', () => showInstructorDetail(inst.id));
                 item.querySelector('.move-up').addEventListener('click', () => moveInstructor(inst.id, -1, instructors));
                 item.querySelector('.move-down').addEventListener('click', () => moveInstructor(inst.id, 1, instructors));
-                instructorList.appendChild(item);
-            });
+            instructorList.appendChild(item);
+        });
         } catch (error) {
             instructorList.innerHTML = '<div class="error-message">강사 정보를 불러오는 데 실패했습니다.</div>';
             console.error('강사 목록 로드 오류:', error);
@@ -280,18 +280,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const loadingOverlay = document.getElementById('instructor-loading-overlay');
         if (loadingOverlay) loadingOverlay.style.display = 'flex';
         try {
-            const id = document.getElementById('instructor-id').value;
+        const id = document.getElementById('instructor-id').value;
             const name = document.getElementById('instructor-name').value;
             const title = document.getElementById('instructor-title').value;
             const details = document.getElementById('instructor-details').value.split('\n').filter(line => line.trim());
-            const imageFile = document.getElementById('instructor-image').files[0];
-            
+        const imageFile = document.getElementById('instructor-image').files[0];
+
             let imageUrl = null;
-            if (imageFile) {
+        if (imageFile) {
                 imageUrl = await uploadInstructorImage(imageFile);
-            }
-            
-            const instructorData = {
+        }
+
+        const instructorData = {
                 name,
                 title,
                 details,
@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         .from('instructors')
                         .update(instructorData)
                         .eq('id', id);
-                } else {
+            } else {
                     // 새 강사 추가 시 order를 가장 큰 값 + 1로 지정
                     const { data: maxOrderData } = await window.supabaseClient
                         .from('instructors')
@@ -319,8 +319,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         .insert([instructorData]);
                 }
                 await loadInstructors();
-                instructorForm.reset();
-                cancelInstructorEditBtn.click();
+        instructorForm.reset();
+        cancelInstructorEditBtn.click();
             } catch (error) {
                 alert('강사 정보 저장 중 오류가 발생했습니다.');
                 console.error('강사 저장 오류:', error);
@@ -339,29 +339,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 .eq('id', id)
                 .single();
             if (error || !instructor) {
-                alert('강사 정보를 찾을 수 없습니다.');
-                return;
-            }
-            document.getElementById('instructor-id').value = instructor.id;
-            document.getElementById('instructor-name').value = instructor.name;
-            document.getElementById('instructor-title').value = instructor.title;
+            alert('강사 정보를 찾을 수 없습니다.');
+            return;
+        }
+        document.getElementById('instructor-id').value = instructor.id;
+        document.getElementById('instructor-name').value = instructor.name;
+        document.getElementById('instructor-title').value = instructor.title;
             document.getElementById('instructor-details').value = (instructor.details || []).join('\n');
-            cancelInstructorEditBtn.style.display = 'inline-block';
-            instructorForm.querySelector('button[type="submit"]').textContent = '수정하기';
-            window.scrollTo(0, 0);
+        cancelInstructorEditBtn.style.display = 'inline-block';
+        instructorForm.querySelector('button[type="submit"]').textContent = '수정하기';
+        window.scrollTo(0, 0);
         } catch (error) {
             alert('강사 정보 로드 중 오류가 발생했습니다.');
             console.error('강사 정보 로드 오류:', error);
         }
     }
-
+    
     cancelInstructorEditBtn.addEventListener('click', () => {
         instructorForm.reset();
         document.getElementById('instructor-id').value = '';
         cancelInstructorEditBtn.style.display = 'none';
         instructorForm.querySelector('button[type="submit"]').textContent = '저장하기';
     });
-
+    
     // 강사 삭제
     async function deleteInstructor(id) {
         if (!confirm('정말로 이 강사를 삭제하시겠습니까?')) return;
@@ -422,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            facilityList.innerHTML = '';
+        facilityList.innerHTML = '';
             
             if (facilities.length === 0) {
                 facilityList.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">등록된 시설 사진이 없습니다.</p>';
@@ -430,8 +430,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             facilities.forEach((item, idx) => {
-                const div = document.createElement('div');
-                div.className = 'image-preview-item';
+            const div = document.createElement('div');
+            div.className = 'image-preview-item';
                 div.innerHTML = `
                     <img src="${item.image_url}" alt="${item.alt || ''}">
                     <p>${item.alt || ''}</p>
@@ -442,8 +442,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 div.querySelector('.move-up').onclick = () => moveFacility(item.id, -1, facilities);
                 div.querySelector('.move-down').onclick = () => moveFacility(item.id, 1, facilities);
                 div.querySelector('.delete-btn').onclick = () => deleteFacility(item);
-                facilityList.appendChild(div);
-            });
+            facilityList.appendChild(div);
+        });
             
             console.log('시설 목록 렌더링 완료');
             
@@ -732,7 +732,7 @@ document.addEventListener('DOMContentLoaded', () => {
         galleryImageFiles = images.map(url => ({ url }));
         renderGalleryImagePreviews();
         // 기존 이미지 표시(구버전 호환)
-        const imageInput = document.getElementById('modal-image-input');
+            const imageInput = document.getElementById('modal-image-input');
         imageInput.setAttribute('data-existing-url', item.image || '');
     }
     // 갤러리 이미지 파일 관리
@@ -994,7 +994,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .order('id', { ascending: false });
         if (error) {
             document.getElementById('popup-list').innerHTML = '<div style="color:red">팝업 목록 불러오기 실패</div>';
-            return;
+                return;
         }
         renderPopupList(data);
     }
@@ -1048,8 +1048,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const { data, error } = await window.supabaseClient.storage.from(popupBucket).upload(fileName, file, { upsert: true });
                 if (error) {
                     alert('이미지 업로드 실패: ' + error.message);
-                    return;
-                }
+                        return;
+                    }
                 image_url = `${window.supabaseClient.storage.from(popupBucket).getPublicUrl(fileName).data.publicUrl}`;
             }
 
@@ -1204,12 +1204,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const title = document.getElementById('modal-title-input').value;
         // 줄바꿈을 <br>로 변환
         const description = document.getElementById('modal-content-input').value.replace(/\n/g, '<br>');
-        if (id) {
+            if (id) {
             await window.supabaseClient
                 .from('jobs')
                 .update({ title, description })
                 .eq('id', id);
-        } else {
+            } else {
             await window.supabaseClient
                 .from('jobs')
                 .insert([{ title, description }]);
@@ -1349,7 +1349,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     .update({ title, content, isnotice })
                     .eq('id', id);
                 alert('공지사항이 수정되었습니다.');
-            } else {
+    } else {
                 await window.supabaseClient
                     .from('notices')
                     .insert([{ title, content, isnotice }]);
