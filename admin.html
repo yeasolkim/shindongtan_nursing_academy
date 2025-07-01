@@ -388,11 +388,52 @@
     .jobs-table td.actions { text-align: center; }
     .jobs-table .button-secondary, .jobs-table .button-danger { padding: 0.4rem 0.8rem; font-size: 0.85rem; border:none; border-radius: 4px; cursor: pointer; margin: 0 0.2rem; }
     
-    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); }
-    .modal-content { background-color: #fff; margin: 5% auto; padding: 2.5rem; border: none; width: 90%; max-width: 700px; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .modal {
+      position: fixed;
+      z-index: 10000;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      position: relative;
+      z-index: 10001;
+      overflow: visible;
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 3.5rem;
+      border: none;
+      width: 90%;
+      max-width: 900px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      font-size: 1.15rem;
+    }
+    .modal-content input,
+    .modal-content textarea,
+    .modal-content label,
+    .modal-content button {
+      font-size: 1.15rem;
+    }
     .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e9ecef; padding-bottom: 1.5rem; margin-bottom: 2rem; }
     .modal-header h3 { margin: 0; font-size: 1.75rem; color: #1e293b; font-weight: 600; }
-    .close-button { color: #6c757d; font-size: 28px; font-weight: bold; cursor: pointer; transition: color 0.3s ease; }
+    .close-button {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 10002;
+      pointer-events: auto;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      color: #6c757d;
+      cursor: pointer;
+    }
     .close-button:hover, .close-button:focus { color: #1e293b; text-decoration: none; }
     
     /* 강사 관리 스타일 */
@@ -2620,6 +2661,13 @@
     #tab-facilities .image-preview-item .move-down:disabled:hover {
       transform: none;
     }
+
+    #admin-main-content {
+      z-index: auto;
+    }
+    .modal {
+      z-index: 10000 !important;
+    }
   </style>
 </head>
 <body>
@@ -3046,6 +3094,7 @@
 
     // Quill 에디터 초기화 함수 (이미지 업로드 핸들러 포함)
     function initializeQuillEditor() {
+        console.log('admin.html: initializeQuillEditor 함수 호출');
         // 기존 인스턴스 null 처리
         if (quill) {
             quill = null;
@@ -3070,6 +3119,10 @@
             newEditor.style.height = '400px';
             parent.appendChild(newEditor);
         }
+        
+        // 현재 모달의 게시물 타입 확인
+        const postType = document.getElementById('modal-post-type').value;
+        
         // 새 인스턴스 생성
         quill = new Quill('#quill-editor', {
             theme: 'snow',
@@ -3082,7 +3135,7 @@
                         [{ 'align': [] }],
                         ['blockquote', 'code-block'],
                         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                        ['link', 'image'],
+                        ['link', 'image', 'attach'],
                         ['clean']
                     ],
                     handlers: {
@@ -3095,17 +3148,33 @@
                             input.onchange = async () => {
                                 const file = input.files[0];
                                 if (!file) return;
-                                const loadingOverlay = document.getElementById('notice-loading-overlay');
-                                const loadingText = document.getElementById('notice-loading-text');
+                                
+                                // 게시물 타입에 따라 다른 로딩 오버레이 사용
+                                let loadingOverlay, loadingText;
+                                if (postType === 'jobs') {
+                                    loadingOverlay = document.getElementById('jobs-loading-overlay');
+                                    loadingText = document.getElementById('jobs-loading-text');
+                                } else {
+                                    loadingOverlay = document.getElementById('notice-loading-overlay');
+                                    loadingText = document.getElementById('notice-loading-text');
+                                }
+                                
                                 if (loadingOverlay) {
                                     loadingOverlay.style.display = 'flex';
                                     if (loadingText) loadingText.textContent = '이미지를 업로드하는 중입니다...';
                                 }
+                                
                                 try {
-                                    const fileName = `${Date.now()}_${encodeURIComponent(file.name)}`;
+                                    const originalFileName = file.name; // 원본 파일명 보존
+                                    const fileExt = file.name.split('.').pop();
+                                    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+                                    
+                                    // 게시물 타입에 따라 다른 버킷 사용
+                                    const bucketName = postType === 'jobs' ? 'job-images' : 'notice-images';
+                                    
                                     const { data, error } = await window.supabaseClient
                                         .storage
-                                        .from('notice-images')
+                                        .from(bucketName)
                                         .upload(fileName, file, { upsert: true });
                                     if (error) {
                                         alert('이미지 업로드 실패: ' + error.message);
@@ -3113,11 +3182,19 @@
                                     }
                                     const { data: urlData } = window.supabaseClient
                                         .storage
-                                        .from('notice-images')
+                                        .from(bucketName)
                                         .getPublicUrl(fileName);
                                     if (urlData && urlData.publicUrl) {
                                         const range = quillInstance.getSelection();
                                         quillInstance.insertEmbed(range ? range.index : 0, 'image', urlData.publicUrl, 'user');
+                                        setTimeout(() => {
+                                            const imgs = document.querySelectorAll('img[src="' + urlData.publicUrl + '"]');
+                                            imgs.forEach(img => {
+                                                img.setAttribute('data-original-name', originalFileName);
+                                                img.style.cursor = 'pointer';
+                                                img.title = '클릭하여 다운로드: ' + originalFileName;
+                                            });
+                                        }, 100);
                                     } else {
                                         alert('이미지 URL 생성 실패');
                                     }
@@ -3127,7 +3204,83 @@
                                 } finally {
                                     if (loadingOverlay) {
                                         loadingOverlay.style.display = 'none';
-                                        if (loadingText) loadingText.textContent = '공지사항 저장 중입니다...';
+                                        if (loadingText) {
+                                            const defaultText = postType === 'jobs' ? '구인 게시물 저장 중입니다...' : '공지사항 저장 중입니다...';
+                                            loadingText.textContent = defaultText;
+                                        }
+                                    }
+                                }
+                            };
+                        },
+                        attach: async function() {
+                            const quillInstance = this.quill;
+                            const input = document.createElement('input');
+                            input.setAttribute('type', 'file');
+                            input.click();
+                            input.onchange = async () => {
+                                const file = input.files[0];
+                                if (!file) return;
+                                
+                                // 게시물 타입에 따라 다른 로딩 오버레이 사용
+                                let loadingOverlay, loadingText;
+                                if (postType === 'jobs') {
+                                    loadingOverlay = document.getElementById('jobs-loading-overlay');
+                                    loadingText = document.getElementById('jobs-loading-text');
+                                } else {
+                                    loadingOverlay = document.getElementById('notice-loading-overlay');
+                                    loadingText = document.getElementById('notice-loading-text');
+                                }
+                                
+                                if (loadingOverlay) {
+                                    loadingOverlay.style.display = 'flex';
+                                    if (loadingText) loadingText.textContent = '첨부파일을 업로드하는 중입니다...';
+                                }
+                                
+                                try {
+                                    const originalFileName = file.name; // 원본 파일명 보존
+                                    const fileExt = file.name.split('.').pop();
+                                    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+                                    
+                                    // 게시물 타입에 따라 다른 버킷 사용
+                                    const bucketName = postType === 'jobs' ? 'job-attachments' : 'notice-attachments';
+                                    
+                                    const { data, error } = await window.supabaseClient
+                                        .storage
+                                        .from(bucketName)
+                                        .upload(fileName, file, { upsert: true });
+                                    if (error) {
+                                        alert('첨부파일 업로드 실패: ' + error.message);
+                                        return;
+                                    }
+                                    const { data: urlData } = window.supabaseClient
+                                        .storage
+                                        .from(bucketName)
+                                        .getPublicUrl(fileName);
+                                    if (urlData && urlData.publicUrl) {
+                                        const range = quillInstance.getSelection();
+                                        quillInstance.insertText(range ? range.index : 0, `[첨부파일: ${originalFileName}]`, { link: urlData.publicUrl });
+                                        setTimeout(() => {
+                                            const links = document.querySelectorAll('a[href="' + urlData.publicUrl + '"]');
+                                            links.forEach(link => {
+                                                if (link.textContent === `[첨부파일: ${originalFileName}]`) {
+                                                    link.setAttribute('download', originalFileName);
+                                                    link.setAttribute('data-original-filename', originalFileName);
+                                                }
+                                            });
+                                        }, 100);
+                                    } else {
+                                        alert('첨부파일 URL 생성 실패');
+                                    }
+                                } catch (e) {
+                                    alert('첨부파일 업로드 중 오류 발생');
+                                    console.error('첨부파일 업로드 오류:', e);
+                                } finally {
+                                    if (loadingOverlay) {
+                                        loadingOverlay.style.display = 'none';
+                                        if (loadingText) {
+                                            const defaultText = postType === 'jobs' ? '구인 게시물 저장 중입니다...' : '공지사항 저장 중입니다...';
+                                            loadingText.textContent = defaultText;
+                                        }
                                     }
                                 }
                             };
@@ -3136,6 +3289,15 @@
                 }
             }
         });
+        
+        // attach 버튼에 클립 SVG 아이콘 삽입 (색상: #334a6c)
+        setTimeout(() => {
+            const attachBtn = document.querySelector('.ql-attach');
+            if (attachBtn) {
+                attachBtn.innerHTML = '<svg viewBox="0 0 18 18" width="18" height="18"><path d="M6.5 9.5l5-5a3 3 0 114.24 4.24l-7.5 7.5a5 5 0 01-7.07-7.07l7.5-7.5" stroke="#334a6c" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+            }
+        }, 0);
+        
         return quill;
     }
 
