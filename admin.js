@@ -716,22 +716,48 @@ document.addEventListener('DOMContentLoaded', () => {
         return '';
     }
     async function showAddGalleryModal() {
+        showGalleryLoadingOverlay('화면을 준비중입니다.');
         modalForm.reset();
         document.getElementById('modal-post-id').value = '';
         document.getElementById('modal-post-type').value = 'gallery';
         modalTitle.textContent = '새 갤러리 작성';
         modalImageGroup.style.display = 'block';
         modalNoticeGroup.style.display = 'none';
-        pe
         modal.style.display = 'block';
-        // Quill 에디터 생성/초기화 (공지사항과 동일하게)
-        if (typeof quill !== 'undefined' && quill) {
-            quill.setContents([]);
-        } else {
-            quill = new Quill('#quill-editor', {
-                theme: 'snow',
-                modules: {
-                    toolbar: [
+        // Quill 에디터 초기화 코드 없음 (중첩 방지)
+        setTimeout(hideGalleryLoadingOverlay, 400); // UX: 최소 0.4초는 보여주기
+    }
+    async function showEditGalleryModal(item) {
+        showGalleryLoadingOverlay('화면을 준비중입니다.');
+        showAddGalleryModal();
+        modalTitle.textContent = '갤러리 수정';
+        document.getElementById('modal-post-id').value = String(item.id);
+        document.getElementById('modal-title-input').value = item.title;
+        document.getElementById('modal-content-input').value = (item.description || '').replace(/<br\s*\/?>/gi, '\n');
+        // Quill 에디터 중첩 방지: 기존 .ql-toolbar, #quill-editor DOM 완전 교체
+        const oldEditor = document.getElementById('quill-editor');
+        if (oldEditor) {
+            let prev = oldEditor.previousSibling;
+            while (prev) {
+                if (prev.classList && prev.classList.contains('ql-toolbar')) {
+                    prev.parentNode.removeChild(prev);
+                    break;
+                }
+                prev = prev.previousSibling;
+            }
+            const parent = oldEditor.parentNode;
+            parent.removeChild(oldEditor);
+            const newEditor = document.createElement('div');
+            newEditor.id = 'quill-editor';
+            newEditor.style.height = '400px';
+            parent.appendChild(newEditor);
+        }
+        // 새 인스턴스 생성 (admin.html의 initializeQuillEditor와 동일 옵션 사용)
+        quill = new Quill('#quill-editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: {
+                    container: [
                         [{ 'header': [1, 2, 3, false] }],
                         ['bold', 'italic', 'underline', 'strike'],
                         [{ 'color': [] }, { 'background': [] }],
@@ -740,23 +766,61 @@ document.addEventListener('DOMContentLoaded', () => {
                         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                         ['link', 'image'],
                         ['clean']
-                    ]
+                    ],
+                    handlers: {
+                        image: async function() {
+                            const quillInstance = this.quill;
+                            const input = document.createElement('input');
+                            input.setAttribute('type', 'file');
+                            input.setAttribute('accept', 'image/*');
+                            input.click();
+                            input.onchange = async () => {
+                                const file = input.files[0];
+                                if (!file) return;
+                                const loadingOverlay = document.getElementById('gallery-loading-overlay');
+                                const loadingText = document.getElementById('gallery-loading-text');
+                                if (loadingOverlay) {
+                                    loadingOverlay.style.display = 'flex';
+                                    if (loadingText) loadingText.textContent = '이미지를 업로드하는 중입니다...';
+                                }
+                                try {
+                                    const fileName = `${Date.now()}_${encodeURIComponent(file.name)}`;
+                                    const { data, error } = await window.supabaseClient
+                                        .storage
+                                        .from('gallery-images')
+                                        .upload(fileName, file, { upsert: true });
+                                    if (error) {
+                                        alert('이미지 업로드 실패: ' + error.message);
+                                        if (loadingOverlay) loadingOverlay.style.display = 'none';
+                                        return;
+                                    }
+                                    const { data: urlData } = window.supabaseClient
+                                        .storage
+                                        .from('gallery-images')
+                                        .getPublicUrl(fileName);
+                                    if (urlData && urlData.publicUrl) {
+                                        const range = quillInstance.getSelection();
+                                        quillInstance.insertEmbed(range ? range.index : 0, 'image', urlData.publicUrl, 'user');
+                                    } else {
+                                        alert('이미지 URL 생성 실패');
+                                    }
+                                } catch (e) {
+                                    alert('이미지 업로드 중 오류 발생');
+                                    console.error('이미지 업로드 오류:', e);
+                                } finally {
+                                    if (loadingOverlay) {
+                                        loadingOverlay.style.display = 'none';
+                                        if (loadingText) loadingText.textContent = '갤러리 저장 중입니다...';
+                                    }
+                                }
+                            };
+                        }
+                    }
                 }
-            });
-        }
+            }
+        });
         quill.root.innerHTML = '';
-    }
-    async function showEditGalleryModal(item) {
-        showAddGalleryModal();
-        modalTitle.textContent = '갤러리 수정';
-        document.getElementById('modal-post-id').value = String(item.id);
-        document.getElementById('modal-title-input').value = item.title;
-        document.getElementById('modal-content-input').value = (item.description || '').replace(/<br\s*\/?>/gi, '\n');
-        // Quill 에디터에 기존 내용 반영
-        if (typeof quill !== 'undefined' && quill) {
-            quill.root.innerHTML = item.description || '';
-        }
-        // 기존 이미지들 모두 미리보기로 보여주기
+        // 기존 이미지들 모두 미리보기로 보여주기 (Quill 초기화 이후에 반드시 실행)
         let images = [];
         if (Array.isArray(item.image)) {
             images = item.image;
@@ -770,12 +834,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             images = [];
         }
-        // 기존 이미지 URL을 galleryImageFiles에 넣고, 미리보기 렌더링
         galleryImageFiles = images.map(url => ({ url }));
         renderGalleryImagePreviews();
-        // 기존 이미지 표시(구버전 호환)
         const imageInput = document.getElementById('modal-image-input');
         imageInput.setAttribute('data-existing-url', item.image || '');
+        setTimeout(hideGalleryLoadingOverlay, 400); // UX: 최소 0.4초는 보여주기
     }
     // 갤러리 이미지 파일 관리
     let galleryImageFiles = [];
@@ -849,6 +912,44 @@ document.addEventListener('DOMContentLoaded', () => {
             // Quill Editor에서 HTML 가져와 textarea에 동기화
             const description = (typeof quill !== 'undefined' && quill) ? quill.root.innerHTML : document.getElementById('modal-content-input').value.replace(/\n/g, '<br>');
             let imageUrls = [];
+            
+            if (id) {
+                // 수정 시: 기존 본문 이미지와 새 본문 이미지 비교하여 삭제된 이미지 처리
+                const { data: existingGallery, error: fetchError } = await window.supabaseClient
+                    .from('gallery')
+                    .select('description')
+                    .eq('id', id)
+                    .single();
+                
+                if (fetchError) {
+                    console.error('기존 갤러리 조회 실패:', fetchError);
+                } else if (existingGallery && existingGallery.description) {
+                    // 기존 본문에서 이미지 URL 추출
+                    const existingDoc = new DOMParser().parseFromString(existingGallery.description, 'text/html');
+                    const existingImgSrcs = Array.from(existingDoc.querySelectorAll('img')).map(img => img.src);
+                    
+                    // 새 본문에서 이미지 URL 추출
+                    const newDoc = new DOMParser().parseFromString(description, 'text/html');
+                    const newImgSrcs = Array.from(newDoc.querySelectorAll('img')).map(img => img.src);
+                    
+                    // 삭제된 이미지 찾기 (기존에 있던 이미지 중 새 내용에 없는 것)
+                    const deletedImgSrcs = existingImgSrcs.filter(src => !newImgSrcs.includes(src));
+                    
+                    // 삭제된 이미지들을 Storage에서 제거
+                    for (const url of deletedImgSrcs) {
+                        try {
+                            const match = url.match(/gallery-images\/([^?]+)/);
+                            if (match && match[1]) {
+                                await window.supabaseClient.storage.from('gallery-images').remove([decodeURIComponent(match[1])]);
+                                console.log('삭제된 본문 이미지 제거:', match[1]);
+                            }
+                        } catch (e) {
+                            console.warn('본문 이미지 삭제 실패:', url, e);
+                        }
+                    }
+                }
+            }
+            
             // 여러 파일 업로드
             if (galleryImageFiles.length > 0) {
                 for (let file of galleryImageFiles) {
@@ -918,7 +1019,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('삭제 함수 진입:', item);
         if (!confirm('정말로 이 갤러리 게시물을 삭제하시겠습니까?')) return;
 
-        // Storage 이미지 삭제 (image가 배열 또는 문자열 모두 지원)
+        // 1. 첨부 이미지 삭제 (image 필드)
         let images = [];
         if (Array.isArray(item.image)) {
             images = item.image;
@@ -940,12 +1041,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     const url = new URL(img);
                     const path = decodeURIComponent(url.pathname.split('/object/public/')[1]);
                     await window.supabaseClient.storage.from('gallery-images').remove([path]);
+                    console.log('첨부 이미지 삭제:', path);
                 } catch (e) {
-                    console.warn('이미지 삭제 실패:', img, e);
+                    console.warn('첨부 이미지 삭제 실패:', img, e);
                 }
             }
         }
 
+        // 2. 본문 이미지 삭제 (description 필드)
+        if (item.description) {
+            const doc = new DOMParser().parseFromString(item.description, 'text/html');
+            const imgSrcs = Array.from(doc.querySelectorAll('img')).map(img => img.src);
+            
+            for (const url of imgSrcs) {
+                try {
+                    const match = url.match(/gallery-images\/([^?]+)/);
+                    if (match && match[1]) {
+                        await window.supabaseClient.storage.from('gallery-images').remove([decodeURIComponent(match[1])]);
+                        console.log('본문 이미지 삭제:', match[1]);
+                    }
+                } catch (e) {
+                    console.warn('본문 이미지 삭제 실패:', url, e);
+                }
+            }
+        }
+
+        // 3. 게시글 row 삭제
         await window.supabaseClient.from('gallery').delete().eq('id', item.id);
         console.log('삭제 후 renderGalleryList 호출');
         await renderGalleryList();
@@ -960,6 +1081,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // 모달 닫기(x) 버튼 이벤트 연결
     if (closeModalBtn) {
         closeModalBtn.addEventListener('click', function() {
+            if (modalForm) {
+                modalForm.reset();
+            }
+            // 갤러리 작성/수정 모달 닫을 때 이미지 미리보기도 초기화
+            resetGalleryImageFiles();
+            if (typeof quill !== 'undefined' && quill) {
+                quill.setContents([]);
+                quill.root.innerHTML = '';
+            }
+            const noticeCheckbox = document.getElementById('modal-is-notice-checkbox');
+            if (noticeCheckbox) noticeCheckbox.checked = false;
             modal.style.display = 'none';
         });
     }
@@ -1396,7 +1528,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadNoticeList() {
         const { data, error } = await window.supabaseClient
             .from('notices')
-            .select('*')
+            .select('*') // content 필드 포함
             .order('created_at', { ascending: false });
         if (error) {
             boardConfig.notices.listEl.innerHTML = '<tr><td colspan="7">공지사항 목록을 불러오지 못했습니다.</td></tr>';
@@ -1475,77 +1607,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modal-notice-group').style.display = 'block';
         document.getElementById('modal-is-notice-checkbox').checked = false;
         document.getElementById('post-modal').style.display = 'block';
-        // Quill 에디터 생성 (초기화)
-        if (quill) {
-            quill.setContents([]);
-        } else {
-            quill = new Quill('#quill-editor', {
-                theme: 'snow',
-                modules: {
-                    toolbar: {
-                        container: [
-                            [{ 'header': [1, 2, 3, false] }],
-                            ['bold', 'italic', 'underline', 'strike'],
-                            [{ 'color': [] }, { 'background': [] }],
-                            [{ 'align': [] }],
-                            ['blockquote', 'code-block'],
-                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                            ['link', 'image'],
-                            ['clean']
-                        ],
-                        handlers: {
-                            image: async function() {
-                                const quillInstance = this.quill;
-                                const input = document.createElement('input');
-                                input.setAttribute('type', 'file');
-                                input.setAttribute('accept', 'image/*');
-                                input.click();
-                                input.onchange = async () => {
-                                    const file = input.files[0];
-                                    if (!file) return;
-                                    const fileName = `${Date.now()}_${encodeURIComponent(file.name)}`;
-                                    // 1. 로딩 오버레이 표시
-                                    const loadingOverlay = document.getElementById('notice-loading-overlay');
-                                    const loadingText = document.getElementById('notice-loading-text');
-                                    if (loadingOverlay) {
-                                        loadingOverlay.style.display = 'flex';
-                                        if (loadingText) loadingText.textContent = '이미지를 불러오는 중입니다';
-                                    }
-                                    try {
-                                        const { data, error } = await window.supabaseClient
-                                            .storage
-                                            .from('notice-images')
-                                            .upload(fileName, file, { upsert: true });
-                                        if (error) {
-                                            alert('이미지 업로드 실패: ' + error.message);
-                                            return;
-                                        }
-                                        const { data: urlData } = window.supabaseClient
-                                            .storage
-                                            .from('notice-images')
-                                            .getPublicUrl(fileName);
-                                        if (urlData && urlData.publicUrl) {
-                                            const range = quillInstance.getSelection();
-                                            quillInstance.insertEmbed(range ? range.index : 0, 'image', urlData.publicUrl, 'user');
-                                        } else {
-                                            alert('이미지 URL 생성 실패');
-                                        }
-                                    } catch (e) {
-                                        alert('이미지 업로드 중 오류 발생');
-                                        console.error(e);
-                                    } finally {
-                                        // 2. 로딩 오버레이 숨김 및 텍스트 복원
-                                        if (loadingOverlay) loadingOverlay.style.display = 'none';
-                                        if (loadingText) loadingText.textContent = '공지사항 저장 중입니다...';
-                                    }
-                                };
-                            }
-                        }
-                    }
-                }
-            });
+        
+        // Quill 에디터 초기화 (admin.html의 함수 사용)
+        if (window.initializeQuillEditor) {
+            quill = window.initializeQuillEditor();
         }
-        quill.root.innerHTML = '';
+        if (quill) {
+            quill.root.innerHTML = '';
+        }
     }
     // 글쓰기 버튼 이벤트 리스너 연결 (함수 선언 이후에 위치)
     if (boardConfig.notices.addBtn) {
@@ -1559,87 +1628,67 @@ document.addEventListener('DOMContentLoaded', () => {
     //     modalForm._noticeSubmitBound = true;
     // }
     async function showEditNoticeModal(item) {
-        modalForm.reset();
-        document.getElementById('modal-post-id').value = String(item.id);
+        showLoadingOverlay('내용을 불러오는 중입니다');
+        // ... DB에서 데이터 fetch ...
+        // Quill 에디터가 완전히 초기화된 후 본문 세팅
+        if (typeof quill !== 'undefined' && quill) {
+            quill.root.innerHTML = item.content || '';
+        }
+        hideLoadingOverlay();
+        // ... existing code ...
+        // 1. 로딩 오버레이 표시
+        const loadingOverlay = document.getElementById('notice-loading-overlay');
+        const loadingText = document.getElementById('notice-loading-text');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'flex';
+            if (loadingText) loadingText.textContent = '내용을 불러오는 중입니다';
+        }
+
+        // 2. 폼/에디터 초기화
+        if (modalForm) modalForm.reset();
+        if(document.getElementById('modal-is-notice-checkbox')) document.getElementById('modal-is-notice-checkbox').checked = false;
+
+        // 3. Quill 에디터 반드시 초기화
+        if (window.initializeQuillEditor) {
+            quill = window.initializeQuillEditor();
+        }
+
+        // 4. DB에서 최신 데이터 fetch (id로 단일 조회)
+        let noticeData = item;
+        try {
+            const { data, error } = await window.supabaseClient
+                .from('notices')
+                .select('*')
+                .eq('id', item.id)
+                .single();
+            if (!error && data) {
+                noticeData = data;
+            }
+        } catch (e) {
+            // 에러 처리 (필요시)
+        }
+
+        // 5. 데이터 세팅
+        document.getElementById('modal-post-id').value = String(noticeData.id);
         document.getElementById('modal-post-type').value = 'notices';
         modalTitle.textContent = '공지사항 수정';
         modalImageGroup.style.display = 'none';
         modalNoticeGroup.style.display = 'block';
-        document.getElementById('modal-title-input').value = item.title || '';
-        document.getElementById('modal-content-input').value = (item.content || '').replace(/<br\s*\/?\>/gi, '\n');
-        if(document.getElementById('modal-is-notice-checkbox')) document.getElementById('modal-is-notice-checkbox').checked = !!item.isnotice;
-        modal.style.display = 'block';
-        // Quill 에디터 생성 (초기화)
-        if (quill) {
-            quill.setContents([]);
-        } else {
-            quill = new Quill('#quill-editor', {
-                theme: 'snow',
-                modules: {
-                    toolbar: {
-                        container: [
-                            [{ 'header': [1, 2, 3, false] }],
-                            ['bold', 'italic', 'underline', 'strike'],
-                            [{ 'color': [] }, { 'background': [] }],
-                            [{ 'align': [] }],
-                            ['blockquote', 'code-block'],
-                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                            ['link', 'image'],
-                            ['clean']
-                        ],
-                        handlers: {
-                            image: async function() {
-                                const quillInstance = this.quill;
-                                const input = document.createElement('input');
-                                input.setAttribute('type', 'file');
-                                input.setAttribute('accept', 'image/*');
-                                input.click();
-                                input.onchange = async () => {
-                                    const file = input.files[0];
-                                    if (!file) return;
-                                    const fileName = `${Date.now()}_${encodeURIComponent(file.name)}`;
-                                    // 1. 로딩 오버레이 표시
-                                    const loadingOverlay = document.getElementById('notice-loading-overlay');
-                                    const loadingText = document.getElementById('notice-loading-text');
-                                    if (loadingOverlay) {
-                                        loadingOverlay.style.display = 'flex';
-                                        if (loadingText) loadingText.textContent = '이미지를 불러오는 중입니다';
-                                    }
-                                    try {
-                                        const { data, error } = await window.supabaseClient
-                                            .storage
-                                            .from('notice-images')
-                                            .upload(fileName, file, { upsert: true });
-                                        if (error) {
-                                            alert('이미지 업로드 실패: ' + error.message);
-                                            return;
-                                        }
-                                        const { data: urlData } = window.supabaseClient
-                                            .storage
-                                            .from('notice-images')
-                                            .getPublicUrl(fileName);
-                                        if (urlData && urlData.publicUrl) {
-                                            const range = quillInstance.getSelection();
-                                            quillInstance.insertEmbed(range ? range.index : 0, 'image', urlData.publicUrl, 'user');
-                                        } else {
-                                            alert('이미지 URL 생성 실패');
-                                        }
-                                    } catch (e) {
-                                        alert('이미지 업로드 중 오류 발생');
-                                        console.error(e);
-                                    } finally {
-                                        // 2. 로딩 오버레이 숨김 및 텍스트 복원
-                                        if (loadingOverlay) loadingOverlay.style.display = 'none';
-                                        if (loadingText) loadingText.textContent = '공지사항 저장 중입니다...';
-                                    }
-                                };
-                            }
-                        }
-                    }
-                }
-            });
+        document.getElementById('modal-title-input').value = noticeData.title || '';
+        document.getElementById('modal-content-input').value = (noticeData.content || '').replace(/<br\s*\/?\>/gi, '\n');
+        if(document.getElementById('modal-is-notice-checkbox')) document.getElementById('modal-is-notice-checkbox').checked = !!noticeData.isnotice;
+
+        // 6. Quill 에디터에 본문 세팅 (초기화 후에만)
+        if (typeof quill !== 'undefined' && quill) {
+            quill.root.innerHTML = noticeData.content || '';
         }
-        quill.root.innerHTML = item.content || '';
+
+        // 7. 모달을 마지막에 보여줌
+        modal.style.display = 'block';
+
+        // 8. 로딩 오버레이 숨김 및 텍스트 복원
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+        if (loadingText) loadingText.textContent = '공지사항 저장 중입니다...';
     }
     // 공지사항 저장 시 Quill Editor 내용 동기화
     async function handleNoticeFormSubmit(e) {
@@ -1649,19 +1698,58 @@ document.addEventListener('DOMContentLoaded', () => {
         // Quill Editor에서 HTML 가져와 textarea에 동기화
         const content = quill ? quill.root.innerHTML : document.getElementById('modal-content-input').value;
         const isnotice = document.getElementById('modal-is-notice-checkbox')?.checked || false;
+        
         try {
             if (id) {
+                // 수정 시: 기존 이미지와 새 이미지 비교하여 삭제된 이미지 처리
+                const { data: existingNotice, error: fetchError } = await window.supabaseClient
+                    .from('notices')
+                    .select('content')
+                    .eq('id', id)
+                    .single();
+                
+                if (fetchError) {
+                    console.error('기존 공지사항 조회 실패:', fetchError);
+                } else if (existingNotice && existingNotice.content) {
+                    // 기존 내용에서 이미지 URL 추출
+                    const existingDoc = new DOMParser().parseFromString(existingNotice.content, 'text/html');
+                    const existingImgSrcs = Array.from(existingDoc.querySelectorAll('img')).map(img => img.src);
+                    
+                    // 새 내용에서 이미지 URL 추출
+                    const newDoc = new DOMParser().parseFromString(content, 'text/html');
+                    const newImgSrcs = Array.from(newDoc.querySelectorAll('img')).map(img => img.src);
+                    
+                    // 삭제된 이미지 찾기 (기존에 있던 이미지 중 새 내용에 없는 것)
+                    const deletedImgSrcs = existingImgSrcs.filter(src => !newImgSrcs.includes(src));
+                    
+                    // 삭제된 이미지들을 Storage에서 제거
+                    for (const url of deletedImgSrcs) {
+                        try {
+                            const match = url.match(/notice-images\/([^?]+)/);
+                            if (match && match[1]) {
+                                await window.supabaseClient.storage.from('notice-images').remove([decodeURIComponent(match[1])]);
+                                console.log('삭제된 이미지 제거:', match[1]);
+                            }
+                        } catch (e) {
+                            console.warn('이미지 삭제 실패:', url, e);
+                        }
+                    }
+                }
+                
+                // 공지사항 업데이트
                 await window.supabaseClient
                     .from('notices')
                     .update({ title, content, isnotice })
                     .eq('id', id);
                 alert('공지사항이 수정되었습니다.');
             } else {
+                // 새 공지사항 등록
                 await window.supabaseClient
                     .from('notices')
                     .insert([{ title, content, isnotice }]);
                 alert('공지사항이 등록되었습니다.');
             }
+            
             document.getElementById('post-modal').style.display = 'none';
             renderNoticeList();
             // 공지사항 탭 활성화 유지
@@ -1874,3 +1962,95 @@ function sanitizeFileName(name) {
   const ext = name.split('.').pop();
   return `${Date.now()}_${Math.random().toString(36).substr(2, 8)}.${ext}`;
 }
+
+// ====== 로딩 오버레이 유틸리티 ======
+function showLoadingOverlay(message = '로딩 중입니다...') {
+    let overlay = document.getElementById('global-loading-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'global-loading-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.left = 0;
+        overlay.style.top = 0;
+        overlay.style.width = '100vw';
+        overlay.style.height = '100vh';
+        overlay.style.background = 'rgba(255,255,255,0.7)';
+        overlay.style.zIndex = 3000;
+        overlay.style.display = 'flex';
+        overlay.style.alignItems = 'center';
+        overlay.style.justifyContent = 'center';
+        overlay.style.fontSize = '1.3rem';
+        overlay.innerHTML = `<div><div class="spinner" style="margin-bottom:12px;"></div><div>${message}</div></div>`;
+        // 간단한 스피너
+        const spinner = overlay.querySelector('.spinner');
+        spinner.style.border = '4px solid #f3f3f3';
+        spinner.style.borderTop = '4px solid #3498db';
+        spinner.style.borderRadius = '50%';
+        spinner.style.width = '36px';
+        spinner.style.height = '36px';
+        spinner.style.animation = 'spin 1s linear infinite';
+        spinner.style.margin = '0 auto 12px auto';
+        // 스피너 애니메이션 추가
+        if (!document.getElementById('global-spinner-style')) {
+            const style = document.createElement('style');
+            style.id = 'global-spinner-style';
+            style.innerHTML = `@keyframes spin {0% { transform: rotate(0deg);}100% { transform: rotate(360deg);}}`;
+            document.head.appendChild(style);
+        }
+        document.body.appendChild(overlay);
+    } else {
+        overlay.style.display = 'flex';
+        overlay.querySelector('div > div:last-child').textContent = message;
+    }
+}
+function hideLoadingOverlay() {
+    const overlay = document.getElementById('global-loading-overlay');
+    if (overlay) overlay.style.display = 'none';
+}
+
+// ... existing code ...
+// 갤러리 로딩 오버레이 유틸리티 (공지/FAQ와 동일 스타일)
+function showGalleryLoadingOverlay(message = '화면을 준비중입니다.') {
+    let overlay = document.getElementById('gallery-prep-loading-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'gallery-prep-loading-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.left = 0;
+        overlay.style.top = 0;
+        overlay.style.width = '100vw';
+        overlay.style.height = '100vh';
+        overlay.style.background = 'rgba(255,255,255,0.7)';
+        overlay.style.zIndex = 3000;
+        overlay.style.display = 'flex';
+        overlay.style.alignItems = 'center';
+        overlay.style.justifyContent = 'center';
+        overlay.style.fontSize = '1.3rem';
+        overlay.innerHTML = `<div><div class="spinner" style="margin-bottom:12px;"></div><div>${message}</div></div>`;
+        // 간단한 스피너
+        const spinner = overlay.querySelector('.spinner');
+        spinner.style.border = '4px solid #f3f3f3';
+        spinner.style.borderTop = '4px solid #3498db';
+        spinner.style.borderRadius = '50%';
+        spinner.style.width = '36px';
+        spinner.style.height = '36px';
+        spinner.style.animation = 'spin 1s linear infinite';
+        spinner.style.margin = '0 auto 12px auto';
+        // 스피너 애니메이션 추가
+        if (!document.getElementById('global-spinner-style')) {
+            const style = document.createElement('style');
+            style.id = 'global-spinner-style';
+            style.innerHTML = `@keyframes spin {0% { transform: rotate(0deg);}100% { transform: rotate(360deg);}}`;
+            document.head.appendChild(style);
+        }
+        document.body.appendChild(overlay);
+    } else {
+        overlay.style.display = 'flex';
+        overlay.querySelector('div > div:last-child').textContent = message;
+    }
+}
+function hideGalleryLoadingOverlay() {
+    const overlay = document.getElementById('gallery-prep-loading-overlay');
+    if (overlay) overlay.style.display = 'none';
+}
+// ... existing code ...

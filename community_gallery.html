@@ -77,12 +77,6 @@
       flex-wrap: nowrap;
     }
     
-    .filter-row {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-    
     .search-bar select, .search-bar input {
       padding: 0.7rem 1rem;
       border: 1.5px solid #b0b8c1;
@@ -382,12 +376,6 @@
         gap: 0.5rem !important;
       }
       
-      .filter-row {
-        display: flex !important;
-        gap: 0.5rem !important;
-        width: 100% !important;
-      }
-      
       .search-bar select, .search-bar input {
         width: 100%;
         min-width: 0;
@@ -629,20 +617,12 @@
                 <div class="total-posts" id="total-posts-counter">전체 0개</div>
               </div>
               <div class="search-bar">
-                <div class="filter-row">
-                  <select id="items-per-page">
-                    <option value="10">10개씩 보기</option>
-                    <option value="20">20개씩 보기</option>
-                    <option value="30">30개씩 보기</option>
-                  </select>
-                  <div class="divider"></div>
-                  <select id="sort-order">
-                    <option value="created_at_desc">최신순</option>
-                    <option value="created_at_asc">오래된순</option>
-                    <option value="views_desc">조회수순</option>
-                    <option value="title_asc">제목순</option>
-                  </select>
-                </div>
+                <select id="sort-order">
+                  <option value="created_at_desc">최신순</option>
+                  <option value="created_at_asc">오래된순</option>
+                  <option value="views_desc">조회수순</option>
+                  <option value="title_asc">제목순</option>
+                </select>
                 <div class="divider"></div>
                 <select id="gallery-search-type">
                   <option value="title">제목</option>

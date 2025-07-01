@@ -804,7 +804,7 @@ async function initGalleryPage() {
     // Supabase에서 갤러리 데이터 불러오기
     const allItems = await db.gallery.getAll();
     let currentPage = 1;
-    let itemsPerPage = 10;
+    let itemsPerPage = 12; // 고정값으로 변경
     let sortOrder = 'created_at_desc';
     let filteredItems = [...allItems];
     const searchInput = document.getElementById('gallery-search-input');
@@ -812,7 +812,6 @@ async function initGalleryPage() {
     const paginationContainer = document.getElementById('pagination');
     const totalPostsCounter = document.getElementById('total-posts-counter');
     const searchTypeSelect = document.getElementById('gallery-search-type');
-    const itemsPerPageSelect = document.getElementById('items-per-page');
     const sortOrderSelect = document.getElementById('sort-order');
 
     function sortItems(items, order) {
@@ -862,11 +861,6 @@ async function initGalleryPage() {
 
     searchBtn.addEventListener('click', performSearchAndRender);
     searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') performSearchAndRender(); });
-    itemsPerPageSelect.addEventListener('change', function() {
-      itemsPerPage = parseInt(this.value, 10);
-      renderList(filteredItems, 1);
-      setupPagination(filteredItems, 1);
-    });
     sortOrderSelect.addEventListener('change', function() {
       sortOrder = this.value;
       filteredItems = sortItems(filteredItems, sortOrder);
