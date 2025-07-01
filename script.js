@@ -1125,11 +1125,12 @@ async function initJobsPage() {
     }
     
     function createRow(item, itemNumber) {
+      const isNotice = item.isnotice || item.isNotice;
       const row = document.createElement('div');
-      row.className = `board-row ${item.isNotice ? 'notice' : ''}`;
+      row.className = `board-row${isNotice ? ' notice' : ''}`;
       row.innerHTML = `
-        <div class="number">${item.isNotice ? '공지' : itemNumber}</div>
-        <div class="title"><a href="community_jobs_detail.html?id=${item.id}" onclick="incrementViewCount('jobs', ${item.id})">${item.title}</a></div>
+        <div class="number">${isNotice ? '공지' : itemNumber}</div>
+        <div class="title"><a href="community_jobs_detail.html?id=${item.id}" onclick="incrementViewCount('jobs', ${item.id})">${isNotice ? '📢 <span style=\"color:#d92121;font-weight:600;\">중요</span> ' : ''}${item.title}</a></div>
         <div class="author">${item.author || '관리자'}</div>
         <div class="date">${formatKoreaDate(item.date || item.created_at)}</div>
         <div class="views">${item.views || 0}</div>
@@ -1231,10 +1232,11 @@ async function initJobsDetailPage() {
     const prevPost = currentIndex > 0 ? sortedItems[currentIndex - 1] : null;
     const nextPost = currentIndex < sortedItems.length - 1 ? sortedItems[currentIndex + 1] : null;
 
+    const isNotice = post.isnotice || post.isNotice;
     viewContainer.innerHTML = `
       <div class="post-view">
         <div class="post-header">
-          <h2>${post.title}</h2>
+          <h2>${isNotice ? '<span style="color:#d92121;font-weight:600;">📢 중요</span> ' : ''}${post.title}</h2>
           <div class="post-meta">
             <span><i class="fas fa-user"></i> ${post.author || ''}</span>
             <span><i class="fas fa-calendar-alt"></i> ${formatKoreaDate(post.date || post.created_at)}</span>
@@ -1242,21 +1244,23 @@ async function initJobsDetailPage() {
           </div>
         </div>
         <div class="post-body">
-          ${(post.content || post.description || '').replace(/\n/g, '<br>')}
+          <div class="ql-editor">
+            ${(post.content || post.description || '').replace(/\n/g, '<br>')}
+          </div>
         </div>
-      </div>
-      <ul class="post-nav">
-        <li>
-            <div class="nav-label">이전글</div>
-            ${nextPost ? `<a href="community_jobs_detail.html?id=${nextPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${nextPost.id})">${nextPost.title}</a>` : '<span>이전글이 없습니다.</span>'}
-        </li>
-        <li>
-            <div class="nav-label">다음글</div>
-            ${prevPost ? `<a href="community_jobs_detail.html?id=${prevPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${prevPost.id})">${prevPost.title}</a>` : '<span>다음글이 없습니다.</span>'}
-        </li>
-      </ul>
-      <div class="post-footer">
-        <a href="community_jobs.html" class="list-button">목록</a>
+        <ul class="post-nav">
+          <li>
+              <div class="nav-label">이전글</div>
+              ${nextPost ? `<a href="community_jobs_detail.html?id=${nextPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${nextPost.id})">${nextPost.title}</a>` : '<span>이전글이 없습니다.</span>'}
+          </li>
+          <li>
+              <div class="nav-label">다음글</div>
+              ${prevPost ? `<a href="community_jobs_detail.html?id=${prevPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${prevPost.id})">${prevPost.title}</a>` : '<span>다음글이 없습니다.</span>'}
+          </li>
+        </ul>
+        <div class="post-footer">
+          <a href="community_jobs.html" class="list-button">목록</a>
+        </div>
       </div>
     `;
   } catch (error) {
@@ -1587,6 +1591,16 @@ async function initNoticeDetailPage() {
     const prevPost = currentIndex > 0 ? sortedItems[currentIndex - 1] : null;
     const nextPost = currentIndex < sortedItems.length - 1 ? sortedItems[currentIndex + 1] : null;
 
+    // 첨부파일 링크에 download 속성 추가
+    let processedContent = post.content;
+    if (processedContent) {
+      // 첨부파일 링크 찾기 및 download 속성 추가
+      processedContent = processedContent.replace(
+        /<a href="([^"]*notice-attachments[^"]*)"([^>]*)>\[첨부파일: ([^\]]+)\]<\/a>/g,
+        '<a href="$1" download="$3"$2>[첨부파일: $3]</a>'
+      );
+    }
+
     // 상세 페이지 HTML 생성
     detailContainer.innerHTML = `
       <div class="post-view">
@@ -1599,7 +1613,7 @@ async function initNoticeDetailPage() {
           </div>
         </div>
         <div class="post-body">
-          <div class="ql-editor">${post.content}</div>
+          <div class="ql-editor">${processedContent}</div>
         </div>
         <div class="post-footer">
           <a href="community_notice.html" class="list-button">목록으로</a>

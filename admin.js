@@ -691,29 +691,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     function getGalleryImageUrl(imageField) {
-        if (!imageField) return '';
-        let images = [];
+        let fileName = '';
         if (Array.isArray(imageField)) {
-            images = imageField;
+            fileName = imageField[0];
         } else if (typeof imageField === 'string') {
             try {
-                images = JSON.parse(imageField);
-                if (!Array.isArray(images)) images = [images];
+                const arr = JSON.parse(imageField);
+                fileName = Array.isArray(arr) ? arr[0] : imageField;
             } catch {
-                images = [imageField];
+                fileName = imageField;
             }
-        } else {
-            images = [imageField];
         }
-        const firstImage = images[0];
-        if (!firstImage) return '';
-        if (typeof firstImage === 'string' && firstImage.startsWith('http')) return firstImage;
-        // 파일명만 저장된 경우 public URL 생성
-        if (typeof firstImage === 'string') {
-            const { data } = window.supabaseClient.storage.from('gallery-images').getPublicUrl(firstImage);
-            return data.publicUrl;
-        }
-        return '';
+        if (!fileName) return '';
+        if (fileName.startsWith('http')) return fileName;
+        return `${window.supabaseClient.storageUrl}/object/public/gallery-images/${fileName}`;
     }
     async function showAddGalleryModal() {
         showGalleryLoadingOverlay('화면을 준비중입니다.');
@@ -784,7 +775,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     if (loadingText) loadingText.textContent = '이미지를 업로드하는 중입니다...';
                                 }
                                 try {
-                                    const fileName = `${Date.now()}_${encodeURIComponent(file.name)}`;
+                                    const fileName = sanitizeFileName(file.name);
                                     const { data, error } = await window.supabaseClient
                                         .storage
                                         .from('gallery-images')
@@ -957,7 +948,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         // 이미 업로드된 public URL
                         if (!imageUrls.includes(file.url)) imageUrls.push(file.url);
                     } else if (file instanceof File) {
-                        const fileName = sanitizeFileName(file.name);
+                        const fileName = sanitizeFileName(file.name); // sanitizeFileName 대신 file.name 사용, 함수 내부에서만 선언
                         const { data: uploadData, error: uploadError } = await window.supabaseClient
                             .storage
                             .from('gallery-images')
@@ -1107,7 +1098,6 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const postType = document.getElementById('modal-post-type').value;
             let loadingOverlay = null;
-            // 게시물 타입에 따라 적절한 로딩 오버레이 선택
             if (postType === 'jobs') {
                 loadingOverlay = document.getElementById('jobs-loading-overlay');
             } else if (postType === 'notices') {
@@ -1120,17 +1110,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 const id = document.getElementById('modal-post-id').value;
                 const title = document.getElementById('modal-title-input').value;
                 const content = document.getElementById('modal-content-input').value;
-                const description = document.getElementById('modal-content-input').value.replace(/\n/g, '<br>');
                 if (postType === 'jobs') {
+                    // Quill Editor에서 HTML 가져와 textarea에 동기화
+                    const description = (typeof quill !== 'undefined' && quill) ? quill.root.innerHTML : content;
+                    // 중요공지 체크박스 값 명확하게 boolean으로 변환
+                    const isnotice = !!document.getElementById('modal-is-notice-checkbox')?.checked;
                     if (id) {
                         await window.supabaseClient
                             .from('jobs')
-                            .update({ title, description })
+                            .update({ title, description, isnotice })
                             .eq('id', id);
                     } else {
                         await window.supabaseClient
                             .from('jobs')
-                            .insert([{ title, description }]);
+                            .insert([{ title, description, isnotice }]);
                     }
                     await renderJobList();
                     // 구인 탭 활성화 유지
@@ -1146,7 +1139,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 } else if (postType === 'notices') {
                     const isNotice = document.getElementById('modal-is-notice-checkbox').checked;
-                    // Quill Editor에서 HTML 가져와 textarea에 동기화
                     const noticeContent = quill ? quill.root.innerHTML : content;
                     if (id) {
                         await window.supabaseClient
@@ -1161,7 +1153,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         alert('공지사항이 등록되었습니다.');
                     }
                     await renderNoticeList();
-                    // 공지사항 탭 활성화 유지
                     const tabs = document.querySelectorAll('.tab-link');
                     const tabContents = document.querySelectorAll('.tab-content');
                     tabs.forEach(t => t.classList.remove('active'));
@@ -1174,7 +1165,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 } else if (postType === 'gallery') {
                     await handleGalleryFormSubmit(e);
-                    // 갤러리 탭 활성화 유지
                     const tabs = document.querySelectorAll('.tab-link');
                     const tabContents = document.querySelectorAll('.tab-content');
                     tabs.forEach(t => t.classList.remove('active'));
@@ -1187,7 +1177,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     modal.style.display = 'none';
                     modalForm.reset();
-                    return; // handleGalleryFormSubmit에서 이미 로딩 오버레이를 처리하므로 여기서는 return
+                    return;
                 }
                 modal.style.display = 'none';
                 modalForm.reset();
@@ -1449,7 +1439,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${item.id}</td>
-                <td>${item.title}</td>
+                <td>${item.isnotice ? '<span title="중요공지" style="color:#d92121;font-weight:600;">📢</span>' : ''}</td>
+                <td>${item.isnotice ? '📢 <span style="color:#d92121;font-weight:600;">중요</span> ' : ''}${item.title}</td>
                 <td>${formatKoreaDate(item.created_at)}</td>
                 <td>${item.views || 0}</td>
                 <td class="actions">
@@ -1465,64 +1456,140 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const id = document.getElementById('modal-post-id').value;
         const title = document.getElementById('modal-title-input').value;
-        // 줄바꿈을 <br>로 변환
-        const description = document.getElementById('modal-content-input').value.replace(/\n/g, '<br>');
+        const description = quill ? quill.root.innerHTML : document.getElementById('modal-content-input').value;
+        const isnotice = document.getElementById('modal-is-notice-checkbox')?.checked || false;
+        try {
             if (id) {
-            await window.supabaseClient
-                .from('jobs')
-                .update({ title, description })
-                .eq('id', id);
+                await window.supabaseClient
+                    .from('jobs')
+                    .update({ title, description, isnotice })
+                    .eq('id', id);
+                alert('구인 게시물이 수정되었습니다.');
             } else {
-            await window.supabaseClient
-                .from('jobs')
-                .insert([{ title, description }]);
+                await window.supabaseClient
+                    .from('jobs')
+                    .insert([{ title, description, isnotice }]);
+                alert('구인 게시물이 등록되었습니다.');
+            }
+            document.getElementById('post-modal').style.display = 'none';
+            renderJobList();
+            // 구인 게시판 탭 활성화 유지
+            const tabs = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabs.forEach(t => t.classList.remove('active'));
+            const jobTab = document.querySelector('[data-tab="tab-jobs"]');
+            if (jobTab) {
+                jobTab.classList.add('active');
+            }
+            tabContents.forEach(content => {
+                content.classList.toggle('active', content.id === 'tab-jobs');
+            });
+        } catch (error) {
+            console.error('구인 게시물 저장 실패:', error);
+            alert('구인 게시물 저장 중 오류가 발생했습니다.');
         }
-        document.getElementById('post-modal').style.display = 'none';
-        renderJobList();
-        
-        // 구인 탭 활성화 유지
-        const tabs = document.querySelectorAll('.tab-link');
-        const tabContents = document.querySelectorAll('.tab-content');
-        
-        tabs.forEach(t => t.classList.remove('active'));
-        const jobTab = document.querySelector('[data-tab="tab-jobs"]');
-        if (jobTab) {
-            jobTab.classList.add('active');
-        }
-        
-        tabContents.forEach(content => {
-            content.classList.toggle('active', content.id === 'tab-jobs');
-        });
     }
     async function deleteJobItem(item) {
         if (!confirm('정말로 이 구인 게시물을 삭제하시겠습니까?')) return;
+
+        // 1. 본문에서 첨부파일 링크 추출
+        const fileUrls = [];
+        if (item.description) {
+            const doc = new DOMParser().parseFromString(item.description, 'text/html');
+            doc.querySelectorAll('a[download]').forEach(a => {
+                if (a.href) fileUrls.push(a.href);
+            });
+        }
+
+        // 2. Storage 경로 추출 및 삭제
+        for (const url of fileUrls) {
+            try {
+                // job-attachments/파일명 추출
+                const match = url.match(/job-attachments\/([^?]+)/);
+                if (match && match[1]) {
+                    await window.supabaseClient.storage.from('job-attachments').remove([decodeURIComponent(match[1])]);
+                }
+            } catch (e) {
+                console.warn('첨부파일 삭제 실패:', url, e);
+            }
+        }
+
+        // 3. 게시글 row 삭제
         await window.supabaseClient.from('jobs').delete().eq('id', item.id);
         await renderJobList();
     }
     
     // showAddJobModal: 구인 게시판 추가 모달 표시
     async function showAddJobModal() {
+        // 로딩 오버레이 표시
+        const loadingOverlay = document.getElementById('jobs-loading-overlay');
+        const loadingText = document.getElementById('jobs-loading-text');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'flex';
+            if (loadingText) loadingText.textContent = '화면을 준비중입니다.';
+        }
+
+        // 폼 초기화
         modalForm.reset();
         document.getElementById('modal-post-id').value = '';
         document.getElementById('modal-post-type').value = 'jobs';
         modalTitle.textContent = '새 구인 게시물 작성';
         modalImageGroup.style.display = 'none';
-        modalNoticeGroup.style.display = 'none';
+        modalNoticeGroup.style.display = 'block'; // 중요 공지 체크박스 jobs에도 표시
+        document.getElementById('modal-is-notice-checkbox').checked = false;
         modal.style.display = 'block';
+
+        // quill-editor DOM 강제 재생성 및 첨부파일 기능 포함 에디터 초기화
+        if (window.initializeQuillEditorWithAttachment) {
+            quill = window.initializeQuillEditorWithAttachment();
+        }
+        if (quill) {
+            quill.root.innerHTML = '';
+        }
+
+        // 로딩 오버레이 숨김 (최소 0.4초는 보여주기)
+        setTimeout(() => {
+            const loadingOverlay = document.getElementById('jobs-loading-overlay');
+            const loadingText = document.getElementById('jobs-loading-text');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+                if (loadingText) loadingText.textContent = '구인 게시물 저장 중입니다...';
+            }
+        }, 400);
     }
     
     // showEditJobModal: 구인 게시판 수정 모달 표시
     async function showEditJobModal(item) {
+        const loadingOverlay = document.getElementById('jobs-loading-overlay');
+        const loadingText = document.getElementById('jobs-loading-text');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'flex';
+            if (loadingText) loadingText.textContent = '내용을 불러오는 중입니다.';
+        }
         modalForm.reset();
         document.getElementById('modal-post-id').value = String(item.id);
         document.getElementById('modal-post-type').value = 'jobs';
         modalTitle.textContent = '구인 게시물 수정';
         modalImageGroup.style.display = 'none';
-        modalNoticeGroup.style.display = 'none';
+        modalNoticeGroup.style.display = 'block'; // 중요 공지 체크박스 jobs에도 표시
         document.getElementById('modal-title-input').value = item.title || '';
-        // <br>을 줄바꿈으로 변환
-        document.getElementById('modal-content-input').value = (item.description || item.content || '').replace(/<br\s*\/?\>/gi, '\n');
+        // quill-editor DOM 강제 재생성 및 첨부파일 기능 포함 에디터 초기화
+        if (window.initializeQuillEditorWithAttachment) {
+            quill = window.initializeQuillEditorWithAttachment();
+        }
+        const content = (item.description || item.content || '').replace(/<br\s*\/?\>/gi, '\n');
+        document.getElementById('modal-content-input').value = content;
+        if (quill) {
+            quill.root.innerHTML = content;
+        }
         modal.style.display = 'block';
+        setTimeout(() => {
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+                if (loadingText) loadingText.textContent = '구인 게시물 저장 중입니다...';
+            }
+        }, 400);
+        document.getElementById('modal-is-notice-checkbox').checked = !!item.isnotice;
     }
     // --- Notices Management (Supabase 연동) ---
     async function loadNoticeList() {
@@ -1607,10 +1674,27 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modal-notice-group').style.display = 'block';
         document.getElementById('modal-is-notice-checkbox').checked = false;
         document.getElementById('post-modal').style.display = 'block';
-        
-        // Quill 에디터 초기화 (admin.html의 함수 사용)
-        if (window.initializeQuillEditor) {
-            quill = window.initializeQuillEditor();
+        // quill-editor DOM 강제 재생성
+        const oldEditor = document.getElementById('quill-editor');
+        if (oldEditor) {
+            let prev = oldEditor.previousSibling;
+            while (prev) {
+                if (prev.classList && prev.classList.contains('ql-toolbar')) {
+                    prev.parentNode.removeChild(prev);
+                    break;
+                }
+                prev = prev.previousSibling;
+            }
+            const parent = oldEditor.parentNode;
+            parent.removeChild(oldEditor);
+            const newEditor = document.createElement('div');
+            newEditor.id = 'quill-editor';
+            newEditor.style.height = '400px';
+            parent.appendChild(newEditor);
+        }
+        // 반드시 첨부파일 포함 버전으로 초기화
+        if (window.initializeQuillEditorWithNoticeAttachment) {
+            quill = window.initializeQuillEditorWithNoticeAttachment();
         }
         if (quill) {
             quill.root.innerHTML = '';
@@ -1770,28 +1854,61 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     async function deleteNoticeItem(item) {
         if (!confirm('정말로 이 공지사항을 삭제하시겠습니까?')) return;
-        // 1. 본문에서 이미지 src 추출
-        const imgSrcs = [];
-        if (item.content) {
-            const doc = new DOMParser().parseFromString(item.content, 'text/html');
-            doc.querySelectorAll('img').forEach(img => {
-                if (img.src) imgSrcs.push(img.src);
-            });
-        }
-        // 2. Storage 경로 추출 및 삭제
-        for (const url of imgSrcs) {
-            try {
-                const match = url.match(/notice-images\/([^?]+)/);
-                if (match && match[1]) {
-                    await window.supabaseClient.storage.from('notice-images').remove([decodeURIComponent(match[1])]);
-                }
-            } catch (e) {
-                console.warn('이미지 삭제 실패:', url, e);
+        
+        try {
+            // 1. 본문에서 이미지 src 추출
+            const imgSrcs = [];
+            const attachmentUrls = [];
+            
+            if (item.content) {
+                const doc = new DOMParser().parseFromString(item.content, 'text/html');
+                
+                // 이미지 파일 추출
+                doc.querySelectorAll('img').forEach(img => {
+                    if (img.src) imgSrcs.push(img.src);
+                });
+                
+                // 첨부파일 링크 추출
+                doc.querySelectorAll('a[href*="notice-attachments"]').forEach(link => {
+                    if (link.href) attachmentUrls.push(link.href);
+                });
             }
+            
+            // 2. Storage에서 이미지 파일 삭제
+            for (const url of imgSrcs) {
+                try {
+                    const match = url.match(/notice-images\/([^?]+)/);
+                    if (match && match[1]) {
+                        await window.supabaseClient.storage.from('notice-images').remove([decodeURIComponent(match[1])]);
+                        console.log('이미지 삭제 완료:', match[1]);
+                    }
+                } catch (e) {
+                    console.warn('이미지 삭제 실패:', url, e);
+                }
+            }
+            
+            // 3. Storage에서 첨부파일 삭제
+            for (const url of attachmentUrls) {
+                try {
+                    const match = url.match(/notice-attachments\/([^?]+)/);
+                    if (match && match[1]) {
+                        await window.supabaseClient.storage.from('notice-attachments').remove([decodeURIComponent(match[1])]);
+                        console.log('첨부파일 삭제 완료:', match[1]);
+                    }
+                } catch (e) {
+                    console.warn('첨부파일 삭제 실패:', url, e);
+                }
+            }
+            
+            // 4. 게시글 row 삭제
+            await window.supabaseClient.from('notices').delete().eq('id', item.id);
+            console.log('공지사항 삭제 완료:', item.id);
+            
+            await renderNoticeList();
+        } catch (error) {
+            console.error('공지사항 삭제 중 오류:', error);
+            alert('공지사항 삭제 중 오류가 발생했습니다.');
         }
-        // 3. 게시글 row 삭제
-        await window.supabaseClient.from('notices').delete().eq('id', item.id);
-        await renderNoticeList();
     }
 
     // --- FAQ Management ---
@@ -2054,3 +2171,395 @@ function hideGalleryLoadingOverlay() {
     if (overlay) overlay.style.display = 'none';
 }
 // ... existing code ...
+
+// Quill 에디터 초기화 함수 (첨부파일 버튼 포함, jobs 전용)
+function initializeQuillEditorWithAttachment() {
+    // 기존 인스턴스 null 처리
+    if (quill) {
+        quill = null;
+    }
+    // quill-editor 및 툴바 DOM 완전 교체
+    const oldEditor = document.getElementById('quill-editor');
+    if (oldEditor) {
+        let prev = oldEditor.previousSibling;
+        while (prev) {
+            if (prev.classList && prev.classList.contains('ql-toolbar')) {
+                prev.parentNode.removeChild(prev);
+                break;
+            }
+            prev = prev.previousSibling;
+        }
+        const parent = oldEditor.parentNode;
+        parent.removeChild(oldEditor);
+        const newEditor = document.createElement('div');
+        newEditor.id = 'quill-editor';
+        newEditor.style.height = '400px';
+        parent.appendChild(newEditor);
+    }
+    // 새 인스턴스 생성 (첨부파일 버튼 포함)
+    quill = new Quill('#quill-editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: {
+                container: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'align': [] }],
+                    ['blockquote', 'code-block'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['link', 'image', 'attach'], // attach: 커스텀 버튼
+                    ['clean']
+                ],
+                handlers: {
+                    image: async function() {
+                        // ... 기존 이미지 업로드 핸들러 ...
+                    },
+                    attach: async function() {
+                        const quillInstance = this.quill;
+                        const input = document.createElement('input');
+                        input.setAttribute('type', 'file');
+                        input.click();
+                        input.onchange = async () => {
+                            const file = input.files[0];
+                            if (!file) return;
+                            // 로딩 오버레이 표시
+                            const loadingOverlay = document.getElementById('jobs-loading-overlay');
+                            const loadingText = document.getElementById('jobs-loading-text');
+                            if (loadingOverlay) {
+                                loadingOverlay.style.display = 'flex';
+                                if (loadingText) loadingText.textContent = '첨부파일을 업로드하는 중입니다...';
+                            }
+                            try {
+                                const fileName = sanitizeFileName(file.name);
+                                const { data, error } = await window.supabaseClient
+                                    .storage
+                                    .from('job-attachments')
+                                    .upload(fileName, file, { upsert: true });
+                                if (error) {
+                                    alert('첨부파일 업로드 실패: ' + error.message);
+                                    return;
+                                }
+                                const { data: urlData } = window.supabaseClient
+                                    .storage
+                                    .from('job-attachments')
+                                    .getPublicUrl(fileName);
+                                if (urlData && urlData.publicUrl) {
+                                    const range = quillInstance.getSelection();
+                                    // download 속성만 포함, target="_blank" 제거
+                                    const fileLinkHtml = `<a href="${urlData.publicUrl}" download="${file.name}">[첨부파일: ${file.name}]</a>`;
+                                    quillInstance.clipboard.dangerouslyPasteHTML(range ? range.index : 0, fileLinkHtml);
+                                } else {
+                                    alert('첨부파일 URL 생성 실패');
+                                }
+                            } catch (e) {
+                                alert('첨부파일 업로드 중 오류 발생');
+                                console.error('첨부파일 업로드 오류:', e);
+                            } finally {
+                                if (loadingOverlay) {
+                                    loadingOverlay.style.display = 'none';
+                                    if (loadingText) loadingText.textContent = '구인 게시물 저장 중입니다...';
+                                }
+                            }
+                        };
+                    }
+                }
+            }
+        }
+    });
+    // attach 버튼에 클립 SVG 아이콘 삽입 (색상: #334a6c)
+    setTimeout(() => {
+        const attachBtn = document.querySelector('.ql-attach');
+        if (attachBtn) {
+            attachBtn.innerHTML = '<svg viewBox="0 0 18 18" width="18" height="18"><path d="M6.5 9.5l5-5a3 3 0 114.24 4.24l-7.5 7.5a5 5 0 01-7.07-7.07l7.5-7.5" stroke="#334a6c" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        }
+    }, 0);
+    return quill;
+}
+
+// 전역으로 함수 노출
+window.initializeQuillEditorWithAttachment = initializeQuillEditorWithAttachment;
+
+// showAddJobModal 함수에서 Quill 에디터 초기화 부분만 아래로 교체
+async function showAddJobModal() {
+    // ... 기존 코드 ...
+    modalForm.reset();
+    document.getElementById('modal-post-id').value = '';
+    document.getElementById('modal-post-type').value = 'jobs';
+    modalTitle.textContent = '새 구인 게시물 작성';
+    modalImageGroup.style.display = 'none';
+    modalNoticeGroup.style.display = 'block'; // 중요 공지 체크박스 jobs에도 표시
+    document.getElementById('modal-is-notice-checkbox').checked = false;
+    modal.style.display = 'block';
+
+    // quill-editor DOM 강제 재생성 및 첨부파일 기능 포함 에디터 초기화
+    if (window.initializeQuillEditorWithAttachment) {
+        quill = window.initializeQuillEditorWithAttachment();
+    }
+    if (quill) {
+        quill.root.innerHTML = '';
+    }
+
+    // 로딩 오버레이 숨김 (최소 0.4초는 보여주기)
+    setTimeout(() => {
+        const loadingOverlay = document.getElementById('jobs-loading-overlay');
+        const loadingText = document.getElementById('jobs-loading-text');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
+            if (loadingText) loadingText.textContent = '구인 게시물 저장 중입니다...';
+        }
+    }, 400);
+}
+
+// showEditJobModal 함수도 동일하게 첨부파일 기능 포함 에디터로 초기화
+async function showEditJobModal(item) {
+    const loadingOverlay = document.getElementById('jobs-loading-overlay');
+    const loadingText = document.getElementById('jobs-loading-text');
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'flex';
+        if (loadingText) loadingText.textContent = '내용을 불러오는 중입니다.';
+    }
+    modalForm.reset();
+    document.getElementById('modal-post-id').value = String(item.id);
+    document.getElementById('modal-post-type').value = 'jobs';
+    modalTitle.textContent = '구인 게시물 수정';
+    modalImageGroup.style.display = 'none';
+    modalNoticeGroup.style.display = 'block'; // 중요 공지 체크박스 jobs에도 표시
+    document.getElementById('modal-title-input').value = item.title || '';
+    // quill-editor DOM 강제 재생성 및 첨부파일 기능 포함 에디터 초기화
+    if (window.initializeQuillEditorWithAttachment) {
+        quill = window.initializeQuillEditorWithAttachment();
+    }
+    const content = (item.description || item.content || '').replace(/<br\s*\/?\>/gi, '\n');
+    document.getElementById('modal-content-input').value = content;
+    if (quill) {
+        quill.root.innerHTML = content;
+    }
+    modal.style.display = 'block';
+    setTimeout(() => {
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
+            if (loadingText) loadingText.textContent = '구인 게시물 저장 중입니다...';
+        }
+    }, 400);
+    document.getElementById('modal-is-notice-checkbox').checked = !!item.isnotice;
+}
+// ... 기존 코드 ...
+
+// 공지사항용 Quill 에디터 초기화 함수 (첨부파일 버튼 포함)
+function initializeQuillEditorWithNoticeAttachment() {
+    if (quill) {
+        quill = null;
+    }
+    const oldEditor = document.getElementById('quill-editor');
+    if (oldEditor) {
+        let prev = oldEditor.previousSibling;
+        while (prev) {
+            if (prev.classList && prev.classList.contains('ql-toolbar')) {
+                prev.parentNode.removeChild(prev);
+                break;
+            }
+            prev = prev.previousSibling;
+        }
+        const parent = oldEditor.parentNode;
+        parent.removeChild(oldEditor);
+        const newEditor = document.createElement('div');
+        newEditor.id = 'quill-editor';
+        newEditor.style.height = '400px';
+        parent.appendChild(newEditor);
+    }
+    quill = new Quill('#quill-editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: {
+                container: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'align': [] }],
+                    ['blockquote', 'code-block'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['link', 'image', 'attach'],
+                    ['clean']
+                ],
+                handlers: {
+                    image: async function() {
+                        // ... 기존 이미지 업로드 핸들러 ...
+                    },
+                    attach: async function() {
+                        const quillInstance = this.quill;
+                        const input = document.createElement('input');
+                        input.setAttribute('type', 'file');
+                        input.click();
+                        input.onchange = async () => {
+                            const file = input.files[0];
+                            if (!file) return;
+                            const loadingOverlay = document.getElementById('notice-loading-overlay');
+                            const loadingText = document.getElementById('notice-loading-text');
+                            if (loadingOverlay) {
+                                loadingOverlay.style.display = 'flex';
+                                if (loadingText) loadingText.textContent = '첨부파일을 업로드하는 중입니다...';
+                            }
+                            try {
+                                const fileName = sanitizeFileName(file.name);
+                                const { data, error } = await window.supabaseClient
+                                    .storage
+                                    .from('notice-attachments')
+                                    .upload(fileName, file, { upsert: true });
+                                if (error) {
+                                    alert('첨부파일 업로드 실패: ' + error.message);
+                                    return;
+                                }
+                                const { data: urlData } = window.supabaseClient
+                                    .storage
+                                    .from('notice-attachments')
+                                    .getPublicUrl(fileName);
+                                if (urlData && urlData.publicUrl) {
+                                    const range = quillInstance.getSelection();
+                                    const fileLinkHtml = `<a href="${urlData.publicUrl}" download="${file.name}">[첨부파일: ${file.name}]</a>`;
+                                    quillInstance.clipboard.dangerouslyPasteHTML(range ? range.index : 0, fileLinkHtml);
+                                } else {
+                                    alert('첨부파일 URL 생성 실패');
+                                }
+                            } catch (e) {
+                                alert('첨부파일 업로드 중 오류 발생');
+                                console.error('첨부파일 업로드 오류:', e);
+                            } finally {
+                                if (loadingOverlay) {
+                                    loadingOverlay.style.display = 'none';
+                                    if (loadingText) loadingText.textContent = '공지사항 저장 중입니다...';
+                                }
+                            }
+                        };
+                    }
+                }
+            }
+        }
+    });
+    // attach 버튼에 아이콘을 여러 번 반복적으로 삽입 시도
+    function setAttachIcon() {
+        const attachBtn = document.querySelector('.ql-attach');
+        if (attachBtn && !attachBtn.innerHTML.includes('svg')) {
+            attachBtn.innerHTML = '<svg viewBox="0 0 18 18" width="18" height="18"><path d="M6.5 9.5l5-5a3 3 0 114.24 4.24l-7.5 7.5a5 5 0 01-7.07-7.07l7.5-7.5" stroke="#334a6c" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        }
+    }
+    for (let i = 0; i < 10; i++) {
+        setTimeout(setAttachIcon, 100 * i);
+    }
+    return quill;
+}
+
+window.initializeQuillEditorWithNoticeAttachment = initializeQuillEditorWithNoticeAttachment;
+
+// 공지사항 작성/수정 모달에서 Quill 에디터 초기화 시 해당 함수 사용
+function showAddNoticeModal() {
+    document.getElementById('modal-title').textContent = '새 공지사항 작성';
+    document.getElementById('modal-post-type').value = 'notices';
+    document.getElementById('modal-post-id').value = '';
+    document.getElementById('modal-title-input').value = '';
+    document.getElementById('modal-content-input').value = '';
+    document.getElementById('modal-notice-group').style.display = 'block';
+    document.getElementById('modal-is-notice-checkbox').checked = false;
+    document.getElementById('post-modal').style.display = 'block';
+    // quill-editor DOM 강제 재생성
+    const oldEditor = document.getElementById('quill-editor');
+    if (oldEditor) {
+        let prev = oldEditor.previousSibling;
+        while (prev) {
+            if (prev.classList && prev.classList.contains('ql-toolbar')) {
+                prev.parentNode.removeChild(prev);
+                break;
+            }
+            prev = prev.previousSibling;
+        }
+        const parent = oldEditor.parentNode;
+        parent.removeChild(oldEditor);
+        const newEditor = document.createElement('div');
+        newEditor.id = 'quill-editor';
+        newEditor.style.height = '400px';
+        parent.appendChild(newEditor);
+    }
+    // 반드시 첨부파일 포함 버전으로 초기화
+    if (window.initializeQuillEditorWithNoticeAttachment) {
+        quill = window.initializeQuillEditorWithNoticeAttachment();
+    }
+    if (quill) {
+        quill.root.innerHTML = '';
+    }
+}
+async function showEditNoticeModal(item) {
+    showLoadingOverlay('내용을 불러오는 중입니다');
+    if (modalForm) modalForm.reset();
+    if(document.getElementById('modal-is-notice-checkbox')) document.getElementById('modal-is-notice-checkbox').checked = false;
+    if (window.initializeQuillEditorWithNoticeAttachment) {
+        quill = window.initializeQuillEditorWithNoticeAttachment();
+    }
+    let noticeData = item;
+    try {
+        const { data, error } = await window.supabaseClient
+            .from('notices')
+            .select('*')
+            .eq('id', item.id)
+            .single();
+        if (!error && data) {
+            noticeData = data;
+        }
+    } catch (e) {}
+    document.getElementById('modal-post-id').value = String(noticeData.id);
+    document.getElementById('modal-post-type').value = 'notices';
+    modalTitle.textContent = '공지사항 수정';
+    modalImageGroup.style.display = 'none';
+    modalNoticeGroup.style.display = 'block';
+    document.getElementById('modal-title-input').value = noticeData.title || '';
+    document.getElementById('modal-content-input').value = (noticeData.content || '').replace(/<br\s*\/?>/gi, '\n');
+    if(document.getElementById('modal-is-notice-checkbox')) document.getElementById('modal-is-notice-checkbox').checked = !!noticeData.isnotice;
+    if (typeof quill !== 'undefined' && quill) {
+        quill.root.innerHTML = noticeData.content || '';
+    }
+    modal.style.display = 'block';
+    hideLoadingOverlay();
+}
+// ... 기존 코드 ...
+
+// ... 기존 코드 ...
+// 첨부파일 업로드 시 원본 파일명 사용
+// 첨부파일 다운로드 링크 생성 시 encodeURIComponent 적용
+function getJobAttachmentDownloadUrl(fileName) {
+    const encodedFileName = encodeURIComponent(fileName);
+    return `${window.supabaseClient.storageUrl}/object/public/job-attachments/${encodedFileName}`;
+}
+// ... 기존 코드 ...
+// 첨부파일 업로드 시
+// const fileName = sanitizeFileName(file.name); // 기존 코드에서 이 부분을 아래처럼 변경
+const fileName = sanitizeFileName(file.name); // 한글 포함 원본 파일명 사용
+// ... 업로드 후 ...
+// 다운로드 링크 생성 시
+const downloadUrl = getJobAttachmentDownloadUrl(fileName);
+// <a href="..." download="원본파일명"> 형태로 링크 생성
+// ... 기존 코드 ...
+
+
+// 이미지/다운로드 URL 생성 시
+function getGalleryImageUrl(imageField) {
+    let fileName = '';
+    if (Array.isArray(imageField)) {
+        fileName = imageField[0];
+    } else if (typeof imageField === 'string') {
+        try {
+            const arr = JSON.parse(imageField);
+            fileName = Array.isArray(arr) ? arr[0] : imageField;
+        } catch {
+            fileName = imageField;
+        }
+    }
+    if (!fileName) return '';
+    if (fileName.startsWith('http')) return fileName;
+    return `${window.supabaseClient.storageUrl}/object/public/gallery-images/${fileName}`;
+}
+function getPopupImageUrl(fileName) {
+    return `${window.supabaseClient.storageUrl}/object/public/popup-images/${encodeURIComponent(fileName)}`;
+}
+function getInstructorImageUrl(fileName) {
+    return `${window.supabaseClient.storageUrl}/object/public/instructor-images/${encodeURIComponent(fileName)}`;
+}
+// ... 기존 sanitizeFileName 함수는 남겨두되, 실제 업로드/링크 생성 시에는 사용하지 않음
