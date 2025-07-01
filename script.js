@@ -1263,6 +1263,40 @@ async function initJobsDetailPage() {
         </div>
       </div>
     `;
+
+    // 첨부파일 링크에 클릭 이벤트 추가 (원본 파일명으로 다운로드)
+    const attachmentLinks = viewContainer.querySelectorAll('a[download]');
+    attachmentLinks.forEach(link => {
+      link.addEventListener('click', async function(e) {
+        e.preventDefault();
+        // data-original-filename 속성에서 원본 파일명 가져오기
+        const originalFileName = this.getAttribute('data-original-filename') || this.getAttribute('download');
+        const fileUrl = this.href;
+        
+        try {
+          // 파일 다운로드
+          const response = await fetch(fileUrl);
+          if (!response.ok) throw new Error('파일을 다운로드할 수 없습니다.');
+          
+          const blob = await response.blob();
+          const downloadUrl = window.URL.createObjectURL(blob);
+          
+          // 원본 파일명으로 다운로드
+          const a = document.createElement('a');
+          a.href = downloadUrl;
+          a.download = originalFileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          
+          // 메모리 정리
+          window.URL.revokeObjectURL(downloadUrl);
+        } catch (error) {
+          console.error('파일 다운로드 오류:', error);
+          alert('파일 다운로드 중 오류가 발생했습니다.');
+        }
+      });
+    });
   } catch (error) {
     console.error('취업/구인정보 상세 페이지 초기화 오류:', error);
     viewContainer.innerHTML = '<p style="text-align: center; padding: 4rem;">게시물을 불러오는 데 실패했습니다.</p>';
@@ -1586,7 +1620,7 @@ async function initNoticeDetailPage() {
     await incrementViewCount('notices', postId);
 
     // 최신순 정렬로 이전/다음글 계산
-    const sortedItems = allItems.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+    const sortedItems = allItems.sort((a, b) => (b.created_at || '').localeCompare(a.date || a.created_at || ''));
     const currentIndex = sortedItems.findIndex(item => item.id === postId);
     const prevPost = currentIndex > 0 ? sortedItems[currentIndex - 1] : null;
     const nextPost = currentIndex < sortedItems.length - 1 ? sortedItems[currentIndex + 1] : null;
@@ -1620,6 +1654,40 @@ async function initNoticeDetailPage() {
         </div>
       </div>
     `;
+
+    // 첨부파일 링크에 클릭 이벤트 추가 (원본 파일명으로 다운로드)
+    const attachmentLinks = detailContainer.querySelectorAll('a[download]');
+    attachmentLinks.forEach(link => {
+      link.addEventListener('click', async function(e) {
+        e.preventDefault();
+        // data-original-filename 속성에서 원본 파일명 가져오기
+        const originalFileName = this.getAttribute('data-original-filename') || this.getAttribute('download');
+        const fileUrl = this.href;
+        
+        try {
+          // 파일 다운로드
+          const response = await fetch(fileUrl);
+          if (!response.ok) throw new Error('파일을 다운로드할 수 없습니다.');
+          
+          const blob = await response.blob();
+          const downloadUrl = window.URL.createObjectURL(blob);
+          
+          // 원본 파일명으로 다운로드
+          const a = document.createElement('a');
+          a.href = downloadUrl;
+          a.download = originalFileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          
+          // 메모리 정리
+          window.URL.revokeObjectURL(downloadUrl);
+        } catch (error) {
+          console.error('파일 다운로드 오류:', error);
+          alert('파일 다운로드 중 오류가 발생했습니다.');
+        }
+      });
+    });
   } catch (error) {
     console.error('공지사항 상세 페이지 초기화 오류:', error);
     detailContainer.innerHTML = '<p style="text-align: center; padding: 4rem;">게시물을 불러오는 데 실패했습니다.</p>';
