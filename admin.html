@@ -396,7 +396,7 @@
       width: 100vw;
       height: 100vh;
       background: rgba(0,0,0,0.6);
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
     }
@@ -2667,6 +2667,36 @@
     }
     .modal {
       z-index: 10000 !important;
+    }
+    @media (max-width: 600px) {
+      .modal-content {
+        width: 98vw;
+        max-width: 98vw;
+        max-height: 92vh;
+        overflow-y: auto;
+        padding: 0.7rem 0.5rem;
+        box-sizing: border-box;
+      }
+    }
+    @media (max-width: 480px) {
+      .modal-content {
+        width: 100vw;
+        max-width: 100vw;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 0.5rem 0.2rem;
+        box-sizing: border-box;
+      }
+    }
+    @media (max-width: 400px) {
+      .modal-content {
+        width: 100vw;
+        max-width: 100vw;
+        max-height: 88vh;
+        overflow-y: auto;
+        padding: 0.3rem 0.1rem;
+        box-sizing: border-box;
+      }
     }
   </style>
 </head>

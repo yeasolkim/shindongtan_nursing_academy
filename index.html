@@ -137,14 +137,14 @@
           return;
         }
         // 한국 시간 기준 오늘 날짜(YYYY-MM-DD)
-        const today = new Date();
+      const today = new Date();
         const todayStr = today.getFullYear() + '-' +
           String(today.getMonth() + 1).padStart(2, '0') + '-' +
           String(today.getDate()).padStart(2, '0');
-        const { data: popups, error } = await window.supabaseClient
-          .from('popups')
-          .select('*')
-          .eq('is_active', true);
+      const { data: popups, error } = await window.supabaseClient
+        .from('popups')
+        .select('*')
+        .eq('is_active', true);
         if (error) {
           console.error('Supabase 팝업 데이터 조회 오류:', error);
           return;
@@ -154,15 +154,15 @@
           return;
         }
         let shown = 0;
-        popups.forEach(popup => {
-          // 기간 체크
-          if (popup.start_date && todayStr < popup.start_date) return;
-          if (popup.end_date && todayStr > popup.end_date) return;
-          // 오늘 하루 보지 않기 체크 (팝업별로 구분)
-          const dontShowKey = 'popupDontShowToday_' + popup.id;
-          if (localStorage.getItem(dontShowKey) === todayStr) return;
+      popups.forEach(popup => {
+        // 기간 체크
+        if (popup.start_date && todayStr < popup.start_date) return;
+        if (popup.end_date && todayStr > popup.end_date) return;
+        // 오늘 하루 보지 않기 체크 (팝업별로 구분)
+        const dontShowKey = 'popupDontShowToday_' + popup.id;
+        if (localStorage.getItem(dontShowKey) === todayStr) return;
           try {
-            renderPopup(popup);
+        renderPopup(popup);
             shown++;
           } catch (e) {
             console.error('renderPopup 오류:', e, popup);
@@ -177,18 +177,18 @@
     }
     function renderPopup(popup) {
       try {
-        // 팝업 컨테이너 생성
-        const popupDiv = document.createElement('div');
-        popupDiv.className = 'supabase-popup';
+      // 팝업 컨테이너 생성
+      const popupDiv = document.createElement('div');
+      popupDiv.className = 'supabase-popup';
         // 팝업 컨테이너 스타일 개선
-        popupDiv.style.display = 'flex';
-        popupDiv.style.flexDirection = 'column';
-        popupDiv.style.alignItems = 'center';
+      popupDiv.style.display = 'flex';
+      popupDiv.style.flexDirection = 'column';
+      popupDiv.style.alignItems = 'center';
         popupDiv.style.background = 'rgba(255,255,255,0.97)';
         popupDiv.style.borderRadius = '12px';
         popupDiv.style.boxShadow = '0 4px 16px rgba(51,74,108,0.10)';
         popupDiv.style.padding = '0';
-        popupDiv.style.width = 'fit-content';
+      popupDiv.style.width = 'fit-content';
         popupDiv.style.maxHeight = '90vh';
         popupDiv.style.overflow = 'visible';
         popupDiv.style.position = 'fixed';
@@ -210,31 +210,31 @@
           popupDiv.style.transform = 'translate(-50%, -50%)';
           popupDiv.style.zIndex = '99999';
         }, 0);
-        // 닫기 버튼
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'close-btn';
-        closeBtn.innerHTML = '&times;';
+      // 닫기 버튼
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'close-btn';
+      closeBtn.innerHTML = '&times;';
         closeBtn.style.alignSelf = 'flex-end';
         closeBtn.style.marginBottom = '2px';
         closeBtn.style.marginTop = '6px';
         closeBtn.style.marginRight = '8px';
         closeBtn.style.width = '24px';
         closeBtn.style.height = '24px';
-        closeBtn.style.background = '#334a6c';
-        closeBtn.style.color = 'white';
-        closeBtn.style.border = 'none';
-        closeBtn.style.borderRadius = '50%';
-        closeBtn.style.cursor = 'pointer';
+      closeBtn.style.background = '#334a6c';
+      closeBtn.style.color = 'white';
+      closeBtn.style.border = 'none';
+      closeBtn.style.borderRadius = '50%';
+      closeBtn.style.cursor = 'pointer';
         closeBtn.style.fontSize = '16px';
-        closeBtn.style.fontWeight = 'bold';
-        closeBtn.style.display = 'flex';
-        closeBtn.style.alignItems = 'center';
-        closeBtn.style.justifyContent = 'center';
-        closeBtn.style.transition = 'all 0.2s';
-        closeBtn.onclick = () => popupDiv.remove();
+      closeBtn.style.fontWeight = 'bold';
+      closeBtn.style.display = 'flex';
+      closeBtn.style.alignItems = 'center';
+      closeBtn.style.justifyContent = 'center';
+      closeBtn.style.transition = 'all 0.2s';
+      closeBtn.onclick = () => popupDiv.remove();
         // 오늘 하루 보지 않기 체크박스
-        const checkboxDiv = document.createElement('div');
-        checkboxDiv.className = 'checkbox-container';
+      const checkboxDiv = document.createElement('div');
+      checkboxDiv.className = 'checkbox-container';
         checkboxDiv.style.marginTop = '2px';
         checkboxDiv.style.alignSelf = 'center';
         checkboxDiv.style.background = 'rgba(51,74,108,0.08)';
@@ -244,42 +244,42 @@
         checkboxDiv.style.fontSize = '13px';
         checkboxDiv.style.color = '#334a6c';
         checkboxDiv.style.boxShadow = '0 1.5px 6px rgba(51,74,108,0.08)';
-        checkboxDiv.style.display = 'flex';
-        checkboxDiv.style.alignItems = 'center';
-        checkboxDiv.style.gap = '10px';
-        const dontShowCheckbox = document.createElement('input');
-        dontShowCheckbox.type = 'checkbox';
-        dontShowCheckbox.id = 'dontShowToday_' + popup.id;
+      checkboxDiv.style.display = 'flex';
+      checkboxDiv.style.alignItems = 'center';
+      checkboxDiv.style.gap = '10px';
+      const dontShowCheckbox = document.createElement('input');
+      dontShowCheckbox.type = 'checkbox';
+      dontShowCheckbox.id = 'dontShowToday_' + popup.id;
         dontShowCheckbox.style.width = '15px';
         dontShowCheckbox.style.height = '15px';
-        dontShowCheckbox.style.cursor = 'pointer';
-        dontShowCheckbox.style.accentColor = '#334a6c';
-        dontShowCheckbox.style.margin = '0 2px 0 0';
-        const dontShowLabel = document.createElement('label');
-        dontShowLabel.htmlFor = dontShowCheckbox.id;
-        dontShowLabel.textContent = '오늘 하루 보지 않기';
-        dontShowLabel.style.cursor = 'pointer';
-        dontShowLabel.style.userSelect = 'none';
-        dontShowLabel.style.fontWeight = '500';
+      dontShowCheckbox.style.cursor = 'pointer';
+      dontShowCheckbox.style.accentColor = '#334a6c';
+      dontShowCheckbox.style.margin = '0 2px 0 0';
+      const dontShowLabel = document.createElement('label');
+      dontShowLabel.htmlFor = dontShowCheckbox.id;
+      dontShowLabel.textContent = '오늘 하루 보지 않기';
+      dontShowLabel.style.cursor = 'pointer';
+      dontShowLabel.style.userSelect = 'none';
+      dontShowLabel.style.fontWeight = '500';
         dontShowLabel.style.fontSize = '13px';
-        dontShowCheckbox.onchange = function() {
-          if (this.checked) {
-            const todayStr = new Date().toISOString().slice(0, 10);
-            localStorage.setItem('popupDontShowToday_' + popup.id, todayStr);
-            popupDiv.remove();
-          }
-        };
-        checkboxDiv.appendChild(dontShowCheckbox);
-        checkboxDiv.appendChild(dontShowLabel);
-        // 이미지
-        const img = document.createElement('img');
-        img.src = popup.image_url;
-        img.alt = popup.title || '팝업';
-        img.style.display = 'block';
+      dontShowCheckbox.onchange = function() {
+        if (this.checked) {
+          const todayStr = new Date().toISOString().slice(0, 10);
+          localStorage.setItem('popupDontShowToday_' + popup.id, todayStr);
+          popupDiv.remove();
+        }
+      };
+      checkboxDiv.appendChild(dontShowCheckbox);
+      checkboxDiv.appendChild(dontShowLabel);
+      // 이미지
+      const img = document.createElement('img');
+      img.src = popup.image_url;
+      img.alt = popup.title || '팝업';
+      img.style.display = 'block';
         img.style.maxHeight = '90vh';
         img.style.borderRadius = '8px';
-        img.style.boxShadow = '0 2px 12px rgba(51,74,108,0.10)';
-        img.style.background = '#f7f9fb';
+      img.style.boxShadow = '0 2px 12px rgba(51,74,108,0.10)';
+      img.style.background = '#f7f9fb';
         img.style.margin = '0';
         // 이미지 로드 후 팝업 크기 조정
         img.onload = function() {
@@ -292,17 +292,17 @@
         };
         // 팝업 내부에 요소 추가
         popupDiv.appendChild(closeBtn);
-        if (popup.link) {
-          const a = document.createElement('a');
-          a.href = popup.link;
-          a.target = '_blank';
-          a.appendChild(img);
-          popupDiv.appendChild(a);
-        } else {
-          popupDiv.appendChild(img);
-        }
-        popupDiv.appendChild(checkboxDiv);
-        document.body.appendChild(popupDiv);
+      if (popup.link) {
+        const a = document.createElement('a');
+        a.href = popup.link;
+        a.target = '_blank';
+        a.appendChild(img);
+        popupDiv.appendChild(a);
+      } else {
+        popupDiv.appendChild(img);
+      }
+      popupDiv.appendChild(checkboxDiv);
+      document.body.appendChild(popupDiv);
         console.log('팝업 append 완료:', popup);
       } catch (e) {
         console.error('renderPopup 함수 내부 오류:', e, popup);
@@ -378,7 +378,7 @@
       align-items: center !important;
       gap: 10px !important;
       backdrop-filter: blur(5px) !important;
-    }
+      }
     .supabase-popup .checkbox-container input[type="checkbox"] {
       width: 15px !important;
       height: 15px !important;
