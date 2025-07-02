@@ -1107,13 +1107,63 @@ document.addEventListener('DOMContentLoaded', () => {
     const popupBucket = 'popup-images';
     const popupTable = 'popups';
 
+    // 팝업 폼 완전 초기화 함수
+    function resetPopupForm() {
+        const popupForm = document.getElementById('popup-form');
+        popupForm.reset();
+        document.getElementById('popup-id').value = '';
+        document.getElementById('popup-cancel').style.display = 'none';
+        
+        // 숨겨진 input 값들 초기화
+        document.getElementById('popup-pos-x').value = '50';
+        document.getElementById('popup-pos-y').value = '60';
+        document.getElementById('popup-width').value = '400';
+        document.getElementById('popup-height').value = '200';
+        
+        // 슬라이더 값들 초기화
+        const posXSlider = document.getElementById('popup-pos-x-slider');
+        const posYSlider = document.getElementById('popup-pos-y-slider');
+        const widthSlider = document.getElementById('popup-width-slider');
+        const heightSlider = document.getElementById('popup-height-slider');
+        const posXValue = document.getElementById('popup-pos-x-value');
+        const posYValue = document.getElementById('popup-pos-y-value');
+        const widthValue = document.getElementById('popup-width-value');
+        const heightValue = document.getElementById('popup-height-value');
+        
+        if (posXSlider) posXSlider.value = '50';
+        if (posYSlider) posYSlider.value = '60';
+        if (widthSlider) widthSlider.value = '400';
+        if (heightSlider) heightSlider.value = '200';
+        if (posXValue) posXValue.textContent = '50';
+        if (posYValue) posYValue.textContent = '60';
+        if (widthValue) widthValue.textContent = '400';
+        if (heightValue) heightValue.textContent = '200';
+        
+        // 팝업 미리보기 초기화
+        const popupImagePreview = document.getElementById('popup-image-preview');
+        if (popupImagePreview) {
+            popupImagePreview.innerHTML = '';
+        }
+        
+        // 미리보기 영역 완전 초기화
+        if (window.setPopupPreviewFromForm) {
+            window.setPopupPreviewFromForm('');
+        }
+        
+        // 전역 previewImgUrl 변수도 초기화 (admin.html에서 사용)
+        if (window.previewImgUrl !== undefined) {
+            window.previewImgUrl = '';
+        }
+        
+        // 빠른 날짜 설정 버튼들 초기화
+        const quickDateBtns = document.querySelectorAll('.quick-date-btn');
+        quickDateBtns.forEach(btn => btn.classList.remove('active'));
+    }
+
     // 탭 활성화 시 팝업 목록 불러오기
     function initPopupTab() {
         loadPopupList();
-        document.getElementById('popup-form').reset();
-        document.getElementById('popup-id').value = '';
-        document.getElementById('popup-image-preview').innerHTML = '';
-        document.getElementById('popup-cancel').style.display = 'none';
+        resetPopupForm();
     }
 
     // 팝업 목록 불러오기
@@ -1208,19 +1258,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             await loadPopupList();
-        popupForm.reset();
-            document.getElementById('popup-cancel').click();
-            
-            // 팝업 미리보기 초기화
-            const popupImagePreview = document.getElementById('popup-image-preview');
-            if (popupImagePreview) {
-                popupImagePreview.innerHTML = '';
-            }
-            
-            // 미리보기 영역 초기화
-            if (window.setPopupPreviewFromForm) {
-                window.setPopupPreviewFromForm();
-            }
+            resetPopupForm();
         } catch (error) {
             alert('팝업 저장 중 오류가 발생했습니다.');
             console.error('팝업 저장 오류:', error);
@@ -1269,12 +1307,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 팝업 취소 버튼
     const popupCancelBtn = document.getElementById('popup-cancel');
     popupCancelBtn && popupCancelBtn.addEventListener('click', function() {
-        popupForm.reset();
-        document.getElementById('popup-id').value = '';
-        document.getElementById('popup-image-preview').innerHTML = '';
-        popupCancelBtn.style.display = 'none';
-        // 팝업 미리보기 영역도 초기화
-        if (window.setPopupPreviewFromForm) window.setPopupPreviewFromForm('');
+        resetPopupForm();
     });
 
     // 탭 전환 시 팝업 관리 탭이면 목록 로드
