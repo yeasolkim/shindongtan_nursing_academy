@@ -135,20 +135,13 @@
   gap: 0.75rem;
   font-weight: 600;
   color: #475569;
-  cursor: pointer;
+  cursor: default !important;
   margin-bottom: 3rem;
   padding: 0.75rem 1.5rem;
   border-radius: 10px;
-  transition: all 0.3s ease;
+  transition: none !important;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-}
-
-.back-to-list:hover {
-  color: #334a6c;
-  background: #f1f5f9;
-  border-color: #cbd5e1;
-  transform: translateX(-5px);
 }
 
 .back-to-list i {
@@ -156,8 +149,12 @@
   transition: transform 0.3s ease;
 }
 
+.back-to-list:hover,
 .back-to-list:hover i {
-  transform: translateX(-3px);
+  color: inherit !important;
+  background: inherit !important;
+  border-color: inherit !important;
+  transform: none !important;
 }
 
 .detail-content {
@@ -194,11 +191,11 @@
   width: 100%;
   height: auto;
   display: block;
-  transition: transform 0.3s ease;
+  transition: none !important;
 }
 
 .detail-img-container:hover img {
-  transform: scale(1.02);
+  transform: none !important;
 }
 
 .detail-info {
@@ -243,13 +240,13 @@
   border-radius: 12px;
   border-left: 4px solid #334a6c;
   font-size: 1rem;
-  transition: all 0.3s ease;
+  transition: none !important;
 }
 
 .detail-info .details-list li:hover {
-  background: #f1f5f9;
-  transform: translateX(5px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  background: inherit !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .detail-info .details-list li::before {
@@ -399,5 +396,15 @@
     margin-bottom: 1.5rem;
     padding: 0.5rem 1rem;
     font-size: 0.85rem;
+  }
+}
+
+/* ===== 상단 '전문 강사진' 텍스트 여백 추가 (겹침 방지) ===== */
+.section-title h2 {
+  margin-top: 1.2rem; /* 상단 여백 추가로 겹침 방지 */
+}
+@media (max-width: 768px) {
+  .section-title h2 {
+    margin-top: 0.8rem; /* 모바일에서 살짝 더 좁게 */
   }
 } 

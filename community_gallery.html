@@ -328,89 +328,52 @@
     }
     
     @media (max-width: 768px) {
+      /* ===== 갤러리 모바일: 패딩/마진 최소화로 컨텐츠 공간 극대화 ===== */
+      .gallery-page-wrapper {
+        padding: 0.1rem !important;
+        margin: 0 !important;
+      }
+      .gallery-page-header {
+        padding: 0.3rem 0.1rem !important;
+        margin: 0 !important;
+      }
+      .board-controls {
+        margin: 0.2rem 0.05rem 0.2rem 0.05rem !important;
+        padding: 0.2rem !important;
+        gap: 0.2rem !important;
+      }
       .board-list {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 0.8rem;
+        margin: 0 !important;
+        gap: 0.3rem !important;
+        padding-top: 0.1rem !important;
+      }
+      .board-row {
+        border-radius: 6px !important;
+        box-shadow: none !important;
       }
       .board-row .thumbnail {
-        height: 140px;
+        height: 90px !important;
       }
       .board-row .title-section {
-        padding: 1rem;
+        padding: 0.2rem !important;
       }
       .board-row .title-section .title {
-        font-size: 0.95rem;
-        margin-bottom: 0.6rem;
+        font-size: 0.8rem !important;
+        margin-bottom: 0.1rem !important;
       }
       .board-row .title-section .description {
-        font-size: 0.85rem;
-        margin-bottom: 0.6rem;
+        font-size: 0.7rem !important;
+        margin-bottom: 0.1rem !important;
       }
       .board-row .meta-info {
-        font-size: 0.8rem;
-        padding-top: 0.6rem;
+        font-size: 0.65rem !important;
+        padding-top: 0.05rem !important;
+        margin: 0 !important;
+        border-top: none !important;
       }
-      
-      .gallery-page-header {
-        padding: 1.2rem 1.5rem;
-      }
-      
-      .gallery-page-title {
-        font-size: 1.5rem;
-      }
-      
-      .gallery-page-subtitle {
-        font-size: 1rem;
-      }
-      
-      .board-controls {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 1rem;
-        margin: 1.2rem 1.5rem 1rem 1.5rem;
-        padding: 1rem;
-      }
-      
-      .search-bar {
-        flex-wrap: wrap !important;
-        gap: 0.5rem !important;
-      }
-      
-      .search-bar select, .search-bar input {
-        width: 100%;
-        min-width: 0;
-        box-sizing: border-box;
-        padding: 0.8rem;
-        font-size: 1rem;
-      }
-      
-      .search-bar button {
-        width: 100%;
-        padding: 0.8rem;
-        font-size: 1rem;
-      }
-      
-      .divider {
-        display: none;
-      }
-      
-      .total-posts {
-        text-align: center;
-        font-size: 0.9rem;
-      }
-      
-      .pagination {
-        padding: 0.8rem 1rem;
-      }
-      
-      .pagination button {
-        width: 36px;
-        height: 36px;
-        font-size: 0.9rem;
-      }
-      
       .board-bottom {
-        margin: 1.5rem 1.5rem;
+        margin: 0.2rem 0 !important;
+        padding: 0 !important;
       }
     }
     

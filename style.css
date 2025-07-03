@@ -195,11 +195,7 @@ main {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.feature-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.08);
-  background-color: rgba(255, 255, 255, 0.25);
-}
+/* 사용자 입력 반응 제거 - 스크롤 애니메이션만 유지 */
 
 .feature-icon {
   font-size: 1.5rem;
@@ -695,18 +691,38 @@ main {
   }
 
   .footer-container {
-    font-size: 0.75rem;
-    padding: 0.18rem 0 0.08rem 0;
+    padding: 0.1rem !important;
+    margin: 0 !important;
   }
   .footer-main {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.3rem;
-    padding: 0.08rem 0 0.08rem 0;
+    padding: 0.1rem !important;
+    margin: 0 !important;
+    gap: 0.2rem !important;
   }
   .footer-section {
-    padding: 0.04rem 0.12rem 0.04rem 0.12rem;
-    margin-bottom: 0.12rem;
+    padding: 0.1rem 0 !important;
+    margin: 0 !important;
+  }
+  .footer-logo {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .footer-social-links {
+    gap: 0.2rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .footer-social-item {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .footer-contact-item {
+    margin: 0 !important;
+    padding: 0.05rem 0 !important;
+  }
+  .footer-bottom {
+    padding: 0.1rem 0 !important;
+    margin: 0 !important;
   }
   .footer-logo span {
     font-size: 0.95rem;
@@ -722,18 +738,6 @@ main {
   .footer-contact-item i {
     font-size: 0.8rem;
     margin-right: 0.08rem;
-  }
-  .footer-social-links {
-    gap: 0.08rem;
-    justify-content: flex-start;
-  }
-  .footer-social-item a i {
-    font-size: 0.8rem;
-  }
-  .footer-bottom {
-    padding: 0.04rem 0 0.02rem 0;
-    flex-direction: column;
-    align-items: flex-start;
   }
   .footer-copyright, .admin-footer-link {
     font-size: 0.7rem;
@@ -1571,4 +1575,50 @@ body[data-page^='community_'] .section-title {
 /* 푸터는 항상 좌측 정렬 */
 .footer, .footer * {
   text-align: left !important;
+}
+
+/* =========================
+   연락처 섹션 여백 추가
+   (footer.html의 연락처 제목과 첫 아이템 사이) 
+   ========================= */
+.footer-section.contact-section h4 {
+  margin-bottom: 0.7rem; /* 연락처 제목과 첫 줄 사이 여백 */
+}
+
+/* ===== 모바일 푸터 여백 최소화 ===== */
+@media (max-width: 768px) {
+  .footer-container {
+    padding: 0.1rem !important;
+    margin: 0 !important;
+  }
+  .footer-main {
+    padding: 0.1rem !important;
+    margin: 0 !important;
+    gap: 0.2rem !important;
+  }
+  .footer-section {
+    padding: 0.1rem 0 !important;
+    margin: 0 !important;
+  }
+  .footer-contact-item {
+    margin: 0 !important;
+    padding: 0.05rem 0 !important;
+  }
+  .footer-bottom {
+    padding: 0.1rem 0 !important;
+    margin: 0 !important;
+  }
+  .footer-logo {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .footer-social-links {
+    gap: 0.2rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .footer-social-item {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
 }

@@ -877,15 +877,18 @@ async function initGalleryPage() {
         // parseGalleryImages 함수를 사용하여 안전하게 첫 번째 이미지만 가져오기
         const images = parseGalleryImages(item.image);
         const thumbnail = images[0] || '';
-        
         // description에서 HTML 태그 제거하여 텍스트만 추출
         const descriptionText = (item.description || '').replace(/<[^>]*>/g, '');
-        
+        // 상세페이지 URL
+        const detailUrl = `community_gallery_detail.html?id=${item.id}`;
         return `
           <div class="board-row">
-            <img class="thumbnail" src="${thumbnail}" alt="썸네일">
+            <!-- 썸네일도 상세화면 링크로 이동 -->
+            <a href="${detailUrl}" onclick="incrementViewCount('gallery', ${item.id})">
+              <img class="thumbnail" src="${thumbnail}" alt="썸네일">
+            </a>
             <div class="title-section">
-              <a href="community_gallery_detail.html?id=${item.id}" class="title" onclick="incrementViewCount('gallery', ${item.id})">${item.title || ''}</a>
+              <a href="${detailUrl}" class="title" onclick="incrementViewCount('gallery', ${item.id})">${item.title || ''}</a>
               <div class="description">${descriptionText}</div>
               <div class="meta-info">
                 <span class="date">${formatKoreaDate(item.created_at)}</span>
@@ -1118,19 +1121,23 @@ async function initJobsPage() {
       const paginatedItems = items.slice(start, end);
       paginatedItems.forEach((item, index) => {
         const itemNumber = items.length - start - index;
-        const row = createRow(item, itemNumber);
+        const row = createRowJobs(item, itemNumber);
         listContainer.appendChild(row);
       });
       totalPostsCounter.textContent = `전체 ${items.length}개`;
     }
     
-    function createRow(item, itemNumber) {
+    function createRowJobs(item, itemNumber) {
       const isNotice = item.isnotice || item.isNotice;
       const row = document.createElement('div');
       row.className = `board-row${isNotice ? ' notice' : ''}`;
+      const isMobile = window.innerWidth <= 768;
       row.innerHTML = `
-        <div class="number">${isNotice ? '공지' : itemNumber}</div>
-        <div class="title"><a href="community_jobs_detail.html?id=${item.id}" onclick="incrementViewCount('jobs', ${item.id})">${isNotice ? '📢 <span style=\"color:#d92121;font-weight:600;\">중요</span> ' : ''}${item.title}</a></div>
+        <div class="number">${isNotice ? '' : itemNumber}</div>
+        <div class="title">
+          <a href="community_jobs_detail.html?id=${item.id}" onclick="incrementViewCount('jobs', ${item.id})">${isNotice ? '📢 ' : ''}${item.title}</a>
+          ${isMobile ? `<span class="mobile-date">${formatKoreaDate(item.date || item.created_at)}</span>` : ''}
+        </div>
         <div class="author">${item.author || '관리자'}</div>
         <div class="date">${formatKoreaDate(item.date || item.created_at)}</div>
         <div class="views">${item.views || 0}</div>
@@ -1496,12 +1503,16 @@ async function initNoticePage() {
     }
 
     function createRow(item, itemNumber) {
+      const isNotice = item.isnotice || item.isNotice;
       const row = document.createElement('div');
-      row.className = 'board-row';
-      if (item.isnotice || item.isNotice) row.classList.add('notice');
+      row.className = `board-row${isNotice ? ' notice' : ''}`;
+      const isMobile = window.innerWidth <= 768;
       row.innerHTML = `
-        <div class="number">${item.isnotice || item.isNotice ? '공지' : itemNumber}</div>
-        <div class="title"><a href="community_notice_detail.html?id=${item.id}" onclick="incrementViewCount('notices', ${item.id})">${(item.isnotice || item.isNotice) ? '📢 <span style=\"color:#d92121;font-weight:600;\">중요</span> ' : ''}${item.title}</a></div>
+        <div class="number">${isNotice ? '' : itemNumber}</div>
+        <div class="title">
+          <a href="community_notice_detail.html?id=${item.id}" onclick="incrementViewCount('notices', ${item.id})">${isNotice ? '📢 ' : ''}${item.title}</a>
+          ${isMobile ? `<span class="mobile-date">${formatKoreaDate(item.date || item.created_at)}</span>` : ''}
+        </div>
         <div class="author">${item.author || '관리자'}</div>
         <div class="date">${formatKoreaDate(item.date || item.created_at)}</div>
         <div class="views">${item.views || 0}</div>

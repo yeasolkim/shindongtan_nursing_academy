@@ -9,6 +9,37 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="instructors.css">
+  <style>
+    @media (max-width: 768px) {
+      /* ===== 강사 상세화면 모바일: 패딩/마진 극한 최소화 ===== */
+      .content-card {
+        padding: 0.1rem !important;
+        margin: 0 !important;
+      }
+      #instructor-detail-view {
+        padding: 0.1rem 0 !important;
+        margin: 0 !important;
+      }
+      .instructor-detail-card,
+      .instructor-detail-content,
+      .instructor-detail-header,
+      .instructor-detail-body {
+        padding: 0.05rem !important;
+        margin: 0 !important;
+      }
+      .instructor-detail-card img {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 0.05rem !important;
+      }
+      .instructor-detail-title,
+      .instructor-detail-name,
+      .instructor-detail-desc {
+        margin: 0.05rem 0 !important;
+        padding: 0 !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="header"></header>
