@@ -41,6 +41,10 @@
         text-align: center;
         margin-bottom: 2.5rem;
         position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 120px;
     }
 
     .quote-box p {
@@ -48,6 +52,7 @@
         font-weight: 500;
         color: #1a365d;
         line-height: 1.6;
+        margin-top: 1.2rem; /* 텍스트를 박스의 중앙에 더 가깝게 내리기 위한 마진 (시각적 보정) */
     }
     
     .quote-box strong {
@@ -59,10 +64,8 @@
     .quote-box .fa-quote-right {
         color: #a4b9e2;
         font-size: 1.5rem;
-        position: absolute;
+        margin: 0 0.5rem;
     }
-    .quote-box .fa-quote-left { top: 1.5rem; left: 1.5rem; }
-    .quote-box .fa-quote-right { bottom: 1.5rem; right: 1.5rem; }
 
     .greeting-text p {
         font-size: 1.05rem;
@@ -228,6 +231,10 @@
             margin-bottom: 2.5rem;
             background: linear-gradient(135deg, #f0f4ff, #e6f0ff);
             border: 1px solid #d1e7ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
         }
         .quote-box p { 
             font-size: 1.1rem;
@@ -239,9 +246,8 @@
         .quote-box .fa-quote-right {
             font-size: 1.2rem;
             color: #4a90e2;
+            margin: 0 0.4rem;
         }
-        .quote-box .fa-quote-left { top: 1.2rem; left: 1.2rem; }
-        .quote-box .fa-quote-right { bottom: 1.2rem; right: 1.2rem; }
         
         .greeting-text p {
             font-size: 1rem;
@@ -360,6 +366,10 @@
             margin-bottom: 2rem;
             background: linear-gradient(135deg, #f0f4ff, #e6f0ff);
             border: 1px solid #d1e7ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 90px;
         }
         .quote-box p { 
             font-size: 1rem;
@@ -371,9 +381,8 @@
         .quote-box .fa-quote-right {
             font-size: 1.1rem;
             color: #4a90e2;
+            margin: 0 0.3rem;
         }
-        .quote-box .fa-quote-left { top: 1rem; left: 1rem; }
-        .quote-box .fa-quote-right { bottom: 1rem; right: 1rem; }
         
         .greeting-text p {
             font-size: 0.95rem;
@@ -452,6 +461,10 @@
         padding: 0.7rem !important;
         border-radius: 8px !important;
         margin-bottom: 1.2rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-height: 70px !important;
       }
       .quote-box p {
         font-size: 0.85rem !important;
@@ -460,9 +473,8 @@
       .quote-box .fa-quote-left,
       .quote-box .fa-quote-right {
         font-size: 0.9rem !important;
+        margin: 0 0.2rem !important;
       }
-      .quote-box .fa-quote-left { left: 0.5rem !important; top: 0.5rem !important; }
-      .quote-box .fa-quote-right { right: 0.5rem !important; bottom: 0.5rem !important; }
     }
 
     @media (min-width: 992px) {
@@ -478,6 +490,10 @@
       .quote-box {
         padding: 1.5rem;
         margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 80px;
       }
       .quote-box p {
         font-size: 1.1rem;
@@ -541,9 +557,7 @@
                         <h2>학원장 인사말</h2>
                       </div>
                 <div class="quote-box">
-                    <i class="fas fa-quote-left"></i>
-                    <p>꿈을 밀고 나가는 힘은 이성이 아니라 <strong>희망</strong>이며,<br>두뇌가 아니라 <strong>심장</strong>이다.</p>
-                    <i class="fas fa-quote-right"></i>
+                    <p><i class="fas fa-quote-left"></i>꿈을 밀고 나가는 힘은 이성이 아니라 <strong>희망</strong>이며,<br>두뇌가 아니라 <strong>심장</strong>이다<i class="fas fa-quote-right"></i></p>
                 </div>
                 
                 <div class="greeting-text">
@@ -555,14 +569,14 @@
 
             <!-- 2. 학원 강점 -->
             <section class="strengths-section">
-                <h3 class="subsection-title">신동탄간호학원만의 특별함</h3>
+                <h3 class="subsection-title">신동탄간호학원 만의 특별함</h3>
                 <ul class="strengths-list">
                     <li><i class="fas fa-check-circle"></i> 20년 이상의 병원과 교육 경험을 바탕으로 하는 현장감 있는 원장 직강</li>
-                    <li><i class="fas fa-check-circle"></i> 공신력 있는 교육과정의 심리상담사 취득</li>
-                    <li><i class="fas fa-check-circle"></i> 병원서비스코디네이터 자격 취득으로 서비스마인드까지 겸비</li>
-                    <li><i class="fas fa-check-circle"></i> 주간반과 야간반 수강으로 바쁜 시간 내에 국가시험 취득기준 740시간 이수</li>
+                    <li><i class="fas fa-check-circle"></i> 훈련생 취업역량 강화를 위한 공신력 있는 심리상담사의 상담</li>
+                    <li><i class="fas fa-check-circle"></i> 병원서비스코디네이터 자격 취득으로 서비스마인드 겸비</li>
+                    <li><i class="fas fa-check-circle"></i> 주·야간반 수강으로 빠르게 국가시험 취득기준 740시간 이수, 국가시험 준비 완료!</li>
                     <li><i class="fas fa-check-circle"></i> 질 좋은 강의를 원장 직강으로 하여 저렴한 비용에 수강</li>
-                    <li><i class="fas fa-check-circle"></i> 국제표준규약 기준의 가이드라인에 따른 심폐소생술 국제라이센스(EFR) 수료</li>
+                    <li><i class="fas fa-check-circle"></i> 가이드라인에 따른 심폐소생술(CPR) 수료</li>
                 </ul>
             </section>
 

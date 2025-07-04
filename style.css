@@ -39,7 +39,7 @@ header {
 }
 
 .logo-image {
-  height: 120px;
+  height: 158px; /* 144px에서 10% 추가 증가 (144 * 1.1 = 158.4 ≈ 158) */
   width: auto;
   object-fit: contain;
 }
@@ -515,7 +515,7 @@ main {
     position: relative;
   }
 
-  .logo-image { height: 50px; }
+  .logo-image { height: 72px; /* 60px에서 20% 추가 증가 (60 * 1.2 = 72) */ }
 
   /* 모바일에서 "학원소개" 메뉴 텍스트 숨기기 */
   .menu-link-academy {
@@ -1236,7 +1236,7 @@ main {
 
 @media (min-width: 992px) {
   .logo-image {
-    height: 80px;
+    height: 96px; /* 80px에서 20% 증가 (80 * 1.2 = 96) */
   }
   .menu-link {
     font-size: 1.2rem;
