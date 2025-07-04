@@ -328,52 +328,23 @@
     }
     
     @media (max-width: 768px) {
-      /* ===== 갤러리 모바일: 패딩/마진 최소화로 컨텐츠 공간 극대화 ===== */
-      .gallery-page-wrapper {
-        padding: 0.1rem !important;
+      /* 모바일에서 검색바 세로 배치 및 100% 너비 적용 */
+      .search-bar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.4rem !important;
+        width: 100% !important;
+      }
+      .search-bar select,
+      .search-bar input,
+      .search-bar button {
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
         margin: 0 !important;
       }
-      .gallery-page-header {
-        padding: 0.3rem 0.1rem !important;
-        margin: 0 !important;
-      }
-      .board-controls {
-        margin: 0.2rem 0.05rem 0.2rem 0.05rem !important;
-        padding: 0.2rem !important;
-        gap: 0.2rem !important;
-      }
-      .board-list {
-        margin: 0 !important;
-        gap: 0.3rem !important;
-        padding-top: 0.1rem !important;
-      }
-      .board-row {
-        border-radius: 6px !important;
-        box-shadow: none !important;
-      }
-      .board-row .thumbnail {
-        height: 90px !important;
-      }
-      .board-row .title-section {
-        padding: 0.2rem !important;
-      }
-      .board-row .title-section .title {
-        font-size: 0.8rem !important;
-        margin-bottom: 0.1rem !important;
-      }
-      .board-row .title-section .description {
-        font-size: 0.7rem !important;
-        margin-bottom: 0.1rem !important;
-      }
-      .board-row .meta-info {
-        font-size: 0.65rem !important;
-        padding-top: 0.05rem !important;
-        margin: 0 !important;
-        border-top: none !important;
-      }
-      .board-bottom {
-        margin: 0.2rem 0 !important;
-        padding: 0 !important;
+      .divider {
+        display: none !important;
       }
     }
     
