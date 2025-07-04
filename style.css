@@ -7,7 +7,15 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 body {
+  min-height: 100vh; /* 화면 전체 높이 보장 */
+  display: flex;
+  flex-direction: column;
   font-family: 'Nanum Gothic', sans-serif;
   line-height: 1.6;
   color: #333;
@@ -133,6 +141,7 @@ header {
 /* =================================== */
 main {
   padding-top: 1.5rem;
+  flex: 1 0 auto; /* 메인 컨텐츠가 남는 공간을 채움 */
 }
 
 /* 2.1 Hero Section v2 */
@@ -359,6 +368,7 @@ main {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0.6rem 0 0.3rem 0;
+  flex-shrink: 0; /* 푸터가 줄어들지 않도록 고정 */
 }
 
 .footer-main {

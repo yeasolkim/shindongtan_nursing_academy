@@ -1258,11 +1258,11 @@ async function initJobsDetailPage() {
         <ul class="post-nav">
           <li>
               <div class="nav-label">이전글</div>
-              ${nextPost ? `<a href="community_jobs_detail.html?id=${nextPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${nextPost.id})">${nextPost.title}</a>` : '<span>이전글이 없습니다.</span>'}
+              ${nextPost ? `<a href="community_jobs_detail.html?id=${nextPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${nextPost.id})">${nextPost.title}</a>` : '<span class="no-post">이전글이 없습니다.</span>'}
           </li>
           <li>
               <div class="nav-label">다음글</div>
-              ${prevPost ? `<a href="community_jobs_detail.html?id=${prevPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${prevPost.id})">${prevPost.title}</a>` : '<span>다음글이 없습니다.</span>'}
+              ${prevPost ? `<a href="community_jobs_detail.html?id=${prevPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${prevPost.id})">${prevPost.title}</a>` : '<span class="no-post">다음글이 없습니다.</span>'}
           </li>
         </ul>
         <div class="post-footer">
