@@ -21,7 +21,6 @@ function initCopyProtection() {
   // 1. 우클릭 컨텍스트 메뉴 비활성화
   document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
-    showCopyProtectionMessage('우클릭이 차단되었습니다.');
     return false;
   });
 
