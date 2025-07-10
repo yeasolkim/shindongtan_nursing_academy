@@ -1,5 +1,25 @@
 /* 신동탄간호학원 웹사이트 리디자인 - 컴포넌트 기반 CSS */
 
+/* ===== 복사 방지 스타일 ===== */
+/* 관리자 페이지가 아닌 경우에만 복사 방지 적용 */
+body:not([data-page="admin.html"]) {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* 표준 문법 */
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-tap-highlight-color: transparent; /* 모바일 터치 하이라이트 제거 */
+}
+
+/* 관리자 페이지가 아닌 경우에만 드래그 방지 */
+body:not([data-page="admin.html"]) * {
+  -webkit-user-drag: none; /* Safari */
+  -khtml-user-drag: none; /* Konqueror */
+  -moz-user-drag: none; /* Firefox */
+  -o-user-drag: none; /* Opera */
+  user-drag: none; /* 표준 문법 */
+}
+
 /* ===== 기본 스타일 리셋 ===== */
 * {
   margin: 0;

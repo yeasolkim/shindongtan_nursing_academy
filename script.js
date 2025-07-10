@@ -1,7 +1,197 @@
 // 신동탄간호학원 웹사이트 JavaScript
 
 // =============================================================================
-// I. 유틸리티 함수
+// I. 복사 방지 기능
+// =============================================================================
+
+/**
+ * 복사 방지 기능을 초기화합니다.
+ * 관리자 페이지에서는 적용하지 않습니다.
+ */
+function initCopyProtection() {
+  // 관리자 페이지인지 확인
+  const currentPage = getCurrentPage();
+  if (currentPage === 'admin.html') {
+    return; // 관리자 페이지에서는 복사 방지 기능을 적용하지 않음
+  }
+
+  // 페이지에 data-page 속성 추가 (CSS 선택자용)
+  document.body.setAttribute('data-page', currentPage);
+
+  // 1. 우클릭 컨텍스트 메뉴 비활성화
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    showCopyProtectionMessage('우클릭이 차단되었습니다.');
+    return false;
+  });
+
+  // 2. 키보드 단축키 차단 (Ctrl+C, Ctrl+A, Ctrl+X, Ctrl+V, F12, Ctrl+Shift+I, Ctrl+U)
+  document.addEventListener('keydown', function(e) {
+    // Ctrl+C (복사)
+    if (e.ctrlKey && e.key === 'c') {
+      e.preventDefault();
+      showCopyProtectionMessage('복사가 차단되었습니다.');
+      return false;
+    }
+    // Ctrl+A (전체 선택)
+    if (e.ctrlKey && e.key === 'a') {
+      e.preventDefault();
+      showCopyProtectionMessage('전체 선택이 차단되었습니다.');
+      return false;
+    }
+    // Ctrl+X (잘라내기)
+    if (e.ctrlKey && e.key === 'x') {
+      e.preventDefault();
+      showCopyProtectionMessage('잘라내기가 차단되었습니다.');
+      return false;
+    }
+    // Ctrl+V (붙여넣기)
+    if (e.ctrlKey && e.key === 'v') {
+      e.preventDefault();
+      showCopyProtectionMessage('붙여넣기가 차단되었습니다.');
+      return false;
+    }
+    // F12 (개발자 도구)
+    if (e.key === 'F12') {
+      e.preventDefault();
+      showCopyProtectionMessage('개발자 도구가 차단되었습니다.');
+      return false;
+    }
+    // Ctrl+Shift+I (개발자 도구)
+    if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+      e.preventDefault();
+      showCopyProtectionMessage('개발자 도구가 차단되었습니다.');
+      return false;
+    }
+    // Ctrl+U (소스 보기)
+    if (e.ctrlKey && e.key === 'u') {
+      e.preventDefault();
+      showCopyProtectionMessage('소스 보기가 차단되었습니다.');
+      return false;
+    }
+  });
+
+  // 3. 드래그 이벤트 차단
+  document.addEventListener('dragstart', function(e) {
+    e.preventDefault();
+    return false;
+  });
+
+  // 4. 선택 이벤트 차단
+  document.addEventListener('selectstart', function(e) {
+    e.preventDefault();
+    return false;
+  });
+
+  // 5. 복사 이벤트 차단
+  document.addEventListener('copy', function(e) {
+    e.preventDefault();
+    showCopyProtectionMessage('복사가 차단되었습니다.');
+    return false;
+  });
+
+  // 6. 잘라내기 이벤트 차단
+  document.addEventListener('cut', function(e) {
+    e.preventDefault();
+    showCopyProtectionMessage('잘라내기가 차단되었습니다.');
+    return false;
+  });
+
+  // 7. 붙여넣기 이벤트 차단
+  document.addEventListener('paste', function(e) {
+    e.preventDefault();
+    showCopyProtectionMessage('붙여넣기가 차단되었습니다.');
+    return false;
+  });
+
+  // 8. 더블클릭 이벤트 차단 (텍스트 선택 방지)
+  document.addEventListener('dblclick', function(e) {
+    e.preventDefault();
+    return false;
+  });
+
+  console.log('복사 방지 기능이 활성화되었습니다. (관리자 페이지 제외)');
+}
+
+/**
+ * 복사 방지 메시지를 표시합니다.
+ * @param {string} message - 표시할 메시지
+ */
+function showCopyProtectionMessage(message) {
+  // 기존 메시지가 있다면 제거
+  const existingMessage = document.getElementById('copy-protection-message');
+  if (existingMessage) {
+    existingMessage.remove();
+  }
+
+  // 새 메시지 생성
+  const messageElement = document.createElement('div');
+  messageElement.id = 'copy-protection-message';
+  messageElement.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #ff4757;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    animation: slideInRight 0.3s ease-out;
+    max-width: 300px;
+    word-wrap: break-word;
+  `;
+  messageElement.textContent = message;
+
+  // 애니메이션 CSS 추가
+  if (!document.getElementById('copy-protection-styles')) {
+    const styleElement = document.createElement('style');
+    styleElement.id = 'copy-protection-styles';
+    styleElement.textContent = `
+      @keyframes slideInRight {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes slideOutRight {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(styleElement);
+  }
+
+  // 메시지를 페이지에 추가
+  document.body.appendChild(messageElement);
+
+  // 3초 후 메시지 제거
+  setTimeout(() => {
+    if (messageElement.parentNode) {
+      messageElement.style.animation = 'slideOutRight 0.3s ease-out';
+      setTimeout(() => {
+        if (messageElement.parentNode) {
+          messageElement.remove();
+        }
+      }, 300);
+    }
+  }, 3000);
+}
+
+// =============================================================================
+// II. 유틸리티 함수
 // =============================================================================
 
 /**
@@ -2053,4 +2243,62 @@ function parseGalleryImages(imageField) {
         images = [];
     }
     return images;
+}
+
+// =============================================================================
+// 페이지 로드 시 초기화 함수들
+// =============================================================================
+
+/**
+ * 페이지 로드 시 모든 초기화 함수를 실행합니다.
+ */
+function initializePage() {
+  // 복사 방지 기능 초기화 (가장 먼저 실행)
+  initCopyProtection();
+  
+  // 기존 초기화 함수들 실행
+  activateCurrentMenu();
+  setupMobileMenu();
+  initScrollEffects();
+  initTabs();
+  initAccordion();
+  initGalleryFilter();
+  
+  // 페이지별 초기화 함수들
+  const currentPage = getCurrentPage();
+  
+  // 페이지별 특화 초기화
+  if (currentPage === 'index.html') {
+    configurePageHero();
+    initLatestNews();
+  } else if (currentPage === 'academy_instructors.html') {
+    initInstructorsPage();
+  } else if (currentPage === 'academy_location.html') {
+    initLocationMap();
+  } else if (currentPage === 'community_gallery.html') {
+    initGalleryPage();
+  } else if (currentPage === 'community_gallery_detail.html') {
+    initGalleryDetailPage();
+  } else if (currentPage === 'community_jobs.html') {
+    initJobsPage();
+  } else if (currentPage === 'community_jobs_detail.html') {
+    initJobsDetailPage();
+  } else if (currentPage === 'job_employment.html') {
+    initEmploymentPage();
+  } else if (currentPage === 'academy_facilities.html') {
+    initFacilitiesPage();
+  } else if (currentPage === 'community_notice.html') {
+    initNoticePage();
+  } else if (currentPage === 'community_notice_detail.html') {
+    initNoticeDetailPage();
+  }
+  
+  console.log('페이지 초기화 완료:', currentPage);
+}
+
+// DOM이 로드되면 초기화 실행
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializePage);
+} else {
+  initializePage();
 }
