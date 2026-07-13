@@ -1754,7 +1754,7 @@ async function initNoticePage() {
       row.className = `board-row${isNotice ? ' notice' : ''}`;
       const isMobile = window.innerWidth <= 768;
       row.innerHTML = `
-        <div class="number">${isNotice ? '공지' : itemNumber}</div>
+        <div class="number">${isNotice ? '중요' : itemNumber}</div>
         <div class="title">
           <a href="community_notice_detail.html?id=${item.id}" onclick="incrementViewCount('notices', ${item.id})">${item.title}</a>
           ${isMobile ? `<span class="mobile-date">${formatKoreaDate(item.date || item.created_at)}</span>` : ''}
