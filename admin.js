@@ -496,16 +496,22 @@ document.addEventListener('DOMContentLoaded', () => {
         facilityList.innerHTML = '';
             
             if (facilities.length === 0) {
-                facilityList.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">등록된 시설 사진이 없습니다.</p>';
+                facilityList.innerHTML = '<div class="facility-empty-state"><i class="fas fa-images"></i><p>등록된 시설 사진이 없습니다.</p></div>';
                 return;
             }
-            
+
         facilities.forEach((item, idx) => {
             const div = document.createElement('div');
             div.className = 'image-preview-item';
+            const altDisplay = item.alt ? item.alt : '<span style="color:var(--t3)">설명 없음</span>';
             div.innerHTML = `
+                <span class="facility-order-badge">#${idx + 1}</span>
                 <img src="${item.image_url}" alt="${item.alt || ''}">
-                <p>${item.alt || ''}</p>
+                <div class="facility-alt-area">
+                    <p class="facility-alt-text">${altDisplay}</p>
+                    <button class="facility-edit-btn"><i class="fas fa-pen"></i> 설명 수정</button>
+                    <button class="facility-replace-btn"><i class="fas fa-camera"></i> 사진 교체</button>
+                </div>
                 <button class="move-up" ${idx === 0 ? 'disabled' : ''}>▲</button>
                 <button class="move-down" ${idx === facilities.length - 1 ? 'disabled' : ''}>▼</button>
                 <button class="delete-btn">&times;</button>
@@ -513,6 +519,68 @@ document.addEventListener('DOMContentLoaded', () => {
             div.querySelector('.move-up').onclick = () => moveFacility(item.id, -1, facilities);
             div.querySelector('.move-down').onclick = () => moveFacility(item.id, 1, facilities);
             div.querySelector('.delete-btn').onclick = () => deleteFacility(item);
+
+            // 설명 인라인 수정
+            div.querySelector('.facility-edit-btn').onclick = function() {
+                const altArea = div.querySelector('.facility-alt-area');
+                const altText = div.querySelector('.facility-alt-text');
+                const editBtn = div.querySelector('.facility-edit-btn');
+                const replaceBtn = div.querySelector('.facility-replace-btn');
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'facility-alt-input';
+                input.value = item.alt || '';
+                input.maxLength = 100;
+                const actions = document.createElement('div');
+                actions.className = 'facility-alt-actions';
+                const saveBtn = document.createElement('button');
+                saveBtn.className = 'button-primary';
+                saveBtn.textContent = '저장';
+                const cancelBtn = document.createElement('button');
+                cancelBtn.className = 'button-secondary';
+                cancelBtn.textContent = '취소';
+                actions.appendChild(saveBtn);
+                actions.appendChild(cancelBtn);
+                altText.style.display = 'none';
+                editBtn.style.display = 'none';
+                replaceBtn.style.display = 'none';
+                altArea.insertBefore(input, replaceBtn.nextSibling);
+                altArea.insertBefore(actions, input.nextSibling);
+                input.focus();
+                cancelBtn.onclick = function() {
+                    altText.style.display = '';
+                    editBtn.style.display = '';
+                    replaceBtn.style.display = '';
+                    input.remove();
+                    actions.remove();
+                };
+                saveBtn.onclick = async function() {
+                    const newAlt = input.value.trim();
+                    try {
+                        const { error } = await window.supabaseClient.from('facilities').update({ alt: newAlt }).eq('id', item.id);
+                        if (error) throw error;
+                        item.alt = newAlt;
+                        altText.innerHTML = newAlt || '<span style="color:var(--t3)">설명 없음</span>';
+                        altText.style.display = '';
+                        editBtn.style.display = '';
+                        replaceBtn.style.display = '';
+                        input.remove();
+                        actions.remove();
+                        showToast('사진 설명이 수정되었습니다.', 'success');
+                    } catch (err) {
+                        showToast('수정 중 오류가 발생했습니다.', 'error');
+                    }
+                };
+            };
+
+            // 사진 교체
+            div.querySelector('.facility-replace-btn').onclick = function() {
+                const replaceInput = document.getElementById('facility-replace-input');
+                replaceInput._targetItem = item;
+                replaceInput.value = '';
+                replaceInput.click();
+            };
+
             facilityList.appendChild(div);
         });
             
@@ -639,7 +707,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await loadFacilities();
         } catch (error) {
             console.error('시설 순서 변경 실패:', error);
-            alert('순서 변경 중 오류가 발생했습니다.');
+            showToast('순서 변경 중 오류가 발생했습니다.', 'error');
         }
     }
 
@@ -647,30 +715,103 @@ document.addEventListener('DOMContentLoaded', () => {
     if (facilityForm) {
         facilityForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const loadingOverlay = document.getElementById('facility-loading-overlay');
-            if (loadingOverlay) loadingOverlay.style.display = 'flex';
-            
-            try {
             const file = document.getElementById('facility-image').files[0];
             const alt = document.getElementById('facility-alt').value;
-                
-                if (!file) {
-                    alert('사진을 선택해주세요.');
-                    return;
-                }
-                
+
+            if (!file) {
+                showToast('사진을 선택해주세요.', 'warning');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('이미지 파일이 너무 큽니다. 5MB 이하로 선택해주세요.', 'error');
+                return;
+            }
+
+            const loadingOverlay = document.getElementById('facility-loading-overlay');
+            const loadingText = document.getElementById('facility-loading-text');
+            if (loadingOverlay) loadingOverlay.style.display = 'flex';
+            if (loadingText) loadingText.textContent = '이미지 업로드 중...';
+
+            try {
+                if (loadingText) loadingText.textContent = '시설 사진 저장 중...';
                 console.log('시설 폼 제출:', { fileName: file.name, alt: alt });
                 await addFacilityImage(file, alt);
                 facilityForm.reset();
-                
+                const facilityImgPreview = document.getElementById('facility-img-preview');
+                if (facilityImgPreview) { facilityImgPreview.src = ''; facilityImgPreview.classList.remove('visible'); }
             } catch (error) {
                 console.error('시설 폼 제출 오류:', error);
-                alert('시설 사진 업로드 중 오류가 발생했습니다: ' + error.message);
+                showToast('시설 사진 업로드 중 오류가 발생했습니다.', 'error');
             } finally {
                 if (loadingOverlay) loadingOverlay.style.display = 'none';
             }
         });
     }
+
+    // 파일 선택 미리보기
+    (function() {
+        var facilityImgInput = document.getElementById('facility-image');
+        var facilityImgPreview = document.getElementById('facility-img-preview');
+        if (!facilityImgInput || !facilityImgPreview) return;
+        facilityImgInput.addEventListener('change', function() {
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    facilityImgPreview.src = e.target.result;
+                    facilityImgPreview.classList.add('visible');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                facilityImgPreview.src = '';
+                facilityImgPreview.classList.remove('visible');
+            }
+        });
+    })();
+
+    // 사진 교체 핸들러
+    (function() {
+        var replaceInput = document.getElementById('facility-replace-input');
+        if (!replaceInput) return;
+        replaceInput.addEventListener('change', async function() {
+            var file = this.files[0];
+            var item = this._targetItem;
+            if (!file || !item) return;
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('이미지 파일이 너무 큽니다. 5MB 이하로 선택해주세요.', 'error');
+                return;
+            }
+            const loadingOverlay = document.getElementById('facility-loading-overlay');
+            const loadingText = document.getElementById('facility-loading-text');
+            if (loadingOverlay) loadingOverlay.style.display = 'flex';
+            if (loadingText) loadingText.textContent = '새 사진 업로드 중...';
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = Date.now() + '.' + fileExt;
+                const { error: uploadError } = await window.supabaseClient.storage.from('facility-images').upload(fileName, file, { upsert: true });
+                if (uploadError) throw uploadError;
+                if (loadingText) loadingText.textContent = '정보 업데이트 중...';
+                const publicUrl = window.supabaseClient.storage.from('facility-images').getPublicUrl(fileName).data.publicUrl;
+                if (item.image_url) {
+                    try {
+                        const url = new URL(item.image_url);
+                        const path = decodeURIComponent(url.pathname.split('/object/public/')[1]);
+                        if (path) await window.supabaseClient.storage.from('facility-images').remove([path]);
+                    } catch(e) {}
+                }
+                const { error: updateError } = await window.supabaseClient.from('facilities').update({ image_url: publicUrl }).eq('id', item.id);
+                if (updateError) throw updateError;
+                await loadFacilities();
+                showToast('사진이 교체되었습니다.', 'success');
+            } catch (err) {
+                console.error('사진 교체 오류:', err);
+                showToast('사진 교체 중 오류가 발생했습니다.', 'error');
+            } finally {
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
+            }
+        });
+    })();
+
     // 페이지 로드시 시설 이미지 목록 불러오기
     if (facilityList) loadFacilities();
 

@@ -3361,6 +3361,19 @@
       .admin-tabs::-webkit-scrollbar { display: none; }
       .tab-link { flex: 0 0 auto; white-space: nowrap; }
     }
+    /* ---- 시설 사진 탭 추가 UI ---- */
+    .facility-img-preview { display:none; width:100%; max-width:200px; height:120px; object-fit:cover; border-radius:10px; margin-top:0.8rem; border:2px solid var(--border); box-shadow:0 2px 8px rgba(51,74,108,.10); }
+    .facility-img-preview.visible { display: block; }
+    .facility-order-badge { display:inline-block; font-size:0.71rem; font-weight:700; color:var(--t3); background:var(--brand-light); border-radius:5px; padding:0.1rem 0.4rem; margin-bottom:0.35rem; }
+    .facility-alt-area { display:flex; flex-direction:column; align-items:center; gap:0.3rem; }
+    .facility-edit-btn, .facility-replace-btn { display:inline-block; padding:0.22rem 0.65rem; font-size:0.77rem; background:var(--brand-light); color:var(--brand); border:1.5px solid var(--border); border-radius:6px; cursor:pointer; transition:background 0.15s; font-family:inherit; }
+    .facility-edit-btn:hover, .facility-replace-btn:hover { background:var(--border-lite); }
+    .facility-alt-input { width:100%; padding:0.35rem 0.5rem; font-size:0.88rem; border:1.5px solid var(--brand); border-radius:6px; margin-top:0.2rem; box-sizing:border-box; }
+    .facility-alt-actions { display:flex; gap:0.4rem; margin-top:0.25rem; justify-content:center; }
+    .facility-alt-actions .button-primary, .facility-alt-actions .button-secondary { font-size:0.78rem !important; padding:0.28rem 0.75rem !important; }
+    .facility-empty-state { text-align:center; padding:2.5rem 1rem; color:var(--t3); }
+    .facility-empty-state i { font-size:2.5rem; margin-bottom:0.8rem; color:var(--border); display:block; }
+    .facility-empty-state p { font-size:0.95rem; margin:0; }
   </style>
 </head>
 <body>
@@ -3454,7 +3467,8 @@
           <div class="form-group">
             <label for="facility-image">사진 파일 <span class="req">*</span></label>
             <input type="file" id="facility-image" accept="image/*" required>
-            <p class="upload-hint">JPG · PNG · WebP 지원. 최대 5MB 권장.</p>
+            <p class="upload-hint">JPG · PNG · WebP 지원. 최대 5MB 이하.</p>
+            <img id="facility-img-preview" class="facility-img-preview" src="" alt="미리보기">
           </div>
           <div class="form-group">
             <label for="facility-alt">사진 설명(alt)</label>
@@ -3467,9 +3481,10 @@
       <div id="facility-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
         <div style="background:#fff;padding:2.5rem 2.5rem 2rem 2.5rem;border-radius:16px;box-shadow:0 4px 24px rgba(51,74,108,0.13);display:flex;flex-direction:column;align-items:center;gap:1.2rem;">
           <div class="loader" style="border:6px solid #f3f3f3;border-top:6px solid #334a6c;border-radius:50%;width:48px;height:48px;animation:spin 1s linear infinite;"></div>
-          <span>시설 사진 업로드 중입니다...</span>
+          <span id="facility-loading-text">이미지 업로드 중...</span>
         </div>
       </div>
+      <input type="file" id="facility-replace-input" accept="image/*" style="display:none">
       <div class="admin-card">
         <h3>등록된 시설 사진</h3>
         <div id="facility-list" class="image-previews"></div>
