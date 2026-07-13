@@ -3361,6 +3361,13 @@
       .admin-tabs::-webkit-scrollbar { display: none; }
       .tab-link { flex: 0 0 auto; white-space: nowrap; }
     }
+    /* ---- 갤러리 모달 통일 ---- */
+    .modal-content.editing-mode { border-top: 4px solid #f59e0b; }
+    .modal-content.editing-mode #modal-title { color: #d97706; }
+    .gallery-preview-wrap { position:relative; display:inline-block; }
+    .gallery-preview-thumb { width:80px; height:80px; object-fit:cover; border-radius:6px; border:1.5px solid var(--border); display:block; }
+    .gallery-preview-delete { position:absolute; top:2px; right:2px; background:#dc3545; color:#fff; border:none; border-radius:50%; width:22px; height:22px; cursor:pointer; font-size:16px; line-height:1; display:flex; align-items:center; justify-content:center; }
+    #image-preview-list { display:flex; gap:10px; flex-wrap:wrap; margin-top:0.8rem; }
     /* ---- 시설 사진 탭 추가 UI ---- */
     .facility-img-preview { display:none; width:100%; max-width:200px; height:120px; object-fit:cover; border-radius:10px; margin-top:0.8rem; border:2px solid var(--border); box-shadow:0 2px 8px rgba(51,74,108,.10); }
     .facility-img-preview.visible { display: block; }
@@ -3733,20 +3740,20 @@
         <input type="hidden" id="modal-post-type">
         <div class="form-group">
           <label for="modal-title-input">제목 <span class="req">*</span></label>
-          <input type="text" id="modal-title-input" required>
+          <input type="text" id="modal-title-input" required maxlength="150">
         </div>
         <div class="form-group" id="modal-image-group" style="display: none;">
-          <label for="modal-image-input">이미지</label>
+          <label for="modal-image-input">이미지 <span class="req">*</span></label>
           <input type="file" id="modal-image-input" accept="image/*" multiple style="display:none;">
           <button type="button" id="add-image-btn" class="button-secondary">이미지 추가</button>
-          <div id="image-preview-list" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;"></div>
-          <small>여러 이미지를 첨부할 수 있습니다. (X버튼으로 삭제)</small>
+          <div id="image-preview-list"></div>
+          <p class="upload-hint">JPG · PNG · WebP 지원. 최대 5MB · X버튼으로 삭제</p>
         </div>
         <!-- 갤러리 업로드 로딩 오버레이 -->
         <div id="gallery-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
           <div style="background:#fff;padding:2.5rem 2.5rem 2rem 2.5rem;border-radius:16px;box-shadow:0 4px 24px rgba(51,74,108,0.13);display:flex;flex-direction:column;align-items:center;gap:1.2rem;">
             <div class="loader" style="border:6px solid #f3f3f3;border-top:6px solid #334a6c;border-radius:50%;width:48px;height:48px;animation:spin 1s linear infinite;"></div>
-            <span>이미지 업로드 및 저장 중입니다...</span>
+            <span id="gallery-loading-text">이미지 업로드 중...</span>
           </div>
           <style>@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}</style>
         </div>

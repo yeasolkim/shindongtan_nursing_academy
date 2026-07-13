@@ -928,15 +928,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modal-post-id').value = '';
         document.getElementById('modal-post-type').value = 'gallery';
         modalTitle.textContent = '새 갤러리 작성';
+        modal.querySelector('.modal-content').classList.remove('editing-mode');
         modalImageGroup.style.display = 'block';
         modalNoticeGroup.style.display = 'none';
-        
+
         // Quill 에디터 초기화
         initializeQuillEditor();
-        
+
         // 갤러리 이미지 초기화
         resetGalleryImageFiles();
-        
+
         // 모달 표시
         modal.style.display = 'flex';
     }
@@ -945,7 +946,8 @@ document.addEventListener('DOMContentLoaded', () => {
         modalForm.reset();
         document.getElementById('modal-post-id').value = String(item.id);
         document.getElementById('modal-post-type').value = 'gallery';
-        modalTitle.textContent = '갤러리 수정';
+        modalTitle.textContent = '"' + item.title + '" 수정 중';
+        modal.querySelector('.modal-content').classList.add('editing-mode');
         modalImageGroup.style.display = 'block';
         modalNoticeGroup.style.display = 'none';
         document.getElementById('modal-title-input').value = item.title;
@@ -987,6 +989,10 @@ document.addEventListener('DOMContentLoaded', () => {
         modalImageInput.addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
             files.forEach(file => {
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('"' + file.name + '"은(는) 5MB를 초과합니다.', 'error');
+                    return;
+                }
                 if (!galleryImageFiles.some(f => f.name === file.name && f.size === file.size)) {
                     galleryImageFiles.push(file);
                 }
@@ -1012,11 +1018,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             function addPreview(src, fileObj) {
                 const div = document.createElement('div');
-                div.style.position = 'relative';
-                div.style.display = 'inline-block';
+                div.className = 'gallery-preview-wrap';
                 div.innerHTML = `
-                    <img src="${src}" style="width:80px;height:80px;object-fit:cover;border-radius:6px;border:1.5px solid #ccc;">
-                    <button type="button" class="delete-image-btn" style="position:absolute;top:2px;right:2px;background:#dc3545;color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:14px;">&times;</button>
+                    <img src="${src}" class="gallery-preview-thumb" alt="미리보기">
+                    <button type="button" class="delete-image-btn gallery-preview-delete">&times;</button>
                 `;
                 imagePreviewList.appendChild(div);
                 div.querySelector('.delete-image-btn').onclick = function() {
@@ -1039,11 +1044,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // handleGalleryFormSubmit에서 galleryImageFiles만 업로드
     async function handleGalleryFormSubmit(e) {
         e.preventDefault();
+        const submitBtn = modalForm ? modalForm.querySelector('[type="submit"]') : null;
         const loadingOverlay = document.getElementById('gallery-loading-overlay');
         const loadingText = document.getElementById('gallery-loading-text');
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '저장 중...'; }
         if (loadingOverlay) {
             loadingOverlay.style.display = 'flex';
-            if (loadingText) loadingText.textContent = '갤러리를 저장하는 중입니다...';
+            if (loadingText) loadingText.textContent = '이미지 업로드 중...';
         }
         try {
         const id = document.getElementById('modal-post-id').value;
@@ -1102,7 +1109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .from('gallery-images')
                 .upload(fileName, file, { upsert: true });
             if (uploadError) {
-                alert('이미지 업로드 실패: ' + uploadError.message);
+                showToast('이미지 업로드에 실패했습니다.', 'error');
                 return;
             }
             const { data: urlData } = window.supabaseClient
@@ -1132,9 +1139,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('갤러리 저장 데이터:', { title, description, imageUrls, imageType: typeof imageUrls, isArray: Array.isArray(imageUrls) });
             // 이미지 첨부 예외 처리
             if (!imageUrls || imageUrls.length === 0 || !imageUrls[0]) {
-                alert('최소 1개의 이미지를 첨부해야 합니다.');
+                showToast('최소 1개의 이미지를 첨부해야 합니다.', 'warning');
                 return;
         }
+            if (loadingText) loadingText.textContent = '게시물 저장 중...';
         if (id) {
             await window.supabaseClient
                 .from('gallery')
@@ -1166,9 +1174,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('갤러리 저장 실패:', error);
             showToast('갤러리 저장 중 오류가 발생했습니다.', 'error');
         } finally {
-            if (loadingOverlay) {
-                loadingOverlay.style.display = 'none';
-            }
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '저장하기'; }
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
         }
     }
     async function deleteGalleryItem(item) {
@@ -1251,6 +1258,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 모달 닫기(x) 버튼 이벤트 연결 - 전역 함수로 정의
     function closeModal() {
+        if (modal) {
+            const mc = modal.querySelector('.modal-content');
+            if (mc) mc.classList.remove('editing-mode');
+        }
         if (modalForm) {
             modalForm.reset();
         }
