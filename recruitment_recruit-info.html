@@ -10,6 +10,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
+    /* 게시판 카드 hover 부유 효과 비활성화 */
+    .content-card:hover {
+      transform: none;
+      box-shadow: var(--shadow-lg);
+    }
+
     .subsection {
         margin-bottom: 3.5rem;
     }
@@ -284,11 +290,7 @@
     <section class="page-section">
       <div class="container">
         <div class="content-card">
-          <div class="section-title">
-            <h2>모집요강</h2>
-            <p>신동탄간호학원 교육과정 입학 안내</p>
-          </div>
-          <div class="card-content">
+<div class="card-content">
             
             <div class="subsection">
               <h3 class="subsection-title">입학자격</h3>

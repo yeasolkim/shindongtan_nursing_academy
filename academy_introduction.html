@@ -10,6 +10,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
+    /* 게시판 카드 hover 부유 효과 비활성화 */
+     .content-card:hover {
+       transform: none;
+       box-shadow: var(--shadow-lg);
+     }
+
     /* 인사말 섹션 */
     .greeting-section {
         margin-bottom: 4rem;
@@ -341,6 +347,50 @@
             padding: 1rem;
         }
     }
+
+    /* Quick Contact Sidebar */
+    .quick-contact-sidebar {
+      position: fixed;
+      top: 50%;
+      right: 40px;
+      width: 240px;
+      z-index: 100;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      background: #fff;
+      transform: translateY(-50%);
+    }
+    .contact-box {
+      margin-bottom: 1rem;
+      text-align: center;
+      padding: 1.5rem 1rem;
+    }
+    .contact-box h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 0 1rem;
+      color: var(--primary);
+    }
+    .contact-box .phone-number {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #333;
+    }
+    .contact-box .kakao-link {
+      display: block;
+      background-color: #ffeb00;
+      padding: 1rem;
+      text-decoration: none;
+      color: #3c1e1e;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .contact-box .kakao-link:hover {
+      background-color: #fdd835;
+    }
+    @media (max-width: 1200px) {
+      .quick-contact-sidebar { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -357,9 +407,6 @@
             <!-- 1. 인사말 -->
             <section class="greeting-section">
                
-                    <div class="section-title">
-                        <h2>학원장 인사말</h2>
-                      </div>
                 <div class="quote-box">
                     <p><i class="fas fa-quote-left"></i>꿈을 밀고 나가는 힘은 이성이 아니라 <strong>희망</strong>이며,<br>두뇌가 아니라 <strong>심장</strong>이다<i class="fas fa-quote-right"></i></p>
                 </div>
@@ -408,6 +455,16 @@
       </div>
     </section>
   </main>
+
+  <aside class="quick-contact-sidebar">
+    <div class="contact-box">
+      <h3>문의 전화</h3>
+      <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
+    </div>
+    <div class="contact-box" style="padding: 0;">
+      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
+    </div>
+  </aside>
 
   <!-- COMP-FOOTER-01: 글로벌 푸터 -->
   <footer class="footer"></footer>

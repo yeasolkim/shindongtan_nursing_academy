@@ -7,10 +7,15 @@
   <title>취업/진학 - 진학 - 신동탄간호학원</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="common-pages.css">
-  <link rel="stylesheet" href="history.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
+    /* 게시판 카드 hover 부유 효과 비활성화 */
+    .content-card:hover {
+      transform: none;
+      box-shadow: var(--shadow-lg);
+    }
+
     .admission-section { margin-bottom: 3.5rem; }
     .admission-section:last-child { margin-bottom: 0; }
     .admission-section h3 {
@@ -110,6 +115,50 @@
       .university-table { font-size: 0.8rem; }
       .university-table th, .university-table td { padding: 0.5rem 0.6rem; }
     }
+
+    /* Quick Contact Sidebar */
+    .quick-contact-sidebar {
+      position: fixed;
+      top: 50%;
+      right: 40px;
+      width: 240px;
+      z-index: 100;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      background: #fff;
+      transform: translateY(-50%);
+    }
+    .contact-box {
+      margin-bottom: 1rem;
+      text-align: center;
+      padding: 1.5rem 1rem;
+    }
+    .contact-box h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 0 1rem;
+      color: var(--primary);
+    }
+    .contact-box .phone-number {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #333;
+    }
+    .contact-box .kakao-link {
+      display: block;
+      background-color: #ffeb00;
+      padding: 1rem;
+      text-decoration: none;
+      color: #3c1e1e;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .contact-box .kakao-link:hover {
+      background-color: #fdd835;
+    }
+    @media (max-width: 1200px) {
+      .quick-contact-sidebar { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -120,10 +169,6 @@
     <section class="page-section">
       <div class="container">
         <div class="content-card">
-          <div class="section-title">
-            <h2>진학</h2>
-            <p>진학 정보를 안내합니다.</p>
-          </div>
           <div class="card-content">
           <div class="intro-box">
             <h4>보건의료·분야·진학</h4>
@@ -207,6 +252,16 @@
       </div>
     </section>
   </main>
+
+  <aside class="quick-contact-sidebar">
+    <div class="contact-box">
+      <h3>문의 전화</h3>
+      <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
+    </div>
+    <div class="contact-box" style="padding: 0;">
+      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
+    </div>
+  </aside>
 
   <footer class="footer"></footer>
   <script src="script.js"></script>

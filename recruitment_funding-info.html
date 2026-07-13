@@ -10,6 +10,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
+    /* 게시판 카드 hover 부유 효과 비활성화 */
+    .content-card:hover {
+      transform: none;
+      box-shadow: var(--shadow-lg);
+    }
+
     .funding-section {
         margin-bottom: 3rem;
     }
@@ -245,11 +251,6 @@
     <section class="page-section">
       <div class="container">
         <div class="content-card">
-          <div class="section-title">
-            <h2>국비과정모집</h2>
-            <p>국민내일배움카드 등 국비지원 과정에 대해 안내합니다.</p>
-          </div>
-          
           <div class="funding-info-container">
             <!-- Section 1: What is it? -->
             <div class="funding-section">

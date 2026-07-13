@@ -12,6 +12,12 @@
   <!-- Leaflet.js CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
+    /* 게시판 카드 hover 부유 효과 비활성화 */
+    .content-card:hover {
+      transform: none;
+      box-shadow: var(--shadow-lg);
+    }
+
     /* 오시는 길 페이지 전용 스타일 */
     .location-map-container {
       position: relative;
@@ -35,7 +41,7 @@
     .contact-summary h3 {
       font-size: 1.6rem;
       font-weight: 700;
-      color: #1a365d;
+      color: var(--primary);
       margin-bottom: 2rem;
       text-align: center;
       position: relative;
@@ -49,7 +55,7 @@
       transform: translateX(-50%);
       width: 60px;
       height: 3px;
-      background: #1a365d;
+      background: var(--primary);
       border-radius: 2px;
     }
     
@@ -65,7 +71,7 @@
       padding: 1.5rem;
       background: white;
       border-radius: 15px;
-      border-left: 4px solid #1a365d;
+      border-left: 4px solid var(--primary);
       transition: all 0.3s ease;
     }
     
@@ -77,7 +83,7 @@
     .contact-item .icon {
       width: 50px;
       height: 50px;
-      background: #1a365d;
+      background: var(--primary);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -101,7 +107,7 @@
     
     .contact-item .value {
       font-size: 1.1rem;
-      color: #2d3748;
+      color: var(--primary-dark);
       font-weight: 600;
       line-height: 1.4;
     }
@@ -121,7 +127,7 @@
     }
     
     .transport-info h3, .hours-notice h3 {
-      color: #1a365d;
+      color: var(--primary);
       font-size: 1.3rem;
       font-weight: 700;
       margin-bottom: 1rem;
@@ -227,6 +233,50 @@
       .hours-notice .notice h4 { font-size: 0.8rem; margin-bottom: 0.2rem; }
       .hours-notice .notice p { font-size: 0.7rem; margin-bottom: 0.1rem; }
     }
+
+    /* Quick Contact Sidebar */
+    .quick-contact-sidebar {
+      position: fixed;
+      top: 50%;
+      right: 40px;
+      width: 240px;
+      z-index: 100;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      background: #fff;
+      transform: translateY(-50%);
+    }
+    .contact-box {
+      margin-bottom: 1rem;
+      text-align: center;
+      padding: 1.5rem 1rem;
+    }
+    .contact-box h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 0 1rem;
+      color: var(--primary);
+    }
+    .contact-box .phone-number {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #333;
+    }
+    .contact-box .kakao-link {
+      display: block;
+      background-color: #ffeb00;
+      padding: 1rem;
+      text-decoration: none;
+      color: #3c1e1e;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .contact-box .kakao-link:hover {
+      background-color: #fdd835;
+    }
+    @media (max-width: 1200px) {
+      .quick-contact-sidebar { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -241,10 +291,6 @@
     <section class="page-section">
       <div class="container">
         <div class="content-card">
-          <div class="section-title">
-            <h2>오시는 길</h2>
-            <p>신동탄간호학원을 찾아주시는 모든 분들을 환영합니다.</p>
-          </div>
           <div class="card-content">
             <!-- 지도 섹션 -->
             <div class="location-map-container">
@@ -329,6 +375,16 @@
 
   <!-- COMP-FOOTER-01: 글로벌 푸터 -->
   <!-- COMP-FOOTER-01: 글로벌 푸터 -->
+  <aside class="quick-contact-sidebar">
+    <div class="contact-box">
+      <h3>문의 전화</h3>
+      <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
+    </div>
+    <div class="contact-box" style="padding: 0;">
+      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
+    </div>
+  </aside>
+
   <footer class="footer"></footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
