@@ -1,23 +1,24 @@
-/* instructors.css - 세련된 강사 프로필 디자인 */
+/* instructors.css - 강사 프로필 디자인 */
 
 /* 그리드 레이아웃 */
 .instructor-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2.5rem;
-  margin-top: 3rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
 /* 강사 카드 */
 .instructor-card {
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   border: 1px solid #e2e8f0;
   text-align: center;
   padding: 2.5rem 2rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .instructor-card::before {
@@ -27,14 +28,14 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #334a6c, #5c6bc0);
+  background: linear-gradient(90deg, var(--primary), #3b6cb7);
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
 
 .instructor-card:hover {
-  transform: translateY(-12px);
-  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
   border-color: #cbd5e1;
 }
 
@@ -43,20 +44,19 @@
 }
 
 .instructor-card .img-container {
-  width: 160px;
-  height: 160px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
   overflow: hidden;
-  margin: 0 auto 2rem;
-  border: 5px solid #f1f5f9;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  margin: 0 auto 1.5rem;
+  border: 4px solid #f1f5f9;
+  box-shadow: var(--shadow-md);
   transition: all 0.3s ease;
-  position: relative;
 }
 
 .instructor-card:hover .img-container {
-  border-color: #334a6c;
-  box-shadow: 0 12px 35px rgba(51, 74, 108, 0.2);
+  border-color: var(--primary);
+  box-shadow: 0 8px 25px rgba(26, 54, 93, 0.2);
 }
 
 .instructor-card img {
@@ -71,7 +71,7 @@
 }
 
 .instructor-card .name {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: #1e293b;
   margin-bottom: 0.5rem;
@@ -79,133 +79,100 @@
 }
 
 .instructor-card .title {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #64748b;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   font-weight: 500;
   line-height: 1.5;
 }
 
 .instructor-card .details-btn {
-  background: linear-gradient(135deg, #334a6c 0%, #4a5568 100%);
+  background: var(--primary);
   color: white;
   border: none;
-  padding: 0.875rem 2rem;
-  border-radius: 12px;
+  padding: 0.75rem 1.75rem;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(51, 74, 108, 0.3);
-  position: relative;
-  overflow: hidden;
-}
-
-.instructor-card .details-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s ease;
+  box-shadow: 0 4px 12px rgba(26, 54, 93, 0.25);
 }
 
 .instructor-card .details-btn:hover {
-  background: linear-gradient(135deg, #2c405e 0%, #2d3748 100%);
+  background: var(--primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(51, 74, 108, 0.4);
-}
-
-.instructor-card .details-btn:hover::before {
-  left: 100%;
+  box-shadow: 0 6px 18px rgba(26, 54, 93, 0.35);
 }
 
 /* 상세 정보 뷰 */
 .instructor-detail-container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 3rem 0;
+  padding: 2rem 0;
 }
 
 .back-to-list {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
   font-weight: 600;
-  color: #475569;
-  cursor: default !important;
-  margin-bottom: 3rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 10px;
-  transition: none !important;
-  background: #f8fafc;
+  color: var(--primary);
+  cursor: pointer;
+  margin-bottom: 2rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+  background: #f1f5f9;
   border: 1px solid #e2e8f0;
 }
 
-.back-to-list i {
-  font-size: 1.1rem;
-  transition: transform 0.3s ease;
+.back-to-list:hover {
+  background: #e8edf5;
+  border-color: var(--primary);
 }
 
-.back-to-list:hover,
+.back-to-list i {
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+}
+
 .back-to-list:hover i {
-  color: inherit !important;
-  background: inherit !important;
-  border-color: inherit !important;
-  transform: none !important;
+  transform: translateX(-3px);
 }
 
 .detail-content {
   display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 4rem;
+  grid-template-columns: 280px 1fr;
+  gap: 2.5rem;
   align-items: start;
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border-radius: 20px;
-  padding: 3rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-lg);
   border: 1px solid #e2e8f0;
 }
 
 .detail-img-container {
-  position: relative;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-}
-
-.detail-img-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(51, 74, 108, 0.1) 0%, transparent 100%);
-  z-index: 1;
+  box-shadow: var(--shadow-md);
 }
 
 .detail-img-container img {
   width: 100%;
   height: auto;
   display: block;
-  transition: none !important;
-}
-
-.detail-img-container:hover img {
-  transform: none !important;
 }
 
 .detail-info {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .detail-info .name {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-weight: 800;
   color: #1e293b;
   margin: 0;
@@ -214,7 +181,7 @@
 }
 
 .detail-info .title {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: #64748b;
   margin: 0;
   font-weight: 600;
@@ -228,53 +195,46 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .detail-info .details-list li {
   position: relative;
-  padding: 1rem 1.5rem 1rem 3rem;
+  padding: 0.9rem 1.25rem 0.9rem 2.75rem;
   line-height: 1.7;
   color: #475569;
   background: #f8fafc;
-  border-radius: 12px;
-  border-left: 4px solid #334a6c;
-  font-size: 1rem;
-  transition: none !important;
-}
-
-.detail-info .details-list li:hover {
-  background: inherit !important;
-  transform: none !important;
-  box-shadow: none !important;
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--primary);
+  font-size: 0.95rem;
 }
 
 .detail-info .details-list li::before {
-  content: '◆';
+  content: '';
   position: absolute;
   left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #334a6c;
-  font-size: 0.9rem;
-  font-weight: bold;
+  top: 1.15rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
 }
 
-/* 반응형 디자인 */
+/* 반응형 */
 @media screen and (max-width: 1024px) {
   .instructor-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
   }
-  
+
   .detail-content {
     grid-template-columns: 1fr;
-    gap: 2.5rem;
+    gap: 2rem;
     text-align: center;
   }
-  
+
   .detail-img-container {
-    max-width: 300px;
+    max-width: 280px;
     margin: 0 auto;
   }
 }
@@ -283,128 +243,124 @@
   .instructor-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
-    margin-top: 2rem;
+    margin-top: 1.5rem;
   }
 
   .instructor-card {
     padding: 1.5rem;
   }
-  
+
   .instructor-card .img-container {
     width: 120px;
     height: 120px;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.2rem;
   }
-  
+
   .instructor-card .name {
     font-size: 1.2rem;
-    margin-bottom: 0.4rem;
   }
-  
+
   .instructor-card .title {
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-    line-height: 1.4;
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
   }
-  
+
   .instructor-card .details-btn {
-    padding: 0.75rem 1.5rem;
-    font-size: 0.9rem;
+    padding: 0.65rem 1.4rem;
+    font-size: 0.875rem;
+  }
+
+  .instructor-detail-container {
+    padding: 1.5rem 0;
   }
 
   .detail-content {
-    grid-template-columns: 1fr;
-    gap: 2rem;
     padding: 1.5rem;
+    gap: 1.5rem;
   }
-  
+
   .detail-info .name {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
   }
-  
+
   .detail-info .title {
-    font-size: 1.1rem;
-    padding-bottom: 0.8rem;
+    font-size: 1rem;
+    padding-bottom: 0.75rem;
   }
-  
+
   .detail-info .details-list li {
-    font-size: 0.9rem;
-    padding: 0.8rem 1rem 0.8rem 2.5rem;
-    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
   }
-  
+
   .back-to-list {
-    margin-bottom: 2rem;
-    padding: 0.6rem 1.2rem;
-    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    padding: 0.55rem 1rem;
+    font-size: 0.875rem;
   }
 }
 
 @media screen and (max-width: 480px) {
   .instructor-grid {
     gap: 1.2rem;
-    margin-top: 1.5rem;
+    margin-top: 1.2rem;
   }
-  
+
   .instructor-card {
-    padding: 1.2rem;
+    padding: 1.25rem;
   }
-  
+
   .instructor-card .img-container {
     width: 100px;
     height: 100px;
-    margin-bottom: 1.2rem;
+    margin-bottom: 1rem;
   }
-  
+
   .instructor-card .name {
     font-size: 1.1rem;
-    margin-bottom: 0.3rem;
   }
-  
+
   .instructor-card .title {
-    font-size: 0.9rem;
-    margin-bottom: 1.2rem;
-    line-height: 1.3;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
   }
-  
+
   .instructor-card .details-btn {
     padding: 0.6rem 1.2rem;
     font-size: 0.85rem;
   }
-  
+
   .detail-content {
-    padding: 1.2rem;
-    gap: 1.5rem;
+    padding: 1.25rem;
+    gap: 1.25rem;
   }
-  
+
   .detail-info .name {
     font-size: 1.5rem;
   }
-  
+
   .detail-info .title {
-    font-size: 1rem;
-    padding-bottom: 0.6rem;
+    font-size: 0.95rem;
   }
-  
+
   .detail-info .details-list li {
-    font-size: 0.85rem;
-    padding: 0.7rem 0.8rem 0.7rem 2.2rem;
-    margin-bottom: 0.4rem;
+    font-size: 0.82rem;
+    padding: 0.65rem 0.9rem 0.65rem 2.25rem;
   }
-  
+
   .back-to-list {
-    margin-bottom: 1.5rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.82rem;
   }
 }
 
-/* ===== 상단 '전문 강사진' 텍스트 여백 추가 (겹침 방지) ===== */
+/* section-title 상단 여백 보정 */
 .section-title h2 {
-  margin-top: 1.2rem; /* 상단 여백 추가로 겹침 방지 */
+  margin-top: 1.2rem;
 }
+
 @media (max-width: 768px) {
   .section-title h2 {
-    margin-top: 0.8rem; /* 모바일에서 살짝 더 좁게 */
+    margin-top: 0.8rem;
   }
-} 
+}

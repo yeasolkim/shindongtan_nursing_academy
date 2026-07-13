@@ -931,30 +931,32 @@ async function initInstructorsPage() {
       console.log('Supabase에서 강사 정보 로드 완료:', instructors.length, '명');
       
       if (!instructors || instructors.length === 0) {
-        grid.innerHTML = '<p>등록된 강사 정보가 없습니다.</p>';
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1">
+            <i class="fas fa-users"></i>
+            <p>등록된 강사 정보가 없습니다.</p>
+          </div>`;
         return;
       }
 
       // 강사 목록 렌더링
       grid.innerHTML = instructors.map(instructor => `
-        <div class="instructor-card">
+        <div class="instructor-card" data-id="${instructor.id}">
           <div class="img-container">
             <img src="${instructor.image}" alt="${instructor.name} ${instructor.title}">
           </div>
           <div class="name">${instructor.name}</div>
           <div class="title">${instructor.title}</div>
-          <button class="details-btn" data-id="${instructor.id}">자세히 보기</button>
+          <button class="details-btn">자세히 보기</button>
         </div>
       `).join('');
 
-      // '자세히 보기' 버튼 이벤트 리스너
+      // 카드 전체 클릭 이벤트
       grid.addEventListener('click', (e) => {
-        if (e.target.classList.contains('details-btn')) {
-          const instructorId = e.target.dataset.id;
-          const instructor = instructors.find(i => String(i.id) === instructorId);
-          if (instructor) {
-            showDetailView(instructor);
-          }
+        const card = e.target.closest('.instructor-card');
+        if (card) {
+          const instructor = instructors.find(i => String(i.id) === card.dataset.id);
+          if (instructor) showDetailView(instructor);
         }
       });
 
