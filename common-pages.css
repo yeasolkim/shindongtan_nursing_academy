@@ -2,24 +2,12 @@
 
 /* 페이지 히어로 섹션 공통 스타일 */
 .page-hero {
-  background: linear-gradient(135deg, #1a365d 0%, #2d3748 100%);
   color: white;
-  padding: 1.2rem 0 0.8rem;
+  padding: 2.2rem 0 1.8rem;
   text-align: center;
   position: relative;
   overflow: hidden;
-  min-height: 80px;
-}
-
-.page-hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-  opacity: 0.3;
+  min-height: 90px;
 }
 
 .page-hero .hero-content {
@@ -28,18 +16,12 @@
 }
 
 .page-hero .hero-content h1 {
-  font-size: 1.15rem;
+  font-size: 1.6rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin: 0;
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.page-hero .hero-content p {
-  font-size: 0.95rem;
-  margin-bottom: 0.5rem;
-  opacity: 0.95;
-  line-height: 1.6;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  letter-spacing: -0.5px;
 }
 
 /* 브레드크럼 공통 스타일 */
@@ -47,42 +29,31 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.8rem;
-  font-size: 1rem;
-  margin-top: 2rem;
-  flex-wrap: wrap;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  margin-bottom: 0.7rem;
 }
 
 .breadcrumbs a {
-  color: #cbd5e0;
+  color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
-  transition: all 0.3s ease;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  transition: color 0.2s;
 }
 
 .breadcrumbs a:hover {
   color: white;
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
 }
 
 .breadcrumbs .separator {
-  color: #718096;
-  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
 }
 
-.breadcrumbs span:last-child {
-  color: white;
-  font-weight: 600;
-  padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-lg);
+.breadcrumbs .current-page {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
 }
 
-/* 페이지 히어로 추가 요소 스타일 */
+/* 페이지 히어로 배경 스타일 */
 .hero-background {
   position: absolute;
   top: 0;
@@ -98,93 +69,13 @@
   background-repeat: no-repeat;
 }
 
-.hero-pattern {
-  display: none;
-}
-
 .hero-overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(26, 54, 93, 0.8) 0%, rgba(45, 55, 72, 0.9) 100%);
-}
-
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  padding: 0.18rem 0.5rem;
-  border-radius: 25px;
-  margin-bottom: 0.4rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 0.7rem;
-}
-
-.badge-icon {
-  font-size: 1.2rem;
-  opacity: 0.9;
-}
-
-.badge-text {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: white;
-  opacity: 0.95;
-}
-
-.hero-decoration {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: 1;
-  overflow: hidden;
-}
-
-.decoration-circle {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.circle-1 {
-  width: 120px;
-  height: 120px;
-  top: 10%;
-  right: 10%;
-  animation: float 6s ease-in-out infinite;
-}
-
-.circle-2 {
-  width: 80px;
-  height: 80px;
-  bottom: 20%;
-  left: 5%;
-  animation: float 8s ease-in-out infinite reverse;
-}
-
-.circle-3 {
-  width: 60px;
-  height: 60px;
-  top: 60%;
-  right: 20%;
-  animation: float 7s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-20px) rotate(180deg);
-  }
+  background: linear-gradient(135deg, rgba(26, 54, 93, 0.82) 0%, rgba(45, 55, 72, 0.88) 100%);
 }
 
 /* 메인 콘텐츠 섹션 공통 스타일 */
@@ -527,45 +418,15 @@
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .page-hero {
-    padding: 0.7rem 0.2rem 0.4rem;
-    min-height: 48px;
+    padding: 1.5rem 0 1.2rem;
+    min-height: 65px;
   }
   .page-hero .hero-content h1 {
-    font-size: 0.95rem;
-    margin-bottom: 0.3rem;
+    font-size: 1.2rem;
   }
-  .page-hero .hero-content p {
-    font-size: 0.7rem;
-    margin-bottom: 0.3rem;
-  }
-  
-  /* 페이지 히어로 추가 요소 모바일 스타일 */
-  .hero-badge {
-    font-size: 0.6rem;
-    padding: 0.12rem 0.3rem;
-    margin-bottom: 0.2rem;
-  }
-  
-  .badge-icon {
-    font-size: 1rem;
-  }
-  
-  .badge-text {
-    font-size: 0.8rem;
-  }
-  
-  .decoration-circle {
-    display: none; /* 모바일에서는 장식 요소 숨김 */
-  }
-  
   .breadcrumbs {
-    gap: 0.4rem;
     font-size: 0.75rem;
-    margin-top: 0.8rem;
-  }
-  .breadcrumbs a {
-    padding: 0.3rem 0.6rem;
-    border-radius: var(--radius-md);
+    margin-bottom: 0.5rem;
   }
   .section-title {
     margin-bottom: 1.5rem;
@@ -607,44 +468,16 @@
 
 @media (max-width: 480px) {
   .page-hero {
-    padding: 0.4rem 0.1rem 0.2rem;
-    min-height: 28px;
+    padding: 1.2rem 0 1rem;
+    min-height: 55px;
   }
-  
   .page-hero .hero-content h1 {
-    font-size: 0.8rem;
-    margin-bottom: 0.15rem;
+    font-size: 1.05rem;
   }
-  
-  .page-hero .hero-content p {
-    font-size: 0.6rem;
-    margin-bottom: 0.15rem;
-  }
-  
-  /* 페이지 히어로 추가 요소 작은 모바일 스타일 */
-  .hero-badge {
-    font-size: 0.5rem;
-    padding: 0.08rem 0.18rem;
-    margin-bottom: 0.1rem;
-  }
-  
-  .badge-icon {
-    font-size: 0.9rem;
-  }
-  
-  .badge-text {
-    font-size: 0.75rem;
-  }
-  
   .breadcrumbs {
-    gap: 0.3rem;
     font-size: 0.7rem;
-    margin-top: 0.6rem;
-  }
-  
-  .breadcrumbs a {
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--radius-sm);
+    gap: 0.25rem;
+    margin-bottom: 0.4rem;
   }
   
   .main-content-section {
