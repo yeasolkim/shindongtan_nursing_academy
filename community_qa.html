@@ -10,158 +10,127 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    /* Q&A 페이지 전용 스타일 */
-    .qa-page-wrapper {
-      background: #f9fbfd;
-      border-radius: 16px;
-      box-shadow: 0 4px 18px rgba(51,74,108,0.06);
-      overflow: hidden;
+    /* 게시판 카드 hover 부유 효과 비활성화 */
+    .content-card:hover {
+      transform: none;
+      box-shadow: var(--shadow-lg);
     }
-    
-    .qa-page-header {
-      background: linear-gradient(135deg, #f9fbfd 0%, #e7eaf0 100%);
-      border-bottom: 1.5px solid #cfd8e3;
-      padding: 2rem 2.5rem;
-    }
-    
-    .qa-page-title {
-      font-size: 2.2rem;
-      color: #334a6c;
-      margin: 0 0 0.5rem 0;
-      font-weight: 700;
-      letter-spacing: -1px;
-    }
-    
-    .qa-page-subtitle {
-      font-size: 1.1rem;
-      color: #6c757d;
-      margin: 0;
-      font-weight: 500;
-    }
-    
+
     .accordion-container {
-      margin: 2rem 2.5rem 2rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
-    
+
     .accordion-item {
-      border: 1.5px solid #e9ecef;
-      border-radius: 12px;
-      margin-bottom: 1rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
       overflow: hidden;
       background: #fff;
-      box-shadow: 0 2px 10px rgba(51,74,108,0.07);
-      transition: all 0.3s ease;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    
-    .accordion-item:hover {
-      box-shadow: 0 4px 16px rgba(51,74,108,0.12);
-      transform: translateY(-1px);
+
+    .accordion-item.active {
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(26,54,93,0.08);
     }
-    
+
     .accordion-header {
       display: flex;
       align-items: center;
-      padding: 1.5rem;
+      padding: 1.2rem 1.5rem;
       cursor: pointer;
-      background: linear-gradient(135deg, #f8f9fa 0%, #e7eaf0 100%);
-      transition: all 0.3s ease;
+      background: #f8f9fa;
+      transition: background 0.2s;
       gap: 1rem;
       border: none;
       width: 100%;
       text-align: left;
     }
-    
+
     .accordion-header:hover {
-      background: linear-gradient(135deg, #e7eaf0 0%, #dbe3ee 100%);
+      background: #f0f3f7;
     }
-    
-    .accordion-header.active {
-      background: linear-gradient(135deg, #334a6c 0%, #2c405e 100%);
-      color: white;
+
+    .accordion-item.active .accordion-header {
+      background: #eef2f8;
+      border-left: 3px solid var(--primary);
     }
-    
+
     .q-icon {
-      background: linear-gradient(135deg, #334a6c 0%, #2c405e 100%);
+      background: var(--primary);
       color: white;
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      font-size: 0.95rem;
+      font-weight: 700;
+      font-size: 0.85rem;
       flex-shrink: 0;
-      box-shadow: 0 2px 6px rgba(51,74,108,0.2);
     }
-    
-    .accordion-header.active .q-icon {
-      background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
-      color: #334a6c;
-      box-shadow: 0 2px 6px rgba(255,255,255,0.3);
-    }
-    
+
     .accordion-header h3 {
       margin: 0;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
       flex: 1;
-      line-height: 1.4;
+      line-height: 1.5;
       color: #334a6c;
     }
-    
-    .accordion-header.active h3 {
-      color: white;
+
+    .accordion-item.active .accordion-header h3 {
+      color: var(--primary);
     }
-    
+
     .toggle-icon {
-      transition: transform 0.3s ease;
-      font-size: 0.95rem;
-      color: #8a9ba8;
+      transition: transform 0.25s ease;
+      font-size: 0.85rem;
+      color: #adb5bd;
+      flex-shrink: 0;
     }
-    
-    .accordion-header.active .toggle-icon {
+
+    .accordion-item.active .toggle-icon {
       transform: rotate(180deg);
-      color: white;
+      color: var(--primary);
     }
-    
+
     .accordion-content {
       max-height: 0;
       overflow: hidden;
-      transition: all 0.3s ease;
-      padding: 0;
+      transition: max-height 0.3s ease;
       background: #fff;
     }
-    
+
     .answer-wrapper {
       display: flex;
       gap: 1rem;
-      padding: 1.5rem;
-      background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+      padding: 1.2rem 1.5rem;
+      border-top: 1px solid #e9ecef;
     }
-    
+
     .a-icon {
-      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      background: #2a9d5c;
       color: white;
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      font-size: 0.95rem;
+      font-weight: 700;
+      font-size: 0.85rem;
       flex-shrink: 0;
-      box-shadow: 0 2px 6px rgba(40,167,69,0.2);
     }
-    
+
     .answer-content {
       flex: 1;
-      line-height: 1.6;
-      color: #334a6c;
-      font-size: 1rem;
+      line-height: 1.7;
+      color: #4a5568;
+      font-size: 0.95rem;
     }
-    
+
     /* Quick Contact Sidebar */
     .quick-contact-sidebar {
       position: fixed;
@@ -174,187 +143,106 @@
       background: #fff;
       transform: translateY(-50%);
     }
-    .contact-box { 
-      margin-bottom: 1rem; 
-      text-align: center; 
-      padding: 1.5rem 1rem; 
+    .contact-box {
+      margin-bottom: 1rem;
+      text-align: center;
+      padding: 1.5rem 1rem;
     }
-    .contact-box h3 { 
-      font-size: 1.1rem; 
-      font-weight: 600; 
-      margin: 0 0 1rem; 
+    .contact-box h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 0 1rem;
       color: var(--primary);
     }
-    .contact-box .phone-number { 
-      font-size: 1.3rem; 
-      font-weight: 700; 
-      color: #333; 
+    .contact-box .phone-number {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #333;
     }
-    .contact-box .kakao-link { 
-      display: block; 
-      background-color: #ffeb00; 
-      padding: 1rem; 
-      text-decoration: none; 
-      color: #3c1e1e; 
-      font-weight: 600; 
+    .contact-box .kakao-link {
+      display: block;
+      background-color: #ffeb00;
+      padding: 1rem;
+      text-decoration: none;
+      color: #3c1e1e;
+      font-weight: 600;
       transition: background-color 0.3s;
     }
     .contact-box .kakao-link:hover {
       background-color: #fdd835;
     }
-    
     @media (max-width: 1200px) {
       .quick-contact-sidebar { display: none; }
     }
-    
+
     /* 모바일 최적화 */
-    @media (max-width: 992px) {
-      .qa-page-header {
-        padding: 1.5rem 2rem;
-      }
-      
-      .qa-page-title {
-        font-size: 1.8rem;
-      }
-      
-      .accordion-container {
-        margin: 1.5rem 2rem 1.5rem 2rem;
-      }
-    }
-    
     @media (max-width: 768px) {
-      .qa-page-header {
-        padding: 1.2rem 1.5rem;
+      .accordion-header {
+        padding: 1rem 1.2rem;
+        gap: 0.7rem;
       }
-      
-      .qa-page-title {
-        font-size: 1.5rem;
+      .answer-wrapper {
+        padding: 1rem 1.2rem;
+        gap: 0.7rem;
       }
-      
-      .qa-page-subtitle {
-        font-size: 1rem;
+      .accordion-container {
+        gap: 0.6rem;
       }
-      
-      .accordion-container { margin: 1rem; }
-      .accordion-header { padding: 1rem; gap: 0.6rem; }
-      .answer-wrapper { padding: 1rem; gap: 0.6rem; }
-      .accordion-item { margin-bottom: 0.8rem; border-radius: 10px; }
     }
-    
+
     @media (max-width: 576px) {
       .accordion-header {
-        padding: 1rem;
+        padding: 0.9rem 1rem;
         gap: 0.6rem;
       }
-      
-      .q-icon {
-        width: 24px;
-        height: 24px;
-        font-size: 0.8rem;
-      }
-      
       .accordion-header h3 {
         font-size: 0.9rem;
-        line-height: 1.2;
       }
-      
-      .toggle-icon {
-        font-size: 0.8rem;
-      }
-      
-      .answer-wrapper {
-        padding: 1rem;
-        gap: 0.6rem;
-      }
-      
-      .a-icon {
+      .q-icon, .a-icon {
         width: 24px;
         height: 24px;
         font-size: 0.8rem;
       }
-      
+      .answer-wrapper {
+        padding: 0.9rem 1rem;
+        gap: 0.6rem;
+      }
       .answer-content {
         font-size: 0.9rem;
-        line-height: 1.4;
       }
-      
       .accordion-container {
-        margin: 1rem 1rem 1rem 1rem;
-      }
-      
-      .accordion-item {
-        margin-bottom: 0.6rem;
-        border-radius: 8px;
+        gap: 0.5rem;
       }
     }
-    
+
     @media (max-width: 480px) {
       .accordion-header {
         padding: 0.8rem;
         gap: 0.5rem;
       }
-      
-      .q-icon {
-        width: 22px;
-        height: 22px;
-        font-size: 0.75rem;
-      }
-      
       .accordion-header h3 {
         font-size: 0.85rem;
-        line-height: 1.2;
       }
-      
-      .toggle-icon {
-        font-size: 0.75rem;
-      }
-      
       .answer-wrapper {
         padding: 0.8rem;
         gap: 0.5rem;
       }
-      
-      .a-icon {
-        width: 22px;
-        height: 22px;
-        font-size: 0.75rem;
-      }
-      
       .answer-content {
         font-size: 0.85rem;
-        line-height: 1.3;
-      }
-      
-      .accordion-container {
-        margin: 0.8rem 0.8rem 0.8rem 0.8rem;
-      }
-      
-      .accordion-item {
-        margin-bottom: 0.5rem;
-        border-radius: 6px;
       }
     }
-    
   </style>
 </head>
 <body>
   <header class="header"></header>
   <div id="page-hero-container"></div>
 
-  <!-- 메인 콘텐츠 -->
   <main>
     <section class="page-section">
       <div class="container">
         <div class="content-card">
-          <div class="qa-page-wrapper">
-            <div class="qa-page-header">
-              <h1 class="qa-page-title">자주 묻는 질문</h1>
-              <p class="qa-page-subtitle">수강생들이 가장 궁금해하는 질문들을 모았습니다.</p>
-            </div>
-            
-            <div class="accordion-container">
-              <!-- FAQ 데이터는 Supabase에서 동적으로 로드됩니다 -->
-            </div>
+          <div class="accordion-container">
+            <!-- FAQ 데이터는 Supabase에서 동적으로 로드됩니다 -->
           </div>
         </div>
       </div>
@@ -371,12 +259,10 @@
     </div>
   </aside>
 
-  <!-- COMP-FOOTER-01: 글로벌 푸터 -->
   <footer class="footer"></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="supabase-config.js"></script>
-  
-  <!-- FAQ 데이터 로드 스크립트 -->
+
   <script>
     async function loadFAQData() {
       try {
@@ -388,18 +274,18 @@
 
         if (error) return;
 
-        const accordionContainer = document.querySelector('.accordion-container');
-        if (!accordionContainer) return;
+        const container = document.querySelector('.accordion-container');
+        if (!container) return;
 
-        data.forEach((faq, index) => {
+        data.forEach(faq => {
           const item = document.createElement('div');
-          item.className = 'accordion-item animate-on-scroll';
+          item.className = 'accordion-item';
           item.innerHTML = `
-            <div class="accordion-header">
+            <button type="button" class="accordion-header">
               <span class="q-icon">Q</span>
               <h3>${faq.question}</h3>
               <i class="fas fa-chevron-down toggle-icon"></i>
-            </div>
+            </button>
             <div class="accordion-content">
               <div class="answer-wrapper">
                 <span class="a-icon">A</span>
@@ -407,41 +293,41 @@
               </div>
             </div>
           `;
-          accordionContainer.appendChild(item);
+          container.appendChild(item);
         });
 
         initializeAccordion();
-      } catch (error) {
-        console.error('FAQ 데이터 로드 중 오류 발생:', error);
+      } catch (e) {
+        console.error('FAQ 데이터 로드 중 오류:', e);
       }
     }
-    
+
     function initializeAccordion() {
-      const accordionHeaders = document.querySelectorAll('.accordion-header');
-      accordionHeaders.forEach(header => {
-        header.addEventListener('click', function() {
-          const accordionItem = this.parentElement;
-          const content = accordionItem.querySelector('.accordion-content');
-          const isActive = accordionItem.classList.contains('active');
-          document.querySelectorAll('.accordion-item').forEach(item => {
-            item.classList.remove('active');
-            const itemContent = item.querySelector('.accordion-content');
-            itemContent.style.maxHeight = '0';
-            itemContent.style.padding = '0';
+      document.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', function () {
+          const item = this.closest('.accordion-item');
+          const content = item.querySelector('.accordion-content');
+          const isActive = item.classList.contains('active');
+
+          // 모두 닫기
+          document.querySelectorAll('.accordion-item').forEach(el => {
+            el.classList.remove('active');
+            el.querySelector('.accordion-content').style.maxHeight = '0';
           });
+
+          // 클릭한 항목 열기 (토글)
           if (!isActive) {
-            accordionItem.classList.add('active');
+            item.classList.add('active');
             content.style.maxHeight = content.scrollHeight + 'px';
-            content.style.padding = '1.5rem';
           }
         });
       });
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(() => { loadFAQData(); }, 500);
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(loadFAQData, 500);
     });
   </script>
   <script src="script.js"></script>
 </body>
-</html> 
+</html>
