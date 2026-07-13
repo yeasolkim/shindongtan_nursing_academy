@@ -10,404 +10,229 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    /* 모바일 최적화 */
-    @media (max-width: 768px) {
-        .funding-section {
-            margin-bottom: 2rem;
-        }
-        
-        .section-subtitle {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-        }
-        
-        .section-subtitle i {
-            font-size: 1.2rem;
-        }
-        
-        .funding-section p {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 0.8rem;
-        }
-        
-        .flowchart {
-            margin: 1.5rem 0;
-        }
-        
-        .flow-row, .flow-row.reverse {
-            flex-direction: column !important;
-            gap: 0.5rem !important;
-            align-items: stretch !important;
-        }
-        
-        .flow-step {
-            width: 100% !important;
-            min-width: 0 !important;
-            padding: 0.7rem 0.5rem !important;
-            font-size: 0.92rem !important;
-            text-align: center !important;
-            border-radius: 10px !important;
-        }
-        
-        .flow-arrow, .arrow-down {
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
-            font-size: 2.1rem !important;
-            color: #1a365d !important;
-            margin: 0.2rem 0 0.2rem 0 !important;
-            background: none !important;
-            border: none !important;
-            box-shadow: none !important;
-            height: 2.2rem !important;
-            width: 100% !important;
-            text-align: center !important;
-        }
-        
-        .info-card-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
-        
-        .info-card {
-            padding: 1.2rem;
-        }
-        
-        .info-card h4 {
-            font-size: 1.1rem;
-            margin-bottom: 0.8rem;
-        }
-        
-        .info-card h4 i {
-            font-size: 1rem;
-        }
-        
-        .info-card p {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-bottom: 0.6rem;
-        }
-        
-        .info-card .note.small {
-            font-size: 0.8rem;
-        }
-        
-        .site-links {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .site-links li {
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-        
-        .site-links a {
-            color: #1a365d;
-            text-decoration: none;
-        }
-        
-        .note {
-            font-size: 0.85rem;
-            margin-top: 1rem;
-        }
+    .funding-section {
+        margin-bottom: 3rem;
     }
-    
-    @media (max-width: 480px) {
-        .funding-section {
-            margin-bottom: 1.5rem;
-        }
-        
-        .section-subtitle {
-            font-size: 1.1rem;
-            margin-bottom: 0.8rem;
-        }
-        
-        .section-subtitle i {
-            font-size: 1rem;
-        }
-        
-        .funding-section p {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-bottom: 0.7rem;
-        }
-        
-        .flowchart {
-            margin: 1rem 0;
-        }
-        
-        .flow-step {
-            font-size: 0.85rem !important;
-            padding: 0.5rem 0.3rem !important;
-            border-radius: 8px !important;
-        }
-        
-        .flow-arrow, .arrow-down {
-            font-size: 1.5rem !important;
-            height: 1.7rem !important;
-        }
-        
-        .info-card {
-            padding: 1rem;
-        }
-        
-        .info-card h4 {
-            font-size: 1rem;
-            margin-bottom: 0.6rem;
-        }
-        
-        .info-card h4 i {
-            font-size: 0.9rem;
-        }
-        
-        .info-card p {
-            font-size: 0.85rem;
-            line-height: 1.4;
-            margin-bottom: 0.5rem;
-        }
-        
-        .info-card .note.small {
-            font-size: 0.75rem;
-        }
-        
-        .site-links li {
-            font-size: 0.85rem;
-            margin-bottom: 0.4rem;
-        }
-        
-        .note {
-            font-size: 0.8rem;
-            margin-top: 0.8rem;
-        }
+    .section-subtitle {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
     }
-    .flow-arrow .arrow-desktop {
-        font-size: 2rem;
-        color: #1a365d;
-        font-weight: bold;
-        display: inline;
+    .funding-section p {
+        color: #555;
+        line-height: 1.8;
+        font-size: 1.05rem;
+        margin-bottom: 1rem;
     }
-    @media (max-width: 768px) {
-        .flow-arrow .arrow-desktop {
-            content: '→';
-            font-size: 1.5rem;
-            display: inline;
-        }
-        .flow-arrow.special-arrow .arrow-desktop {
-            content: '→';
-        }
+    .note {
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: 1rem;
     }
-    .flowchart-2row {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 2.5rem 0;
-    }
-    .flowchart-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-    .flow-step {
-      background: #f9fcff;
-      border: 2px solid #1a365d;
-      border-radius: 10px;
-      padding: 1.1rem 1.5rem;
-      min-width: 150px;
-      text-align: center;
-      font-size: 1.05rem;
-      color: #1a365d;
-      font-weight: 500;
-      box-shadow: 0 2px 8px rgba(26,54,93,0.07);
-      transition: box-shadow 0.2s;
-    }
-    .flow-step.highlight {
-      color: #b02a37;
-      border-color: #b02a37;
-      font-weight: 700;
-      background: #fff6f7;
-    }
-    .flow-arrow {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 32px;
-      min-height: 48px;
-      font-size: 2.1rem;
-      font-weight: bold;
-    }
-    .flow-arrow.right::before {
-      content: '>>';
-      color: #1a365d;
-    }
-    .flow-arrow.left::before {
-      content: '<<';
-      color: #1a365d;
-    }
-    .flowchart-arrow-down {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 2.2rem;
-      font-size: 2.2rem;
-      color: #1a365d;
-      margin: 0.2rem 0 0.2rem 0;
-    }
-    .flowchart-arrow-down::before {
-      content: '\2193';
-      font-size: 2.2rem;
-      color: #1a365d;
-    }
-    @media (max-width: 1024px) {
-      .flow-step { min-width: 120px; font-size: 0.98rem; padding: 0.8rem 0.5rem; }
-    }
-    @media (max-width: 768px) {
-      .flowchart-row { flex-wrap: wrap; gap: 0.2rem; }
-      .flow-step { min-width: 0; width: 100%; font-size: 0.95rem; }
-      .flow-arrow, .flowchart-arrow-down { font-size: 1.3rem; height: 1.5rem; }
-    }
-    @media (max-width: 480px) {
-      .flow-step { font-size: 0.85rem; padding: 0.5rem 0.2rem; }
-    }
+
+    /* 플로우차트 */
     .flowchart-single {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 1.2rem;
-      margin: 3rem 0 2rem 0;
-      background: linear-gradient(90deg, #f7fafd 0%, #fafdff 100%);
-      padding: 2.2rem 1.2rem 2.2rem 1.2rem;
-      border-radius: 22px;
-      box-shadow: 0 4px 32px rgba(26,54,93,0.07);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        margin: 2rem 0;
+        background: linear-gradient(90deg, #f7fafd 0%, #fafdff 100%);
+        padding: 2rem 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(26,54,93,0.07);
     }
     .flow-step {
-      background: #fff;
-      border: 2.5px solid #1a365d;
-      border-radius: 16px;
-      padding: 1.3rem 2.1rem;
-      min-width: 170px;
-      text-align: center;
-      font-size: 1.13rem;
-      color: #1a365d;
-      font-weight: 600;
-      box-shadow: 0 4px 18px rgba(26,54,93,0.10);
-      transition: box-shadow 0.2s, border-color 0.2s, transform 0.15s;
-      position: relative;
-      z-index: 1;
+        background: #fff;
+        border: 2px solid var(--primary);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        text-align: center;
+        font-size: 1rem;
+        color: var(--primary);
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(26,54,93,0.08);
+        transition: box-shadow 0.2s, transform 0.15s;
     }
     .flow-step.highlight {
-      color: #b02a37;
-      border-color: #b02a37;
-      font-weight: 700;
-      background: #fff6f7;
+        color: #b02a37;
+        border-color: #b02a37;
+        background: #fff6f7;
     }
     .flow-step:hover {
-      box-shadow: 0 8px 32px rgba(26,54,93,0.18);
-      border-color: #274b7a;
-      transform: translateY(-4px) scale(1.03);
+        box-shadow: 0 6px 20px rgba(26,54,93,0.15);
+        transform: translateY(-3px);
     }
     .flow-arrow {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 36px;
-      min-height: 48px;
-      font-size: 2.3rem;
-      font-weight: bold;
-      color: #1a365d;
-      transition: color 0.2s;
-      margin: 0 0.2rem;
-      user-select: none;
+        color: var(--primary);
+        font-size: 1.8rem;
+        font-weight: bold;
+        user-select: none;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .flow-arrow::before {
-      content: '→';
-      color: #1a365d;
-      font-size: 2.3rem;
-      font-weight: 700;
-      filter: drop-shadow(0 1px 0 #fff);
+        content: '→';
     }
-    @media (max-width: 1024px) {
-      .flow-step { min-width: 120px; font-size: 0.98rem; padding: 0.8rem 0.5rem; }
-      .flowchart-single { gap: 0.5rem; padding: 1.2rem 0.5rem; }
+
+    /* 정보 카드 그리드 */
+    .info-card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-top: 1rem;
     }
-    @media (max-width: 768px) {
-      .flowchart-single {
-        flex-direction: column;
-        gap: 0.2rem;
-        align-items: stretch;
-        background: none;
-        box-shadow: none;
-        padding: 0;
-        border-radius: 0;
-      }
-      .flow-step {
-        min-width: 0;
-        width: 100%;
+    .info-card {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .info-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+    .info-card h4 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin: 0 0 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .info-card p {
         font-size: 0.95rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(26,54,93,0.07);
-        padding: 0.9rem 0.5rem;
-      }
-      .flow-arrow {
-        font-size: 1.3rem;
-        height: 1.5rem;
-        min-width: 0;
+        color: #444;
+        line-height: 1.7;
+        margin-bottom: 0.5rem;
+    }
+    .info-card p:last-child {
+        margin-bottom: 0;
+    }
+    .info-card .note.small {
+        font-size: 0.82rem;
+        color: #888;
+        margin-top: 0.5rem;
+    }
+    .site-links {
+        list-style: none;
+        padding: 0;
         margin: 0;
-      }
-      .flow-arrow::before {
-        content: '↓';
-        font-size: 1.3rem;
-      }
     }
-    @media (max-width: 480px) {
-      .flow-step { font-size: 0.85rem; padding: 0.5rem 0.2rem; }
+    .site-links li {
+        font-size: 0.95rem;
+        color: #444;
+        margin-bottom: 0.4rem;
     }
+    .site-links a {
+        color: var(--primary);
+        text-decoration: none;
+    }
+    .site-links a:hover {
+        text-decoration: underline;
+    }
+
     /* Quick Contact Sidebar */
     .quick-contact-sidebar {
-      position: fixed;
-      top: 50%;
-      right: 40px;
-      width: 240px;
-      z-index: 100;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-      background: #fff;
-      transform: translateY(-50%);
+        position: fixed;
+        top: 50%;
+        right: 40px;
+        width: 240px;
+        z-index: 100;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        background: #fff;
+        transform: translateY(-50%);
     }
-    .contact-box { 
-      margin-bottom: 1rem; 
-      text-align: center; 
-      padding: 1.5rem 1rem; 
+    .contact-box {
+        margin-bottom: 1rem;
+        text-align: center;
+        padding: 1.5rem 1rem;
     }
-    .contact-box h3 { 
-      font-size: 1.1rem; 
-      font-weight: 600; 
-      margin: 0 0 1rem; 
-      color: #1a365d; 
+    .contact-box h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0 0 1rem;
+        color: var(--primary);
     }
-    .contact-box .phone-number { 
-      font-size: 1.3rem; 
-      font-weight: 700; 
-      color: #333; 
+    .contact-box .phone-number {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #333;
     }
-    .contact-box .kakao-link { 
-      display: block; 
-      background-color: #ffeb00; 
-      padding: 1rem; 
-      text-decoration: none; 
-      color: #3c1e1e; 
-      font-weight: 600; 
-      transition: background-color 0.3s;
+    .contact-box .kakao-link {
+        display: block;
+        background-color: #ffeb00;
+        padding: 1rem;
+        text-decoration: none;
+        color: #3c1e1e;
+        font-weight: 600;
+        transition: background-color 0.3s;
     }
     .contact-box .kakao-link:hover {
-      background-color: #fdd835;
+        background-color: #fdd835;
     }
     @media (max-width: 1200px) {
-      .quick-contact-sidebar { display: none; }
+        .quick-contact-sidebar { display: none; }
+    }
+
+    @media (max-width: 1024px) {
+        .flow-step { font-size: 0.95rem; padding: 0.8rem 1rem; }
+    }
+
+    @media (max-width: 768px) {
+        .funding-section { margin-bottom: 2rem; }
+        .section-subtitle { font-size: 1.2rem; }
+        .funding-section p { font-size: 0.95rem; line-height: 1.6; margin-bottom: 0.8rem; }
+        .flowchart-single {
+            flex-direction: column;
+            align-items: stretch;
+            background: none;
+            box-shadow: none;
+            padding: 0;
+            border-radius: 0;
+            gap: 0.2rem;
+            margin: 1.5rem 0;
+        }
+        .flow-step {
+            width: 100%;
+            font-size: 0.95rem;
+            padding: 0.9rem 0.5rem;
+            border-radius: 10px;
+        }
+        .flow-step:hover { transform: none; }
+        .flow-arrow { font-size: 1.3rem; min-height: 1.5rem; }
+        .flow-arrow::before { content: '↓'; }
+        .info-card-grid { grid-template-columns: 1fr; gap: 1rem; }
+        .info-card { padding: 1.2rem; }
+        .info-card:hover { transform: none; }
+        .info-card h4 { font-size: 1rem; margin-bottom: 0.6rem; }
+        .info-card p { font-size: 0.9rem; }
+        .note { font-size: 0.85rem; }
+    }
+
+    @media (max-width: 480px) {
+        .funding-section { margin-bottom: 1.5rem; }
+        .section-subtitle { font-size: 1.1rem; }
+        .funding-section p { font-size: 0.9rem; }
+        .flow-step { font-size: 0.85rem; padding: 0.6rem 0.3rem; }
+        .flow-arrow { font-size: 1.1rem; }
+        .info-card { padding: 1rem; }
+        .info-card h4 { font-size: 0.95rem; }
+        .info-card p { font-size: 0.85rem; }
+        .info-card .note.small { font-size: 0.75rem; }
+        .site-links li { font-size: 0.85rem; }
+        .note { font-size: 0.8rem; }
     }
   </style>
 </head>
