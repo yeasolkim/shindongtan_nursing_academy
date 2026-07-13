@@ -3238,6 +3238,63 @@
     /* ── 팝업 미리보기 최소 높이 ── */
     #preview-iframe-wrapper { min-height: 280px; }
 
+    /* ── 탭간 admin-card 배경·그림자 통일 ── */
+    #tab-faq .admin-card,
+    #tab-notice .admin-card,
+    #tab-popups .admin-card {
+      background: var(--card);
+      border: none;
+      box-shadow: var(--shadow);
+      border-radius: var(--r);
+    }
+    /* ── 탭간 h3 크기 통일 ── */
+    #tab-faq .admin-card h3,
+    #tab-notice .admin-card h3,
+    #tab-popups .admin-card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0;
+    }
+
+    /* ── 공지 필터 바 ── */
+    .filter-bar {
+      display: flex; gap: 0.7rem; align-items: center;
+      background: var(--brand-light);
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      margin-bottom: 1.1rem;
+      flex-wrap: wrap;
+    }
+    .filter-bar select,
+    .filter-bar input[type="text"] {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 0.85rem;
+      font-size: 0.92rem;
+      background: #fff;
+      color: var(--t1);
+      font-family: inherit;
+      transition: border-color .2s;
+      min-width: 88px;
+    }
+    .filter-bar input[type="text"] { flex: 1; min-width: 160px; }
+    .filter-bar select:focus,
+    .filter-bar input[type="text"]:focus {
+      border-color: var(--brand); outline: none;
+      box-shadow: 0 0 0 3px rgba(51,74,108,.10);
+    }
+    .filter-bar .button-secondary { flex-shrink: 0; }
+
+    /* ── 갤러리 썸네일 변형 ── */
+    .post-card-thumb {
+      width: 80px; height: 62px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border-lite);
+      background: #f6f8fa;
+      flex-shrink: 0;
+    }
+
     /* ── 모바일 오버라이드 ── */
     @media (max-width: 768px) {
       .admin-header { border-left-width: 4px; padding: 1.1rem 1.2rem; }
@@ -3403,19 +3460,7 @@
             <button id="gallery-search-btn" class="button-secondary"><i class="fas fa-search"></i> 검색</button>
             <button id="gallery-search-clear-btn" class="button-secondary" style="color:var(--t3);border-color:var(--border);">초기화</button>
           </div>
-          <table class="jobs-table" id="gallery-list-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>썸네일</th>
-                <th>제목</th>
-                <th>작성일</th>
-                <th>조회수</th>
-                <th>작업</th>
-              </tr>
-            </thead>
-            <tbody id="gallery-list"></tbody>
-          </table>
+          <div class="post-card-list" id="gallery-list"></div>
         </div>
     </div>
 
@@ -3435,32 +3480,21 @@
         <div class="admin-card">
           <h3>공지사항 목록</h3>
           <!-- 검색/정렬 바: 한 줄, 넓은 간격, 명확한 순서 -->
-          <div id="notice-filter-bar" style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
-            <select id="notice-search-type" style="min-width: 90px;">
+          <div class="filter-bar" id="notice-filter-bar">
+            <select id="notice-search-type">
               <option value="title">제목</option>
               <option value="content">내용</option>
               <option value="title_content">제목+내용</option>
             </select>
-            <input type="text" id="notice-search-input" placeholder="검색어 입력" style="flex:1; min-width: 180px;">
-            <select id="notice-sort-order" style="min-width: 90px;">
+            <input type="text" id="notice-search-input" placeholder="검색어 입력">
+            <select id="notice-sort-order">
               <option value="created_at_desc">최신순</option>
               <option value="created_at_asc">오래된순</option>
               <option value="title_asc">제목순</option>
             </select>
-            <button id="notice-search-btn" class="button-secondary">검색</button>
+            <button id="notice-search-btn" class="button-secondary"><i class="fas fa-search"></i> 검색</button>
           </div>
-          <table class="jobs-table" id="notice-list-table">
-            <thead>
-              <tr>
-                <th style="width:60px;">ID</th>
-                <th>제목</th>
-                <th style="width:120px;">작성일</th>
-                <th style="width:80px;">조회수</th>
-                <th style="width:100px;">작업</th>
-              </tr>
-            </thead>
-            <tbody id="notice-list"></tbody>
-          </table>
+          <div class="post-card-list" id="notice-list"></div>
         </div>
     </div>
 

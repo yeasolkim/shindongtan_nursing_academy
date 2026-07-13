@@ -672,24 +672,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const listEl = window.boardConfig.gallery.listEl;
         listEl.innerHTML = '';
         if (!items.length) {
-            listEl.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-images"></i>게시물이 없습니다.</td></tr>';
+            listEl.innerHTML = '<div class="empty-state"><i class="fas fa-images"></i>게시물이 없습니다.</div>';
             return;
         }
         items.forEach(item => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${item.id}</td>
-                <td><img src="${getGalleryImageUrl(item.image)}" width="50" height="40" style="object-fit:cover;border-radius:6px;"></td>
-                <td>${item.title}</td>
-                <td>${formatKoreaDate(item.created_at)}</td>
-                <td>${item.views || 0}</td>
-                <td class="actions">
-                    <button class="button-secondary" data-id="${item.id}">수정</button>
-                    <button class="button-danger" data-id="${item.id}">삭제</button>
-                </td>`;
-            tr.querySelector('.button-secondary').addEventListener('click', () => showEditGalleryModal(item));
-            tr.querySelector('.button-danger').addEventListener('click', () => deleteGalleryItem(item));
-            listEl.appendChild(tr);
+            const div = document.createElement('div');
+            div.className = 'post-card-item';
+            const thumbSrc = getGalleryImageUrl(item.image);
+            div.innerHTML = `
+                ${thumbSrc ? `<img class="post-card-thumb" src="${thumbSrc}" alt="썸네일">` : ''}
+                <div class="post-card-main">
+                    <div class="post-card-title">${item.title}</div>
+                    <div class="post-card-meta">
+                        <span><i class="fas fa-calendar-alt"></i> ${formatKoreaDate(item.created_at)}</span>
+                        <span><i class="fas fa-eye"></i> ${item.views || 0}</span>
+                    </div>
+                </div>
+                <div class="post-card-actions">
+                    <button class="button-secondary">수정</button>
+                    <button class="button-danger">삭제</button>
+                </div>`;
+            div.querySelector('.button-secondary').addEventListener('click', () => showEditGalleryModal(item));
+            div.querySelector('.button-danger').addEventListener('click', () => deleteGalleryItem(item));
+            listEl.appendChild(div);
         });
     }
     function getGalleryImageUrl(imageField) {
@@ -1567,20 +1572,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const listEl = window.boardConfig.notices.listEl;
         listEl.innerHTML = '';
+        if (!items.length) {
+            listEl.innerHTML = '<div class="empty-state"><i class="fas fa-bullhorn"></i>공지사항이 없습니다.</div>';
+            return;
+        }
         items.forEach(item => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${item.id}</td>
-                <td>${item.isnotice ? '📢 <span style="color:#d92121;font-weight:600;">중요</span> ' : ''}${item.title}</td>
-                <td>${formatKoreaDate(item.date || item.created_at)}</td>
-                <td>${item.views || 0}</td>
-                <td class="actions">
-                    <button class="button-secondary" data-id="${item.id}">수정</button>
-                    <button class="button-danger" data-id="${item.id}">삭제</button>
-                </td>`;
-            tr.querySelector('.button-secondary').addEventListener('click', () => showEditNoticeModal(item));
-            tr.querySelector('.button-danger').addEventListener('click', () => deleteNoticeItem(item));
-            listEl.appendChild(tr);
+            const div = document.createElement('div');
+            div.className = 'post-card-item';
+            div.innerHTML = `
+                <div class="post-card-main">
+                    ${item.isnotice ? '<span class="post-notice-badge">📢 중요</span>' : ''}
+                    <div class="post-card-title">${item.title}</div>
+                    <div class="post-card-meta">
+                        <span><i class="fas fa-calendar-alt"></i> ${formatKoreaDate(item.date || item.created_at)}</span>
+                        <span><i class="fas fa-eye"></i> ${item.views || 0}</span>
+                    </div>
+                </div>
+                <div class="post-card-actions">
+                    <button class="button-secondary">수정</button>
+                    <button class="button-danger">삭제</button>
+                </div>`;
+            div.querySelector('.button-secondary').addEventListener('click', () => showEditNoticeModal(item));
+            div.querySelector('.button-danger').addEventListener('click', () => deleteNoticeItem(item));
+            listEl.appendChild(div);
         });
     }
     function setupNoticeSearchSortUI() {
