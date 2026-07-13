@@ -1113,48 +1113,12 @@ document.addEventListener('DOMContentLoaded', () => {
         popupForm.reset();
         document.getElementById('popup-id').value = '';
         document.getElementById('popup-cancel').style.display = 'none';
-        
-        // 숨겨진 input 값들 초기화
-        document.getElementById('popup-pos-x').value = '50';
-        document.getElementById('popup-pos-y').value = '60';
-        document.getElementById('popup-width').value = '400';
-        document.getElementById('popup-height').value = '200';
-        
-        // 슬라이더 값들 초기화
-        const posXSlider = document.getElementById('popup-pos-x-slider');
-        const posYSlider = document.getElementById('popup-pos-y-slider');
-        const widthSlider = document.getElementById('popup-width-slider');
-        const heightSlider = document.getElementById('popup-height-slider');
-        const posXValue = document.getElementById('popup-pos-x-value');
-        const posYValue = document.getElementById('popup-pos-y-value');
-        const widthValue = document.getElementById('popup-width-value');
-        const heightValue = document.getElementById('popup-height-value');
-        
-        if (posXSlider) posXSlider.value = '50';
-        if (posYSlider) posYSlider.value = '60';
-        if (widthSlider) widthSlider.value = '400';
-        if (heightSlider) heightSlider.value = '200';
-        if (posXValue) posXValue.textContent = '50';
-        if (posYValue) posYValue.textContent = '60';
-        if (widthValue) widthValue.textContent = '400';
-        if (heightValue) heightValue.textContent = '200';
-        
-        // 팝업 미리보기 초기화
-        const popupImagePreview = document.getElementById('popup-image-preview');
-        if (popupImagePreview) {
-            popupImagePreview.innerHTML = '';
-        }
-        
-        // 미리보기 영역 완전 초기화
+
+        // 미리보기 초기화
         if (window.setPopupPreviewFromForm) {
             window.setPopupPreviewFromForm('');
         }
-        
-        // 전역 previewImgUrl 변수도 초기화 (admin.html에서 사용)
-        if (window.previewImgUrl !== undefined) {
-            window.previewImgUrl = '';
-        }
-        
+
         // 빠른 날짜 설정 버튼들 초기화
         const quickDateBtns = document.querySelectorAll('.quick-date-btn');
         quickDateBtns.forEach(btn => btn.classList.remove('active'));
@@ -1183,20 +1147,21 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderPopupList(list) {
         const el = document.getElementById('popup-list');
         if (!list.length) {
-            el.innerHTML = '<div style="color:#888">등록된 팝업이 없습니다.</div>';
+            el.innerHTML = '<div style="color:#888;padding:1.5rem;text-align:center;">등록된 팝업이 없습니다.</div>';
             return;
         }
         el.innerHTML = list.map(item => `
-            <div class="image-preview-item" style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
-                <img src="${item.image_url}" alt="팝업 이미지" style="width:80px;height:80px;object-fit:contain;border-radius:8px;">
-                <div style="flex:1;">
-                    <div><b>${item.title || ''}</b></div>
-                    <div style="font-size:0.9em;color:#666;">위치: (${item.position_x}%, ${item.position_y}%) / 크기: ${item.width||'원본'} x ${item.height||'원본'}</div>
-                    <div style="font-size:0.9em;color:#666;">기간: ${item.start_date||'-'} ~ ${item.end_date||'-'}</div>
-                    <div style="font-size:0.9em;color:#666;">활성화: ${item.is_active ? 'O' : 'X'}</div>
+            <div style="display:flex;align-items:center;gap:1.2rem;padding:1.2rem;background:#fff;border:1.5px solid #e9ecef;border-radius:12px;margin-bottom:1rem;box-shadow:0 2px 8px rgba(51,74,108,0.05);transition:box-shadow 0.2s;" onmouseenter="this.style.boxShadow='0 4px 16px rgba(51,74,108,0.12)'" onmouseleave="this.style.boxShadow='0 2px 8px rgba(51,74,108,0.05)'">
+                <img src="${item.image_url}" alt="팝업 이미지" style="width:90px;height:70px;object-fit:contain;border-radius:8px;border:1px solid #e9ecef;background:#f6f8fa;flex-shrink:0;">
+                <div style="flex:1;min-width:0;">
+                    <div style="font-weight:700;color:#334a6c;font-size:1.05rem;margin-bottom:0.3rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${item.title || '(제목 없음)'}</div>
+                    <div style="font-size:0.88rem;color:#6c757d;margin-bottom:0.2rem;">📅 ${item.start_date||'-'} ~ ${item.end_date||'-'}</div>
+                    <div style="font-size:0.88rem;">${item.is_active ? '<span style="color:#22863a;font-weight:600;">● 활성화</span>' : '<span style="color:#aaa;">○ 비활성화</span>'}</div>
                 </div>
-                <button class="button-secondary" onclick="editPopup(${item.id})">수정</button>
-                <button class="button-danger" onclick="deletePopup(${item.id}, '${item.image_url}')">삭제</button>
+                <div style="display:flex;flex-direction:column;gap:0.5rem;flex-shrink:0;">
+                    <button class="button-secondary" style="padding:0.45rem 1rem;font-size:0.9rem;border-radius:7px;border:1.2px solid #cfd8e3;background:#e7eaf0;color:#334a6c;font-weight:600;cursor:pointer;" onclick="editPopup(${item.id})">수정</button>
+                    <button class="button-danger" style="padding:0.45rem 1rem;font-size:0.9rem;border-radius:7px;border:none;background:#dc3545;color:#fff;font-weight:600;cursor:pointer;" onclick="deletePopup(${item.id}, '${item.image_url}')">삭제</button>
+                </div>
             </div>
         `).join('');
     }
@@ -1211,10 +1176,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const id = document.getElementById('popup-id').value;
         const title = document.getElementById('popup-title').value;
         const link = document.getElementById('popup-link').value;
-        const position_x = parseInt(document.getElementById('popup-pos-x').value) || 50;
-        const position_y = parseInt(document.getElementById('popup-pos-y').value) || 50;
-        const width = parseInt(document.getElementById('popup-width').value) || null;
-        const height = parseInt(document.getElementById('popup-height').value) || null;
         const start_date = document.getElementById('popup-start-date').value || null;
         const end_date = document.getElementById('popup-end-date').value || null;
         const is_active = document.getElementById('popup-active').checked;
@@ -1236,10 +1197,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const popupData = {
                 title,
                 link,
-                position_x,
-                position_y,
-                width,
-                height,
                 start_date,
                 end_date,
                 is_active,
@@ -1274,18 +1231,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('popup-id').value = data.id;
         document.getElementById('popup-title').value = data.title || '';
         document.getElementById('popup-link').value = data.link || '';
-        document.getElementById('popup-pos-x').value = data.position_x || 50;
-        document.getElementById('popup-pos-y').value = data.position_y || 50;
-        document.getElementById('popup-width').value = data.width || '';
-        document.getElementById('popup-height').value = data.height || '';
         document.getElementById('popup-start-date').value = data.start_date || '';
         document.getElementById('popup-end-date').value = data.end_date || '';
-        // 활성화 체크박스 상태를 명확하게 boolean으로 변환하여 반영
         const isActive = (data.is_active === true || data.is_active === 1 || data.is_active === 'true' || data.is_active === 'Y');
         document.getElementById('popup-active').checked = isActive;
-        document.getElementById('popup-image-preview').innerHTML = `<img src="${data.image_url}" alt="미리보기" style="max-width:120px;max-height:120px;">`;
         document.getElementById('popup-cancel').style.display = '';
         if (window.setPopupPreviewFromForm) window.setPopupPreviewFromForm(data.image_url);
+        // 수정 폼으로 스크롤
+        document.getElementById('popup-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
     // 팝업 삭제 버튼
@@ -1320,18 +1273,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 이미지 미리보기
-    const popupImageInput = document.getElementById('popup-image');
-    popupImageInput && popupImageInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                document.getElementById('popup-image-preview').innerHTML = `<img src="${ev.target.result}" alt="미리보기" style="max-width:120px;max-height:120px;">`;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
+    // 이미지 미리보기는 admin.html 인라인 스크립트에서 처리
 
     // --- Jobs Management (Supabase 연동) ---
     async function loadJobList() {

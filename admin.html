@@ -1241,19 +1241,55 @@
       border-color: #334a6c;
     }
     #tab-popups #popup-preview-area {
-      background: #f4f7fa;
-      border: 2px solid #b0b8c1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.42);
       border-radius: 14px;
-      box-shadow: 0 2px 12px rgba(51,74,108,0.08);
-      margin-bottom: 2rem;
+      margin-bottom: 0;
       margin-top: 0.5rem;
-      padding: 0.5rem;
-      min-height: 180px;
+      padding: 2.5rem 1.5rem 1.5rem;
+      min-height: 220px;
     }
-    #tab-popups #popup-preview img {
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(51,74,108,0.10);
+    #popup-preview-card {
+      position: relative;
+      border-radius: 12px;
+      overflow: visible;
+      max-width: 260px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.45);
     }
+    .popup-preview-close-btn {
+      position: absolute; top: -10px; right: -10px;
+      width: 26px; height: 26px;
+      background: #fff; color: #555; border: none;
+      border-radius: 50%; font-size: 15px; line-height: 1;
+      cursor: default; pointer-events: none;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2); z-index: 10;
+    }
+    #popup-preview-img-area {
+      border-radius: 12px 12px 0 0; overflow: hidden;
+      background: #f0f4f8; min-height: 100px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #popup-preview-img-area img { display: block; width: 100%; object-fit: contain; max-height: 200px; }
+    #popup-preview-placeholder {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0.5rem; padding: 2rem 1rem;
+      color: #aaa; font-size: 0.8rem; text-align: center;
+    }
+    #popup-preview-placeholder i { font-size: 2rem; opacity: 0.3; }
+    .popup-preview-footer {
+      background: #fff; border-radius: 0 0 12px 12px;
+      display: flex; align-items: center;
+      border-top: 1px solid #f0f0f0; overflow: hidden;
+    }
+    .popup-preview-action { flex: 1; padding: 10px 0; font-size: 10.5px; color: #aaa; text-align: center; }
+    .popup-preview-divider { width: 1px; height: 28px; background: #f0f0f0; flex-shrink: 0; }
+    .popup-preview-action-primary { flex: 1; padding: 10px 0; font-size: 10.5px; color: #334a6c; font-weight: 600; text-align: center; }
     #tab-popups .admin-form input[type="checkbox"] {
       accent-color: #334a6c;
       width: 1.2em;
@@ -1269,8 +1305,8 @@
         padding: 1.2rem 0.7rem;
       }
       #tab-popups #popup-preview-area {
-        min-height: 120px;
-        padding: 0.2rem;
+        min-height: 180px;
+        padding: 2rem 1rem 1rem;
       }
     }
     @media (max-width: 600px) {
@@ -1301,13 +1337,9 @@
         border-radius: 5px;
       }
       #tab-popups #popup-preview-area {
-        min-height: 80px;
-        border-radius: 8px;
-        margin-bottom: 1.1rem;
-        margin-top: 0.2rem;
-        padding: 0.1rem;
-        width: 100%;
-        max-width: 100vw;
+        min-height: 160px;
+        border-radius: 10px;
+        padding: 1.8rem 1rem 1rem;
       }
       #tab-popups .admin-form .form-group {
         margin-bottom: 1rem;
@@ -2952,47 +2984,42 @@
         <form id="popup-form" class="admin-form">
           <input type="hidden" id="popup-id">
           <div class="form-group">
-            <label for="popup-title">제목</label>
-            <input type="text" id="popup-title" maxlength="100">
+            <label for="popup-title">제목 <span style="font-weight:400;color:#888;font-size:0.9rem;">(관리용, 홈페이지에 노출되지 않음)</span></label>
+            <input type="text" id="popup-title" maxlength="100" placeholder="팝업 이름을 입력하세요">
           </div>
           <div class="form-group">
-            <label for="popup-image">이미지</label>
+            <label for="popup-image">팝업 이미지</label>
             <input type="file" id="popup-image" accept="image/*">
-            <div id="popup-image-preview" style="margin-top:0.5rem;"></div>
+            <p style="margin:0.4rem 0 0;font-size:0.85rem;color:#888;">권장: 가로 420px 이하, 세로 자동. JPG/PNG/WebP 지원.</p>
           </div>
           <div class="form-group">
-            <label for="popup-link">링크(선택)</label>
-            <input type="text" id="popup-link" maxlength="200">
+            <label for="popup-link">클릭 시 이동 링크 <span style="font-weight:400;color:#888;font-size:0.9rem;">(선택)</span></label>
+            <input type="text" id="popup-link" maxlength="300" placeholder="https://...">
           </div>
-          <!-- 팝업 미리보기 영역 -->
-          <div id="popup-preview-area" style="width:640px;max-width:100%;aspect-ratio:16/10;height:auto;position:relative;background:#f4f4f4;border:1px dashed #ccc;margin-bottom:1.5rem;overflow:hidden;">
-            <!-- 홈페이지 프레임 가이드 -->
-            <div style="position:absolute;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none;">
-              <div style="width:100%;height:48px;background:rgba(51,74,108,0.12);border-bottom:2px solid #b0b8c1;"></div>
-              <div style="width:100%;height:calc(100% - 108px);background:rgba(255,255,255,0.2);"></div>
-              <div style="width:100%;height:60px;background:rgba(51,74,108,0.10);border-top:2px solid #b0b8c1;position:absolute;bottom:0;"></div>
-              <div style="position:absolute;top:48px;left:0;width:100%;height:calc(100% - 108px);border:2px dashed #b0b8c1;box-sizing:border-box;"></div>
+          <!-- 팝업 미리보기 -->
+          <div class="form-group">
+            <label>팝업 미리보기</label>
+            <div id="popup-preview-area">
+              <div id="popup-preview-card">
+                <button type="button" class="popup-preview-close-btn">&times;</button>
+                <div id="popup-preview-img-area">
+                  <div id="popup-preview-placeholder">
+                    <i class="fas fa-image"></i>
+                    <span>이미지를 업로드하면<br>미리보기가 표시됩니다</span>
+                  </div>
+                </div>
+                <div class="popup-preview-footer">
+                  <span class="popup-preview-action">오늘 하루 보지 않기</span>
+                  <span class="popup-preview-divider"></span>
+                  <span class="popup-preview-action-primary">닫기</span>
+                </div>
+              </div>
             </div>
-            <div id="popup-preview" style="position:absolute;left:50%;top:60%;transform:translate(-50%,-50%);cursor:move;z-index:1;"></div>
-          </div>
-          <div class="form-group">
-            <label>위치(%)</label>
-            <input type="range" id="popup-pos-x-slider" min="0" max="100" value="50" style="width:120px;"> <span id="popup-pos-x-value">50</span>% X
-            <input type="range" id="popup-pos-y-slider" min="0" max="100" value="60" style="width:120px;"> <span id="popup-pos-y-value">60</span>%
-            <input type="hidden" id="popup-pos-x" value="50">
-            <input type="hidden" id="popup-pos-y" value="60">
-          </div>
-          <div class="form-group">
-            <label>크기(px)</label>
-            <input type="range" id="popup-width-slider" min="100" max="800" value="400" style="width:120px;"> <span id="popup-width-value">400</span>px X
-            <input type="range" id="popup-height-slider" min="50" max="600" value="200" style="width:120px;"> <span id="popup-height-value">200</span>px
-            <input type="hidden" id="popup-width" value="400">
-            <input type="hidden" id="popup-height" value="200">
           </div>
           <div class="form-group">
             <label>노출 기간</label>
-            <div style="margin-bottom: 0.5rem;">
-              <span style="font-size: 0.9rem; color: #6c757d; margin-right: 1rem;">빠른 설정:</span>
+            <div style="margin-bottom: 0.7rem;">
+              <span style="font-size: 0.9rem; color: #6c757d; margin-right: 0.8rem;">빠른 설정:</span>
               <button type="button" class="quick-date-btn" data-days="0">오늘</button>
               <button type="button" class="quick-date-btn" data-days="7">1주일</button>
               <button type="button" class="quick-date-btn" data-days="30">1달</button>
@@ -3001,21 +3028,26 @@
               <button type="button" class="quick-date-btn" data-days="365">1년</button>
             </div>
             <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-              <div style="flex: 1; min-width: 200px;">
+              <div style="flex: 1; min-width: 180px;">
                 <label for="popup-start-date" style="font-size: 0.9rem; color: #495057; margin-bottom: 0.3rem; display: block;">시작일</label>
                 <input type="date" id="popup-start-date">
               </div>
-              <div style="flex: 1; min-width: 200px;">
+              <div style="flex: 1; min-width: 180px;">
                 <label for="popup-end-date" style="font-size: 0.9rem; color: #495057; margin-bottom: 0.3rem; display: block;">종료일</label>
                 <input type="date" id="popup-end-date">
               </div>
             </div>
           </div>
           <div class="form-group">
-            <label><input type="checkbox" id="popup-active" checked> 활성화</label>
+            <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+              <input type="checkbox" id="popup-active" checked style="width:1.1em;height:1.1em;accent-color:#334a6c;">
+              팝업 활성화 (체크 해제 시 홈페이지에 표시되지 않음)
+            </label>
           </div>
-          <button type="submit" class="button-primary">저장</button>
-          <button type="button" id="popup-cancel" class="button-secondary" style="display:none;">취소</button>
+          <div style="display:flex;gap:0.8rem;flex-wrap:wrap;margin-top:0.5rem;">
+            <button type="submit" class="button-primary" style="flex:1;min-width:120px;">저장하기</button>
+            <button type="button" id="popup-cancel" class="button-secondary" style="display:none;flex:1;min-width:120px;">취소</button>
+          </div>
         </form>
       </div>
       <!-- 팝업 로딩 오버레이 -->
@@ -3098,28 +3130,50 @@
   <!-- Quill Editor JS -->
   <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
   <script>
-    // 팝업 미리보기, 슬라이더, 드래그/리사이즈 연동
-    let previewImgUrl = '';
-    // 전역으로 노출하여 admin.js에서 접근 가능하도록 함
-    window.previewImgUrl = previewImgUrl;
-    let isDragging = false, dragOffsetX = 0, dragOffsetY = 0;
-    let isResizing = false, resizeStartX = 0, resizeStartY = 0, startWidth = 0, startHeight = 0;
-    const previewArea = document.getElementById('popup-preview-area');
-    const previewDiv = document.getElementById('popup-preview');
-    const posXSlider = document.getElementById('popup-pos-x-slider');
-    const posYSlider = document.getElementById('popup-pos-y-slider');
-    const widthSlider = document.getElementById('popup-width-slider');
-    const heightSlider = document.getElementById('popup-height-slider');
-    const posXValue = document.getElementById('popup-pos-x-value');
-    const posYValue = document.getElementById('popup-pos-y-value');
-    const widthValue = document.getElementById('popup-width-value');
-    const heightValue = document.getElementById('popup-height-value');
-    const posXInput = document.getElementById('popup-pos-x');
-    const posYInput = document.getElementById('popup-pos-y');
-    const widthInput = document.getElementById('popup-width');
-    const heightInput = document.getElementById('popup-height');
-    const popupImageInput = document.getElementById('popup-image');
-    const popupImagePreview = document.getElementById('popup-image-preview');
+    // 팝업 미리보기 업데이트
+    function updatePopupPreview(imgUrl) {
+      const imgArea = document.getElementById('popup-preview-img-area');
+      if (!imgArea) return;
+      if (imgUrl) {
+        imgArea.innerHTML = `<img src="${imgUrl}" alt="팝업 미리보기">`;
+      } else {
+        imgArea.innerHTML = `<div id="popup-preview-placeholder"><i class="fas fa-image"></i><span>이미지를 업로드하면<br>미리보기가 표시됩니다</span></div>`;
+      }
+    }
+    window.setPopupPreviewFromForm = function(imgUrl) {
+      updatePopupPreview(imgUrl || '');
+    };
+
+    // 이미지 업로드 시 미리보기 업데이트
+    document.addEventListener('DOMContentLoaded', function() {
+      const popupImageInput = document.getElementById('popup-image');
+      if (popupImageInput) {
+        popupImageInput.addEventListener('change', function(e) {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function(ev) { updatePopupPreview(ev.target.result); };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      // 빠른 날짜 설정 버튼 이벤트
+      const quickDateBtns = document.querySelectorAll('.quick-date-btn');
+      quickDateBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const days = parseInt(this.dataset.days);
+          const startDate = new Date();
+          const endDate = new Date();
+          if (days > 0) endDate.setDate(endDate.getDate() + days);
+          const fmt = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+          document.getElementById('popup-start-date').value = fmt(startDate);
+          document.getElementById('popup-end-date').value = fmt(endDate);
+          quickDateBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+    });
 
     // Quill 에디터 전역 변수
     let quill = null;
@@ -3333,203 +3387,8 @@
         return quill;
     }
 
-    // 미리보기 이미지 렌더링
-    function renderPopupPreview() {
-      previewDiv.innerHTML = '';
-      if (!previewImgUrl) return;
-      const img = document.createElement('img');
-      img.src = previewImgUrl;
-      img.style.width = widthSlider.value + 'px';
-      img.style.height = heightSlider.value + 'px';
-      img.style.objectFit = 'contain';
-      img.style.display = 'block';
-      img.style.border = '2px solid #334a6c';
-      img.style.borderRadius = '10px';
-      img.style.background = '#fff';
-      img.draggable = false;
-      img.id = 'popup-preview-img';
-      // 리사이즈 핸들
-      const resizeHandle = document.createElement('div');
-      resizeHandle.style.position = 'absolute';
-      resizeHandle.style.right = '-10px';
-      resizeHandle.style.bottom = '-10px';
-      resizeHandle.style.width = '18px';
-      resizeHandle.style.height = '18px';
-      resizeHandle.style.background = '#334a6c';
-      resizeHandle.style.borderRadius = '50%';
-      resizeHandle.style.cursor = 'nwse-resize';
-      resizeHandle.style.zIndex = 10;
-      resizeHandle.title = '크기 조절';
-      previewDiv.appendChild(img);
-      previewDiv.appendChild(resizeHandle);
-      // 위치
-      previewDiv.style.left = posXSlider.value + '%';
-      previewDiv.style.top = posYSlider.value + '%';
-      previewDiv.style.width = widthSlider.value + 'px';
-      previewDiv.style.height = heightSlider.value + 'px';
-      previewDiv.style.transform = 'translate(-50%,-50%)';
-      previewDiv.style.cursor = isDragging ? 'grabbing' : 'move';
-      // 리사이즈 핸들 이벤트
-      resizeHandle.addEventListener('mousedown', function(e) {
-        e.stopPropagation();
-        isResizing = true;
-        resizeStartX = e.clientX;
-        resizeStartY = e.clientY;
-        startWidth = parseInt(widthSlider.value);
-        startHeight = parseInt(heightSlider.value);
-        document.body.style.userSelect = 'none';
-      });
-    }
-    // 슬라이더 이벤트
-    [posXSlider, posYSlider, widthSlider, heightSlider].forEach(slider => {
-      slider.addEventListener('input', function() {
-        posXValue.textContent = posXSlider.value;
-        posYValue.textContent = posYSlider.value;
-        widthValue.textContent = widthSlider.value;
-        heightValue.textContent = heightSlider.value;
-        posXInput.value = posXSlider.value;
-        posYInput.value = posYSlider.value;
-        widthInput.value = widthSlider.value;
-        heightInput.value = heightSlider.value;
-        renderPopupPreview();
-      });
-    });
-    // 드래그 이벤트
-    previewDiv.addEventListener('mousedown', function(e) {
-      if (e.target.id === 'popup-preview-img') {
-        isDragging = true;
-        dragOffsetX = e.offsetX;
-        dragOffsetY = e.offsetY;
-        document.body.style.userSelect = 'none';
-      }
-    });
-    document.addEventListener('mousemove', function(e) {
-      if (isDragging) {
-        const rect = previewArea.getBoundingClientRect();
-        let x = e.clientX - rect.left;
-        let y = e.clientY - rect.top;
-        // 중앙 기준으로 변환
-        let percentX = Math.round((x / rect.width) * 100);
-        let percentY = Math.round((y / rect.height) * 100);
-        percentX = Math.max(0, Math.min(100, percentX));
-        percentY = Math.max(0, Math.min(100, percentY));
-        posXSlider.value = percentX;
-        posYSlider.value = percentY;
-        posXValue.textContent = percentX;
-        posYValue.textContent = percentY;
-        posXInput.value = percentX;
-        posYInput.value = percentY;
-        renderPopupPreview();
-      } else if (isResizing) {
-        const dx = e.clientX - resizeStartX;
-        const dy = e.clientY - resizeStartY;
-        let newW = Math.max(100, startWidth + dx);
-        let newH = Math.max(50, startHeight + dy);
-        widthSlider.value = newW;
-        heightSlider.value = newH;
-        widthValue.textContent = newW;
-        heightValue.textContent = newH;
-        widthInput.value = newW;
-        heightInput.value = newH;
-        renderPopupPreview();
-      }
-    });
-    document.addEventListener('mouseup', function() {
-      isDragging = false;
-      isResizing = false;
-      document.body.style.userSelect = '';
-    });
-    // 이미지 업로드 시 미리보기
-    popupImageInput.addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-          previewImgUrl = ev.target.result;
-          window.previewImgUrl = previewImgUrl; // 전역 변수도 업데이트
-          renderPopupPreview();
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-    // 기존 이미지 불러오기(수정 시) 및 값 반영
-    function setPopupPreviewFromForm(imgUrl) {
-      // 값 반영
-      posXSlider.value = posXInput.value || 50;
-      posYSlider.value = posYInput.value || 60;
-      widthSlider.value = widthInput.value || 400;
-      heightSlider.value = heightInput.value || 200;
-      posXValue.textContent = posXSlider.value;
-      posYValue.textContent = posYSlider.value;
-      widthValue.textContent = widthSlider.value;
-      heightValue.textContent = heightSlider.value;
-      // 이미지 URL도 반영 (수정 시)
-      if (imgUrl && imgUrl !== '') {
-        previewImgUrl = imgUrl;
-      } else {
-        // 빈 문자열이거나 undefined인 경우 초기화
-        previewImgUrl = '';
-        // 폼에 이미지 미리보기 있으면 사용 (수정 시에만)
-        const existUrl = popupImagePreview.querySelector('img')?.src;
-        if (existUrl && imgUrl !== '') {
-          previewImgUrl = existUrl;
-        }
-      }
-      // 전역 변수도 업데이트
-      window.previewImgUrl = previewImgUrl;
-      renderPopupPreview();
-    }
-    // 팝업 수정 시에도 미리보기 반영
-    document.addEventListener('DOMContentLoaded', function() {
-      setPopupPreviewFromForm();
-      
-      // 빠른 날짜 설정 버튼 이벤트
-      const quickDateBtns = document.querySelectorAll('.quick-date-btn');
-      quickDateBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-          const days = parseInt(this.dataset.days);
-          const startDate = new Date();
-          const endDate = new Date();
-          
-          if (days === 0) {
-            // 오늘만
-            endDate.setDate(endDate.getDate());
-          } else {
-            // 지정된 일수만큼 추가
-            endDate.setDate(endDate.getDate() + days);
-          }
-          
-          // 날짜 형식 변환 (YYYY-MM-DD)
-          const formatDate = (date) => {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-          };
-          
-          document.getElementById('popup-start-date').value = formatDate(startDate);
-          document.getElementById('popup-end-date').value = formatDate(endDate);
-          
-          // 활성 버튼 표시
-          quickDateBtns.forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-        });
-      });
-    });
-    // 팝업 목록에서 수정 버튼 클릭 시에도 미리보기 반영 (admin.js에서 폼 값 세팅 후 setPopupPreviewFromForm(imgUrl) 호출 필요)
-    window.setPopupPreviewFromForm = setPopupPreviewFromForm;
-    
     // Quill 에디터 초기화 함수를 전역으로 노출
     window.initializeQuillEditor = initializeQuillEditor;
-
-    function initializeAdminPanel() {
-        console.log("Initializing admin panel...");
-        loadInstructors();
-        loadFacilities();
-        renderGalleryList();
-        renderJobList();
-        renderNoticeList();
-    }
   </script>
 </body>
 </html> 
