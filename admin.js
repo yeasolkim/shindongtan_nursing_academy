@@ -335,8 +335,9 @@ document.addEventListener('DOMContentLoaded', () => {
             await loadInstructors();
             instructorForm.reset();
             cancelInstructorEditBtn.click();
+            showToast(id ? '강사 정보가 수정되었습니다.' : '강사가 등록되었습니다.', 'success');
         } catch (error) {
-            alert('강사 정보 저장 중 오류가 발생했습니다.');
+            showToast('강사 정보 저장 중 오류가 발생했습니다.', 'error');
             console.error('강사 저장 오류:', error);
             }
         } finally {
@@ -378,32 +379,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 강사 삭제
     async function deleteInstructor(id) {
-        if (!confirm('정말로 이 강사를 삭제하시겠습니까?')) return;
-        try {
-            // 1. 해당 강사 정보 조회 (이미지 URL 필요)
-            const { data: instructor, error: fetchError } = await window.supabaseClient
-                .from('instructors')
-                .select('image')
-                .eq('id', id)
-                .single();
-            if (fetchError) {
-                alert('강사 정보 조회 중 오류가 발생했습니다.');
-                console.error('강사 정보 조회 오류:', fetchError);
-                return;
+        showConfirm('이 강사를 삭제하시겠습니까?\n삭제 후 복구할 수 없습니다.', async function() {
+            try {
+                const { data: instructor, error: fetchError } = await window.supabaseClient
+                    .from('instructors').select('image').eq('id', id).single();
+                if (fetchError) { showToast('강사 정보 조회 중 오류가 발생했습니다.', 'error'); return; }
+                await deleteInstructorImage(instructor.image);
+                await window.supabaseClient.from('instructors').delete().eq('id', id);
+                await loadInstructors();
+                showToast('강사 정보가 삭제되었습니다.', 'success');
+            } catch (error) {
+                showToast('강사 삭제 중 오류가 발생했습니다.', 'error');
+                console.error('강사 삭제 오류:', error);
             }
-            // 2. 이미지 삭제 (기본 이미지가 아니면)
-            await deleteInstructorImage(instructor.image);
-            // 3. DB에서 row 삭제
-            await window.supabaseClient
-                .from('instructors')
-                .delete()
-                .eq('id', id);
-            await loadInstructors();
-            alert('강사 정보가 삭제되었습니다.');
-        } catch (error) {
-            alert('강사 정보 삭제 중 오류가 발생했습니다.');
-            console.error('강사 삭제 오류:', error);
-        }
+        });
     }
 
 
@@ -527,16 +516,18 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // 목록 새로고침
         await loadFacilities();
-            
+        showToast('시설 사진이 업로드되었습니다.', 'success');
         } catch (error) {
             console.error('시설 이미지 업로드 실패:', error);
-            alert('이미지 업로드 중 오류가 발생했습니다: ' + error.message);
+            showToast('이미지 업로드 중 오류가 발생했습니다.', 'error');
         }
     }
 
     // 삭제
     async function deleteFacility(item) {
-        if (!confirm('정말로 이 사진을 삭제하시겠습니까?')) return;
+        showConfirm('이 시설 사진을 삭제하시겠습니까?', async function() { return _deleteFacilityImpl(item); });
+    }
+    async function _deleteFacilityImpl(item) {
         
         try {
         // 1. Storage에서 이미지 삭제
@@ -554,10 +545,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // 3. 목록 새로고침
         await loadFacilities();
-            
+        showToast('시설 사진이 삭제되었습니다.', 'success');
         } catch (error) {
             console.error('시설 삭제 실패:', error);
-            alert('삭제 중 오류가 발생했습니다.');
+            showToast('삭제 중 오류가 발생했습니다.', 'error');
         }
     }
 
@@ -659,6 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Gallery Management (Supabase 연동) ---
+    let _allGalleryItems = [];
     async function loadGalleryList() {
         const { data, error } = await window.supabaseClient
             .from('gallery')
@@ -671,14 +663,23 @@ document.addEventListener('DOMContentLoaded', () => {
         return data;
     }
     async function renderGalleryList() {
-        const items = await loadGalleryList();
+        _allGalleryItems = await loadGalleryList();
+        const searchInput = document.getElementById('gallery-search-input');
+        if (searchInput) searchInput.value = '';
+        displayGalleryList(_allGalleryItems);
+    }
+    function displayGalleryList(items) {
         const listEl = window.boardConfig.gallery.listEl;
         listEl.innerHTML = '';
+        if (!items.length) {
+            listEl.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-images"></i>게시물이 없습니다.</td></tr>';
+            return;
+        }
         items.forEach(item => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${item.id}</td>
-                <td><img src="${getGalleryImageUrl(item.image)}" width="50" height="40" style="object-fit: cover;"></td>
+                <td><img src="${getGalleryImageUrl(item.image)}" width="50" height="40" style="object-fit:cover;border-radius:6px;"></td>
                 <td>${item.title}</td>
                 <td>${formatKoreaDate(item.created_at)}</td>
                 <td>${item.views || 0}</td>
@@ -925,13 +926,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 .from('gallery')
                     .update({ title, description, image: imageUrls })
                 .eq('id', id);
-                alert('갤러리가 수정되었습니다.');
+                showToast('갤러리가 수정되었습니다.', 'success');
         } else {
                 // id 필드를 절대 포함하지 않음
             await window.supabaseClient
                 .from('gallery')
                     .insert([{ title, description, image: imageUrls }]);
-                alert('갤러리가 등록되었습니다.');
+                showToast('갤러리가 등록되었습니다.', 'success');
         }
         document.getElementById('post-modal').style.display = 'none';
         renderGalleryList();
@@ -949,7 +950,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } catch (error) {
             console.error('갤러리 저장 실패:', error);
-            alert('갤러리 저장 중 오류가 발생했습니다.');
+            showToast('갤러리 저장 중 오류가 발생했습니다.', 'error');
         } finally {
             if (loadingOverlay) {
                 loadingOverlay.style.display = 'none';
@@ -957,8 +958,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     async function deleteGalleryItem(item) {
+        showConfirm('이 갤러리 게시물을 삭제하시겠습니까?', async function() { return _deleteGalleryItemImpl(item); });
+    }
+    async function _deleteGalleryItemImpl(item) {
         console.log('삭제 함수 진입:', item);
-        if (!confirm('정말로 이 갤러리 게시물을 삭제하시겠습니까?')) return;
 
         // 1. 첨부 이미지 삭제 (image 필드)
         let images = [];
@@ -1009,10 +1012,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 3. 게시글 row 삭제
         await window.supabaseClient.from('gallery').delete().eq('id', item.id);
-        console.log('삭제 후 renderGalleryList 호출');
         await renderGalleryList();
-        console.log('renderGalleryList 완료');
+        showToast('갤러리 게시물이 삭제되었습니다.', 'success');
     }
+    // 갤러리 검색
+    (function() {
+        var searchBtn = document.getElementById('gallery-search-btn');
+        var searchInput = document.getElementById('gallery-search-input');
+        var clearBtn = document.getElementById('gallery-search-clear-btn');
+        function doFilter() {
+            var q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            displayGalleryList(q ? _allGalleryItems.filter(function(i) { return i.title && i.title.toLowerCase().includes(q); }) : _allGalleryItems);
+        }
+        if (searchBtn) searchBtn.addEventListener('click', doFilter);
+        if (searchInput) searchInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doFilter(); });
+        if (clearBtn) clearBtn.addEventListener('click', function() { if (searchInput) searchInput.value = ''; displayGalleryList(_allGalleryItems); });
+    })();
+
     // 글쓰기 버튼 연결
     window.boardConfig.gallery.addBtn.addEventListener('click', showAddGalleryModal);
     
@@ -1200,7 +1216,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const fileName = sanitizeFileName(file.name);
             const { data, error } = await window.supabaseClient.storage.from(popupBucket).upload(fileName, file, { upsert: true });
             if (error) {
-                alert('이미지 업로드 실패: ' + error.message);
+                showToast('이미지 업로드 실패: ' + error.message, 'error');
                 return;
             }
             image_url = `${window.supabaseClient.storage.from(popupBucket).getPublicUrl(fileName).data.publicUrl}`;
@@ -1231,8 +1247,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             await loadPopupList();
             resetPopupForm();
+            showToast('팝업이 저장되었습니다.', 'success');
         } catch (error) {
-            alert('팝업 저장 중 오류가 발생했습니다.');
+            showToast('팝업 저장 중 오류가 발생했습니다.', 'error');
             console.error('팝업 저장 오류:', error);
         } finally {
             if (loadingOverlay) loadingOverlay.style.display = 'none';
@@ -1273,19 +1290,19 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // 팝업 삭제 버튼
-    window.deletePopup = async function(id, imageUrl) {
-        if (!confirm('정말 삭제하시겠습니까?')) return;
-        // 이미지 삭제
-        if (imageUrl) {
-            const path = imageUrl.split('/popup-images/')[1];
-            if (path) {
-                await window.supabaseClient.storage.from(popupBucket).remove([path]);
+    window.deletePopup = function(id, imageUrl) {
+        showConfirm('정말 삭제하시겠습니까?', async function() {
+            if (imageUrl) {
+                const path = imageUrl.split('/popup-images/')[1];
+                if (path) {
+                    await window.supabaseClient.storage.from(popupBucket).remove([path]);
+                }
             }
-        }
-        const { error } = await window.supabaseClient.from(popupTable).delete().eq('id', id);
-        if (error) return alert('삭제 실패: ' + error.message);
-        alert('팝업이 삭제되었습니다.');
-        loadPopupList();
+            const { error } = await window.supabaseClient.from(popupTable).delete().eq('id', id);
+            if (error) return showToast('삭제 실패: ' + error.message, 'error');
+            showToast('팝업이 삭제되었습니다.', 'success');
+            loadPopupList();
+        });
     };
 
     // 팝업 취소 버튼
@@ -1307,6 +1324,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 이미지 미리보기는 admin.html 인라인 스크립트에서 처리
 
     // --- Jobs Management (Supabase 연동) ---
+    let _allJobItems = [];
     async function loadJobList() {
         const { data, error } = await window.supabaseClient
             .from('jobs')
@@ -1319,16 +1337,22 @@ document.addEventListener('DOMContentLoaded', () => {
         return data;
     }
     async function renderJobList() {
-        const items = await loadJobList();
-        // 중요공지 먼저, 그 안에서 최신순 정렬
-        items.sort((a, b) => {
-            if ((b.isnotice ? 1 : 0) !== (a.isnotice ? 1 : 0)) {
-                return (b.isnotice ? 1 : 0) - (a.isnotice ? 1 : 0);
-            }
+        _allJobItems = await loadJobList();
+        _allJobItems.sort((a, b) => {
+            if ((b.isnotice ? 1 : 0) !== (a.isnotice ? 1 : 0)) return (b.isnotice ? 1 : 0) - (a.isnotice ? 1 : 0);
             return (b.created_at || '').localeCompare(a.created_at || '');
         });
+        const searchInput = document.getElementById('job-search-input');
+        if (searchInput) searchInput.value = '';
+        displayJobList(_allJobItems);
+    }
+    function displayJobList(items) {
         const listEl = window.boardConfig.jobs.listEl;
         listEl.innerHTML = '';
+        if (!items.length) {
+            listEl.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-briefcase"></i>게시물이 없습니다.</td></tr>';
+            return;
+        }
         items.forEach(item => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
@@ -1346,6 +1370,19 @@ document.addEventListener('DOMContentLoaded', () => {
             listEl.appendChild(tr);
         });
     }
+    // 구인 검색
+    (function() {
+        var searchBtn = document.getElementById('job-search-btn');
+        var searchInput = document.getElementById('job-search-input');
+        var clearBtn = document.getElementById('job-search-clear-btn');
+        function doFilter() {
+            var q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            displayJobList(q ? _allJobItems.filter(function(i) { return i.title && i.title.toLowerCase().includes(q); }) : _allJobItems);
+        }
+        if (searchBtn) searchBtn.addEventListener('click', doFilter);
+        if (searchInput) searchInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doFilter(); });
+        if (clearBtn) clearBtn.addEventListener('click', function() { if (searchInput) searchInput.value = ''; displayJobList(_allJobItems); });
+    })();
     async function handleJobFormSubmit(e) {
         console.log('handleJobFormSubmit 함수 호출됨');
         e.preventDefault();
@@ -1370,12 +1407,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 .from('jobs')
                     .update({ title, description, isnotice })
                 .eq('id', id);
-                alert('구인 게시물이 수정되었습니다.');
+                showToast('구인 게시물이 수정되었습니다.', 'success');
         } else {
             await window.supabaseClient
                 .from('jobs')
                     .insert([{ title, description, isnotice }]);
-                alert('구인 게시물이 등록되었습니다.');
+                showToast('구인 게시물이 등록되었습니다.', 'success');
         }
         document.getElementById('post-modal').style.display = 'none';
         renderJobList();
@@ -1392,7 +1429,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         } catch (error) {
             console.error('구인 게시물 저장 실패:', error);
-            alert('구인 게시물 저장 중 오류가 발생했습니다.');
+            showToast('구인 게시물 저장 중 오류가 발생했습니다.', 'error');
         } finally {
             // 로딩 오버레이 숨김
             if (loadingOverlay) {
@@ -1401,7 +1438,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     async function deleteJobItem(item) {
-        if (!confirm('정말로 이 구인 게시물을 삭제하시겠습니까?')) return;
+        showConfirm('이 구인 게시물을 삭제하시겠습니까?', async function() { return _deleteJobItemImpl(item); });
+    }
+    async function _deleteJobItemImpl(item) {
 
         // 1. 본문에서 첨부파일 링크 추출
         const fileUrls = [];
@@ -1443,6 +1482,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 3. 게시글 row 삭제
         await window.supabaseClient.from('jobs').delete().eq('id', item.id);
         await renderJobList();
+        showToast('구인 게시물이 삭제되었습니다.', 'success');
     }
     
     // showAddJobModal: 구인 게시판 추가 모달 표시 (공지사항과 동일한 구조로 단순화)
@@ -1709,13 +1749,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 .from('notices')
                 .update({ title, content, isnotice })
                 .eq('id', id);
-                alert('공지사항이 수정되었습니다.');
+                showToast('공지사항이 수정되었습니다.', 'success');
         } else {
                 // 새 공지사항 등록
             await window.supabaseClient
                 .from('notices')
                 .insert([{ title, content, isnotice }]);
-                alert('공지사항이 등록되었습니다.');
+                showToast('공지사항이 등록되었습니다.', 'success');
         }
             
         document.getElementById('post-modal').style.display = 'none';
@@ -1733,7 +1773,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } catch (error) {
             console.error('공지사항 저장 실패:', error);
-            alert('공지사항 저장 중 오류가 발생했습니다.');
+            showToast('공지사항 저장 중 오류가 발생했습니다.', 'error');
         } finally {
             // 로딩 오버레이 숨김
             if (loadingOverlay) {
@@ -1742,7 +1782,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     async function deleteNoticeItem(item) {
-        if (!confirm('정말로 이 공지사항을 삭제하시겠습니까?')) return;
+        showConfirm('이 공지사항을 삭제하시겠습니까?', async function() { return _deleteNoticeItemImpl(item); });
+    }
+    async function _deleteNoticeItemImpl(item) {
         try {
             // 1. 본문에서 이미지/첨부파일 추출
             const imgSrcs = [];
@@ -1783,9 +1825,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // 4. 게시글 row 삭제
         await window.supabaseClient.from('notices').delete().eq('id', item.id);
         await renderNoticeList();
+        showToast('공지사항이 삭제되었습니다.', 'success');
         } catch (error) {
             console.error('공지사항 삭제 중 오류:', error);
-            alert('공지사항 삭제 중 오류가 발생했습니다.');
+            showToast('공지사항 삭제 중 오류가 발생했습니다.', 'error');
         }
     }
 
@@ -1865,8 +1908,9 @@ document.addEventListener('DOMContentLoaded', () => {
             await loadFAQList();
             faqForm.reset();
             cancelFaqEditBtn.click();
+            showToast('FAQ가 저장되었습니다.', 'success');
         } catch (error) {
-            alert('FAQ 저장 중 오류가 발생했습니다.');
+            showToast('FAQ 저장 중 오류가 발생했습니다.', 'error');
             console.error('FAQ 저장 오류:', error);
         } finally {
             if (loadingOverlay) loadingOverlay.style.display = 'none';
@@ -1903,26 +1947,24 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // FAQ 삭제
-    window.deleteFAQ = async function(id) {
-        if (!confirm('정말로 이 FAQ를 삭제하시겠습니까?')) {
-            return;
-        }
-        
-        try {
-            const { error } = await window.supabaseClient
-                .from('qa')
-                .delete()
-                .eq('id', id);
-            
-            if (error) throw error;
-            
-            alert('FAQ가 삭제되었습니다.');
-            loadFAQList();
-            
-        } catch (error) {
-            console.error('FAQ 삭제 실패:', error);
-            alert('FAQ 삭제 중 오류가 발생했습니다.');
-        }
+    window.deleteFAQ = function(id) {
+        showConfirm('정말로 이 FAQ를 삭제하시겠습니까?', async function() {
+            try {
+                const { error } = await window.supabaseClient
+                    .from('qa')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                showToast('FAQ가 삭제되었습니다.', 'success');
+                loadFAQList();
+
+            } catch (error) {
+                console.error('FAQ 삭제 실패:', error);
+                showToast('FAQ 삭제 중 오류가 발생했습니다.', 'error');
+            }
+        });
     };
 
     // FAQ 수정 취소

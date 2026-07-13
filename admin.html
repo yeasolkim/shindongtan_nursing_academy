@@ -3084,11 +3084,105 @@
     ::-webkit-scrollbar-thumb { background: #c4cedf; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--brand-mid); }
 
+    /* ── 토스트 ── */
+    #toast-container {
+      position: fixed; bottom: 2rem; right: 2rem;
+      z-index: 99999; display: flex; flex-direction: column;
+      gap: 0.6rem; pointer-events: none;
+    }
+    .toast {
+      display: flex; align-items: center; gap: 0.65rem;
+      background: #1e293b; color: #fff;
+      padding: 0.85rem 1.2rem; border-radius: 12px;
+      font-size: 0.93rem; font-weight: 500;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.22);
+      animation: toastIn 0.25s ease; pointer-events: all;
+      max-width: 320px; line-height: 1.4;
+    }
+    .toast.success { background: #10b981; }
+    .toast.error   { background: #ef4444; }
+    .toast.warning { background: #f59e0b; color: #1e293b; }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── 삭제 확인 모달 ── */
+    #confirm-modal {
+      position: fixed; inset: 0; z-index: 99998;
+      background: rgba(0,0,0,0.45);
+      align-items: center; justify-content: center;
+    }
+    .confirm-box {
+      background: #fff; border-radius: 18px;
+      padding: 2rem 2rem 1.6rem;
+      max-width: 360px; width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .confirm-box .confirm-icon {
+      font-size: 2rem; margin-bottom: 0.8rem; display: block; text-align: center;
+    }
+    .confirm-box p {
+      font-size: 0.98rem; color: #1e293b;
+      margin: 0 0 1.5rem; line-height: 1.65;
+      font-weight: 500; text-align: center;
+    }
+    .confirm-btns {
+      display: flex; gap: 0.7rem; justify-content: center;
+    }
+    .confirm-btns button { min-width: 90px; padding: 0.65rem 1.2rem; }
+
+    /* ── 검색 바 ── */
+    .search-bar {
+      display: flex; gap: 0.6rem; align-items: center;
+      margin-bottom: 1.1rem; flex-wrap: wrap;
+    }
+    .search-bar input[type="text"] {
+      flex: 1; min-width: 160px;
+      padding: 0.6rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.93rem;
+      background: #fafbfc; color: var(--t1);
+      font-family: inherit; transition: border-color .2s;
+    }
+    .search-bar input[type="text"]:focus {
+      border-color: var(--brand); outline: none;
+      box-shadow: 0 0 0 3px rgba(51,74,108,.10);
+    }
+    .search-bar button { padding: 0.6rem 1.1rem; font-size: 0.9rem; }
+
+    /* ── 필수 항목 ── */
+    .req { color: #ef4444; margin-left: 2px; font-weight: 700; }
+
+    /* ── 업로드 힌트 ── */
+    .upload-hint {
+      font-size: 0.82rem; color: var(--t3);
+      margin: 0.3rem 0 0; line-height: 1.5;
+    }
+
+    /* ── 팝업 폼 섹션 구분 ── */
+    .form-section-label {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;
+      color: var(--t3); text-transform: uppercase;
+      border-top: 1.5px solid var(--border-lite);
+      padding-top: 1rem; margin-top: 0.5rem; margin-bottom: -0.3rem;
+    }
+
+    /* ── 빈 목록 안내 ── */
+    .empty-state {
+      text-align: center; padding: 2.5rem 1rem;
+      color: var(--t3); font-size: 0.95rem;
+    }
+    .empty-state i { font-size: 2rem; display: block; margin-bottom: 0.6rem; opacity: 0.4; }
+
     /* ── 모바일 오버라이드 ── */
     @media (max-width: 768px) {
       .admin-header { border-left-width: 4px; padding: 1.1rem 1.2rem; }
       .admin-card { padding: 1.2rem 1.2rem; border-radius: 12px; }
       .button-primary, .button-secondary, .button-danger { border-radius: 8px; }
+      #toast-container { bottom: 1rem; right: 1rem; left: 1rem; }
+      .toast { max-width: 100%; }
     }
   </style>
 </head>
@@ -3140,17 +3234,17 @@
         <form id="instructor-form" class="admin-form">
           <input type="hidden" id="instructor-id">
           <div class="form-group">
-            <label for="instructor-name">이름</label>
+            <label for="instructor-name">이름 <span class="req">*</span></label>
             <input type="text" id="instructor-name" required>
           </div>
           <div class="form-group">
-            <label for="instructor-title">직책</label>
+            <label for="instructor-title">직책 <span class="req">*</span></label>
             <input type="text" id="instructor-title" required>
           </div>
           <div class="form-group">
             <label for="instructor-image">사진</label>
             <input type="file" id="instructor-image" accept="image/*">
-            <small>사진을 변경하지 않으려면 비워두세요.</small>
+            <p class="upload-hint">JPG · PNG · WebP 지원. 수정 시 비워두면 기존 사진 유지.</p>
             <div id="instructor-image-status" style="margin-top:0.5rem;font-size:0.95em;color:#1e293b;"></div>
           </div>
           <div class="form-group">
@@ -3180,8 +3274,9 @@
         <h3>신규 시설 사진 추가</h3>
         <form id="facility-form" class="admin-form">
           <div class="form-group">
-            <label for="facility-image">사진 파일</label>
+            <label for="facility-image">사진 파일 <span class="req">*</span></label>
             <input type="file" id="facility-image" accept="image/*" required>
+            <p class="upload-hint">JPG · PNG · WebP 지원. 최대 5MB 권장.</p>
           </div>
           <div class="form-group">
             <label for="facility-alt">사진 설명(alt)</label>
@@ -3218,6 +3313,11 @@
       </div>
       <div class="admin-card">
         <h3>구인 게시물 목록</h3>
+        <div class="search-bar">
+          <input type="text" id="job-search-input" placeholder="제목으로 검색...">
+          <button id="job-search-btn" class="button-secondary"><i class="fas fa-search"></i> 검색</button>
+          <button id="job-search-clear-btn" class="button-secondary" style="color:var(--t3);border-color:var(--border);">초기화</button>
+        </div>
         <table class="jobs-table" id="job-list-table">
           <thead>
             <tr>
@@ -3244,6 +3344,11 @@
         <!-- 갤러리 로딩 오버레이는 이미 있음 -->
         <div class="admin-card">
           <h3>갤러리 게시물 목록</h3>
+          <div class="search-bar">
+            <input type="text" id="gallery-search-input" placeholder="제목으로 검색...">
+            <button id="gallery-search-btn" class="button-secondary"><i class="fas fa-search"></i> 검색</button>
+            <button id="gallery-search-clear-btn" class="button-secondary" style="color:var(--t3);border-color:var(--border);">초기화</button>
+          </div>
           <table class="jobs-table" id="gallery-list-table">
             <thead>
               <tr>
@@ -3312,11 +3417,11 @@
         <form id="faq-form" class="admin-form">
           <input type="hidden" id="faq-id">
           <div class="form-group">
-            <label for="faq-question">질문</label>
+            <label for="faq-question">질문 <span class="req">*</span></label>
             <input type="text" id="faq-question" required maxlength="200" placeholder="질문을 입력하세요">
           </div>
           <div class="form-group">
-            <label for="faq-answer">답변</label>
+            <label for="faq-answer">답변 <span class="req">*</span></label>
             <textarea id="faq-answer" rows="8" required placeholder="답변을 입력하세요"></textarea>
             
           </div>
@@ -3343,6 +3448,7 @@
         <h3>팝업 추가/수정</h3>
         <form id="popup-form" class="admin-form">
           <input type="hidden" id="popup-id">
+          <p class="form-section-label">기본 정보</p>
           <div class="form-group">
             <label for="popup-title">제목 <span style="font-weight:400;color:#888;font-size:0.9rem;">(관리용, 홈페이지에 노출되지 않음)</span></label>
             <input type="text" id="popup-title" maxlength="100" placeholder="팝업 이름을 입력하세요">
@@ -3356,6 +3462,7 @@
             <label for="popup-link">클릭 시 이동 링크 <span style="font-weight:400;color:#888;font-size:0.9rem;">(선택)</span></label>
             <input type="text" id="popup-link" maxlength="300" placeholder="https://...">
           </div>
+          <p class="form-section-label">크기 및 위치</p>
           <!-- 팝업 크기/위치 조정 -->
           <div class="form-group">
             <label>팝업 크기 및 위치 조정</label>
@@ -3407,6 +3514,7 @@
               </div>
             </div>
           </div>
+          <p class="form-section-label">노출 설정</p>
           <div class="form-group">
             <label>노출 기간</label>
             <div style="margin-bottom: 0.7rem;">
@@ -3466,7 +3574,7 @@
         <input type="hidden" id="modal-post-id">
         <input type="hidden" id="modal-post-type">
         <div class="form-group">
-          <label for="modal-title-input">제목</label>
+          <label for="modal-title-input">제목 <span class="req">*</span></label>
           <input type="text" id="modal-title-input" required>
         </div>
         <div class="form-group" id="modal-image-group" style="display: none;">
@@ -3496,7 +3604,7 @@
           </label>
           <small>공지사항 게시판 상단에 고정됩니다.</small>
         </div>
-        <button type="submit" class="button-primary">저장</button>
+        <button type="submit" class="button-primary">저장하기</button>
       </form>
     </div>
   </div>
@@ -3888,6 +3996,62 @@
 
     // Quill 에디터 초기화 함수를 전역으로 노출
     window.initializeQuillEditor = initializeQuillEditor;
+  </script>
+
+  <!-- 토스트 알림 컨테이너 -->
+  <div id="toast-container"></div>
+
+  <!-- 삭제 확인 모달 -->
+  <div id="confirm-modal" style="display:none;">
+    <div class="confirm-box">
+      <span class="confirm-icon">🗑️</span>
+      <p id="confirm-modal-msg"></p>
+      <div class="confirm-btns">
+        <button id="confirm-cancel-btn" class="button-secondary">취소</button>
+        <button id="confirm-ok-btn" class="button-danger">삭제</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ── 토스트 알림 ── */
+    window.showToast = function(msg, type) {
+      var container = document.getElementById('toast-container');
+      if (!container) return;
+      type = type || 'success';
+      var icons = { success: '✓', error: '✕', warning: '⚠' };
+      var toast = document.createElement('div');
+      toast.className = 'toast ' + type;
+      toast.innerHTML = '<span style="font-size:1.1rem;font-weight:700;">' + (icons[type] || '✓') + '</span> ' + msg;
+      container.appendChild(toast);
+      setTimeout(function() {
+        toast.style.transition = 'opacity .3s ease, transform .3s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(8px)';
+        setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 320);
+      }, 3000);
+    };
+
+    /* ── 삭제 확인 모달 ── */
+    window.showConfirm = function(msg, onOk) {
+      var modal = document.getElementById('confirm-modal');
+      document.getElementById('confirm-modal-msg').textContent = msg;
+      modal.style.display = 'flex';
+      var okBtn = document.getElementById('confirm-ok-btn');
+      var cancelBtn = document.getElementById('confirm-cancel-btn');
+      function cleanup() {
+        modal.style.display = 'none';
+        okBtn.removeEventListener('click', handleOk);
+        cancelBtn.removeEventListener('click', handleCancel);
+        modal.removeEventListener('click', handleBackdrop);
+      }
+      function handleOk() { cleanup(); onOk(); }
+      function handleCancel() { cleanup(); }
+      function handleBackdrop(e) { if (e.target === modal) cleanup(); }
+      okBtn.addEventListener('click', handleOk);
+      cancelBtn.addEventListener('click', handleCancel);
+      modal.addEventListener('click', handleBackdrop);
+    };
   </script>
 </body>
 </html> 
