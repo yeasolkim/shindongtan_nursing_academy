@@ -1119,6 +1119,15 @@ document.addEventListener('DOMContentLoaded', () => {
             window.setPopupPreviewFromForm('');
         }
 
+        // 크기/위치 초기화
+        const posXEl = document.getElementById('popup-pos-x');
+        const posYEl = document.getElementById('popup-pos-y');
+        const widthEl = document.getElementById('popup-width');
+        if (posXEl) { posXEl.value = '50'; document.getElementById('popup-pos-x-slider').value = '50'; document.getElementById('popup-pos-x-value').textContent = '50'; }
+        if (posYEl) { posYEl.value = '50'; document.getElementById('popup-pos-y-slider').value = '50'; document.getElementById('popup-pos-y-value').textContent = '50'; }
+        if (widthEl) { widthEl.value = '420'; document.getElementById('popup-width-slider').value = '420'; document.getElementById('popup-width-value').textContent = '420'; }
+        if (window.updatePopupCardInPreview) window.updatePopupCardInPreview();
+
         // 빠른 날짜 설정 버튼들 초기화
         const quickDateBtns = document.querySelectorAll('.quick-date-btn');
         quickDateBtns.forEach(btn => btn.classList.remove('active'));
@@ -1179,6 +1188,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const start_date = document.getElementById('popup-start-date').value || null;
         const end_date = document.getElementById('popup-end-date').value || null;
         const is_active = document.getElementById('popup-active').checked;
+        const position_x = parseInt(document.getElementById('popup-pos-x').value) || 50;
+        const position_y = parseInt(document.getElementById('popup-pos-y').value) || 50;
+        const width = parseInt(document.getElementById('popup-width').value) || null;
         let image_url = null;
 
         // 이미지 업로드
@@ -1200,6 +1212,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 start_date,
                 end_date,
                 is_active,
+                position_x,
+                position_y,
+                ...(width && { width }),
                 ...(image_url && { image_url })
             };
 
@@ -1235,6 +1250,22 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('popup-end-date').value = data.end_date || '';
         const isActive = (data.is_active === true || data.is_active === 1 || data.is_active === 'true' || data.is_active === 'Y');
         document.getElementById('popup-active').checked = isActive;
+
+        // 위치/크기 복원
+        const px = data.position_x != null ? data.position_x : 50;
+        const py = data.position_y != null ? data.position_y : 50;
+        const pw = data.width || 420;
+        document.getElementById('popup-pos-x').value = px;
+        document.getElementById('popup-pos-x-slider').value = px;
+        document.getElementById('popup-pos-x-value').textContent = px;
+        document.getElementById('popup-pos-y').value = py;
+        document.getElementById('popup-pos-y-slider').value = py;
+        document.getElementById('popup-pos-y-value').textContent = py;
+        document.getElementById('popup-width').value = pw;
+        document.getElementById('popup-width-slider').value = pw;
+        document.getElementById('popup-width-value').textContent = pw;
+        if (window.updatePopupCardInPreview) window.updatePopupCardInPreview();
+
         document.getElementById('popup-cancel').style.display = '';
         if (window.setPopupPreviewFromForm) window.setPopupPreviewFromForm(data.image_url);
         // 수정 폼으로 스크롤

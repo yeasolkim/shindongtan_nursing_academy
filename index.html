@@ -132,6 +132,7 @@
   <script>
     async function loadPopupsFromSupabase() {
       if (!window.supabaseClient) return;
+      if (new URLSearchParams(window.location.search).get('admin-preview') === '1') return;
       try {
         const today = new Date();
         const todayStr = today.getFullYear() + '-' +
@@ -162,6 +163,17 @@
       // 카드 (X 버튼이 카드 바깥에 위치하므로 overflow: visible)
       const card = document.createElement('div');
       card.className = 'popup-card';
+
+      // 위치/크기 적용 (DB 값 또는 기본값: 중앙 배치)
+      const px = popup.position_x != null ? popup.position_x : 50;
+      const py = popup.position_y != null ? popup.position_y : 50;
+      card.style.left = px + '%';
+      card.style.top = py + '%';
+      card.style.transform = 'translate(-50%, -50%)';
+      if (popup.width) {
+        card.style.width = popup.width + 'px';
+        card.style.maxWidth = '90vw';
+      }
 
       // X 닫기 버튼 — 카드 우상단 바깥에 배치
       const closeBtn = document.createElement('button');
@@ -222,15 +234,11 @@
       inset: 0;
       background: rgba(0, 0, 0, 0.6);
       backdrop-filter: blur(3px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
       z-index: 99999;
-      padding: 2.5rem 1rem 1rem;
       animation: popupFadeIn 0.22s ease;
     }
     .popup-card {
-      position: relative;
+      position: absolute;
       border-radius: 16px;
       overflow: visible;
       max-width: min(88vw, 420px);
