@@ -746,17 +746,15 @@
       }
       
       .admin-tabs {
-        flex-wrap: wrap;
-        gap: 0.5rem;
+        gap: 0.4rem;
         margin-bottom: 2rem;
       }
-      
+
       .tab-link {
-        padding: 0.8rem 1rem;
-        font-size: 0.9rem;
-        flex: 1;
-        min-width: 120px;
-        text-align: center;
+        padding: 0.7rem 1rem;
+        font-size: 0.88rem;
+        flex: 0 0 auto;
+        white-space: nowrap;
       }
       
       .admin-card {
@@ -779,21 +777,16 @@
       .button-primary {
         padding: 0.7rem 1.5rem;
         font-size: 0.95rem;
-        width: 100%;
-        margin-bottom: 0.5rem;
       }
-      
+
       .button-secondary {
         padding: 0.7rem 1.5rem;
         font-size: 0.95rem;
-        width: 100%;
-        margin-bottom: 0.5rem;
       }
-      
+
       .button-danger {
         padding: 0.7rem 1.5rem;
         font-size: 0.95rem;
-        width: 100%;
       }
       
       .image-previews {
@@ -1544,16 +1537,25 @@
       min-width: unset;
       margin: 0;
       font-weight: 600;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+    #tab-faq .faq-admin-item .button-secondary {
       border: 1.2px solid #cfd8e3;
       background: #e7eaf0;
       color: #334a6c;
-      transition: background 0.2s, color 0.2s;
     }
-    #tab-faq .faq-admin-item .button-secondary:hover,
-    #tab-faq .faq-admin-item .button-danger:hover {
+    #tab-faq .faq-admin-item .button-secondary:hover {
       background: #334a6c;
       color: #fff;
       border-color: #334a6c;
+    }
+    #tab-faq .faq-admin-item .button-danger {
+      border: none;
+      background: #ef4444;
+      color: #fff;
+    }
+    #tab-faq .faq-admin-item .button-danger:hover {
+      background: #dc2626;
     }
     #tab-faq .faq-admin-item .delete-btn {
       position: absolute;
@@ -3176,6 +3178,66 @@
     }
     .empty-state i { font-size: 2rem; display: block; margin-bottom: 0.6rem; opacity: 0.4; }
 
+    /* ── 섹션 h2 ── */
+    .admin-section h2 {
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--brand);
+      border-bottom: 1.5px solid var(--border-lite);
+      padding-bottom: 0.75rem; margin-bottom: 1.5rem;
+    }
+
+    /* ── 게시물 카드 목록 (채용 탭) ── */
+    .post-card-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem; }
+    .post-card-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.2rem;
+      background: var(--card);
+      border: 1.5px solid var(--border-lite);
+      border-radius: 12px;
+      transition: all .2s ease;
+    }
+    .post-card-item:hover { border-color: var(--border); box-shadow: var(--shadow-hover); }
+    .post-card-main { flex: 1; min-width: 0; }
+    .post-notice-badge {
+      display: inline-block; font-size: 0.73rem; font-weight: 700;
+      color: #d92121; background: #fef2f2; border: 1px solid #fecaca;
+      border-radius: 5px; padding: 0.1rem 0.45rem; margin-bottom: 0.35rem;
+    }
+    .post-card-title {
+      font-size: 0.96rem; font-weight: 600; color: var(--t1);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      margin-bottom: 0.3rem;
+    }
+    .post-card-meta { display: flex; gap: 1rem; font-size: 0.81rem; color: var(--t3); }
+    .post-card-meta i { margin-right: 0.25rem; }
+    .post-card-actions { display: flex; flex-direction: column; gap: 0.4rem; flex-shrink: 0; }
+    .post-card-actions .button-secondary,
+    .post-card-actions .button-danger { padding: 0.38rem 0.9rem; font-size: 0.83rem; }
+
+    /* ── 팝업 목록 카드 ── */
+    .popup-list-item {
+      display: flex; align-items: center; gap: 1.2rem;
+      padding: 1.1rem 1.2rem;
+      background: var(--card);
+      border: 1.5px solid var(--border-lite);
+      border-radius: 12px; margin-bottom: 0.8rem;
+      box-shadow: var(--shadow);
+      transition: box-shadow .2s ease;
+    }
+    .popup-list-item:hover { box-shadow: var(--shadow-hover); }
+    .popup-list-item img { width: 88px; height: 68px; object-fit: contain; border-radius: 8px; border: 1px solid var(--border-lite); background: #f6f8fa; flex-shrink: 0; }
+    .popup-list-info { flex: 1; min-width: 0; }
+    .popup-list-title { font-weight: 700; color: var(--brand); font-size: 1rem; margin-bottom: 0.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .popup-list-date { font-size: 0.85rem; color: var(--t2); margin-bottom: 0.2rem; }
+    .popup-list-status-on  { font-size: 0.85rem; color: #16a34a; font-weight: 600; }
+    .popup-list-status-off { font-size: 0.85rem; color: var(--t3); }
+    .popup-list-actions { display: flex; flex-direction: column; gap: 0.45rem; flex-shrink: 0; }
+    .popup-list-actions .button-secondary,
+    .popup-list-actions .button-danger { padding: 0.42rem 1rem; font-size: 0.88rem; }
+
+    /* ── 팝업 미리보기 최소 높이 ── */
+    #preview-iframe-wrapper { min-height: 280px; }
+
     /* ── 모바일 오버라이드 ── */
     @media (max-width: 768px) {
       .admin-header { border-left-width: 4px; padding: 1.1rem 1.2rem; }
@@ -3183,6 +3245,10 @@
       .button-primary, .button-secondary, .button-danger { border-radius: 8px; }
       #toast-container { bottom: 1rem; right: 1rem; left: 1rem; }
       .toast { max-width: 100%; }
+      /* Fix 4: 탭 가로 스크롤 */
+      .admin-tabs { overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; padding-bottom: 0.35rem; }
+      .admin-tabs::-webkit-scrollbar { display: none; }
+      .tab-link { flex: 0 0 auto; white-space: nowrap; }
     }
   </style>
 </head>
@@ -3318,19 +3384,7 @@
           <button id="job-search-btn" class="button-secondary"><i class="fas fa-search"></i> 검색</button>
           <button id="job-search-clear-btn" class="button-secondary" style="color:var(--t3);border-color:var(--border);">초기화</button>
         </div>
-        <table class="jobs-table" id="job-list-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>중요</th>
-              <th>제목</th>
-              <th>작성일</th>
-              <th>조회수</th>
-              <th>작업</th>
-            </tr>
-          </thead>
-          <tbody id="job-list"></tbody>
-        </table>
+        <div class="post-card-list" id="job-list"></div>
       </div>
     </div>
 

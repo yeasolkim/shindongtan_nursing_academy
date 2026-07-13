@@ -1176,16 +1176,16 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         el.innerHTML = list.map(item => `
-            <div style="display:flex;align-items:center;gap:1.2rem;padding:1.2rem;background:#fff;border:1.5px solid #e9ecef;border-radius:12px;margin-bottom:1rem;box-shadow:0 2px 8px rgba(51,74,108,0.05);transition:box-shadow 0.2s;" onmouseenter="this.style.boxShadow='0 4px 16px rgba(51,74,108,0.12)'" onmouseleave="this.style.boxShadow='0 2px 8px rgba(51,74,108,0.05)'">
-                <img src="${item.image_url}" alt="팝업 이미지" style="width:90px;height:70px;object-fit:contain;border-radius:8px;border:1px solid #e9ecef;background:#f6f8fa;flex-shrink:0;">
-                <div style="flex:1;min-width:0;">
-                    <div style="font-weight:700;color:#334a6c;font-size:1.05rem;margin-bottom:0.3rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${item.title || '(제목 없음)'}</div>
-                    <div style="font-size:0.88rem;color:#6c757d;margin-bottom:0.2rem;">📅 ${item.start_date||'-'} ~ ${item.end_date||'-'}</div>
-                    <div style="font-size:0.88rem;">${item.is_active ? '<span style="color:#22863a;font-weight:600;">● 활성화</span>' : '<span style="color:#aaa;">○ 비활성화</span>'}</div>
+            <div class="popup-list-item">
+                <img src="${item.image_url}" alt="팝업 이미지">
+                <div class="popup-list-info">
+                    <div class="popup-list-title">${item.title || '(제목 없음)'}</div>
+                    <div class="popup-list-date">📅 ${item.start_date||'-'} ~ ${item.end_date||'-'}</div>
+                    <div>${item.is_active ? '<span class="popup-list-status-on">● 활성화</span>' : '<span class="popup-list-status-off">○ 비활성화</span>'}</div>
                 </div>
-                <div style="display:flex;flex-direction:column;gap:0.5rem;flex-shrink:0;">
-                    <button class="button-secondary" style="padding:0.45rem 1rem;font-size:0.9rem;border-radius:7px;border:1.2px solid #cfd8e3;background:#e7eaf0;color:#334a6c;font-weight:600;cursor:pointer;" onclick="editPopup(${item.id})">수정</button>
-                    <button class="button-danger" style="padding:0.45rem 1rem;font-size:0.9rem;border-radius:7px;border:none;background:#dc3545;color:#fff;font-weight:600;cursor:pointer;" onclick="deletePopup(${item.id}, '${item.image_url}')">삭제</button>
+                <div class="popup-list-actions">
+                    <button class="button-secondary" onclick="editPopup(${item.id})">수정</button>
+                    <button class="button-danger" onclick="deletePopup(${item.id}, '${item.image_url}')">삭제</button>
                 </div>
             </div>
         `).join('');
@@ -1350,24 +1350,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const listEl = window.boardConfig.jobs.listEl;
         listEl.innerHTML = '';
         if (!items.length) {
-            listEl.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-briefcase"></i>게시물이 없습니다.</td></tr>';
+            listEl.innerHTML = '<div class="empty-state"><i class="fas fa-briefcase"></i>게시물이 없습니다.</div>';
             return;
         }
         items.forEach(item => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${item.id}</td>
-                <td>${item.isnotice ? '<span title="중요공지" style="color:#d92121;font-weight:600;">📢</span>' : ''}</td>
-                <td>${item.isnotice ? '📢 <span style="color:#d92121;font-weight:600;">중요</span> ' : ''}${item.title}</td>
-                <td>${formatKoreaDate(item.created_at)}</td>
-                <td>${item.views || 0}</td>
-                <td class="actions">
-                    <button class="button-secondary" data-id="${item.id}">수정</button>
-                    <button class="button-danger" data-id="${item.id}">삭제</button>
-                </td>`;
-            tr.querySelector('.button-secondary').addEventListener('click', () => showEditJobModal(item));
-            tr.querySelector('.button-danger').addEventListener('click', () => deleteJobItem(item));
-            listEl.appendChild(tr);
+            const div = document.createElement('div');
+            div.className = 'post-card-item';
+            div.innerHTML = `
+                <div class="post-card-main">
+                    ${item.isnotice ? '<span class="post-notice-badge">📢 중요</span>' : ''}
+                    <div class="post-card-title">${item.title}</div>
+                    <div class="post-card-meta">
+                        <span><i class="fas fa-calendar-alt"></i> ${formatKoreaDate(item.created_at)}</span>
+                        <span><i class="fas fa-eye"></i> ${item.views || 0}</span>
+                    </div>
+                </div>
+                <div class="post-card-actions">
+                    <button class="button-secondary">수정</button>
+                    <button class="button-danger">삭제</button>
+                </div>`;
+            div.querySelector('.button-secondary').addEventListener('click', () => showEditJobModal(item));
+            div.querySelector('.button-danger').addEventListener('click', () => deleteJobItem(item));
+            listEl.appendChild(div);
         });
     }
     // 구인 검색
