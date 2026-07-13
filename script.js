@@ -1040,7 +1040,6 @@ function initLocationMap() {
  * 갤러리 페이지 초기화 (Supabase 연동)
  */
 async function initGalleryPage() {
-  console.log('initGalleryPage 함수 시작');
   const listContainer = document.getElementById('gallery-list');
   if (!listContainer) {
     console.error('gallery-list 요소를 찾을 수 없습니다.');
@@ -1165,7 +1164,6 @@ async function initGalleryPage() {
     filteredItems = sortItems(filteredItems, sortOrder);
     renderList(filteredItems, currentPage);
     setupPagination(filteredItems, currentPage);
-    console.log('initGalleryPage 함수 완료');
   } catch (error) {
     console.error('갤러리 페이지 초기화 오류:', error);
     listContainer.innerHTML += '<p style="text-align: center; padding: 2rem;">게시물을 불러오는 데 실패했습니다.</p>';
