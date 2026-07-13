@@ -441,7 +441,7 @@ async function incrementViewCount(tableName, postId) {
 
 const PAGE_HERO_CONFIGS = {
     'academy_introduction.html': { title: '인사말', description: '여러분을 환영합니다.', breadcrumb: '학원소개 > 인사말', badge: '학원소개' },
-    'academy_history.html': { title: '기관연혁', description: '신동탄간호학원의 발자취', breadcrumb: '학원소개 > 기관연혁', badge: '학원소개' },
+    'academy_history.html': { title: '학원연혁', description: '신동탄간호학원의 발자취', breadcrumb: '학원소개 > 학원연혁', badge: '학원소개' },
     'academy_instructors.html': { title: '강사진', description: '최고의 강사진을 소개합니다.', breadcrumb: '학원소개 > 강사진', badge: '학원소개' },
     'academy_facilities.html': { title: '시설안내', description: '최신 시설을 갖춘 교육 환경', breadcrumb: '학원소개 > 시설안내', badge: '학원소개' },
     'academy_location.html': { title: '오시는 길', description: '학원 위치를 안내해 드립니다.', breadcrumb: '학원소개 > 오시는 길', badge: '학원소개' },
