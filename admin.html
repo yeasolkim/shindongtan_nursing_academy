@@ -3513,10 +3513,15 @@
       </div>
       <div class="admin-card">
         <h3>구인 게시물 목록</h3>
-        <div class="search-bar">
+        <div class="filter-bar">
           <input type="text" id="job-search-input" placeholder="제목으로 검색...">
+          <select id="job-sort-order">
+            <option value="created_at_desc">최신순</option>
+            <option value="created_at_asc">오래된순</option>
+            <option value="title_asc">제목순</option>
+          </select>
           <button id="job-search-btn" class="button-secondary"><i class="fas fa-search"></i> 검색</button>
-          <button id="job-search-clear-btn" class="button-secondary" style="color:var(--t3);border-color:var(--border);">초기화</button>
+          <button id="job-search-clear-btn" class="button-secondary">초기화</button>
         </div>
         <div class="post-card-list" id="job-list"></div>
       </div>
@@ -3532,10 +3537,10 @@
         <!-- 갤러리 로딩 오버레이는 이미 있음 -->
         <div class="admin-card">
           <h3>갤러리 게시물 목록</h3>
-          <div class="search-bar">
+          <div class="filter-bar">
             <input type="text" id="gallery-search-input" placeholder="제목으로 검색...">
             <button id="gallery-search-btn" class="button-secondary"><i class="fas fa-search"></i> 검색</button>
-            <button id="gallery-search-clear-btn" class="button-secondary" style="color:var(--t3);border-color:var(--border);">초기화</button>
+            <button id="gallery-search-clear-btn" class="button-secondary">초기화</button>
           </div>
           <div class="post-card-list" id="gallery-list"></div>
         </div>
@@ -3758,7 +3763,7 @@
           <style>@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}</style>
         </div>
         <div class="form-group">
-          <label for="modal-content-input">내용</label>
+          <label for="modal-content-input">내용 <span class="req">*</span></label>
           <textarea id="modal-content-input" rows="10" style="display:none;"></textarea>
           <div id="quill-editor" style="height: 400px;"></div>
         </div>

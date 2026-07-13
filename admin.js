@@ -1599,28 +1599,59 @@ document.addEventListener('DOMContentLoaded', () => {
             listEl.appendChild(div);
         });
     }
-    // 구인 검색
+    // 구인 검색 + 정렬
     (function() {
         var searchBtn = document.getElementById('job-search-btn');
         var searchInput = document.getElementById('job-search-input');
+        var sortSelect = document.getElementById('job-sort-order');
         var clearBtn = document.getElementById('job-search-clear-btn');
+        function getSorted(items) {
+            var order = sortSelect ? sortSelect.value : 'created_at_desc';
+            var sorted = items.slice();
+            if (order === 'created_at_asc') {
+                sorted.sort(function(a, b) { return (a.created_at || '').localeCompare(b.created_at || ''); });
+            } else if (order === 'title_asc') {
+                sorted.sort(function(a, b) { return (a.title || '').localeCompare(b.title || '', 'ko'); });
+            } else {
+                sorted.sort(function(a, b) {
+                    if ((b.isnotice ? 1 : 0) !== (a.isnotice ? 1 : 0)) return (b.isnotice ? 1 : 0) - (a.isnotice ? 1 : 0);
+                    return (b.created_at || '').localeCompare(a.created_at || '');
+                });
+            }
+            return sorted;
+        }
         function doFilter() {
             var q = searchInput ? searchInput.value.toLowerCase().trim() : '';
-            displayJobList(q ? _allJobItems.filter(function(i) { return i.title && i.title.toLowerCase().includes(q); }) : _allJobItems);
+            var filtered = q ? _allJobItems.filter(function(i) { return i.title && i.title.toLowerCase().includes(q); }) : _allJobItems;
+            displayJobList(getSorted(filtered));
         }
         if (searchBtn) searchBtn.addEventListener('click', doFilter);
         if (searchInput) searchInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') doFilter(); });
-        if (clearBtn) clearBtn.addEventListener('click', function() { if (searchInput) searchInput.value = ''; displayJobList(_allJobItems); });
+        if (sortSelect) sortSelect.addEventListener('change', doFilter);
+        if (clearBtn) clearBtn.addEventListener('click', function() {
+            if (searchInput) searchInput.value = '';
+            if (sortSelect) sortSelect.value = 'created_at_desc';
+            displayJobList(getSorted(_allJobItems));
+        });
     })();
     async function handleJobFormSubmit(e) {
         console.log('handleJobFormSubmit 함수 호출됨');
         e.preventDefault();
         const id = document.getElementById('modal-post-id').value;
-        const title = document.getElementById('modal-title-input').value;
-        console.log('구인 게시글 데이터:', { id, title });
+        const title = document.getElementById('modal-title-input').value.trim();
         const description = typeof quill !== 'undefined' && quill ? quill.root.innerHTML : document.getElementById('modal-content-input').value;
         const isnotice = document.getElementById('modal-is-notice-checkbox')?.checked || false;
-        
+
+        // 본문 빈 값 검사
+        const descText = typeof quill !== 'undefined' && quill ? quill.getText().trim() : description.replace(/<[^>]*>/g, '').trim();
+        if (!descText) {
+            showToast('본문 내용을 입력해주세요.', 'warning');
+            return;
+        }
+
+        const submitBtn = modalForm ? modalForm.querySelector('[type="submit"]') : null;
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '저장 중...'; }
+
         // 로딩 오버레이 표시
         const loadingOverlay = document.getElementById('jobs-loading-overlay');
         const loadingText = document.getElementById('jobs-loading-text');
@@ -1660,10 +1691,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('구인 게시물 저장 실패:', error);
             showToast('구인 게시물 저장 중 오류가 발생했습니다.', 'error');
         } finally {
-            // 로딩 오버레이 숨김
-            if (loadingOverlay) {
-                loadingOverlay.style.display = 'none';
-            }
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '저장하기'; }
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
         }
     }
     async function deleteJobItem(item) {
@@ -1721,6 +1750,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modal-post-id').value = '';
         document.getElementById('modal-post-type').value = 'jobs';
         modalTitle.textContent = '새 구인 게시물 작성';
+        modal.querySelector('.modal-content').classList.remove('editing-mode');
         modalImageGroup.style.display = 'none';
         modalNoticeGroup.style.display = 'block';
         document.getElementById('modal-title-input').value = '';
@@ -1740,7 +1770,8 @@ document.addEventListener('DOMContentLoaded', () => {
         modalForm.reset();
         document.getElementById('modal-post-id').value = String(item.id);
         document.getElementById('modal-post-type').value = 'jobs';
-        modalTitle.textContent = '구인 게시물 수정';
+        modalTitle.textContent = '"' + item.title + '" 수정 중';
+        modal.querySelector('.modal-content').classList.add('editing-mode');
         modalImageGroup.style.display = 'none';
         modalNoticeGroup.style.display = 'block';
         document.getElementById('modal-title-input').value = item.title || '';
