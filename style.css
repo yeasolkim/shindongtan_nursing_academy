@@ -229,45 +229,6 @@ main {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Hero CTA 버튼 */
-.hero-cta-buttons {
-  display: flex;
-  gap: 0.8rem;
-  justify-content: center;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-.hero-cta-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.7rem 1.5rem;
-  border-radius: 50px;
-  font-weight: 700;
-  font-size: 0.95rem;
-  text-decoration: none;
-  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-  letter-spacing: -0.2px;
-}
-.hero-cta-primary {
-  background: #fff;
-  color: #1a365d;
-}
-.hero-cta-primary:hover {
-  background: #e8f0fe;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
-}
-.hero-cta-secondary {
-  background: transparent;
-  color: #fff;
-  border: 2px solid rgba(255, 255, 255, 0.7);
-}
-.hero-cta-secondary:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: #fff;
-  transform: translateY(-2px);
-}
 
 /* Feature 카드 링크 처리 */
 a.feature-card {
@@ -924,8 +885,6 @@ a.feature-card:hover {
 
 /* 6.3 작은 모바일 (Small Mobile) - 480px 이하 */
 @media (max-width: 480px) {
-  .hero-cta-buttons { gap: 0.5rem; margin-bottom: 1.4rem; }
-  .hero-cta-btn { font-size: 0.82rem; padding: 0.6rem 1.1rem; }
   .hero-v2 { padding: 2rem 0.5rem; }
   .hero-v2-title { font-size: 1rem; }
   .hero-v2-subtitle { font-size: 0.75rem; margin: 0 auto 1.2rem; }
