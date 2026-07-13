@@ -177,6 +177,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const instructorDetailBody = document.getElementById('instructor-detail-body');
     const closeInstructorDetailBtn = document.getElementById('close-instructor-detail');
 
+    // 사진 파일 선택 시 미리보기
+    (function() {
+        var imgInput = document.getElementById('instructor-image');
+        var imgPreview = document.getElementById('instructor-img-preview');
+        if (!imgInput || !imgPreview) return;
+        imgInput.addEventListener('change', function() {
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    imgPreview.src = e.target.result;
+                    imgPreview.classList.add('visible');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imgPreview.src = '';
+                imgPreview.classList.remove('visible');
+            }
+        });
+    })();
+
+    // 경력 항목 수 카운터
+    function updateDetailsCount() {
+        var ta = document.getElementById('instructor-details');
+        var counter = document.getElementById('instructor-details-count');
+        if (!ta || !counter) return;
+        var lines = ta.value.split('\n').filter(function(l) { return l.trim(); });
+        counter.textContent = lines.length ? lines.length + '개 항목 입력됨' : '';
+    }
+    (function() {
+        var ta = document.getElementById('instructor-details');
+        if (ta) ta.addEventListener('input', updateDetailsCount);
+    })();
+
     // 강사 상세 정보 모달 열기
     async function showInstructorDetail(id) {
         try {
@@ -186,25 +220,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 .eq('id', id)
                 .single();
             if (error || !instructor) {
-                alert('강사 정보를 찾을 수 없습니다.');
+                showToast('강사 정보를 찾을 수 없습니다.', 'error');
                 return;
             }
             instructorDetailBody.innerHTML = `
-                <div style="text-align:center;">
-                    <img src="${instructor.image || 'shindongtan/resource/profile.png'}" alt="${instructor.name}" style="width:120px;height:120px;object-fit:cover;border-radius:50%;margin-bottom:1rem;">
-                    <h4 style="margin:0 0 0.5rem 0;">${instructor.name}</h4>
-                    <p style="color:#334a6c;font-weight:500;margin:0 0 1rem 0;">${instructor.title}</p>
-                    <div style="text-align:left;">
-                      <strong>상세 경력</strong>
-                      <ul style="margin:0.5rem 0 0 1rem;padding:0;">
-                        ${(instructor.details || []).map(line => `<li>${line}</li>`).join('')}
-                      </ul>
-                    </div>
+                <div class="instructor-detail-center">
+                    <img src="${instructor.image || 'shindongtan/resource/profile.png'}" alt="${instructor.name}" class="instructor-detail-img">
+                    <h4 class="instructor-detail-name">${instructor.name}</h4>
+                    <p class="instructor-detail-role">${instructor.title}</p>
+                    ${(instructor.details && instructor.details.length) ? `
+                    <div class="instructor-detail-career">
+                        <p class="instructor-detail-career-label">상세 경력</p>
+                        <ul>${instructor.details.map(line => `<li>${line}</li>`).join('')}</ul>
+                    </div>` : ''}
                 </div>
             `;
             instructorDetailModal.style.display = 'block';
         } catch (e) {
-            alert('강사 상세 정보 로드 중 오류가 발생했습니다.');
+            showToast('강사 상세 정보 로드 중 오류가 발생했습니다.', 'error');
             console.error(e);
         }
     }
@@ -235,6 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const item = document.createElement('div');
                 item.className = 'instructor-admin-item';
                 item.innerHTML = `
+                    <span class="instructor-order-badge">#${idx + 1}</span>
                     <div class="instructor-preview">
                         <img src="${inst.image || 'shindongtan/resource/logo.png'}" alt="${inst.name}">
                         <div class="instructor-info">
@@ -283,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .eq('id', target.id);
             await loadInstructors();
         } catch (error) {
-            alert('순서 변경 중 오류가 발생했습니다.');
+            showToast('순서 변경 중 오류가 발생했습니다.', 'error');
             console.error('순서 변경 오류:', error);
         }
     }
@@ -292,6 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
     instructorForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const loadingOverlay = document.getElementById('instructor-loading-overlay');
+        const loadingText = document.getElementById('instructor-loading-text');
         if (loadingOverlay) loadingOverlay.style.display = 'flex';
         try {
         const id = document.getElementById('instructor-id').value;
@@ -300,9 +335,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const details = document.getElementById('instructor-details').value.split('\n').filter(line => line.trim());
         const imageFile = document.getElementById('instructor-image').files[0];
 
+        if (imageFile && imageFile.size > 5 * 1024 * 1024) {
+            showToast('이미지 파일이 너무 큽니다. 5MB 이하로 선택해주세요.', 'error');
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
+            return;
+        }
+
         let imageUrl = null;
         if (imageFile) {
+                if (loadingText) loadingText.textContent = '이미지 업로드 중...';
                 imageUrl = await uploadInstructorImage(imageFile);
+                if (loadingText) loadingText.textContent = '강사 정보 저장 중...';
         }
 
         const instructorData = {
@@ -354,18 +397,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 .eq('id', id)
                 .single();
             if (error || !instructor) {
-                alert('강사 정보를 찾을 수 없습니다.');
+                showToast('강사 정보를 찾을 수 없습니다.', 'error');
                 return;
             }
             document.getElementById('instructor-id').value = instructor.id;
             document.getElementById('instructor-name').value = instructor.name;
             document.getElementById('instructor-title').value = instructor.title;
             document.getElementById('instructor-details').value = (instructor.details || []).join('\n');
+            updateDetailsCount();
+            // 현재 이미지 미리보기 표시
+            var preview = document.getElementById('instructor-img-preview');
+            if (preview) {
+                if (instructor.image) {
+                    preview.src = instructor.image;
+                    preview.classList.add('visible');
+                } else {
+                    preview.src = '';
+                    preview.classList.remove('visible');
+                }
+            }
+            // 수정 모드 UI 표시
+            var formTitle = document.getElementById('instructor-form-title');
+            var formCard = document.getElementById('instructor-form-card');
+            if (formTitle) formTitle.textContent = '"' + instructor.name + '" 수정 중';
+            if (formCard) formCard.classList.add('editing-mode');
             cancelInstructorEditBtn.style.display = 'inline-block';
             instructorForm.querySelector('button[type="submit"]').textContent = '수정하기';
             window.scrollTo(0, 0);
         } catch (error) {
-            alert('강사 정보 로드 중 오류가 발생했습니다.');
+            showToast('강사 정보 로드 중 오류가 발생했습니다.', 'error');
             console.error('강사 정보 로드 오류:', error);
         }
     }
@@ -375,6 +435,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('instructor-id').value = '';
         cancelInstructorEditBtn.style.display = 'none';
         instructorForm.querySelector('button[type="submit"]').textContent = '저장하기';
+        var formTitle = document.getElementById('instructor-form-title');
+        var formCard = document.getElementById('instructor-form-card');
+        if (formTitle) formTitle.textContent = '신규 강사 추가';
+        if (formCard) formCard.classList.remove('editing-mode');
+        var preview = document.getElementById('instructor-img-preview');
+        if (preview) { preview.src = ''; preview.classList.remove('visible'); }
+        var counter = document.getElementById('instructor-details-count');
+        if (counter) counter.textContent = '';
     });
 
     // 강사 삭제

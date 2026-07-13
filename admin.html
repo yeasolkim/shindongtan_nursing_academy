@@ -3238,6 +3238,60 @@
     /* ── 팝업 미리보기 최소 높이 ── */
     #preview-iframe-wrapper { min-height: 280px; }
 
+    /* ── 강사 폼 수정 모드 표시 ── */
+    #instructor-form-card.editing-mode {
+      border-left: 4px solid #f59e0b;
+    }
+    #instructor-form-card.editing-mode #instructor-form-title {
+      color: #d97706;
+    }
+
+    /* ── 강사 이미지 미리보기 ── */
+    .instructor-img-preview {
+      display: none;
+      width: 88px; height: 88px;
+      object-fit: cover; border-radius: 50%;
+      margin-top: 0.8rem;
+      border: 2px solid var(--border);
+      box-shadow: 0 2px 8px rgba(51,74,108,.10);
+    }
+    .instructor-img-preview.visible { display: block; }
+
+    /* ── 강사 상세 모달 내용 ── */
+    .instructor-detail-center { text-align: center; }
+    .instructor-detail-img {
+      width: 120px; height: 120px;
+      object-fit: cover; border-radius: 50%;
+      margin-bottom: 1rem;
+      border: 3px solid var(--border-lite);
+      box-shadow: 0 4px 16px rgba(51,74,108,.12);
+    }
+    .instructor-detail-name {
+      margin: 0 0 0.35rem; font-size: 1.1rem;
+      font-weight: 700; color: var(--t1);
+    }
+    .instructor-detail-role {
+      color: var(--brand); font-weight: 600;
+      font-size: 0.95rem; margin: 0 0 1.2rem;
+    }
+    .instructor-detail-career { text-align: left; }
+    .instructor-detail-career-label {
+      font-size: 0.78rem; font-weight: 700;
+      color: var(--t3); text-transform: uppercase;
+      letter-spacing: 0.5px; margin-bottom: 0.3rem;
+    }
+    .instructor-detail-career ul { margin: 0.5rem 0 0 1.2rem; padding: 0; }
+    .instructor-detail-career li { font-size: 0.95rem; color: var(--t1); line-height: 1.75; }
+
+    /* ── 강사 카드 순서 번호 배지 ── */
+    .instructor-order-badge {
+      position: absolute; top: 0.65rem; left: 0.75rem;
+      font-size: 0.71rem; font-weight: 700;
+      color: var(--t3); background: var(--brand-light);
+      border-radius: 5px; padding: 0.1rem 0.4rem;
+      pointer-events: none;
+    }
+
     /* ── 탭간 admin-card 배경·그림자 통일 ── */
     #tab-faq .admin-card,
     #tab-notice .admin-card,
@@ -3352,8 +3406,8 @@
 
     <!-- 강사진 관리 탭 -->
     <div id="tab-instructors" class="tab-content active">
-      <div class="admin-card">
-        <h3>신규 강사 추가</h3>
+      <div class="admin-card" id="instructor-form-card">
+        <h3 id="instructor-form-title">신규 강사 추가</h3>
         <form id="instructor-form" class="admin-form">
           <input type="hidden" id="instructor-id">
           <div class="form-group">
@@ -3367,12 +3421,13 @@
           <div class="form-group">
             <label for="instructor-image">사진</label>
             <input type="file" id="instructor-image" accept="image/*">
-            <p class="upload-hint">JPG · PNG · WebP 지원. 수정 시 비워두면 기존 사진 유지.</p>
-            <div id="instructor-image-status" style="margin-top:0.5rem;font-size:0.95em;color:#1e293b;"></div>
+            <p class="upload-hint">JPG · PNG · WebP 지원. 5MB 이하. 수정 시 비워두면 기존 사진 유지.</p>
+            <img id="instructor-img-preview" class="instructor-img-preview" src="" alt="미리보기">
           </div>
           <div class="form-group">
             <label for="instructor-details">상세 경력 (한 줄에 하나씩 입력)</label>
             <textarea id="instructor-details" rows="5"></textarea>
+            <p id="instructor-details-count" class="upload-hint"></p>
           </div>
           <button type="submit" class="button-primary">저장하기</button>
           <button type="button" id="cancel-instructor-edit" class="button-secondary" style="display: none;">취소</button>
@@ -3382,7 +3437,7 @@
       <div id="instructor-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
         <div style="background:#fff;padding:2.5rem 2.5rem 2rem 2.5rem;border-radius:16px;box-shadow:0 4px 24px rgba(51,74,108,0.13);display:flex;flex-direction:column;align-items:center;gap:1.2rem;">
           <div class="loader" style="border:6px solid #f3f3f3;border-top:6px solid #334a6c;border-radius:50%;width:48px;height:48px;animation:spin 1s linear infinite;"></div>
-          <span>강사 정보 저장 중입니다...</span>
+          <span id="instructor-loading-text">강사 정보 저장 중입니다...</span>
         </div>
       </div>
       <div class="admin-card">
