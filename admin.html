@@ -3361,6 +3361,11 @@
       .admin-tabs::-webkit-scrollbar { display: none; }
       .tab-link { flex: 0 0 auto; white-space: nowrap; }
     }
+    /* ---- FAQ 탭 추가 ---- */
+    #faq-form-card.editing-mode { border-left: 4px solid #f59e0b; }
+    #faq-form-card.editing-mode #faq-form-title { color: #d97706; }
+    .faq-meta { font-size: 0.82rem; color: var(--t3); margin-bottom: 0.5rem; }
+    .faq-order-badge { display:inline-block; font-size:0.71rem; font-weight:700; color:var(--t3); background:var(--brand-light); border-radius:5px; padding:0.1rem 0.4rem; margin-bottom:0.4rem; }
     /* ---- 갤러리 탭 레거시 CSS 통일 (첫 번째 스타일 블록 무력화) ---- */
     #tab-gallery .admin-card { background: var(--card); border: none; box-shadow: var(--shadow); border-radius: var(--r); }
     #tab-gallery h3 { font-size: 1.05rem; font-weight: 700; color: var(--brand); letter-spacing: normal; margin-bottom: 1.5rem; }
@@ -3587,8 +3592,8 @@
 
     <!-- FAQ 관리 탭 -->
     <div id="tab-faq" class="tab-content">
-      <div class="admin-card">
-        <h3>신규 FAQ 추가</h3>
+      <div class="admin-card" id="faq-form-card">
+        <h3 id="faq-form-title">신규 FAQ 추가</h3>
         <form id="faq-form" class="admin-form">
           <input type="hidden" id="faq-id">
           <div class="form-group">
@@ -3608,11 +3613,16 @@
       <div id="faq-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
         <div style="background:#fff;padding:2.5rem 2.5rem 2rem 2.5rem;border-radius:16px;box-shadow:0 4px 24px rgba(51,74,108,0.13);display:flex;flex-direction:column;align-items:center;gap:1.2rem;">
           <div class="loader" style="border:6px solid #f3f3f3;border-top:6px solid #334a6c;border-radius:50%;width:48px;height:48px;animation:spin 1s linear infinite;"></div>
-          <span>FAQ 저장 중입니다...</span>
+          <span id="faq-loading-text">FAQ 저장 중...</span>
         </div>
       </div>
       <div class="admin-card">
         <h3>FAQ 목록</h3>
+        <div class="filter-bar">
+          <input type="text" id="faq-search-input" placeholder="질문으로 검색...">
+          <button id="faq-search-btn" class="button-secondary"><i class="fas fa-search"></i> 검색</button>
+          <button id="faq-search-clear-btn" class="button-secondary">초기화</button>
+        </div>
         <div id="faq-list"></div>
       </div>
     </div>

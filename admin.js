@@ -2114,6 +2114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const faqForm = document.getElementById('faq-form');
     const faqList = document.getElementById('faq-list');
     const cancelFaqEditBtn = document.getElementById('cancel-faq-edit');
+    let _allFaqItems = [];
 
     // FAQ 목록 불러오기
     async function loadFAQList() {
@@ -2122,13 +2123,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 .from('qa')
                 .select('*')
                 .order('created_at', { ascending: true });
-            
+
             if (error) {
                 console.error('FAQ 목록 로드 실패:', error);
                 return;
             }
-            
-            renderFAQList(data);
+
+            _allFaqItems = data;
+            const searchInput = document.getElementById('faq-search-input');
+            if (searchInput) searchInput.value = '';
+            renderFAQList(_allFaqItems);
         } catch (error) {
             console.error('FAQ 목록 로드 중 오류:', error);
         }
@@ -2137,26 +2141,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // FAQ 목록 렌더링
     function renderFAQList(faqs) {
         if (!faqList) return;
-        
+
         faqList.innerHTML = '';
-        
+
         if (faqs.length === 0) {
-            faqList.innerHTML = '<p style="text-align: center; color: #6c757d; padding: 2rem;">등록된 FAQ가 없습니다.</p>';
+            faqList.innerHTML = '<div class="empty-state"><i class="fas fa-question-circle"></i><p>등록된 FAQ가 없습니다.</p></div>';
             return;
         }
-        
-        faqs.forEach(faq => {
+
+        faqs.forEach((faq, idx) => {
             const faqItem = document.createElement('div');
             faqItem.className = 'faq-admin-item';
             faqItem.innerHTML = `
+                <span class="faq-order-badge">#${idx + 1}</span>
                 <div class="faq-question">${faq.question}</div>
                 <div class="faq-answer">${faq.answer}</div>
-                <div style="font-size: 0.85rem; color: #6c757d; margin-bottom: 0.5rem;">작성일: ${formatKoreaDate(faq.created_at)}</div>
+                <div class="faq-meta">작성일: ${formatKoreaDate(faq.created_at)}</div>
                 <div class="faq-actions">
                     <button class="button-secondary" onclick="editFAQ(${faq.id})">수정</button>
                     <button class="button-danger" onclick="deleteFAQ(${faq.id})">삭제</button>
                 </div>
-                <button class="delete-btn" onclick="deleteFAQ(${faq.id})" title="삭제">×</button>
             `;
             faqList.appendChild(faqItem);
         });
@@ -2165,13 +2169,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // FAQ 추가/수정 폼 제출
     faqForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const loadingOverlay = document.getElementById('faq-loading-overlay');
-        if (loadingOverlay) loadingOverlay.style.display = 'flex';
+
+        const id = document.getElementById('faq-id').value;
+        const question = document.getElementById('faq-question').value.trim();
+        const answer = document.getElementById('faq-answer').value.trim();
+
+        if (!question) { showToast('질문을 입력해주세요.', 'warning'); return; }
+        if (!answer) { showToast('답변을 입력해주세요.', 'warning'); return; }
+
+        const submitBtn = faqForm.querySelector('button[type="submit"]');
+        const loadingText = document.getElementById('faq-loading-text');
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '저장 중...'; }
+        if (loadingText) loadingText.style.display = 'inline';
+
         try {
-            const id = document.getElementById('faq-id').value;
-            const question = document.getElementById('faq-question').value;
-            const answer = document.getElementById('faq-answer').value;
-            
             if (id) {
                 await window.supabaseClient
                     .from('qa')
@@ -2182,16 +2193,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     .from('qa')
                     .insert([{ question, answer }]);
             }
-            
+
             await loadFAQList();
             faqForm.reset();
+            document.getElementById('faq-id').value = '';
             cancelFaqEditBtn.click();
             showToast('FAQ가 저장되었습니다.', 'success');
         } catch (error) {
             showToast('FAQ 저장 중 오류가 발생했습니다.', 'error');
             console.error('FAQ 저장 오류:', error);
         } finally {
-            if (loadingOverlay) loadingOverlay.style.display = 'none';
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'FAQ 저장'; }
+            if (loadingText) loadingText.style.display = 'none';
         }
     });
 
@@ -2203,24 +2216,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 .select('*')
                 .eq('id', id)
                 .single();
-            
+
             if (error || !faq) {
-                alert('FAQ 정보를 찾을 수 없습니다.');
+                showToast('FAQ 정보를 찾을 수 없습니다.', 'error');
                 return;
             }
-            
+
             document.getElementById('faq-id').value = faq.id;
             document.getElementById('faq-question').value = faq.question;
             document.getElementById('faq-answer').value = faq.answer;
-            
+
             cancelFaqEditBtn.style.display = 'inline-block';
-            
-            // 폼으로 스크롤
+
+            const formCard = document.getElementById('faq-form-card');
+            if (formCard) formCard.classList.add('editing-mode');
+            const formTitle = document.getElementById('faq-form-title');
+            if (formTitle) formTitle.textContent = '"' + faq.question.substring(0, 20) + (faq.question.length > 20 ? '...' : '') + '" 수정 중';
+
             document.getElementById('faq-form').scrollIntoView({ behavior: 'smooth' });
-            
+
         } catch (error) {
             console.error('FAQ 수정 모드 전환 실패:', error);
-            alert('FAQ 수정 모드 전환 중 오류가 발생했습니다.');
+            showToast('FAQ 수정 모드 전환 중 오류가 발생했습니다.', 'error');
         }
     };
 
@@ -2250,7 +2267,36 @@ document.addEventListener('DOMContentLoaded', () => {
         faqForm.reset();
         document.getElementById('faq-id').value = '';
         cancelFaqEditBtn.style.display = 'none';
+        const formCard = document.getElementById('faq-form-card');
+        if (formCard) formCard.classList.remove('editing-mode');
+        const formTitle = document.getElementById('faq-form-title');
+        if (formTitle) formTitle.textContent = '신규 FAQ 추가';
     });
+
+    // FAQ 검색
+    (function() {
+        const searchInput = document.getElementById('faq-search-input');
+        const searchBtn = document.getElementById('faq-search-btn');
+        const clearBtn = document.getElementById('faq-search-clear-btn');
+
+        function doFilter() {
+            const q = (searchInput ? searchInput.value.trim().toLowerCase() : '');
+            if (!q) {
+                renderFAQList(_allFaqItems);
+            } else {
+                renderFAQList(_allFaqItems.filter(f =>
+                    f.question.toLowerCase().includes(q) || f.answer.toLowerCase().includes(q)
+                ));
+            }
+        }
+
+        if (searchBtn) searchBtn.addEventListener('click', doFilter);
+        if (searchInput) searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') doFilter(); });
+        if (clearBtn) clearBtn.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            doFilter();
+        });
+    })();
 
     // --- End FAQ Management ---
 
