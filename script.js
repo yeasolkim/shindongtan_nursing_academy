@@ -1377,9 +1377,9 @@ async function initJobsPage() {
       row.className = `board-row${isNotice ? ' notice' : ''}`;
       const isMobile = window.innerWidth <= 768;
       row.innerHTML = `
-        <div class="number">${isNotice ? '' : itemNumber}</div>
+        <div class="number">${isNotice ? '중요' : itemNumber}</div>
         <div class="title">
-          <a href="community_jobs_detail.html?id=${item.id}" onclick="incrementViewCount('jobs', ${item.id})">${isNotice ? '📢 ' : ''}${item.title}</a>
+          <a href="community_jobs_detail.html?id=${item.id}" onclick="incrementViewCount('jobs', ${item.id})">${item.title}</a>
           ${isMobile ? `<span class="mobile-date">${formatKoreaDate(item.date || item.created_at)}</span>` : ''}
         </div>
         <div class="author">${item.author || '관리자'}</div>
@@ -1487,7 +1487,7 @@ async function initJobsDetailPage() {
     viewContainer.innerHTML = `
       <div class="post-view">
         <div class="post-header">
-          <h2>${isNotice ? '<span style="color:#d92121;font-weight:600;">📢 중요</span> ' : ''}${post.title}</h2>
+          <h2>${isNotice ? '<span class="notice-badge-inline">중요</span> ' : ''}${post.title}</h2>
           <div class="post-meta">
             <span><i class="fas fa-user"></i> ${post.author || ''}</span>
             <span><i class="fas fa-calendar-alt"></i> ${formatKoreaDate(post.date || post.created_at)}</span>
