@@ -1914,6 +1914,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modal-post-id').value = '';
         document.getElementById('modal-post-type').value = 'notices';
         modalTitle.textContent = '새 공지사항 작성';
+        modal.querySelector('.modal-content').classList.remove('editing-mode');
         modalImageGroup.style.display = 'none';
         modalNoticeGroup.style.display = 'block';
         document.getElementById('modal-title-input').value = '';
@@ -1942,7 +1943,8 @@ document.addEventListener('DOMContentLoaded', () => {
         modalForm.reset();
         document.getElementById('modal-post-id').value = String(item.id);
         document.getElementById('modal-post-type').value = 'notices';
-        modalTitle.textContent = '공지사항 수정';
+        modalTitle.textContent = '"' + item.title + '" 수정 중';
+        modal.querySelector('.modal-content').classList.add('editing-mode');
         modalImageGroup.style.display = 'none';
         modalNoticeGroup.style.display = 'block';
         document.getElementById('modal-title-input').value = item.title || '';
@@ -1963,11 +1965,20 @@ document.addEventListener('DOMContentLoaded', () => {
     async function handleNoticeFormSubmit(e) {
         e.preventDefault();
         const id = document.getElementById('modal-post-id').value;
-        const title = document.getElementById('modal-title-input').value;
-        // Quill Editor에서 HTML 가져와 textarea에 동기화
+        const title = document.getElementById('modal-title-input').value.trim();
         const content = quill ? quill.root.innerHTML : document.getElementById('modal-content-input').value;
         const isnotice = document.getElementById('modal-is-notice-checkbox')?.checked || false;
-        
+
+        // 본문 빈 값 검사
+        const contentText = quill ? quill.getText().trim() : content.replace(/<[^>]*>/g, '').trim();
+        if (!contentText) {
+            showToast('본문 내용을 입력해주세요.', 'warning');
+            return;
+        }
+
+        const submitBtn = modalForm ? modalForm.querySelector('[type="submit"]') : null;
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '저장 중...'; }
+
         // 로딩 오버레이 표시
         const loadingOverlay = document.getElementById('notice-loading-overlay');
         const loadingText = document.getElementById('notice-loading-text');
@@ -2044,10 +2055,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('공지사항 저장 실패:', error);
             showToast('공지사항 저장 중 오류가 발생했습니다.', 'error');
         } finally {
-            // 로딩 오버레이 숨김
-            if (loadingOverlay) {
-                loadingOverlay.style.display = 'none';
-            }
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '저장하기'; }
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
         }
     }
     async function deleteNoticeItem(item) {
