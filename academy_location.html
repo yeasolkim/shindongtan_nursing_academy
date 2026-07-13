@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="description" content="신동탄간호학원 오시는 길. 경기도 화성시 메타폴리스로 38, 천년프라자 401호. 전화: 031-8003-2456.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>오시는 길 - 신동탄간호학원</title>
   <link rel="stylesheet" href="style.css">
@@ -265,7 +266,7 @@
                   <div class="icon"><i class="fas fa-phone"></i></div>
                   <div class="info">
                     <div class="label">전화번호</div>
-                    <div class="value">031-8003-2456</div>
+                    <div class="value"><a href="tel:031-8003-2456" style="color:inherit;text-decoration:none;">031-8003-2456</a></div>
                   </div>
                 </div>
                 <div class="contact-item">
@@ -279,22 +280,32 @@
                   <div class="icon"><i class="fas fa-envelope"></i></div>
                   <div class="info">
                     <div class="label">이메일</div>
-                    <div class="value">nurse8003@naver.com</div>
+                    <div class="value"><a href="mailto:nurse8003@naver.com" style="color:inherit;text-decoration:none;">nurse8003@naver.com</a></div>
                   </div>
                 </div>
               </div>
             </div>
             
+            <!-- 네이버/카카오 지도 바로가기 -->
+            <div style="display:flex;gap:0.8rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+              <a href="https://map.naver.com/v5/search/경기도%20화성시%20메타폴리스로%2038%20천년프라자%20401호" target="_blank" rel="noopener noreferrer"
+                 style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.6rem 1.2rem;background:#03c75a;color:white;border-radius:8px;text-decoration:none;font-weight:600;font-size:0.95rem;">
+                <i class="fas fa-map"></i> 네이버 지도로 길찾기
+              </a>
+              <a href="https://map.kakao.com/link/search/경기도 화성시 메타폴리스로 38 천년프라자 401호" target="_blank" rel="noopener noreferrer"
+                 style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.6rem 1.2rem;background:#f9e000;color:#3c1e1e;border-radius:8px;text-decoration:none;font-weight:600;font-size:0.95rem;">
+                <i class="fas fa-map-marker-alt"></i> 카카오 지도로 길찾기
+              </a>
+            </div>
+
             <div class="details-grid">
-              <!-- 교통편 정보 
               <div class="transport-info">
                 <h3><i class="fas fa-bus"></i> 대중교통 이용</h3>
                 <ul>
-                  <li><strong>지하철:</strong> 신분당선 동탄역 하차 후 도보 10분</li>
-                  <li><strong>버스:</strong> 동탄역 정류장 하차 (간선버스 1000번, 지선버스 5000번)</li>
-                  <li><strong>마을버스:</strong> 동탄1번, 동탄2번 버스 이용</li>
+                  <li><strong>버스:</strong> 메타폴리스 정류장 하차 (53, 400번 등)</li>
+                  <li><strong>자가용:</strong> 천년프라자 건물 내 지하주차장 이용</li>
                 </ul>
-              </div>-->
+              </div>
 
               <!-- 운영시간 및 주의사항 -->
               <div class="hours-notice">
@@ -317,26 +328,8 @@
   </main>
 
   <!-- COMP-FOOTER-01: 글로벌 푸터 -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section">
-          <p>상호명: 신동탄간호학원</p>
-          <p>사업자등록번호: 602-91-03887</p>
-          <p>대표자: 김예람</p>
-          <br/>
-          <p>전화번호: 031-8003-2456</p>
-          <p>팩스번호: 050-4062-2456</p>
-          <p>이메일: nurse8003@naver.com</p>
-          <br/>
-          <p>주소: 경기도 화성시 메타폴리스로 38 (반송동), 천년프라자 401호</p>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2024 신동탄간호학원. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
+  <!-- COMP-FOOTER-01: 글로벌 푸터 -->
+  <footer class="footer"></footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js"></script>

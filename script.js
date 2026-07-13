@@ -44,8 +44,10 @@ function initCopyProtection() {
       showCopyProtectionMessage('잘라내기가 차단되었습니다.');
       return false;
     }
-    // Ctrl+V (붙여넣기)
+    // Ctrl+V (붙여넣기) - 입력 필드에서는 허용
     if (e.ctrlKey && e.key === 'v') {
+      const tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return;
       e.preventDefault();
       showCopyProtectionMessage('붙여넣기가 차단되었습니다.');
       return false;
@@ -96,8 +98,10 @@ function initCopyProtection() {
     return false;
   });
 
-  // 7. 붙여넣기 이벤트 차단
+  // 7. 붙여넣기 이벤트 차단 (입력 필드 제외)
   document.addEventListener('paste', function(e) {
+    const tag = e.target.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.target.isContentEditable) return;
     e.preventDefault();
     showCopyProtectionMessage('붙여넣기가 차단되었습니다.');
     return false;
@@ -797,6 +801,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   initTabs();
   initAccordion();
   initGalleryFilter();
+  initMobileFloatingContact();
   // initFacilitiesGallery(); // 이 함수는 initFacilitiesPage로 대체되었으므로 삭제합니다.
 
   // 4. 페이지별 고유 스크립트 실행 (필요한 경우)
@@ -857,6 +862,56 @@ document.addEventListener('DOMContentLoaded', async function() {
   // 팝업 초기화 추가
   //initPopup();
 });
+
+/**
+ * 모바일 하단 고정 문의 버튼 (768px 이하에서만 표시)
+ */
+function initMobileFloatingContact() {
+  if (document.getElementById('mobile-float-contact')) return;
+
+  const style = document.createElement('style');
+  style.textContent = `
+    #mobile-float-contact {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 9990;
+      display: flex;
+    }
+    #mobile-float-contact a {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.9rem 0;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      color: white;
+    }
+    #mobile-float-contact .float-call { background: #334a6c; }
+    #mobile-float-contact .float-kakao { background: #f9e000; color: #3c1e1e; }
+    @media (min-width: 769px) {
+      #mobile-float-contact { display: none !important; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  const bar = document.createElement('div');
+  bar.id = 'mobile-float-contact';
+  bar.innerHTML = `
+    <a href="tel:031-8003-2456" class="float-call"><i class="fas fa-phone"></i> 전화 상담</a>
+    <a href="https://pf.kakao.com/_ExlqgC" target="_blank" rel="noopener noreferrer" class="float-kakao"><i class="fas fa-comment"></i> 카카오 상담</a>
+  `;
+  document.body.appendChild(bar);
+
+  // 플로팅 바 높이만큼 footer에 여백 추가
+  const footer = document.querySelector('footer.footer');
+  if (footer) footer.style.paddingBottom = 'env(safe-area-inset-bottom, 0px)';
+}
 
 /**
  * 강사진 페이지 초기화
