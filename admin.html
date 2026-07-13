@@ -3361,6 +3361,11 @@
       .admin-tabs::-webkit-scrollbar { display: none; }
       .tab-link { flex: 0 0 auto; white-space: nowrap; }
     }
+    /* ---- 갤러리 탭 레거시 CSS 통일 (첫 번째 스타일 블록 무력화) ---- */
+    #tab-gallery .admin-card { background: var(--card); border: none; box-shadow: var(--shadow); border-radius: var(--r); }
+    #tab-gallery h3 { font-size: 1.05rem; font-weight: 700; color: var(--brand); letter-spacing: normal; margin-bottom: 1.5rem; }
+    #tab-gallery .button-primary { background: var(--brand); border-radius: 10px; font-weight: 700; letter-spacing: -0.2px; margin-bottom: 0; }
+    #tab-gallery .button-primary:hover { background: var(--brand-dark); box-shadow: 0 4px 14px rgba(51,74,108,.28); transform: translateY(-1px); }
     /* ---- 갤러리 모달 통일 ---- */
     .modal-content.editing-mode { border-top: 4px solid #f59e0b; }
     .modal-content.editing-mode #modal-title { color: #d97706; }
