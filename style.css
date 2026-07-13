@@ -1,5 +1,23 @@
 /* 신동탄간호학원 웹사이트 리디자인 - 컴포넌트 기반 CSS */
 
+/* ===== 디자인 토큰 ===== */
+:root {
+  /* 브랜드 색상 */
+  --primary:      #1a365d;
+  --primary-dark: #2d3748;
+
+  /* 그림자 3단계 */
+  --shadow-sm:    0 2px 8px rgba(26, 54, 93, 0.08);
+  --shadow-md:    0 4px 20px rgba(0, 0, 0, 0.10);
+  --shadow-lg:    0 10px 30px rgba(0, 0, 0, 0.10);
+  --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+
+  /* 모서리 둥글기 3단계 */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+}
+
 /* ===== 복사 방지 스타일 ===== */
 /* 관리자 페이지가 아닌 경우에만 복사 방지 적용 */
 body:not([data-page="admin.html"]) {
@@ -89,7 +107,7 @@ header {
   font-weight: 600;
   font-size: 0.715rem;
   padding: 0.8rem 1.2rem;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   transition: all 0.3s ease;
   display: block;
   cursor: pointer;
@@ -97,7 +115,7 @@ header {
 
 .menu-link:hover {
   background: #f4f5f7;
-  color: #1a365d;
+  color: var(--primary);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(26, 54, 93, 0.15);
 }
@@ -108,7 +126,7 @@ header {
   left: 0;
   background: #ffffff;
   box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   min-width: 220px;
   opacity: 0;
   visibility: hidden;
@@ -151,7 +169,7 @@ header {
 
 .submenu a:hover {
   background: #f8fafc;
-  color: #1a365d;
+  color: var(--primary);
   transform: translateX(8px);
   font-weight: 600;
 }
@@ -223,7 +241,7 @@ main {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -263,7 +281,7 @@ a.feature-card:hover {
 /* 2.2 정보 링크 섹션 (Info Links Section) */
 .info-links-section {
   padding: 1.5rem 1rem;
-  background-color: #1a365d;
+  background-color: var(--primary);
 }
 
 .info-links-grid {
@@ -285,7 +303,7 @@ a.feature-card:hover {
   text-align: center;
   min-height: 90px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   transition: background-color 0.3s ease, transform 0.3s ease;
   text-decoration: none;
   color: inherit;
@@ -372,7 +390,7 @@ a.feature-card:hover {
 .page-hero-title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1a365d;
+  color: var(--primary);
   margin: 0;
 }
 
@@ -380,7 +398,7 @@ a.feature-card:hover {
 /* 4. 푸터 (Footer)                      */
 /* =================================== */
 .footer {
-  background: #1a365d;
+  background: var(--primary);
   color: #e2e8f0;
   padding: 4rem 0;
   font-size: 0.9rem;
@@ -915,7 +933,7 @@ a.feature-card:hover {
   .info-link-button {
     padding: 0.3rem 0.6rem;
     font-size: 0.75rem;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     display: inline-flex;
     align-items: center;
     gap: 0.2rem;
@@ -1027,7 +1045,7 @@ a.feature-card:hover {
   padding: 1.1rem 1.2rem;
   background: #fff;
   border: 2px solid #e3eaf5;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   text-decoration: none;
   box-shadow: 0 2px 12px rgba(44, 62, 80, 0.06);
   transition: 
@@ -1150,7 +1168,7 @@ a.feature-card:hover {
 .community-preview-title {
   font-size: 1.6rem;
   font-weight: 700;
-  color: #1a365d;
+  color: var(--primary);
   text-align: center;
   margin-bottom: 0.5rem;
 }
@@ -1175,7 +1193,7 @@ a.feature-card:hover {
 
 .preview-card {
   background: #fff;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   box-shadow: 0 2px 12px rgba(44, 62, 80, 0.06);
   padding: 1.5rem;
   display: flex;
@@ -1195,7 +1213,7 @@ a.feature-card:hover {
 .preview-title h3 {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #1a365d;
+  color: var(--primary);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -1211,11 +1229,11 @@ a.feature-card:hover {
   font-weight: 500;
   font-size: 0.95rem;
   border-radius: 6px;
-  background: #1a365d;
+  background: var(--primary);
   padding: 0.4rem 0.95rem;
   transition: background 0.2s, color 0.2s;
   border: none;
-  box-shadow: 0 2px 8px rgba(26,54,93,0.07);
+  box-shadow: var(--shadow-sm);
   display: inline-block;
 }
 .preview-more-btn:hover {
@@ -1236,7 +1254,7 @@ a.feature-card:hover {
   border-bottom: none;
 }
 .preview-list .preview-item:hover .title {
-  color: #1a365d;
+  color: var(--primary);
 }
 .preview-item-icon {
   width: 32px;
@@ -1252,7 +1270,7 @@ a.feature-card:hover {
   transition: background 0.2s, color 0.2s;
 }
 .preview-list .preview-item:hover .preview-item-icon {
-  background: #1a365d;
+  background: var(--primary);
   color: #fff;
 }
 .preview-item-text .title {
@@ -1333,7 +1351,7 @@ a.feature-card:hover {
   }
   .info-link-card {
     padding: 0.9rem 0.8rem;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
   }
   .info-link-text {
     width: 100%;
@@ -1369,7 +1387,7 @@ a.feature-card:hover {
   }
   .info-links-section .info-link-button:hover {
     background: rgba(255, 255, 255, 0.95) !important;
-    color: #1a365d !important;
+    color: var(--primary) !important;
     border-color: rgba(255, 255, 255, 0.95) !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
@@ -1413,7 +1431,7 @@ a.feature-card:hover {
 
 .accordion-item {
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   margin-bottom: 1rem;
   background: white;
   overflow: hidden;
@@ -1445,7 +1463,7 @@ a.feature-card:hover {
 }
 
 .accordion-header .q-icon {
-  background: #1a365d;
+  background: var(--primary);
   color: white;
   width: 28px;
   height: 28px;
@@ -1464,7 +1482,7 @@ a.feature-card:hover {
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--primary-dark);
   line-height: 1.4;
 }
 
@@ -1525,7 +1543,7 @@ a.feature-card:hover {
 .faq-section-title {
   text-align: center;
   margin-bottom: 3rem;
-  color: #1a365d;
+  color: var(--primary);
 }
 
 .faq-section-subtitle {
@@ -1547,7 +1565,7 @@ a.feature-card:hover {
   padding: 2rem;
   color: #e53e3e;
   background: #fed7d7;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   margin: 1rem 0;
 }
 
@@ -1556,7 +1574,7 @@ a.feature-card:hover {
   .accordion-container {
     margin: 1rem;
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
   }
   
   .accordion-header {
