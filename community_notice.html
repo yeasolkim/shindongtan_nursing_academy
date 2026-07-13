@@ -307,21 +307,16 @@
       .board-header, .board-row {
         grid-template-columns: 40px 1fr 120px;
       }
-      /* ===== 공지사항 모바일: 날짜 정보가 다 보이도록 마진/패딩 최소화 ===== */
       .board-controls,
       .board-list,
       .board-bottom {
-        margin-left: 0.05rem !important;
-        margin-right: 0.05rem !important;
-      }
-      .board-controls,
-      .board-list {
-        padding-left: 0.05rem !important;
-        padding-right: 0.05rem !important;
+        margin-left: 0;
+        margin-right: 0;
       }
       .board-row .title {
-        padding-left: 0.2rem !important;
-        padding-right: 0.2rem !important;
+        white-space: normal;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
       }
       .board-row .date, .board-header .date {
         display: none !important;
@@ -525,55 +520,6 @@
       }
     }
     
-    @media (max-width: 400px) {
-      .board-header, .board-row { 
-        grid-template-columns: 25px 1fr 55px; 
-        font-size: 0.75rem;
-        padding: 0.4rem 0;
-      }
-      
-      .board-row .title {
-        padding: 0 0.2rem;
-        font-size: 0.75rem;
-        line-height: 1.1;
-      }
-      
-      .board-row.notice .number {
-        padding: 0.1rem 0.3rem;
-        font-size: 0.6rem;
-      }
-      
-      .search-bar select, .search-bar input {
-        padding: 0.5rem;
-        font-size: 0.8rem;
-      }
-      
-      .search-bar button {
-        padding: 0.5rem;
-        font-size: 0.8rem;
-      }
-      
-      .total-posts {
-        font-size: 0.8rem;
-        padding: 0.25rem 0.5rem;
-      }
-      
-      .items-per-page label {
-        font-size: 0.8rem;
-      }
-      
-      .items-per-page select {
-        padding: 0.25rem 0.4rem;
-        font-size: 0.8rem;
-      }
-      
-      .pagination button {
-        width: 26px;
-        height: 26px;
-        font-size: 0.75rem;
-      }
-    }
-    
     /* Quick Contact Sidebar */
     .quick-contact-sidebar {
       position: fixed;
@@ -595,7 +541,7 @@
       font-size: 1.1rem; 
       font-weight: 600; 
       margin: 0 0 1rem; 
-      color: #1a365d; 
+      color: var(--primary);
     }
     .contact-box .phone-number { 
       font-size: 1.3rem; 

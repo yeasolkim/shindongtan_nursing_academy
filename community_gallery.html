@@ -329,24 +329,21 @@
     }
     
     @media (max-width: 768px) {
-      /* 모바일에서 검색바 세로 배치 및 100% 너비 적용 */
       .search-bar {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 0.4rem !important;
-        width: 100% !important;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.4rem;
+        width: 100%;
       }
       .search-bar select,
       .search-bar input,
       .search-bar button {
-        width: 100% !important;
-        min-width: 0 !important;
-        box-sizing: border-box !important;
-        margin: 0 !important;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        margin: 0;
       }
-      .divider {
-        display: none !important;
-      }
+      .divider { display: none; }
     }
     
     @media (max-width: 576px) {
@@ -403,11 +400,11 @@
     
     @media (max-width: 480px) {
       .board-list {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: 0.5rem;
       }
       .board-row .thumbnail {
-        height: 100px;
+        height: 110px;
       }
       .board-row .title-section {
         padding: 0.6rem;
@@ -442,52 +439,6 @@
       }
     }
     
-    @media (max-width: 400px) {
-      .board-list {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 0.4rem;
-      }
-      .board-row .thumbnail {
-        height: 90px;
-      }
-      .board-row .title-section {
-        padding: 0.5rem;
-      }
-      .board-row .title-section .title {
-        font-size: 0.8rem;
-        margin-bottom: 0.25rem;
-      }
-      .board-row .title-section .description {
-        font-size: 0.7rem;
-        margin-bottom: 0.25rem;
-      }
-      .board-row .meta-info {
-        font-size: 0.65rem;
-        padding-top: 0.25rem;
-      }
-      
-      .search-bar select, .search-bar input {
-        padding: 0.5rem;
-        font-size: 0.8rem;
-      }
-      
-      .search-bar button {
-        padding: 0.5rem;
-        font-size: 0.8rem;
-      }
-      
-      .total-posts {
-        font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
-      }
-      
-      .pagination button {
-        width: 26px;
-        height: 26px;
-        font-size: 0.75rem;
-      }
-    }
-    
     /* Quick Contact Sidebar */
     .quick-contact-sidebar {
       position: fixed;
@@ -509,7 +460,7 @@
       font-size: 1.1rem; 
       font-weight: 600; 
       margin: 0 0 1rem; 
-      color: #1a365d; 
+      color: var(--primary);
     }
     .contact-box .phone-number { 
       font-size: 1.3rem; 
