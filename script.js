@@ -1,6 +1,31 @@
 // 신동탄간호학원 웹사이트 JavaScript
 
 // =============================================================================
+// 0. 유틸리티 함수
+// =============================================================================
+
+/**
+ * Quill 에디터 HTML을 안전하게 살균(sanitize)합니다.
+ * <script>, 이벤트 핸들러, javascript: URL 등 XSS 위험 요소를 제거합니다.
+ */
+function sanitizeRichText(html) {
+  if (!html) return '';
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  // 위험 태그 제거
+  tmp.querySelectorAll('script, iframe, object, embed, form, input, button').forEach(el => el.remove());
+  // 위험 속성 제거 (이벤트 핸들러, javascript: URL)
+  tmp.querySelectorAll('*').forEach(el => {
+    Array.from(el.attributes).forEach(attr => {
+      if (/^on/i.test(attr.name) || /javascript:/i.test(attr.value)) {
+        el.removeAttribute(attr.name);
+      }
+    });
+  });
+  return tmp.innerHTML;
+}
+
+// =============================================================================
 // I. 복사 방지 기능
 // =============================================================================
 
@@ -581,6 +606,59 @@ function setupMobileMenu() {
 }
 
 /**
+ * 데스크탑 메뉴 키보드 접근성을 설정합니다.
+ */
+function setupDesktopKeyboardNav() {
+  document.querySelectorAll('.main-menu .menu-item').forEach(item => {
+    const menuLink = item.querySelector('.menu-link[aria-haspopup]');
+    if (!menuLink) return;
+    const submenuContainer = item.querySelector('.submenu-container');
+    if (!submenuContainer) return;
+    const submenuLinks = Array.from(submenuContainer.querySelectorAll('a'));
+
+    // aria-expanded: 포커스가 menu-item 내부에 있을 때 true
+    item.addEventListener('focusin', () => {
+      menuLink.setAttribute('aria-expanded', 'true');
+    });
+    item.addEventListener('focusout', (e) => {
+      if (!item.contains(e.relatedTarget)) {
+        menuLink.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Enter/Space → 첫 번째 서브메뉴 항목으로 이동
+    menuLink.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (submenuLinks[0]) submenuLinks[0].focus();
+      }
+    });
+
+    // Escape → 서브메뉴 닫고 메뉴 링크로 복귀
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        menuLink.focus();
+        menuLink.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // 서브메뉴 내 ArrowDown/ArrowUp 화살표 이동
+    submenuLinks.forEach((link, i) => {
+      link.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (submenuLinks[i + 1]) submenuLinks[i + 1].focus();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (submenuLinks[i - 1]) submenuLinks[i - 1].focus();
+          else menuLink.focus();
+        }
+      });
+    });
+  });
+}
+
+/**
  * 스크롤에 따른 애니메이션 효과를 초기화합니다.
  */
 function initScrollEffects() {
@@ -591,27 +669,22 @@ function initScrollEffects() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        // 약간의 지연을 두어 더 자연스러운 애니메이션 효과 제공
-        setTimeout(() => {
-          entry.target.classList.add('animated');
-        }, 100);
+        entry.target.classList.add('animated');
         observer.unobserve(entry.target);
       }
     });
-  }, { 
+  }, {
     threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px' // 요소가 화면 하단에서 50px 전에 애니메이션 시작
+    rootMargin: '0px 0px -50px 0px'
   });
-  
+
   elements.forEach(element => observer.observe(element));
-  
-  // 페이지 로드 시 화면에 보이는 요소들은 즉시 애니메이션 적용
+
+  // 페이지 로드 시 이미 화면에 보이는 요소는 즉시 표시
   elements.forEach(element => {
     const rect = element.getBoundingClientRect();
     if (rect.top < window.innerHeight && rect.bottom > 0) {
-      setTimeout(() => {
-        element.classList.add('animated');
-      }, 200);
+      element.classList.add('animated');
     }
   });
 }
@@ -793,6 +866,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     loadComponent('header.header', 'header.html', () => {
       activateCurrentMenu();
       setupMobileMenu();
+      setupDesktopKeyboardNav();
     }),
     loadComponent('footer.footer', 'footer.html')
   ]);
@@ -1229,7 +1303,7 @@ async function initGalleryDetailPage() {
     document.getElementById('gallery-detail-date').textContent = formatKoreaDate(currentItem.created_at);
     document.getElementById('gallery-detail-views').textContent = currentItem.views || 0;
     // Quill 에디터 내용을 ql-editor 클래스로 감싸서 표시
-    document.getElementById('gallery-detail-text').innerHTML = `<div class="ql-editor">${currentItem.description || ''}</div>`;
+    document.getElementById('gallery-detail-text').innerHTML = `<div class="ql-editor">${sanitizeRichText(currentItem.description || '')}</div>`;
 
     // 이전/다음글 네비게이션 업데이트
     const prevButton = document.getElementById('prev-button');
@@ -1528,7 +1602,7 @@ async function initJobsDetailPage() {
         </div>
         <div class="post-body">
           <div class="ql-editor">
-            ${(post.content || post.description || '').replace(/\n/g, '<br>')}
+            ${sanitizeRichText((post.content || post.description || '').replace(/\n/g, '<br>'))}
           </div>
         </div>
         <ul class="post-nav">
@@ -1941,6 +2015,8 @@ async function initNoticeDetailPage() {
     }
 
     const isNotice = post.isnotice || post.isNotice;
+    processedContent = sanitizeRichText(processedContent || '');
+
     // 상세 페이지 HTML 생성
     detailContainer.innerHTML = `
       <div class="post-view">
@@ -2191,147 +2267,6 @@ function formatDate(dateString) {
     });
   }
 }
-
-/**
- * 최신 공지사항 5개를 로드합니다.
- */
-async function loadLatestNotices() {
-  try {
-    console.log('공지사항 데이터 로드 시작...');
-    
-    // Supabase에서 공지사항 데이터 가져오기
-    if (window.db && window.db.notices) {
-      const notices = await window.db.notices.getLatest(5);
-      console.log('Supabase에서 공지사항 로드 완료:', notices.length, '개');
-      return notices;
-    } else {
-      // Supabase가 없는 경우 기존 db.json 사용
-      const response = await fetch('db.json');
-      if (!response.ok) {
-        throw new Error(`db.json 로드 실패: ${response.status} ${response.statusText}`);
-      }
-      const db = await response.json();
-      
-      // 공지사항 데이터가 있으면 반환, 없으면 기본 데이터 생성
-      if (db.notices && db.notices.length > 0) {
-        const latestNotices = db.notices.slice(0, 5); // 최신 5개만
-        console.log('db.json에서 공지사항 로드 완료:', latestNotices.length, '개');
-        return latestNotices;
-      } else {
-        // 기본 공지사항 데이터 생성 (fallback)
-        const defaultNotices = [
-          {
-            id: 1,
-            title: "2024년 간호조무사 교육과정 모집 안내",
-            content: "2024년 간호조무사 교육과정 모집이 시작되었습니다. 국민내일배움카드 지원으로 부담없이 수강하실 수 있습니다.",
-            author: "관리자",
-            date: "2024-01-15",
-            views: 156
-          },
-          {
-            id: 2,
-            title: "2024년 국가시험 일정 안내",
-            content: "2024년 간호조무사 국가시험 일정이 발표되었습니다. 수험생 여러분의 많은 관심 바랍니다.",
-            author: "관리자",
-            date: "2024-01-10",
-            views: 203
-          },
-          {
-            id: 3,
-            title: "겨울방학 특별 프로그램 안내",
-            content: "겨울방학을 맞아 특별 프로그램을 운영합니다. 실습 중심의 교육으로 실무 능력을 향상시킬 수 있습니다.",
-            author: "관리자",
-            date: "2024-01-05",
-            views: 89
-          }
-        ];
-        console.log('기본 공지사항 데이터 생성 완료:', defaultNotices.length, '개');
-        return defaultNotices;
-      }
-    }
-    
-  } catch (error) {
-    console.error('공지사항 로드 중 오류:', error);
-    return [];
-  }
-}
-
-/**
- * 최신 Q&A 데이터를 로드합니다.
- */
-async function loadLatestQA() {
-  try {
-    console.log('Q&A 데이터 로드 시작...');
-    
-    // db.json에서 Q&A 데이터 가져오기
-    const response = await fetch('db.json');
-    if (!response.ok) {
-      throw new Error(`db.json 로드 실패: ${response.status} ${response.statusText}`);
-    }
-    const db = await response.json();
-    
-    // Q&A 데이터가 있으면 반환, 없으면 기본 데이터 생성
-    if (db.qa && db.qa.length > 0) {
-      const latestQA = db.qa.slice(0, 7); // 최신 7개만
-      console.log('Q&A 데이터 로드 완료:', latestQA.length, '개');
-      return latestQA;
-    } else {
-      // 기본 Q&A 데이터 생성 (fallback)
-      const defaultQA = [
-        {
-          id: 1,
-          question: "간호조무사 자격증은 어떻게 취득하나요?",
-          answer: "고등학교 졸업 이상의 학력을 소지하고, 보건복지부 지정 교육훈련기관에서 총 1,520시간의 이론 및 실습 교육을 이수한 후 국가시험에 합격하면 자격증이 발급됩니다.",
-          category: "자격증"
-        },
-        {
-          id: 2,
-          question: "국민내일배움카드(국비) 지원이 가능한가요?",
-          answer: "네, 가능합니다. 국민내일배움카드는 고용노동부에서 지원하는 국비지원 제도이며, 조건만 충족하면 대부분의 국민이 신청할 수 있습니다.",
-          category: "국비지원"
-        },
-        {
-          id: 3,
-          question: "실습은 어떤 식으로 진행되나요?",
-          answer: "실습은 크게 학원 내 실습과 의료기관 실습으로 나뉘며, 현장 적응력을 높이는 데 중점을 둡니다.",
-          category: "실습"
-        },
-        {
-          id: 4,
-          question: "신동탄간호학원의 취업률은 어떤가요?",
-          answer: "신동탄간호학원은 체계적인 교육과 밀착형 취업 관리를 통해 높은 취업률을 자랑합니다. 최근 기준 93.3% 이상의 취업률을 보이고 있습니다.",
-          category: "취업"
-        },
-        {
-          id: 5,
-          question: "간호조무사 급여는 어느 정도 되나요?",
-          answer: "간호조무사의 급여는 근무하는 지역, 의료기관의 규모, 경력 등에 따라 차이가 있습니다. 신입 기준 평균 월급 190~220만 원 수준입니다.",
-          category: "급여"
-        }
-      ];
-      console.log('기본 Q&A 데이터 생성 완료:', defaultQA.length, '개');
-      return defaultQA;
-    }
-    
-  } catch (error) {
-    console.error('Q&A 로드 중 오류:', error);
-    return [];
-  }
-}
-
-// education_, job_, recruitment_, community_ 페이지에서 모바일 환경에서 data-page 속성 자동 추가
-(function() {
-  var isMobile = window.matchMedia('(max-width: 768px)').matches;
-  var page = location.pathname.split('/').pop();
-  if (isMobile && (
-    page.startsWith('education_') ||
-    page.startsWith('job_') ||
-    page.startsWith('recruitment_') ||
-    page.startsWith('community_')
-  )) {
-    document.body.setAttribute('data-page', page);
-  }
-})();
 
 // 갤러리 썸네일/상세 이미지 렌더링 시 기존 미리보기 모두 삭제
 function removeAllGalleryImagePreviews() {

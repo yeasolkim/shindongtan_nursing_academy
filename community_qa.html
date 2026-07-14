@@ -2,11 +2,23 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="신동탄간호학원 Q&A. 수강생들이 자주 묻는 질문과 답변을 모았습니다.">
+  <meta name="description" content="신동탄간호학원 자주 묻는 질문 - 수강료, 국비지원, 수업 일정, 자격증 취득 등 궁금한 사항을 확인하세요.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>커뮤니티 - Q&A - 신동탄간호학원</title>
+  <title>자주 묻는 질문(Q&A) - 신동탄간호학원</title>
+  <link rel="canonical" href="https://yeasolkim.github.io/shindongtan_nursing_academy/community_qa.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="자주 묻는 질문(Q&A) - 신동탄간호학원">
+  <meta property="og:description" content="수강료, 국비지원, 수업 일정, 자격증 취득 등 신동탄간호학원 FAQ를 확인하세요.">
+  <meta property="og:url" content="https://yeasolkim.github.io/shindongtan_nursing_academy/community_qa.html">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:image" content="https://yeasolkim.github.io/shindongtan_nursing_academy/shindongtan/resource/logo.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="자주 묻는 질문(Q&A) - 신동탄간호학원">
+  <meta name="twitter:description" content="수강료, 국비지원, 수업 일정, 자격증 취득 등 신동탄간호학원 FAQ를 확인하세요.">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="common-pages.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
@@ -250,7 +262,7 @@
               <i class="fas fa-comment"></i> 카카오톡 문의
             </a>
           </div>
-          <div class="accordion-container">
+          <div class="accordion-container" aria-live="polite" aria-label="자주 묻는 질문 목록">
             <!-- FAQ 데이터는 Supabase에서 동적으로 로드됩니다 -->
           </div>
         </div>
@@ -258,19 +270,19 @@
     </section>
   </main>
 
-  <aside class="quick-contact-sidebar">
+  <aside class="quick-contact-sidebar" aria-label="빠른 문의">
     <div class="contact-box">
       <h3>문의 전화</h3>
       <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
     </div>
     <div class="contact-box" style="padding: 0;">
-      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
+      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" rel="noopener noreferrer" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
     </div>
   </aside>
 
   <footer class="footer"></footer>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="supabase-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
+  <script src="supabase-config.js" defer></script>
 
   <script>
     async function loadFAQData() {
@@ -286,16 +298,17 @@
         const container = document.querySelector('.accordion-container');
         if (!container) return;
 
-        data.forEach(faq => {
+        data.forEach((faq, index) => {
+          const contentId = `faq-content-${index}`;
           const item = document.createElement('div');
           item.className = 'accordion-item';
           item.innerHTML = `
-            <button type="button" class="accordion-header">
+            <button type="button" class="accordion-header" aria-expanded="false" aria-controls="${contentId}">
               <span class="q-icon">Q</span>
               <h3>${faq.question}</h3>
-              <i class="fas fa-chevron-down toggle-icon"></i>
+              <i class="fas fa-chevron-down toggle-icon" aria-hidden="true"></i>
             </button>
-            <div class="accordion-content">
+            <div class="accordion-content" id="${contentId}">
               <div class="answer-wrapper">
                 <span class="a-icon">A</span>
                 <div class="answer-content">${faq.answer.replace(/\n/g, '<br>')}</div>
@@ -322,12 +335,14 @@
           document.querySelectorAll('.accordion-item').forEach(el => {
             el.classList.remove('active');
             el.querySelector('.accordion-content').style.maxHeight = '0';
+            el.querySelector('.accordion-header').setAttribute('aria-expanded', 'false');
           });
 
           // 클릭한 항목 열기 (토글)
           if (!isActive) {
             item.classList.add('active');
             content.style.maxHeight = content.scrollHeight + 'px';
+            this.setAttribute('aria-expanded', 'true');
           }
         });
       });
@@ -337,6 +352,6 @@
       loadFAQData();
     });
   </script>
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>

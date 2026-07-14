@@ -172,9 +172,11 @@
   background: linear-gradient(90deg, #1a365d, #2d3748);
 }
 
-.content-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-hover);
+@media (hover: hover) and (pointer: fine) {
+  .content-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+  }
 }
 
 .content-card h3 {
@@ -263,9 +265,11 @@
   background: linear-gradient(90deg, #1a365d, #2d3748);
 }
 
-.icon-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-hover);
+@media (hover: hover) and (pointer: fine) {
+  .icon-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+  }
 }
 
 .icon-card-icon {
@@ -282,9 +286,11 @@
   transition: all 0.3s ease;
 }
 
-.icon-card:hover .icon-card-icon {
-  transform: scale(1.1);
-  box-shadow: 0 8px 25px rgba(26, 54, 93, 0.3);
+@media (hover: hover) and (pointer: fine) {
+  .icon-card:hover .icon-card-icon {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(26, 54, 93, 0.3);
+  }
 }
 
 .icon-card h3 {
@@ -409,7 +415,8 @@
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
-  outline: none;
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
   border-color: var(--primary);
   background: white;
   box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.1);

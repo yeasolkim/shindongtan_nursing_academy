@@ -2,11 +2,23 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="신동탄간호학원 공지사항. 학원의 주요 소식과 안내사항을 확인하세요.">
+  <meta name="description" content="신동탄간호학원 공지사항 - 개강 일정, 모집 안내, 행사 소식 등 학원의 최신 공지사항을 확인하세요.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>커뮤니티 - 공지사항 - 신동탄간호학원</title>
+  <title>공지사항 - 신동탄간호학원</title>
+  <link rel="canonical" href="https://yeasolkim.github.io/shindongtan_nursing_academy/community_notice.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="공지사항 - 신동탄간호학원">
+  <meta property="og:description" content="신동탄간호학원 공지사항 - 개강 일정, 모집 안내, 행사 소식 등 최신 공지를 확인하세요.">
+  <meta property="og:url" content="https://yeasolkim.github.io/shindongtan_nursing_academy/community_notice.html">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:image" content="https://yeasolkim.github.io/shindongtan_nursing_academy/shindongtan/resource/logo.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="공지사항 - 신동탄간호학원">
+  <meta name="twitter:description" content="신동탄간호학원 공지사항 - 개강 일정, 모집 안내, 행사 소식 등 최신 공지를 확인하세요.">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="common-pages.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
@@ -298,8 +310,8 @@
       }
 
       .pagination button {
-        width: 32px;
-        height: 32px;
+        min-width: 44px;
+        min-height: 44px;
         font-size: 0.85rem;
       }
     }
@@ -323,8 +335,8 @@
         font-size: 0.9rem;
       }
       .pagination button {
-        width: 30px;
-        height: 30px;
+        min-width: 44px;
+        min-height: 44px;
         font-size: 0.82rem;
       }
     }
@@ -412,14 +424,14 @@
                 <option value="content">내용</option>
                 <option value="title_content">제목+내용</option>
               </select>
-              <input type="text" id="notice-search-input" placeholder="검색어를 입력하세요" aria-label="검색어 입력">
+              <input type="text" id="notice-search-input" placeholder="검색어를 입력하세요" aria-label="검색어 입력" inputmode="search">
               <button id="notice-search-btn" aria-label="검색">
-                <i class="fas fa-search"></i> 검색
+                <i class="fas fa-search" aria-hidden="true"></i> 검색
               </button>
             </div>
           </div>
 
-          <div class="board-list" id="notice-list">
+          <div class="board-list" id="notice-list" aria-live="polite" aria-label="공지사항 목록">
             <div class="board-header">
               <div class="number">번호</div>
               <div class="title">제목</div>
@@ -440,20 +452,20 @@
     </section>
   </main>
 
-  <aside class="quick-contact-sidebar">
+  <aside class="quick-contact-sidebar" aria-label="빠른 문의">
     <div class="contact-box">
       <h3>문의 전화</h3>
       <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
     </div>
     <div class="contact-box" style="padding: 0;">
-      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
+      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" rel="noopener noreferrer" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
     </div>
   </aside>
 
   <footer class="footer"></footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js"></script>
-  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="supabase-config.js" defer></script>
+  <script src="script.js" defer></script>
 </body>
 </html>

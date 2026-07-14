@@ -2,11 +2,23 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="신동탄간호학원 오시는 길. 경기도 화성시 메타폴리스로 38, 천년프라자 401호. 전화: 031-8003-2456.">
+  <meta name="description" content="신동탄간호학원 오시는 길 - 경기도 화성시 메타폴리스로 38, 천년프라자 401호. 지하철·버스 교통편 및 주차 안내.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>오시는 길 - 신동탄간호학원</title>
+  <link rel="canonical" href="https://yeasolkim.github.io/shindongtan_nursing_academy/academy_location.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="오시는 길 - 신동탄간호학원">
+  <meta property="og:description" content="신동탄간호학원 위치 안내 - 경기도 화성시 메타폴리스로 38, 천년프라자 401호. 지하철·버스 이용 방법을 확인하세요.">
+  <meta property="og:url" content="https://yeasolkim.github.io/shindongtan_nursing_academy/academy_location.html">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:image" content="https://yeasolkim.github.io/shindongtan_nursing_academy/shindongtan/resource/logo.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="오시는 길 - 신동탄간호학원">
+  <meta name="twitter:description" content="신동탄간호학원 위치 안내 - 경기도 화성시 메타폴리스로 38, 천년프라자 401호.">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="common-pages.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <!-- Leaflet.js CSS -->
@@ -211,7 +223,7 @@
       .card-content { padding: 0; }
 
       .location-map-container { margin-bottom: 1.2rem; }
-      #map { height: 200px; border-radius: 8px; }
+      #map { min-height: 250px; border-radius: 8px; }
 
       .contact-summary { padding: 0.7rem 0.3rem; border-radius: 8px; margin-bottom: 1.2rem; }
       .contact-summary h3 { font-size: 1.05rem; margin-bottom: 1rem; }
@@ -220,7 +232,7 @@
       .contact-grid { gap: 0.5rem; }
       .contact-item { padding: 0.5rem; border-radius: 7px; }
       .contact-item .icon { width: 28px; height: 28px; font-size: 0.8rem; margin-right: 0.5rem; }
-      .contact-item .label { font-size: 0.65rem; }
+      .contact-item .label { font-size: 0.85rem; }
       .contact-item .value { font-size: 0.8rem; }
 
       .details-grid { gap: 0.7rem; }
@@ -294,7 +306,7 @@
           <div class="card-content">
             <!-- 지도 섹션 -->
             <div class="location-map-container">
-              <div id="map"></div>
+              <div id="map" role="img" aria-label="신동탄간호학원 위치 지도 — 경기도 화성시 메타폴리스로 38, 천년프라자 401호"></div>
             </div>
 
             <!-- 연락처 정보 통합 카드 -->
@@ -374,19 +386,19 @@
   </main>
 
   <!-- COMP-FOOTER-01: 글로벌 푸터 -->
-  <aside class="quick-contact-sidebar">
+  <aside class="quick-contact-sidebar" aria-label="빠른 문의">
     <div class="contact-box">
       <h3>문의 전화</h3>
       <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
     </div>
     <div class="contact-box" style="padding: 0;">
-      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
+      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" rel="noopener noreferrer" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
     </div>
   </aside>
 
   <footer class="footer"></footer>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="script.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+  <script src="script.js" defer></script>
 </body>
 </html> 

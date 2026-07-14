@@ -5,90 +5,300 @@
   <meta name="description" content="EFR(Emergency First Response) 교육과정 - 신동탄간호학원. 응급처치 전문 교육.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EFR(Emergency First Response) - 신동탄간호학원</title>
+  <link rel="canonical" href="https://yeasolkim.github.io/shindongtan_nursing_academy/education_course-efr.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="EFR 응급처치 교육 - 신동탄간호학원">
+  <meta property="og:description" content="EFR(Emergency First Response) 응급처치 전문 교육과정 안내.">
+  <meta property="og:url" content="https://yeasolkim.github.io/shindongtan_nursing_academy/education_course-efr.html">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:image" content="https://yeasolkim.github.io/shindongtan_nursing_academy/shindongtan/resource/logo.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="EFR 응급처치 교육 - 신동탄간호학원">
+  <meta name="twitter:description" content="EFR(Emergency First Response) 응급처치 전문 교육과정 안내.">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="common-pages.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    
-    /* 게시판 카드 hover 부유 효과 비활성화 */
     .content-card:hover {
       transform: none;
       box-shadow: var(--shadow-lg);
     }
-    .detail-image {
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+
+    /* ── EFR 브랜드 헤더 ── */
+    .efr-brand {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+      border-radius: 14px;
+      padding: 2rem 2rem;
+      margin-bottom: 2.5rem;
+      color: #fff;
+    }
+    .efr-brand-icon {
+      flex-shrink: 0;
+      width: 72px;
+      height: 72px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: #fff;
+    }
+    .efr-brand-text h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin: 0 0 0.25rem;
+      letter-spacing: -0.5px;
+    }
+    .efr-brand-text p {
+      margin: 0;
+      font-size: 0.95rem;
+      opacity: 0.88;
+      font-style: italic;
     }
 
+    /* ── 섹션 공통 ── */
     .subsection {
-        margin-bottom: 3.5rem;
+      margin-bottom: 3rem;
     }
     .subsection:last-child {
-        margin-bottom: 0;
+      margin-bottom: 0;
     }
     .subsection > p {
-        color: #555;
-        line-height: 1.8;
-        font-size: 1.05rem;
-        margin-bottom: 1rem;
+      color: #555;
+      line-height: 1.85;
+      font-size: 1.05rem;
+      margin-bottom: 1rem;
     }
     .subsection ul {
-        list-style: none;
-        padding-left: 0;
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
     }
     .subsection ul li {
-        font-size: 1rem;
-        color: #444;
-        line-height: 1.8;
-        margin-bottom: 0.5rem;
+      font-size: 1rem;
+      color: #444;
+      line-height: 1.8;
+      margin-bottom: 0.8rem;
+      padding-left: 1.2rem;
+      position: relative;
     }
-    .subsection .note {
-        margin-top: 1rem;
-        font-size: 0.9rem;
-        color: #dc3545;
-        text-align: right;
+    .subsection ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.6em;
+      width: 6px;
+      height: 6px;
+      background: #e74c3c;
+      border-radius: 50%;
     }
-    /* 모바일 최적화 */
+
+    /* ── Chain of Survival ── */
+    .cos-section {
+      margin-top: 3rem;
+    }
+    .cos-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-align: center;
+      margin: 0 0 0.4rem;
+    }
+    .cos-subtitle {
+      text-align: center;
+      color: #888;
+      font-size: 0.9rem;
+      margin: 0 0 2rem;
+    }
+    .cos-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.2rem;
+      position: relative;
+    }
+    /* 연결 화살표 */
+    .cos-grid::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: calc(25% - 8px);
+      right: calc(25% - 8px);
+      height: 2px;
+      background: linear-gradient(to right, #e74c3c, #c0392b);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .cos-card {
+      background: #fff;
+      border: 1px solid #f0f0f0;
+      border-radius: 14px;
+      padding: 1.4rem 1rem 1.2rem;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      position: relative;
+      z-index: 1;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .cos-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+      }
+    }
+    .cos-step {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #e74c3c;
+      background: #fef2f2;
+      border-radius: 20px;
+      padding: 0.15rem 0.6rem;
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .cos-icon-wrap {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #c0392b, #e74c3c);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(231,76,60,0.35);
+    }
+    .cos-card-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #222;
+      margin: 0 0 0.4rem;
+      line-height: 1.4;
+    }
+    .cos-card-desc {
+      font-size: 0.8rem;
+      color: #888;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* ── 하단 안내 박스 ── */
+    .efr-note {
+      background: #fef9ec;
+      border: 1px solid #f9d46e;
+      border-radius: 12px;
+      padding: 1.4rem 1.6rem;
+      margin-top: 2.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+    }
+    .efr-note i {
+      color: #e67e22;
+      font-size: 1.1rem;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .efr-note p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #555;
+      line-height: 1.7;
+    }
+    .efr-note strong {
+      color: #c0392b;
+    }
+
+    /* ── 모바일 반응형 ── */
     @media (max-width: 768px) {
-        .subsection {
-            margin-bottom: 2.5rem;
-        }
-        .subsection > p {
-            font-size: 1rem;
-            line-height: 1.7;
-            margin-bottom: 0.8rem;
-        }
-        .subsection ul li {
-            font-size: 0.95rem;
-            line-height: 1.7;
-            margin-bottom: 0.4rem;
-        }
-        .subsection .note {
-            font-size: 0.85rem;
-            text-align: center;
-        }
+      .efr-brand {
+        padding: 1.5rem;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .efr-brand-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.6rem;
+      }
+      .efr-brand-text h2 {
+        font-size: 1.3rem;
+      }
+      .efr-brand-text p {
+        font-size: 0.88rem;
+      }
+      .subsection > p {
+        font-size: 1rem;
+        line-height: 1.75;
+      }
+      .subsection ul li {
+        font-size: 0.95rem;
+      }
+      .cos-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .cos-grid::before {
+        display: none;
+      }
+      .cos-title {
+        font-size: 1.25rem;
+      }
+      .cos-section {
+        margin-top: 2rem;
+      }
     }
     @media (max-width: 480px) {
-        .subsection {
-            margin-bottom: 2rem;
-        }
-        .subsection > p {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 0.7rem;
-        }
-        .subsection ul li {
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin-bottom: 0.3rem;
-        }
-        .subsection .note {
-            font-size: 0.8rem;
-        }
+      .efr-brand {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.2rem;
+      }
+      .efr-brand-text h2 {
+        font-size: 1.15rem;
+      }
+      .subsection > p {
+        font-size: 0.95rem;
+        line-height: 1.65;
+      }
+      .subsection ul li {
+        font-size: 0.9rem;
+      }
+      .cos-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.9rem;
+      }
+      .cos-card {
+        padding: 1.1rem 0.7rem 1rem;
+      }
+      .cos-icon-wrap {
+        width: 52px;
+        height: 52px;
+        font-size: 1.25rem;
+      }
+      .cos-card-title {
+        font-size: 0.82rem;
+      }
+      .cos-card-desc {
+        font-size: 0.75rem;
+      }
+      .efr-note {
+        padding: 1.1rem;
+        gap: 0.7rem;
+      }
+      .efr-note p {
+        font-size: 0.88rem;
+      }
     }
+
     /* Quick Contact Sidebar */
     .quick-contact-sidebar {
       position: fixed;
@@ -133,45 +343,126 @@
       .quick-contact-sidebar { display: none; }
     }
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "EFR 심폐소생술 국제라이센스 과정",
+    "description": "EFR(Emergency First Response) 심폐소생술 국제 자격 취득 과정",
+    "provider": {
+      "@type": "EducationalOrganization",
+      "name": "신동탄간호학원",
+      "url": "https://yeasolkim.github.io/shindongtan_nursing_academy/"
+    },
+    "url": "https://yeasolkim.github.io/shindongtan_nursing_academy/education_course-efr.html",
+    "educationalCredentialAwarded": "EFR 국제라이센스",
+    "hasCourseInstance": {
+      "@type": "CourseInstance",
+      "courseMode": "onsite"
+    }
+  }
+  </script>
 </head>
 <body>
   <header class="header"></header>
   <div id="page-hero-container"></div>
 
-  <!-- 메인 콘텐츠 -->
   <main id="main-content">
     <section class="page-section">
       <div class="container">
         <div class="content-card">
-          <div class="subsection">
-            <h3 class="subsection-title">EFR(Emergency First Response)란?</h3>
-            <p>국제표준규약 기준의 가이드라인에 따른 공신력 있는 미국의 심폐소생술협회입니다. 저희학원에 입학하신 후 취득이 가능합니다.</p>
-            <p>Emergency First Response CPR & AED 교육은 심장과 관련된 생명을 위협하는 응급상황에 대해 배우게 됩니다.</p>
-            <ul>
-                <li><strong>첫째, CPR – 심폐소생술.</strong> CPR은 정상적인 심장박동이 없을 때에도 두뇌와 중요 기관에 산소를 제공하게 됩니다.</li>
-                <li><strong>둘째, AED 사용법.</strong> AED는 자동 외부 제세동기(automated external defibrillator)를 의미하며 비정상 및 비효율적인 심장박동을 교정하게 됩니다.</li>
-                <li><strong>셋째, 질식 환자를 돕는 방법을 익히게 됩니다.</strong> 이러한 정확한 심폐소생술 후에 Emergency First Response Secondary Care (First Aid)는 응급 구조대(Emergency Medical Service, EMS)의 도움이 지연되거나 구조대가 출동할 수 없는 경우에 환자를 안심시키고, 통증을 경감시키면서 추가적인 피해의 위험을 줄이는 방법을 익히게 됩니다.</li>
-            </ul>
-          </div>
-          
-          <img src="shindongtan/resource/efr_detail.png" alt="EFR 응급처치 교육과정 상세 안내" class="detail-image">
+          <div class="card-content">
 
+            <!-- EFR 브랜드 헤더 -->
+            <div class="efr-brand">
+              <div class="efr-brand-icon" aria-hidden="true">
+                <i class="fas fa-heartbeat"></i>
+              </div>
+              <div class="efr-brand-text">
+                <h2>Emergency First Response</h2>
+                <p>Creating Confidence to Care</p>
+              </div>
+            </div>
+
+            <!-- EFR 소개 -->
+            <div class="subsection">
+              <h3 class="subsection-title">EFR(Emergency First Response)란?</h3>
+              <p>EFR(Emergency First Response)은 미국에 본사를 둔 세계적인 응급처치 단체입니다. ILCOR(International Liaison Committee on Resuscitation)에서 지지하는 Life Support 관련 그룹을 지원하기 때문에 공신력이 매우 높습니다. 응급상황 발생시의 기준과 신뢰를 갖춘 ECC 가이드라인을 따릅니다.</p>
+              <p>EFR 응급처치 자격은 국제적으로도 인정받는 자격으로 의학적 근거에 기반을 두고 있습니다. 교육시스템을 통하여 응급상황에 대한 자신감과 응급처치 이론을 현장에서 모두 활용할 수 있도록 합니다.</p>
+              <p>Emergency First Response CPR &amp; AED 교육은 심장과 관련된 생명을 위협하는 응급상황에 대해 배우게 됩니다.</p>
+              <ul>
+                <li><strong>첫째, CPR – 심폐소생술.</strong> CPR은 정상적인 심장박동이 없을 때에도 두뇌와 중요 기관에 산소를 제공하게 됩니다.</li>
+                <li><strong>둘째, AED 사용법.</strong> AED는 자동 외부 제세동기(Automated External Defibrillator)를 의미하며 비정상 및 비효율적인 심장박동을 교정하게 됩니다.</li>
+                <li><strong>셋째, 질식 환자를 돕는 방법을 익히게 됩니다.</strong> 심폐소생술 이후 Emergency First Response Secondary Care(First Aid)는 응급 구조대(EMS)의 도움이 지연되거나 출동할 수 없는 경우에 환자를 안심시키고, 통증을 경감시키면서 추가적인 피해의 위험을 줄이는 방법을 익히게 됩니다.</li>
+              </ul>
+            </div>
+
+            <!-- Chain of Survival -->
+            <div class="cos-section">
+              <h3 class="cos-title">Chain of Survival</h3>
+              <p class="cos-subtitle">생존사슬 — 심장마비 생존율을 높이는 4단계</p>
+
+              <div class="cos-grid">
+                <div class="cos-card">
+                  <span class="cos-step">Step 1</span>
+                  <div class="cos-icon-wrap" aria-hidden="true">
+                    <i class="fas fa-phone-alt"></i>
+                  </div>
+                  <p class="cos-card-title">조기 인식 및 신고</p>
+                  <p class="cos-card-desc">심장마비 징후를 신속히 인식하고 119에 신고합니다.</p>
+                </div>
+
+                <div class="cos-card">
+                  <span class="cos-step">Step 2</span>
+                  <div class="cos-icon-wrap" aria-hidden="true">
+                    <i class="fas fa-hands"></i>
+                  </div>
+                  <p class="cos-card-title">빠른 CPR</p>
+                  <p class="cos-card-desc">즉각적인 심폐소생술로 중요 장기에 산소를 공급합니다.</p>
+                </div>
+
+                <div class="cos-card">
+                  <span class="cos-step">Step 3</span>
+                  <div class="cos-icon-wrap" aria-hidden="true">
+                    <i class="fas fa-bolt"></i>
+                  </div>
+                  <p class="cos-card-title">빠른 제세동</p>
+                  <p class="cos-card-desc">AED를 이용해 비정상 심장박동을 정상으로 되돌립니다.</p>
+                </div>
+
+                <div class="cos-card">
+                  <span class="cos-step">Step 4</span>
+                  <div class="cos-icon-wrap" aria-hidden="true">
+                    <i class="fas fa-hospital"></i>
+                  </div>
+                  <p class="cos-card-title">소생 후 치료</p>
+                  <p class="cos-card-desc">전문 의료팀에 의한 사후 치료로 삶의 질을 회복합니다.</p>
+                </div>
+              </div>
+
+              <div class="efr-note">
+                <i class="fas fa-info-circle" aria-hidden="true"></i>
+                <p>본 과정은 <strong>신동탄간호학원 입학 후 취득</strong>이 가능합니다. 국제표준규약(ILCOR) 기준의 가이드라인에 따른 공신력 있는 미국 심폐소생술 협회 자격으로, 국제적으로 통용됩니다.</p>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     </section>
   </main>
 
-  <aside class="quick-contact-sidebar">
+  <aside class="quick-contact-sidebar" aria-label="빠른 문의">
     <div class="contact-box">
       <h3>문의 전화</h3>
       <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
     </div>
     <div class="contact-box" style="padding: 0;">
-      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
+      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" rel="noopener noreferrer" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
     </div>
   </aside>
 
   <footer class="footer"></footer>
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
-</html> 
+</html>
