@@ -1747,14 +1747,18 @@ body[data-page^='community_'] .section-title {
   object-fit: contain;
   background: #f0f4f8;
 }
+.loading-message {
+  text-align: center;
+  padding: 2rem;
+  color: #777;
+}
+
 .popup-close-btn {
   position: absolute;
   top: -14px;
   right: -14px;
-  width: 36px;
-  height: 36px;
-  min-width: 44px;
-  min-height: 44px;
+  width: 44px;
+  height: 44px;
   background: #fff;
   color: #333;
   border: none;
