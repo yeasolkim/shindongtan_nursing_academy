@@ -247,7 +247,7 @@
   <div id="page-hero-container"></div>
 
   <!-- 메인 콘텐츠 -->
-  <main>
+  <main id="main-content">
     <section class="page-section">
       <div class="container">
         <div class="content-card">
@@ -290,7 +290,10 @@
                 <div class="info-card">
                     <h4><i class="fas fa-users"></i> 혜택 대상</h4>
                     <p>취업준비생, 이직희망자, 회사원, 중장년 등 <strong>국민 누구나</strong></p>
-                    <p class="note small">※ 단, 연매출 1.5억원 이상의 자영업자, 월 임금 300만원 이상의 대기업 종사자 등은 제외합니다.</p>
+                    <div style="background:#fff8f0;border-left:4px solid #f59e0b;padding:1rem 1.2rem;border-radius:0 8px 8px 0;margin:1.2rem 0;">
+                      <strong style="color:#b45309;display:block;margin-bottom:0.5rem;">⚠ 국비지원 제외 대상</strong>
+                      <p style="color:#78350f;font-size:0.9rem;margin:0;">연매출 1.5억원 이상의 자영업자, 월 임금 300만원 이상의 대기업 종사자 등은 제외합니다.</p>
+                    </div>
                 </div>
                 <div class="info-card">
                     <h4><i class="fas fa-wallet"></i> 국민내일배움카드 혜택</h4>
@@ -303,10 +306,14 @@
                 </div>
                 <div class="info-card">
                     <h4><i class="fas fa-info-circle"></i> 안내 사이트</h4>
-                    <ul class="site-links">
-                        <li>고용24: <a href="https://www.work24.go.kr" target="_blank">www.work24.go.kr</a></li>
-                        <li>워크넷: <a href="https://www.work.go.kr" target="_blank">www.work.go.kr</a></li>
-                    </ul>
+                    <div style="display:flex;flex-direction:column;gap:0.6rem;margin-top:0.4rem;">
+                        <a href="https://www.work24.go.kr" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.55rem 1rem;background:var(--primary);color:white;border-radius:6px;text-decoration:none;font-size:0.9rem;font-weight:600;">
+                          <i class="fas fa-external-link-alt"></i> 고용24 바로가기
+                        </a>
+                        <a href="https://www.work.go.kr" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.55rem 1rem;background:var(--primary);color:white;border-radius:6px;text-decoration:none;font-size:0.9rem;font-weight:600;">
+                          <i class="fas fa-external-link-alt"></i> 워크넷 바로가기
+                        </a>
+                    </div>
                 </div>
             </div>
           </div>

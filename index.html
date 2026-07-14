@@ -5,17 +5,27 @@
   <meta name="description" content="경기도 화성 신동탄 소재 간호조무사 전문 교육기관. 20년 경력 원장 직강, 24년도 취업률 96.7%, 국비지원 과정 운영.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>신동탄간호학원 - 간호조무사 전문 교육기관</title>
+  <link rel="canonical" href="https://yeasolkim.github.io/shindongtan_nursing_academy/">
+  <meta name="keywords" content="신동탄간호학원, 간호조무사, 화성 간호학원, 동탄 간호학원, 국비지원 간호조무사">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="신동탄간호학원 - 간호조무사 전문 교육">
+  <meta property="og:description" content="화성 동탄 간호조무사 전문 교육기관. 국비지원 교육과정, 높은 취업률, 체계적인 커리큘럼으로 합격을 책임집니다.">
+  <meta property="og:url" content="https://yeasolkim.github.io/shindongtan_nursing_academy/">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="신동탄간호학원 - 간호조무사 전문 교육">
+  <meta name="twitter:description" content="화성 동탄 간호조무사 전문 교육기관. 국비지원 교육과정, 높은 취업률.">
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  
+
   <!-- Supabase CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 </head>
 <body>
   <header class="header"></header>
 
-  <main>
+  <main id="main-content">
     <!-- Hero Section -->
     <section class="hero-v2 animate-on-scroll">
       <div class="container">
@@ -143,8 +153,8 @@
   <footer class="footer"></footer>
 
   <!-- Supabase 설정 파일 -->
-  <script src="supabase-config.js"></script>
-  <script src="script.js"></script>
+  <script src="supabase-config.js" defer></script>
+  <script src="script.js" defer></script>
   <script>
     async function loadPopupsFromSupabase() {
       if (!window.supabaseClient) return;
@@ -286,6 +296,8 @@
       right: -14px;
       width: 36px;
       height: 36px;
+      min-width: 44px;
+      min-height: 44px;
       background: #fff;
       color: #333;
       border: none;

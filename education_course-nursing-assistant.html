@@ -96,6 +96,15 @@
         margin-bottom: 0;
     }
 
+    /* 화살표 방향: 데스크톱은 → 표시, 모바일은 숨김 */
+    .arrow-desktop { display: inline; }
+    .arrow-mobile  { display: none; }
+
+    @media (max-width: 768px) {
+      .arrow-desktop { display: none; }
+      .arrow-mobile  { display: inline; }
+    }
+
     @media (max-width: 992px) {
         .process-flow-diagram {
             flex-direction: column;
@@ -287,11 +296,11 @@
   <div id="page-hero-container"></div>
 
   <!-- 메인 콘텐츠 -->
-  <main>
+  <main id="main-content">
     <section class="page-section">
       <div class="container">
         <div class="content-card">
-          
+
 <div class="card-content">
             <div class="process-flow-section">
               <h3 class="subsection-title">간호조무사 교육과정 순서도</h3>
@@ -449,24 +458,5 @@
   <footer class="footer"></footer>
 
   <script src="script.js"></script>
-  <script>
-    // 모바일 환경에서 화살표 방향 전환
-    function updateProcessArrows() {
-      const isMobile = window.innerWidth <= 768;
-      document.querySelectorAll('.process-arrow').forEach(function(arrow) {
-        const desktop = arrow.querySelector('.arrow-desktop');
-        const mobile = arrow.querySelector('.arrow-mobile');
-        if (isMobile) {
-          desktop.style.display = 'none';
-          mobile.style.display = 'inline';
-        } else {
-          desktop.style.display = 'inline';
-          mobile.style.display = 'none';
-        }
-      });
-    }
-    window.addEventListener('resize', updateProcessArrows);
-    window.addEventListener('DOMContentLoaded', updateProcessArrows);
-  </script>
 </body>
 </html> 

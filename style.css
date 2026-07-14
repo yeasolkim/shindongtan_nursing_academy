@@ -18,6 +18,25 @@
   --radius-lg: 20px;
 }
 
+/* ===== 스킵 링크 (접근성) ===== */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #1a365d;
+  color: white;
+  padding: 8px 16px;
+  z-index: 9999;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 4px 0;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 0;
+}
+
 /* ===== 복사 방지 스타일 ===== */
 /* 관리자 페이지가 아닌 경우에만 복사 방지 적용 */
 body:not([data-page="admin.html"]) {
@@ -105,7 +124,7 @@ header {
   text-decoration: none;
   color: #333;
   font-weight: 600;
-  font-size: 0.715rem;
+  font-size: 0.875rem;
   padding: 0.8rem 1.2rem;
   border-radius: var(--radius-sm);
   transition: all 0.3s ease;
@@ -163,7 +182,7 @@ header {
   text-decoration: none;
   transition: all 0.3s ease;
   font-weight: 500;
-  font-size: 0.65rem;
+  font-size: 0.8rem;
   white-space: nowrap;
 }
 
@@ -172,6 +191,16 @@ header {
   color: var(--primary);
   transform: translateX(8px);
   font-weight: 600;
+}
+
+/* 활성 메뉴 표시 */
+.menu-item.active > .menu-link {
+  color: #4a90d9;
+  font-weight: 700;
+}
+.submenu a.active {
+  color: #4a90d9;
+  font-weight: 700;
 }
 
 /* =================================== */

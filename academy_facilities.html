@@ -230,17 +230,17 @@
   <div id="page-hero-container"></div>
 
   <!-- 메인 콘텐츠 -->
-  <main>
+  <main id="main-content">
     <section class="page-section">
       <div class="container">
         <div class="content-card">
           <div class="card-content">
-            <div class="slider-wrapper" id="facilities-slider">
+            <div class="slider-wrapper" id="facilities-slider" role="region" aria-label="시설 사진">
               <div class="slider-main">
                 <img src="" alt="학원 시설" class="slider-main-image" id="slider-main-image">
                 <div class="slider-nav">
-                  <button id="slider-prev-btn"><i class="fas fa-chevron-left"></i></button>
-                  <button id="slider-next-btn"><i class="fas fa-chevron-right"></i></button>
+                  <button id="slider-prev-btn" aria-label="이전 사진"><i class="fas fa-chevron-left"></i></button>
+                  <button id="slider-next-btn" aria-label="다음 사진"><i class="fas fa-chevron-right"></i></button>
                 </div>
                 <div class="slider-counter" id="slider-counter"></div>
               </div>

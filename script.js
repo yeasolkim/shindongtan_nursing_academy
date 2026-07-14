@@ -481,12 +481,18 @@ async function configurePageHero() {
   const isMobile = window.innerWidth <= 768;
   const pagesToHideHeroOnMobile = ['academy_introduction.html', 'academy_history.html', 'academy_instructors.html', 'academy_facilities.html', 'academy_location.html'];
 
-  // 모바일이면서 특정 페이지이면 히어로 섹션을 숨김
+  // 모바일이면서 특정 페이지이면 히어로 배경만 숨기고 텍스트는 유지
   if (isMobile && pagesToHideHeroOnMobile.includes(currentPage)) {
-    pageHeroContainer.style.display = 'none';
-    return; // 히어로를 숨기고 함수를 종료
+    pageHeroContainer.style.backgroundImage = 'none';
+    pageHeroContainer.style.backgroundColor = 'transparent';
+    pageHeroContainer.style.minHeight = '';
+    // 텍스트 색상을 어두운 색으로 유지
+    const textEls = pageHeroContainer.querySelectorAll('h1, h2, p, .breadcrumb, .badge-text, [id="page-title"], [id="page-description"], [id="breadcrumb-path"]');
+    textEls.forEach(el => { el.style.color = '#222'; });
   } else {
-    // 다른 모든 경우에는 보이게 함 (리사이즈 대응)
+    // 다른 모든 경우에는 스타일 초기화 (리사이즈 대응)
+    pageHeroContainer.style.backgroundImage = '';
+    pageHeroContainer.style.backgroundColor = '';
     pageHeroContainer.style.display = '';
   }
 
@@ -829,9 +835,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     case 'community_jobs_detail.html':
       initJobsDetailPage();
       break;
-    case 'community_jobs_write.html':
-      initJobsWritePage();
-      break;
+    // community_jobs_write.html 파일이 존재하지 않으므로 케이스 제거됨
     case 'job_employment.html':
       initEmploymentPage();
       break;
@@ -1118,6 +1122,15 @@ async function initGalleryPage() {
       const startIdx = (page - 1) * itemsPerPage;
       const endIdx = startIdx + itemsPerPage;
       const pageItems = items.slice(startIdx, endIdx);
+      if (items.length === 0) {
+        listContainer.innerHTML = `<div style="text-align:center; padding: 3rem 1rem; color: #888;">
+          <i class="fas fa-search" style="font-size:2rem; margin-bottom:1rem; display:block; opacity:0.4;"></i>
+          <p style="font-size:1rem; margin-bottom:0.8rem;">검색 결과가 없습니다.</p>
+          <button onclick="location.reload()" style="padding:0.5rem 1.2rem; border:1px solid #ccc; background:#fff; border-radius:6px; cursor:pointer; font-size:0.9rem;">초기화</button>
+        </div>`;
+        totalPostsCounter.textContent = `총 0건`;
+        return;
+      }
       listContainer.innerHTML = pageItems.map(item => {
         // parseGalleryImages 함수를 사용하여 안전하게 첫 번째 이미지만 가져오기
         const images = parseGalleryImages(item.image);
@@ -1130,7 +1143,7 @@ async function initGalleryPage() {
           <div class="board-row">
             <!-- 썸네일도 상세화면 링크로 이동 -->
             <a href="${detailUrl}" onclick="incrementViewCount('gallery', ${item.id})">
-              <img class="thumbnail" src="${thumbnail}" alt="썸네일">
+              <img class="thumbnail" src="${thumbnail}" alt="${item.title || '갤러리 이미지'}" loading="lazy">
             </a>
             <div class="title-section">
               <a href="${detailUrl}" class="title" onclick="incrementViewCount('gallery', ${item.id})">${item.title || ''}</a>
@@ -1157,6 +1170,8 @@ async function initGalleryPage() {
           const p = parseInt(this.dataset.page);
           renderList(items, p);
           setupPagination(items, p);
+          const listEl = document.querySelector('#gallery-list');
+          if (listEl) listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
       });
     }
@@ -1196,7 +1211,7 @@ async function initGalleryDetailPage() {
 
     // 여러 이미지 모두 렌더링
     const images = parseGalleryImages(currentItem.image);
-    const imagesHtml = images.map(img => `<img src="${img}" alt="${currentItem.title}" style="max-width:100%;margin-bottom:1rem;">`).join('');
+    const imagesHtml = images.map((img, idx) => `<img src="${img}" alt="${currentItem.title}" style="max-width:100%;margin-bottom:1rem;"${idx > 0 ? ' loading="lazy"' : ''}>`).join('');
     const imageGroupEl = document.getElementById('gallery-detail-image-group');
     if (imageGroupEl) {
       imageGroupEl.innerHTML = imagesHtml;
@@ -1221,20 +1236,20 @@ async function initGalleryDetailPage() {
     const nextButton = document.getElementById('next-button');
     
     if (prevButton) {
-      if (nextPost) {
-        prevButton.href = `community_gallery_detail.html?id=${nextPost.id}`;
-        prevButton.onclick = () => incrementViewCount('gallery', nextPost.id);
+      if (prevPost) {
+        prevButton.href = `community_gallery_detail.html?id=${prevPost.id}`;
+        prevButton.onclick = () => incrementViewCount('gallery', prevPost.id);
       } else {
         prevButton.classList.add('disabled');
         prevButton.href = '#';
         prevButton.onclick = (e) => e.preventDefault();
       }
     }
-    
+
     if (nextButton) {
-      if (prevPost) {
-        nextButton.href = `community_gallery_detail.html?id=${prevPost.id}`;
-        nextButton.onclick = () => incrementViewCount('gallery', prevPost.id);
+      if (nextPost) {
+        nextButton.href = `community_gallery_detail.html?id=${nextPost.id}`;
+        nextButton.onclick = () => incrementViewCount('gallery', nextPost.id);
       } else {
         nextButton.classList.add('disabled');
         nextButton.href = '#';
@@ -1360,6 +1375,17 @@ async function initJobsPage() {
       const header = listContainer.querySelector('.board-header');
       listContainer.innerHTML = '';
       listContainer.appendChild(header);
+      if (items.length === 0) {
+        const emptyEl = document.createElement('div');
+        emptyEl.innerHTML = `<div style="text-align:center; padding: 3rem 1rem; color: #888;">
+          <i class="fas fa-search" style="font-size:2rem; margin-bottom:1rem; display:block; opacity:0.4;"></i>
+          <p style="font-size:1rem; margin-bottom:0.8rem;">검색 결과가 없습니다.</p>
+          <button onclick="location.reload()" style="padding:0.5rem 1.2rem; border:1px solid #ccc; background:#fff; border-radius:6px; cursor:pointer; font-size:0.9rem;">초기화</button>
+        </div>`;
+        listContainer.appendChild(emptyEl);
+        totalPostsCounter.textContent = `전체 0개`;
+        return;
+      }
       const start = (page - 1) * itemsPerPage;
       const end = start + itemsPerPage;
       const paginatedItems = items.slice(start, end);
@@ -1393,7 +1419,7 @@ async function initJobsPage() {
       paginationContainer.innerHTML = '';
       const pageCount = Math.ceil(items.length / itemsPerPage);
       if (pageCount <= 1) return;
-      
+
       // 이전 페이지 버튼
       if (page > 1) {
         const prevBtn = document.createElement('button');
@@ -1402,14 +1428,16 @@ async function initJobsPage() {
           currentPage = page - 1;
           renderList(items, currentPage);
           setupPagination(items, currentPage);
+          const listEl = document.querySelector('#jobs-list');
+          if (listEl) listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
         paginationContainer.appendChild(prevBtn);
       }
-      
+
       // 페이지 번호 버튼들
       const startPage = Math.max(1, page - 2);
       const endPage = Math.min(pageCount, page + 2);
-      
+
       for (let i = startPage; i <= endPage; i++) {
         const pageBtn = document.createElement('button');
         pageBtn.innerText = i;
@@ -1418,10 +1446,12 @@ async function initJobsPage() {
           currentPage = i;
           renderList(items, currentPage);
           setupPagination(items, currentPage);
+          const listEl = document.querySelector('#jobs-list');
+          if (listEl) listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
         paginationContainer.appendChild(pageBtn);
       }
-      
+
       // 다음 페이지 버튼
       if (page < pageCount) {
         const nextBtn = document.createElement('button');
@@ -1430,6 +1460,8 @@ async function initJobsPage() {
           currentPage = page + 1;
           renderList(items, currentPage);
           setupPagination(items, currentPage);
+          const listEl = document.querySelector('#jobs-list');
+          if (listEl) listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
         paginationContainer.appendChild(nextBtn);
       }
@@ -1502,11 +1534,11 @@ async function initJobsDetailPage() {
         <ul class="post-nav">
           <li>
               <div class="nav-label">이전글</div>
-              ${nextPost ? `<a href="community_jobs_detail.html?id=${nextPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${nextPost.id})">${nextPost.title}</a>` : '<span class="no-post">이전글이 없습니다.</span>'}
+              ${prevPost ? `<a href="community_jobs_detail.html?id=${prevPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${prevPost.id})">${prevPost.title}</a>` : '<span class="no-post">이전글이 없습니다.</span>'}
           </li>
           <li>
               <div class="nav-label">다음글</div>
-              ${prevPost ? `<a href="community_jobs_detail.html?id=${prevPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${prevPost.id})">${prevPost.title}</a>` : '<span class="no-post">다음글이 없습니다.</span>'}
+              ${nextPost ? `<a href="community_jobs_detail.html?id=${nextPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${nextPost.id})">${nextPost.title}</a>` : '<span class="no-post">다음글이 없습니다.</span>'}
           </li>
         </ul>
         <div class="post-footer">
@@ -1734,6 +1766,18 @@ async function initNoticePage() {
       listContainer.innerHTML = '';
       listContainer.appendChild(header);
 
+      if (items.length === 0) {
+        const emptyEl = document.createElement('div');
+        emptyEl.innerHTML = `<div style="text-align:center; padding: 3rem 1rem; color: #888;">
+          <i class="fas fa-search" style="font-size:2rem; margin-bottom:1rem; display:block; opacity:0.4;"></i>
+          <p style="font-size:1rem; margin-bottom:0.8rem;">검색 결과가 없습니다.</p>
+          <button onclick="location.reload()" style="padding:0.5rem 1.2rem; border:1px solid #ccc; background:#fff; border-radius:6px; cursor:pointer; font-size:0.9rem;">초기화</button>
+        </div>`;
+        listContainer.appendChild(emptyEl);
+        totalPostsCounter.textContent = `전체 0개`;
+        return;
+      }
+
       const start = (page - 1) * itemsPerPage;
       const end = start + itemsPerPage;
       const paginatedItems = items.slice(start, end);
@@ -1768,7 +1812,7 @@ async function initNoticePage() {
       paginationContainer.innerHTML = '';
       const pageCount = Math.ceil(items.length / itemsPerPage);
       if (pageCount <= 1) return;
-      
+
       // 이전 페이지 버튼
       if (page > 1) {
         const prevBtn = document.createElement('button');
@@ -1777,14 +1821,16 @@ async function initNoticePage() {
           currentPage = page - 1;
           renderList(items, currentPage);
           setupPagination(items, currentPage);
+          const listEl = document.querySelector('#notice-list');
+          if (listEl) listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
         paginationContainer.appendChild(prevBtn);
       }
-      
+
       // 페이지 번호 버튼들
       const startPage = Math.max(1, page - 2);
       const endPage = Math.min(pageCount, page + 2);
-      
+
       for (let i = startPage; i <= endPage; i++) {
         const pageBtn = document.createElement('button');
         pageBtn.innerText = i;
@@ -1793,10 +1839,12 @@ async function initNoticePage() {
           currentPage = i;
           renderList(items, currentPage);
           setupPagination(items, currentPage);
+          const listEl = document.querySelector('#notice-list');
+          if (listEl) listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
         paginationContainer.appendChild(pageBtn);
       }
-      
+
       // 다음 페이지 버튼
       if (page < pageCount) {
         const nextBtn = document.createElement('button');
@@ -1805,6 +1853,8 @@ async function initNoticePage() {
           currentPage = page + 1;
           renderList(items, currentPage);
           setupPagination(items, currentPage);
+          const listEl = document.querySelector('#notice-list');
+          if (listEl) listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
         paginationContainer.appendChild(nextBtn);
       }
@@ -1875,7 +1925,7 @@ async function initNoticeDetailPage() {
     await incrementViewCount('notices', postId);
 
     // 최신순 정렬로 이전/다음글 계산
-    const sortedItems = allItems.sort((a, b) => (b.created_at || '').localeCompare(a.date || a.created_at || ''));
+    const sortedItems = allItems.sort((a, b) => (b.created_at || b.date || '').localeCompare(a.created_at || a.date || ''));
     const currentIndex = sortedItems.findIndex(item => item.id === postId);
     const prevPost = currentIndex > 0 ? sortedItems[currentIndex - 1] : null;
     const nextPost = currentIndex < sortedItems.length - 1 ? sortedItems[currentIndex + 1] : null;
@@ -1890,11 +1940,12 @@ async function initNoticeDetailPage() {
       );
     }
 
+    const isNotice = post.isnotice || post.isNotice;
     // 상세 페이지 HTML 생성
     detailContainer.innerHTML = `
       <div class="post-view">
         <div class="post-header">
-          <h2>${post.title}</h2>
+          <h2>${isNotice ? '<span class="notice-badge-inline">중요</span> ' : ''}${post.title}</h2>
           <div class="post-meta">
             <span><i class="fas fa-user"></i> ${post.author || '관리자'}</span>
             <span><i class="fas fa-calendar"></i> ${formatKoreaDate(post.date || post.created_at)}</span>
@@ -1904,6 +1955,16 @@ async function initNoticeDetailPage() {
         <div class="post-body">
           <div class="ql-editor">${processedContent}</div>
         </div>
+        <ul class="post-nav">
+          <li>
+            <span class="nav-label">이전글</span>
+            <span class="nav-title">${prevPost ? `<a href="community_notice_detail.html?id=${prevPost.id}">${prevPost.title}</a>` : '<span class="no-post">이전글이 없습니다.</span>'}</span>
+          </li>
+          <li>
+            <span class="nav-label">다음글</span>
+            <span class="nav-title">${nextPost ? `<a href="community_notice_detail.html?id=${nextPost.id}">${nextPost.title}</a>` : '<span class="no-post">다음글이 없습니다.</span>'}</span>
+          </li>
+        </ul>
         <div class="post-footer">
           <a href="community_notice.html" class="list-button">목록으로</a>
         </div>
