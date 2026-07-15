@@ -261,6 +261,23 @@ function hidePageLoader() {
   setTimeout(() => loader.remove(), 380);
 }
 
+function showPageLoader() {
+  let loader = document.getElementById('page-loader');
+  if (loader) {
+    loader.classList.remove('hide');
+    return;
+  }
+  loader = document.createElement('div');
+  loader.id = 'page-loader';
+  loader.setAttribute('aria-hidden', 'true');
+  loader.innerHTML =
+    '<div class="loader-wrap">' +
+    '<div class="loader-rings"><span></span><span></span><span></span><div class="loader-dot"></div></div>' +
+    '<p class="loader-brand">신동탄간호학원</p>' +
+    '</div>';
+  document.body.insertBefore(loader, document.body.firstChild);
+}
+
 // 컴포넌트 캐시 버전 — header.html/footer.html/page-hero.html 수정 시 값을 변경하세요
 const COMP_CACHE_VER = 'sdn_v2';
 
@@ -957,10 +974,27 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
   });
 
-  console.log("신동탄간호학원 스크립트 초기화 완료.");
+  // 6. 페이지 이동 링크 클릭 시 즉시 로더 표시
+  document.addEventListener('click', function(e) {
+    const link = e.target.closest('a');
+    if (!link) return;
+    const href = link.getAttribute('href');
+    if (!href ||
+        href.startsWith('#') ||
+        href.startsWith('mailto:') ||
+        href.startsWith('tel:') ||
+        href.startsWith('javascript:') ||
+        link.target === '_blank' ||
+        e.ctrlKey || e.metaKey || e.shiftKey) return;
+    showPageLoader();
+  }, true);
 
-  // 팝업 초기화 추가
-  //initPopup();
+  // bfcache(뒤로가기 캐시)로 복원될 때 로더 제거
+  window.addEventListener('pageshow', function(e) {
+    if (e.persisted) hidePageLoader();
+  });
+
+  console.log("신동탄간호학원 스크립트 초기화 완료.");
 });
 
 /**
