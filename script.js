@@ -254,6 +254,13 @@ function formatKoreaDate(utcDateStr) {
  * @param {string} url - 로드할 HTML 파일의 URL
  * @param {function} [callback] - 로드 완료 후 실행할 콜백 함수
  */
+function hidePageLoader() {
+  const loader = document.getElementById('page-loader');
+  if (!loader) return;
+  loader.classList.add('hide');
+  setTimeout(() => loader.remove(), 380);
+}
+
 // 컴포넌트 캐시 버전 — header.html/footer.html/page-hero.html 수정 시 값을 변경하세요
 const COMP_CACHE_VER = 'sdn_v2';
 
@@ -873,6 +880,9 @@ function submitForm(formElement) {
 
 document.addEventListener('DOMContentLoaded', async function() {
 
+  // 로더 안전망: JS 오류가 나도 5초 후 자동 제거
+  const _loaderGuard = setTimeout(() => hidePageLoader(), 5000);
+
   // 1. 공통 컴포넌트 로드 — header/footer/page-hero 동시 병렬 fetch
   const heroContainer = document.getElementById('page-hero-container');
   await Promise.all([
@@ -884,6 +894,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     loadComponent('footer.footer', 'footer.html'),
     heroContainer ? configurePageHero() : Promise.resolve()
   ]);
+
+  clearTimeout(_loaderGuard);
+  hidePageLoader();
 
   // 3. 공통 UI 컴포넌트 초기화
   initScrollEffects();
