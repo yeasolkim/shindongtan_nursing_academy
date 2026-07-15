@@ -75,16 +75,11 @@
         color: var(--primary);
         font-weight: 600;
         box-shadow: 0 2px 8px rgba(26,54,93,0.08);
-        transition: box-shadow 0.2s, transform 0.15s;
     }
     .flow-step.highlight {
         color: #b02a37;
         border-color: #b02a37;
         background: #fff6f7;
-    }
-    .flow-step:hover {
-        box-shadow: 0 6px 20px rgba(26,54,93,0.15);
-        transform: translateY(-3px);
     }
     .flow-arrow {
         color: var(--primary);
@@ -113,11 +108,6 @@
         border-radius: 12px;
         padding: 1.5rem;
         box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .info-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
     }
     .info-card h4 {
         font-size: 1.1rem;
@@ -228,12 +218,10 @@
             padding: 0.9rem 0.5rem;
             border-radius: 10px;
         }
-        .flow-step:hover { transform: none; }
         .flow-arrow { font-size: 1.3rem; min-height: 1.5rem; }
         .flow-arrow::before { content: '↓'; }
         .info-card-grid { grid-template-columns: 1fr; gap: 1rem; }
         .info-card { padding: 1.2rem; }
-        .info-card:hover { transform: none; }
         .info-card h4 { font-size: 1rem; margin-bottom: 0.6rem; }
         .info-card p { font-size: 0.9rem; }
         .note { font-size: 0.85rem; }
