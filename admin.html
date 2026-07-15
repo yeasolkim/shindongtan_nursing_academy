@@ -3375,9 +3375,28 @@
     .modal-content.editing-mode { border-top: 4px solid #f59e0b; }
     .modal-content.editing-mode #modal-title { color: #d97706; }
     .gallery-preview-wrap { position:relative; display:inline-block; }
-    .gallery-preview-thumb { width:80px; height:80px; object-fit:cover; border-radius:6px; border:1.5px solid var(--border); display:block; }
-    .gallery-preview-delete { position:absolute; top:2px; right:2px; background:#dc3545; color:#fff; border:none; border-radius:50%; width:22px; height:22px; cursor:pointer; font-size:16px; line-height:1; display:flex; align-items:center; justify-content:center; }
-    #image-preview-list { display:flex; gap:10px; flex-wrap:wrap; margin-top:0.8rem; }
+    .gallery-preview-thumb { width:130px !important; height:100px !important; object-fit:cover; border-radius:6px; border:1.5px solid var(--border); display:block; }
+    .gallery-preview-delete { position:absolute; top:4px; right:4px; background:#dc3545; color:#fff; border:none; border-radius:50%; width:22px; height:22px; cursor:pointer; font-size:16px; line-height:1; display:flex; align-items:center; justify-content:center; }
+    #image-preview-list { display:flex; gap:12px; flex-wrap:wrap; margin-top:0.8rem; }
+    /* 대표 배지 */
+    .gallery-preview-badge { position:absolute; top:4px; left:4px; background:#334a6c; color:#fff; font-size:0.62rem; font-weight:700; padding:2px 6px; border-radius:4px; pointer-events:none; letter-spacing:0.3px; }
+    /* 순서 버튼 */
+    .gallery-preview-order { position:absolute; bottom:4px; left:0; right:0; display:flex; justify-content:center; gap:4px; }
+    .gallery-order-btn { background:rgba(0,0,0,0.52); color:#fff; border:none; border-radius:4px; cursor:pointer; width:24px; height:24px; font-size:12px; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; }
+    .gallery-order-btn:disabled { opacity:0.25; cursor:default; }
+    .gallery-order-btn:not(:disabled):hover { background:rgba(0,0,0,0.82); }
+    /* 드롭존 */
+    #gallery-drop-zone { border:2px dashed #b0b8c1; border-radius:10px; padding:1.4rem 1rem; text-align:center; cursor:pointer; transition:border-color 0.2s, background 0.2s; background:#f8fafc; margin-bottom:0.6rem; user-select:none; }
+    #gallery-drop-zone.drag-over { border-color:#334a6c; background:#e7edf5; }
+    #gallery-drop-zone > i { font-size:2rem; color:#b0b8c1; margin-bottom:0.4rem; display:block; pointer-events:none; }
+    #gallery-drop-zone > p { margin:0 0 0.6rem; color:#6c757d; font-size:0.9rem; pointer-events:none; }
+    .gallery-drop-hint { font-size:0.78rem; color:#adb5bd; margin:0.5rem 0 0 !important; pointer-events:none; }
+    #add-image-btn { background:#334a6c; color:#fff; border:none; border-radius:7px; padding:0.5rem 1.2rem; font-size:0.9rem; font-weight:600; cursor:pointer; transition:background 0.2s; }
+    #add-image-btn:hover { background:#2c405e; }
+    /* 이미지 카운터 */
+    #gallery-img-counter { display:flex; align-items:center; gap:0.7rem; margin:0.2rem 0 0.4rem; }
+    #gallery-img-count-text { font-size:0.9rem; font-weight:700; color:#334a6c; }
+    .gallery-count-hint { font-size:0.78rem; color:#6c757d; }
     /* ---- 시설 사진 탭 추가 UI ---- */
     .facility-img-preview { display:none; width:100%; max-width:200px; height:120px; object-fit:cover; border-radius:10px; margin-top:0.8rem; border:2px solid var(--border); box-shadow:0 2px 8px rgba(51,74,108,.10); }
     .facility-img-preview.visible { display: block; }
@@ -3765,11 +3784,19 @@
           <input type="text" id="modal-title-input" required maxlength="150">
         </div>
         <div class="form-group" id="modal-image-group" style="display: none;">
-          <label for="modal-image-input">이미지 <span class="req">*</span></label>
+          <label>이미지 <span class="req">*</span></label>
           <input type="file" id="modal-image-input" accept="image/*" multiple style="display:none;">
-          <button type="button" id="add-image-btn" class="button-secondary">이미지 추가</button>
+          <div id="gallery-drop-zone">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>이미지를 여기에 끌어다 놓거나</p>
+            <button type="button" id="add-image-btn">파일 선택</button>
+            <p class="gallery-drop-hint">JPG · PNG · WebP · 최대 5MB · 여러 장 동시 선택 가능</p>
+          </div>
+          <div id="gallery-img-counter" style="display:none;">
+            <span id="gallery-img-count-text">0장</span>
+            <span class="gallery-count-hint">첫 번째 이미지가 목록 썸네일로 사용됩니다</span>
+          </div>
           <div id="image-preview-list"></div>
-          <p class="upload-hint">JPG · PNG · WebP 지원. 최대 5MB · X버튼으로 삭제</p>
         </div>
         <!-- 갤러리 업로드 로딩 오버레이 -->
         <div id="gallery-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">

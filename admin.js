@@ -937,6 +937,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 갤러리 이미지 초기화
         resetGalleryImageFiles();
+        galleryModalDirty = false;
 
         // 모달 표시
         modal.style.display = 'flex';
@@ -973,68 +974,130 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         galleryImageFiles = images.map(url => ({ url }));
         renderGalleryImagePreviews();
-        
+        galleryModalDirty = false;
+
         // 모달 표시
         modal.style.display = 'flex';
     }
     // 갤러리 이미지 파일 관리
     let galleryImageFiles = [];
+    let galleryModalDirty = false;
 
-    // 이미지 추가 버튼 클릭 시 파일 선택창 열기
+    function isGalleryModal() {
+        const pt = document.getElementById('modal-post-type');
+        return pt && pt.value === 'gallery';
+    }
+
+    // 공통 파일 처리 함수 (파일 선택 + 드래그앤드롭 공용)
+    function processImageFiles(files) {
+        Array.from(files).forEach(file => {
+            if (!file.type.startsWith('image/')) {
+                showToast('"' + file.name + '"은(는) 이미지 파일이 아닙니다.', 'error');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('"' + file.name + '"은(는) 5MB를 초과합니다.', 'error');
+                return;
+            }
+            if (!galleryImageFiles.some(f => f.name === file.name && f.size === file.size)) {
+                galleryImageFiles.push(file);
+            }
+        });
+        galleryModalDirty = true;
+        renderGalleryImagePreviews();
+    }
+
+    // 이미지 추가 버튼 + 드래그앤드롭
     const addImageBtn = document.getElementById('add-image-btn');
     const modalImageInput = document.getElementById('modal-image-input');
     const imagePreviewList = document.getElementById('image-preview-list');
     if (addImageBtn && modalImageInput) {
-        addImageBtn.onclick = () => modalImageInput.click();
+        addImageBtn.onclick = function(e) { e.stopPropagation(); modalImageInput.click(); };
         modalImageInput.addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            files.forEach(file => {
-                if (file.size > 5 * 1024 * 1024) {
-                    showToast('"' + file.name + '"은(는) 5MB를 초과합니다.', 'error');
-                    return;
-                }
-                if (!galleryImageFiles.some(f => f.name === file.name && f.size === file.size)) {
-                    galleryImageFiles.push(file);
-                }
-            });
-            renderGalleryImagePreviews();
+            processImageFiles(e.target.files);
             e.target.value = '';
         });
     }
+    const dropZone = document.getElementById('gallery-drop-zone');
+    if (dropZone && modalImageInput) {
+        dropZone.addEventListener('click', function(e) {
+            if (e.target.id !== 'add-image-btn') modalImageInput.click();
+        });
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault(); dropZone.classList.add('drag-over');
+        });
+        dropZone.addEventListener('dragleave', function() {
+            dropZone.classList.remove('drag-over');
+        });
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            processImageFiles(e.dataTransfer.files);
+        });
+    }
+    // 모달 폼 입력 변경 시 dirty 표시
+    if (modalForm) {
+        modalForm.addEventListener('input', function() {
+            if (isGalleryModal()) galleryModalDirty = true;
+        });
+    }
+
     function renderGalleryImagePreviews() {
         if (!imagePreviewList) return;
         imagePreviewList.innerHTML = '';
-        galleryImageFiles.forEach((file) => {
-            let imgSrc = '';
+
+        const counter = document.getElementById('gallery-img-counter');
+        const countText = document.getElementById('gallery-img-count-text');
+        if (counter) counter.style.display = galleryImageFiles.length > 0 ? 'flex' : 'none';
+        if (countText) countText.textContent = galleryImageFiles.length + '장 추가됨';
+
+        galleryImageFiles.forEach((file, idx) => {
+            const isFirst = idx === 0;
+            const isLast = idx === galleryImageFiles.length - 1;
             if (file instanceof File) {
                 const reader = new FileReader();
-                reader.onload = function(ev) {
-                    addPreview(ev.target.result, file);
-                };
+                reader.onload = function(ev) { addPreview(ev.target.result, file, idx, isFirst, isLast); };
                 reader.readAsDataURL(file);
             } else if (file.url) {
-                imgSrc = file.url;
-                addPreview(imgSrc, file);
+                addPreview(file.url, file, idx, isFirst, isLast);
             }
-            function addPreview(src, fileObj) {
-                const div = document.createElement('div');
-                div.className = 'gallery-preview-wrap';
-                div.innerHTML = `
-                    <img src="${src}" class="gallery-preview-thumb" alt="미리보기">
-                    <button type="button" class="delete-image-btn gallery-preview-delete">&times;</button>
-                `;
-                imagePreviewList.appendChild(div);
-                div.querySelector('.delete-image-btn').onclick = function() {
-                    // url이 있으면 url로 삭제, 아니면 name+size로 삭제
-                    if (fileObj.url) {
-                        galleryImageFiles = galleryImageFiles.filter(f => f.url !== fileObj.url);
-                    } else if (fileObj.name && fileObj.size) {
-                        galleryImageFiles = galleryImageFiles.filter(f => !(f.name === fileObj.name && f.size === fileObj.size));
-                    }
+        });
+
+        function addPreview(src, fileObj, idx, isFirst, isLast) {
+            const div = document.createElement('div');
+            div.className = 'gallery-preview-wrap';
+            div.innerHTML = `
+                <img src="${src}" class="gallery-preview-thumb" alt="미리보기">
+                ${isFirst ? '<span class="gallery-preview-badge">대표</span>' : ''}
+                <button type="button" class="gallery-preview-delete">&times;</button>
+                <div class="gallery-preview-order">
+                    <button type="button" class="gallery-order-btn gallery-order-up" ${isFirst ? 'disabled' : ''} title="앞으로">▲</button>
+                    <button type="button" class="gallery-order-btn gallery-order-down" ${isLast ? 'disabled' : ''} title="뒤로">▼</button>
+                </div>
+            `;
+            imagePreviewList.appendChild(div);
+
+            div.querySelector('.gallery-preview-delete').onclick = function() {
+                if (fileObj.url) galleryImageFiles = galleryImageFiles.filter(f => f.url !== fileObj.url);
+                else if (fileObj.name && fileObj.size) galleryImageFiles = galleryImageFiles.filter(f => !(f.name === fileObj.name && f.size === fileObj.size));
+                galleryModalDirty = true;
+                renderGalleryImagePreviews();
+            };
+            if (!isFirst) {
+                div.querySelector('.gallery-order-up').onclick = function() {
+                    [galleryImageFiles[idx - 1], galleryImageFiles[idx]] = [galleryImageFiles[idx], galleryImageFiles[idx - 1]];
+                    galleryModalDirty = true;
                     renderGalleryImagePreviews();
                 };
             }
-        });
+            if (!isLast) {
+                div.querySelector('.gallery-order-down').onclick = function() {
+                    [galleryImageFiles[idx], galleryImageFiles[idx + 1]] = [galleryImageFiles[idx + 1], galleryImageFiles[idx]];
+                    galleryModalDirty = true;
+                    renderGalleryImagePreviews();
+                };
+            }
+        }
     }
     // 갤러리 글쓰기/수정 진입 시 기존 파일 초기화
     function resetGalleryImageFiles() {
@@ -1044,6 +1107,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // handleGalleryFormSubmit에서 galleryImageFiles만 업로드
     async function handleGalleryFormSubmit(e) {
         e.preventDefault();
+        const id = document.getElementById('modal-post-id').value;
+        // 신규 작성 시 이미지 필수 검증 (로딩 오버레이 전)
+        if (!id && galleryImageFiles.length === 0) {
+            showToast('최소 1개의 이미지를 첨부해야 합니다.', 'warning');
+            return;
+        }
         const submitBtn = modalForm ? modalForm.querySelector('[type="submit"]') : null;
         const loadingOverlay = document.getElementById('gallery-loading-overlay');
         const loadingText = document.getElementById('gallery-loading-text');
@@ -1053,7 +1122,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (loadingText) loadingText.textContent = '이미지 업로드 중...';
         }
         try {
-        const id = document.getElementById('modal-post-id').value;
         const title = document.getElementById('modal-title-input').value;
             // Quill Editor에서 HTML 가져와 textarea에 동기화
             const description = (typeof quill !== 'undefined' && quill) ? quill.root.innerHTML : document.getElementById('modal-content-input').value.replace(/\n/g, '<br>');
@@ -1258,6 +1326,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 모달 닫기(x) 버튼 이벤트 연결 - 전역 함수로 정의
     function closeModal() {
+        // 갤러리 모달에 변경사항이 있으면 확인 요청
+        if (isGalleryModal && isGalleryModal() && galleryModalDirty) {
+            if (!confirm('작성 중인 내용이 있습니다. 닫으시겠습니까?')) return;
+        }
         if (modal) {
             const mc = modal.querySelector('.modal-content');
             if (mc) mc.classList.remove('editing-mode');
@@ -1269,13 +1341,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof resetGalleryImageFiles === 'function') {
             resetGalleryImageFiles();
         }
+        galleryModalDirty = false;
         if (typeof quill !== 'undefined' && quill) {
             quill.setContents([]);
             quill.root.innerHTML = '';
         }
         const noticeCheckbox = document.getElementById('modal-is-notice-checkbox');
         if (noticeCheckbox) noticeCheckbox.checked = false;
-            modal.style.display = 'none';
+        modal.style.display = 'none';
     }
     
     // 닫기 버튼 이벤트 리스너 등록
@@ -1288,7 +1361,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 모달 바깥 클릭 시 닫기
     window.addEventListener('click', function(e) {
         if (e.target === modal) {
-            modal.style.display = 'none';
+            closeModal();
         }
     });
     // 모달 폼 제출 이벤트 연결 (깔끔하게 정리)
@@ -1904,8 +1977,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (quill) {
             quill.root.innerHTML = '';
+            quill.on('text-change', function() {
+                if (isGalleryModal && isGalleryModal()) galleryModalDirty = true;
+            });
         }
-        
+
         return quill;
     }
     function showAddNoticeModal() {

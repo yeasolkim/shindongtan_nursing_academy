@@ -1,6 +1,6 @@
 // 신동탄간호학원 Service Worker
 // 캐시 버전 — CSS/JS/공통 HTML 변경 시 숫자를 올려주세요
-const CACHE_VER = 'sdn-sw-v5';
+const CACHE_VER = 'sdn-sw-v6';
 
 // 설치 시 즉시 캐시할 핵심 파일
 const PRECACHE = [
