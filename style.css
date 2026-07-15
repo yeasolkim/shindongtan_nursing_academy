@@ -162,6 +162,14 @@ header {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(26, 54, 93, 0.15);
   }
+  /* 서브메뉴가 있는 최상위 메뉴는 클릭 불가 — 커서·클릭 피드백 제거 */
+  .menu-link[aria-haspopup] {
+    cursor: default;
+  }
+  .menu-link[aria-haspopup]:hover {
+    transform: none;
+    box-shadow: none;
+  }
 }
 
 .submenu-container {
