@@ -3368,6 +3368,30 @@
     #gallery-img-counter { display:flex; align-items:center; gap:0.7rem; margin:0.2rem 0 0.4rem; }
     #gallery-img-count-text { font-size:0.9rem; font-weight:700; color:#334a6c; }
     .gallery-count-hint { font-size:0.78rem; color:#6c757d; }
+    /* 게시물 작성/미리보기 탭 */
+    .post-preview-tabs { display:flex; gap:0.4rem; margin-bottom:1.4rem; border-bottom:1.5px solid var(--border-lite); }
+    .post-preview-tab {
+      background:none; border:none; cursor:pointer;
+      padding:0.7rem 1.1rem; margin-bottom:-1.5px;
+      font-size:0.95rem; font-weight:600; color:var(--t3);
+      border-bottom:2px solid transparent;
+      transition:color 0.15s, border-color 0.15s;
+    }
+    .post-preview-tab:hover { color:var(--brand); }
+    .post-preview-tab.active { color:var(--brand); border-bottom-color:var(--brand); }
+    .post-preview-card {
+      background:#fff; border:1.5px solid var(--border-lite); border-radius:12px;
+      padding:1.8rem 1.6rem; max-height:60vh; overflow-y:auto;
+    }
+    .post-preview-badge {
+      display:inline-block; background:#fef2f2; color:#d92121; border:1px solid #fecaca;
+      border-radius:5px; padding:0.15rem 0.55rem; font-size:0.78rem; font-weight:700; margin-bottom:0.6rem;
+    }
+    .post-preview-title { margin:0 0 0.6rem; font-size:1.35rem; font-weight:700; color:var(--t1); line-height:1.4; word-break:break-word; }
+    .post-preview-meta { display:flex; gap:1rem; font-size:0.85rem; color:var(--t3); border-bottom:1px solid var(--border-lite); padding-bottom:1.1rem; margin-bottom:1.1rem; }
+    .post-preview-images img { display:block; max-width:100%; border-radius:6px; margin-bottom:1rem; }
+    .post-preview-text.ql-editor { padding:0; font-size:0.95rem; color:var(--t1); min-height:0; }
+    .post-preview-empty-hint { color:var(--t3); font-size:0.9rem; text-align:center; padding:2rem 0; }
     /* ---- 시설 사진 탭 추가 UI ---- */
     .facility-img-preview { display:none; width:100%; max-width:200px; height:120px; object-fit:cover; border-radius:10px; margin-top:0.8rem; border:2px solid var(--border); box-shadow:0 2px 8px rgba(51,74,108,.10); }
     .facility-img-preview.visible { display: block; }
@@ -3626,6 +3650,11 @@
       <form id="modal-form" class="admin-form">
         <input type="hidden" id="modal-post-id">
         <input type="hidden" id="modal-post-type">
+        <div id="post-preview-tabs" class="post-preview-tabs" style="display:none;">
+          <button type="button" class="post-preview-tab active" id="post-tab-write">작성</button>
+          <button type="button" class="post-preview-tab" id="post-tab-preview">미리보기</button>
+        </div>
+        <div id="post-edit-fields">
         <div class="form-group">
           <label for="modal-title-input">제목 <span class="req">*</span></label>
           <input type="text" id="modal-title-input" required maxlength="150">
@@ -3664,6 +3693,19 @@
             <input type="checkbox" id="modal-is-notice-checkbox"> 중요 공지
           </label>
           <small>공지사항 게시판 상단에 고정됩니다.</small>
+        </div>
+        </div>
+        <div id="post-preview-pane" style="display:none;">
+          <div class="post-preview-card">
+            <span id="post-preview-badge" class="post-preview-badge" style="display:none;">중요</span>
+            <h2 id="post-preview-title" class="post-preview-title">제목을 입력하면 여기에 표시됩니다</h2>
+            <div class="post-preview-meta">
+              <span><i class="fas fa-calendar"></i> 저장 후 날짜가 표시됩니다</span>
+              <span><i class="fas fa-eye"></i> 조회 0</span>
+            </div>
+            <div id="post-preview-images" class="post-preview-images"></div>
+            <div id="post-preview-content" class="ql-editor post-preview-text"></div>
+          </div>
         </div>
         <button type="submit" class="button-primary">저장하기</button>
       </form>
