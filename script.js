@@ -992,6 +992,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         href.startsWith('javascript:') ||
         link.target === '_blank' ||
         e.ctrlKey || e.metaKey || e.shiftKey) return;
+
+    // 모바일에서 상위메뉴 클릭은 서브메뉴 토글이므로 로더 표시 안 함
+    if (window.innerWidth <= 768 &&
+        link.classList.contains('menu-link') &&
+        link.closest('.menu-item') &&
+        link.closest('.menu-item').querySelector('.submenu-container')) return;
+
     showPageLoader();
   }, true);
 
