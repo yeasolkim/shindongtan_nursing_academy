@@ -290,56 +290,33 @@ main {
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 }
 
-.feature-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+.feature-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
-.feature-card {
-  background-color: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  padding: 1rem;
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+.feature-stat {
+  padding: 0 2.4rem;
+  text-align: center;
 }
-
-
-/* Feature 카드 링크 처리 */
-a.feature-card {
-  text-decoration: none;
-  cursor: pointer;
-}
-@media (hover: hover) and (pointer: fine) {
-  a.feature-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
-    background-color: rgba(255, 255, 255, 0.22);
-  }
-}
-
-.feature-icon {
-  font-size: 1.5rem;
-  color: #fff;
-  margin-bottom: 0.8rem;
-}
-
-.feature-card h3 {
+.feature-stat .stat-label {
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   color: #fff;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.3rem;
+  letter-spacing: -0.3px;
 }
-
-.feature-card p {
-  color: #e2e8f0;
-  line-height: 1.6;
-  font-size: 0.875rem;
+.feature-stat .stat-desc {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0;
+}
+.feature-divider {
+  display: block;
+  width: 1px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.35);
+  flex-shrink: 0;
 }
 
 /* 2.2 정보 링크 섹션 (Info Links Section) */
@@ -609,9 +586,6 @@ a.feature-card {
 
 /* 6.1 태블릿 (Tablet) - 992px 이하 */
 @media (max-width: 992px) {
-  .feature-cards-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
   .info-links-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -748,25 +722,11 @@ a.feature-card {
   .hero-v2 .container { padding: 0 0.25rem; }
   .hero-v2-title { font-size: 1.4rem; margin-bottom: 0.6rem; }
   .hero-v2-subtitle { font-size: 0.8rem; margin: 0 auto 1.5rem; }
-  .feature-cards-grid {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    gap: 1rem;
-    padding-bottom: 0.5rem;
-    padding-right: 1rem;
-  }
-  .feature-card {
-    min-width: 80%;
-    scroll-snap-align: start;
-    flex-shrink: 0;
-    padding: 1rem;
-  }
-  .feature-icon { font-size: 1.5rem; margin-bottom: 0.8rem; }
-  .feature-card h3 { font-size: 0.9rem; margin-bottom: 0.5rem; }
-  .feature-card p { font-size: 0.85rem; }
+  .feature-stats { gap: 0; flex-wrap: wrap; }
+  .feature-stat { padding: 0.6rem 1.4rem; }
+  .feature-stat .stat-label { font-size: 0.9rem; }
+  .feature-stat .stat-desc { font-size: 0.78rem; }
+  .feature-divider { height: 28px; }
 
   /* Info Links */
   .info-links-section { padding: 1.5rem 1rem; }
@@ -959,10 +919,10 @@ a.feature-card {
   .hero-v2 { padding: 2rem 0.5rem; min-height: 220px; margin: 0; border-radius: 0; }
   .hero-v2-title { font-size: 1rem; }
   .hero-v2-subtitle { font-size: 0.75rem; margin: 0 auto 1.2rem; }
-  .feature-cards-grid { gap: 0.75rem; }
-  .feature-card { min-width: 75%; padding: 0.8rem; }
-  .feature-card h3 { font-size: 0.85rem; margin-bottom: 0.4rem; }
-  .feature-card p { font-size: 0.8rem; }
+  .feature-stat { padding: 0.5rem 1rem; }
+  .feature-stat .stat-label { font-size: 0.83rem; }
+  .feature-stat .stat-desc { font-size: 0.73rem; }
+  .feature-divider { height: 22px; }
 
   /* Info Links - 작은 모바일 최적화 */
   .info-links-section { padding: 1rem 0.5rem; }
@@ -1058,21 +1018,6 @@ a.feature-card {
   }
   .footer-copyright, .admin-footer-link {
     font-size: 0.8rem;
-  }
-}
-
-/* 가로 스크롤 카드 — 얇은 스크롤바로 affordance 표시 */
-@media (max-width: 768px) {
-  .feature-cards-grid::-webkit-scrollbar {
-    height: 4px;
-  }
-  .feature-cards-grid::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 2px;
-  }
-  .feature-cards-grid::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.55);
-    border-radius: 2px;
   }
 }
 
@@ -1421,16 +1366,6 @@ a.feature-card {
   .hero-v2-subtitle {
     font-size: 1.25rem;
   }
-  .feature-card h3 {
-    font-size: 1.25rem;
-  }
-  .feature-card p {
-    font-size: 1.05rem;
-  }
-  .feature-icon {
-    font-size: 2.5rem;
-  }
-  
   /* Info Links Section - 데스크톱 최적화 */
   .info-links-section {
     padding: 1.2rem 0.5rem;
