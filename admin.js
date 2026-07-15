@@ -1515,12 +1515,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const popupForm = document.getElementById('popup-form');
     popupForm && popupForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        const loadingOverlay = document.getElementById('popup-loading-overlay');
-        if (loadingOverlay) loadingOverlay.style.display = 'flex';
-        try {
         const id = document.getElementById('popup-id').value;
-        const title = document.getElementById('popup-title').value;
-        // 이미지 필수 검증
+        // 이미지 필수 검증 (로딩 오버레이 전)
         {
             const _fileInput = document.getElementById('popup-image');
             const _currentImage = document.getElementById('popup-current-image');
@@ -1528,10 +1524,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 (id && _currentImage && _currentImage.src && !_currentImage.src.endsWith('undefined') && !_currentImage.src.endsWith('/'));
             if (!id && !_hasImage) {
                 showToast('팝업 이미지를 추가해주세요.', 'warning');
-                if (loadingOverlay) loadingOverlay.style.display = 'none';
                 return;
             }
         }
+        const loadingOverlay = document.getElementById('popup-loading-overlay');
+        if (loadingOverlay) loadingOverlay.style.display = 'flex';
+        try {
+        const title = document.getElementById('popup-title').value;
         const link = document.getElementById('popup-link').value;
         const start_date = document.getElementById('popup-start-date').value || null;
         const end_date = document.getElementById('popup-end-date').value || null;
