@@ -285,7 +285,7 @@ function showPageLoader() {
 }
 
 // 컴포넌트 캐시 버전 — header.html/footer.html/page-hero.html 수정 시 값을 변경하세요
-const COMP_CACHE_VER = 'sdn_v2';
+const COMP_CACHE_VER = 'sdn_v3';
 
 async function loadComponent(selector, url, callback) {
   const element = document.querySelector(selector);
@@ -618,8 +618,8 @@ function setupMobileMenu() {
     const submenu = menuItem.querySelector('.submenu-container');
     if (submenu) {
       menuLink.addEventListener('click', (event) => {
+        event.preventDefault(); // 최상위 메뉴는 클릭으로 이동하지 않음
         if (window.innerWidth <= 768) {
-          event.preventDefault();
           menuItem.classList.toggle('submenu-open');
         }
       });
