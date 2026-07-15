@@ -3194,6 +3194,13 @@
       box-shadow: 0 2px 8px rgba(51,74,108,.10);
     }
     .instructor-img-preview.visible { display: block; }
+    .instructor-details-preview-box {
+      margin-top: 0.6rem;
+      padding: 0.9rem 1rem;
+      background: var(--brand-light);
+      border-radius: 10px;
+      border: 1px solid var(--border-lite);
+    }
 
     /* ── 강사 상세 모달 내용 ── */
     .instructor-detail-center { text-align: center; }
@@ -3814,9 +3821,16 @@
           <img id="instructor-img-preview" class="instructor-img-preview" src="" alt="미리보기">
         </div>
         <div class="form-group">
-          <label for="instructor-details">상세 경력 (한 줄에 하나씩 입력)</label>
-          <textarea id="instructor-details" rows="5"></textarea>
+          <label for="instructor-details">상세 경력</label>
+          <p class="upload-hint">한 줄에 하나씩 입력하면 아래처럼 목록으로 표시됩니다.</p>
+          <textarea id="instructor-details" rows="5" placeholder="예시)&#10;신동탄간호학원 원장 (2015~현재)&#10;대한간호조무사협회 정회원&#10;OO대학교병원 간호사 10년 경력"></textarea>
           <p id="instructor-details-count" class="upload-hint"></p>
+          <div id="instructor-details-preview-box" class="instructor-details-preview-box" style="display:none;">
+            <div class="instructor-detail-career">
+              <p class="instructor-detail-career-label">미리보기</p>
+              <ul id="instructor-details-preview"></ul>
+            </div>
+          </div>
         </div>
         <button type="submit" class="button-primary">저장하기</button>
         <button type="button" id="cancel-instructor-edit" class="button-secondary" style="display: none;">취소</button>

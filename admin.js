@@ -261,13 +261,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })();
 
-    // 경력 항목 수 카운터
+    // 경력 항목 수 카운터 + 실시간 미리보기
+    function escapeHtml(s) {
+        var div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+    }
     function updateDetailsCount() {
         var ta = document.getElementById('instructor-details');
         var counter = document.getElementById('instructor-details-count');
-        if (!ta || !counter) return;
-        var lines = ta.value.split('\n').filter(function(l) { return l.trim(); });
-        counter.textContent = lines.length ? lines.length + '개 항목 입력됨' : '';
+        var previewBox = document.getElementById('instructor-details-preview-box');
+        var previewList = document.getElementById('instructor-details-preview');
+        if (!ta) return;
+        var lines = ta.value.split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l; });
+        if (counter) counter.textContent = lines.length ? lines.length + '개 항목 입력됨' : '';
+        if (previewBox && previewList) {
+            if (lines.length) {
+                previewList.innerHTML = lines.map(function(l) { return '<li>' + escapeHtml(l) + '</li>'; }).join('');
+                previewBox.style.display = 'block';
+            } else {
+                previewList.innerHTML = '';
+                previewBox.style.display = 'none';
+            }
+        }
     }
     (function() {
         var ta = document.getElementById('instructor-details');
@@ -509,8 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (formCard) formCard.classList.remove('editing-mode');
         var preview = document.getElementById('instructor-img-preview');
         if (preview) { preview.src = ''; preview.classList.remove('visible'); }
-        var counter = document.getElementById('instructor-details-count');
-        if (counter) counter.textContent = '';
+        updateDetailsCount();
         closeInstructorModal(true);
     });
 
