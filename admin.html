@@ -1336,6 +1336,27 @@
       user-select: none;
     }
     #popup-preview-card:active { cursor: grabbing; }
+    .popup-resize-handle {
+      position: absolute;
+      z-index: 15;
+      background: #fff;
+      border: 2px solid #334a6c;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      transition: background 0.15s, transform 0.15s;
+    }
+    .popup-resize-handle:hover { background: #334a6c; transform: scale(1.15); }
+    .popup-resize-nw, .popup-resize-ne, .popup-resize-sw, .popup-resize-se {
+      width: 12px; height: 12px; border-radius: 50%;
+    }
+    .popup-resize-nw { top: -7px; left: -7px; cursor: nwse-resize; }
+    .popup-resize-ne { top: -7px; right: -7px; cursor: nesw-resize; }
+    .popup-resize-sw { bottom: -7px; left: -7px; cursor: nesw-resize; }
+    .popup-resize-se { bottom: -7px; right: -7px; cursor: nwse-resize; }
+    .popup-resize-e, .popup-resize-w {
+      top: 50%; width: 8px; height: 28px; margin-top: -14px; border-radius: 4px;
+    }
+    .popup-resize-e { right: -5px; cursor: ew-resize; }
+    .popup-resize-w { left: -5px; cursor: ew-resize; }
     .popup-preview-close-btn {
       position: absolute; top: -10px; right: -10px;
       width: 26px; height: 26px;
@@ -1442,10 +1463,12 @@
       margin-bottom: 1.7rem;
       letter-spacing: -0.5px;
     }
-    #tab-faq .admin-form .form-group {
+    #tab-faq .admin-form .form-group,
+    #faq-modal .admin-form .form-group {
       margin-bottom: 1.5rem;
     }
-    #tab-faq .admin-form label {
+    #tab-faq .admin-form label,
+    #faq-modal .admin-form label {
       font-size: 1.08rem;
       font-weight: 600;
       color: #1e293b;
@@ -1454,7 +1477,9 @@
       letter-spacing: -0.5px;
     }
     #tab-faq .admin-form input[type="text"],
-    #tab-faq .admin-form textarea {
+    #tab-faq .admin-form textarea,
+    #faq-modal .admin-form input[type="text"],
+    #faq-modal .admin-form textarea {
       width: 100%;
       padding: 1rem 1.1rem;
       border: 1.5px solid #b0b8c1;
@@ -1469,17 +1494,21 @@
       transition: border-color 0.2s, box-shadow 0.2s;
     }
     #tab-faq .admin-form input[type="text"]:focus,
-    #tab-faq .admin-form textarea:focus {
+    #tab-faq .admin-form textarea:focus,
+    #faq-modal .admin-form input[type="text"]:focus,
+    #faq-modal .admin-form textarea:focus {
       border-color: #334a6c;
       box-shadow: 0 0 0 4px rgba(51,74,108,0.08);
       outline: none;
       background: #fff;
     }
-    #tab-faq .admin-form textarea {
+    #tab-faq .admin-form textarea,
+    #faq-modal .admin-form textarea {
       min-height: 120px;
       resize: vertical;
     }
-    #tab-faq .admin-form button {
+    #tab-faq .admin-form button,
+    #faq-modal .admin-form button {
       background-color: #334a6c;
       color: #fff;
       border: none;
@@ -1492,16 +1521,19 @@
       transition: background 0.2s;
       cursor: pointer;
     }
-    #tab-faq .admin-form button.button-secondary {
+    #tab-faq .admin-form button.button-secondary,
+    #faq-modal .admin-form button.button-secondary {
       background: #e7eaf0;
       color: #334a6c;
       border: 1.2px solid #cfd8e3;
     }
-    #tab-faq .admin-form button.button-secondary:hover {
+    #tab-faq .admin-form button.button-secondary:hover,
+    #faq-modal .admin-form button.button-secondary:hover {
       background: #dbe3ee;
       color: #1e293b;
     }
-    #tab-faq .admin-form button.button-primary:hover {
+    #tab-faq .admin-form button.button-primary:hover,
+    #faq-modal .admin-form button.button-primary:hover {
       background: #2c405e;
     }
     #tab-faq #faq-list {
@@ -1614,17 +1646,21 @@
         font-size: 1.08rem;
         margin-bottom: 1.1rem;
       }
-      #tab-faq .admin-form label {
+      #tab-faq .admin-form label,
+      #faq-modal .admin-form label {
         font-size: 0.98rem;
         margin-bottom: 0.3rem;
       }
       #tab-faq .admin-form input[type="text"],
-      #tab-faq .admin-form textarea {
+      #tab-faq .admin-form textarea,
+      #faq-modal .admin-form input[type="text"],
+      #faq-modal .admin-form textarea {
         font-size: 0.97rem;
         padding: 0.7rem 0.7rem;
         border-radius: 6px;
       }
-      #tab-faq .admin-form button {
+      #tab-faq .admin-form button,
+      #faq-modal .admin-form button {
         font-size: 0.92rem;
         padding: 0.6rem 1rem;
         border-radius: 6px;
@@ -1671,11 +1707,14 @@
         padding: 0.3rem 0.1rem;
       }
       #tab-faq .admin-form input[type="text"],
-      #tab-faq .admin-form textarea {
+      #tab-faq .admin-form textarea,
+      #faq-modal .admin-form input[type="text"],
+      #faq-modal .admin-form textarea {
         font-size: 0.9rem;
         padding: 0.5rem 0.4rem;
       }
-      #tab-faq .admin-form button {
+      #tab-faq .admin-form button,
+      #faq-modal .admin-form button {
         font-size: 0.8rem;
         padding: 0.4rem 0.7rem;
       }
@@ -2137,10 +2176,12 @@
       margin-bottom: 1.7rem;
       letter-spacing: -0.5px;
     }
-    #tab-facilities .admin-form .form-group {
+    #tab-facilities .admin-form .form-group,
+    #facility-modal .admin-form .form-group {
       margin-bottom: 1.5rem;
     }
-    #tab-facilities .admin-form label {
+    #tab-facilities .admin-form label,
+    #facility-modal .admin-form label {
       font-size: 1.08rem;
       font-weight: 600;
       color: #1e293b;
@@ -2149,7 +2190,9 @@
       letter-spacing: -0.5px;
     }
     #tab-facilities .admin-form input[type="text"],
-    #tab-facilities .admin-form input[type="file"] {
+    #tab-facilities .admin-form input[type="file"],
+    #facility-modal .admin-form input[type="text"],
+    #facility-modal .admin-form input[type="file"] {
       width: 100%;
       padding: 1rem 1.1rem;
       border: 1.5px solid #b0b8c1;
@@ -2164,17 +2207,21 @@
       transition: border-color 0.2s, box-shadow 0.2s;
     }
     #tab-facilities .admin-form input[type="text"]:focus,
-    #tab-facilities .admin-form input[type="file"]:focus {
+    #tab-facilities .admin-form input[type="file"]:focus,
+    #facility-modal .admin-form input[type="text"]:focus,
+    #facility-modal .admin-form input[type="file"]:focus {
       border-color: #334a6c;
       box-shadow: 0 0 0 4px rgba(51,74,108,0.08);
       outline: none;
       background: #fff;
     }
-    #tab-facilities .admin-form input[type="file"] {
+    #tab-facilities .admin-form input[type="file"],
+    #facility-modal .admin-form input[type="file"] {
       background: #fff;
       padding: 0.7rem 0.5rem;
     }
-    #tab-facilities .button-primary {
+    #tab-facilities .button-primary,
+    #facility-modal .button-primary {
       background: #334a6c;
       color: #fff;
       border: none;
@@ -2186,7 +2233,8 @@
       transition: background 0.2s;
       cursor: pointer;
     }
-    #tab-facilities .button-primary:hover {
+    #tab-facilities .button-primary:hover,
+    #facility-modal .button-primary:hover {
       background: #2c405e;
     }
     #tab-facilities .image-previews {
@@ -2267,17 +2315,21 @@
         font-size: 1.08rem;
         margin-bottom: 1.1rem;
       }
-      #tab-facilities .admin-form label {
+      #tab-facilities .admin-form label,
+      #facility-modal .admin-form label {
         font-size: 0.98rem;
         margin-bottom: 0.3rem;
       }
       #tab-facilities .admin-form input[type="text"],
-      #tab-facilities .admin-form input[type="file"] {
+      #tab-facilities .admin-form input[type="file"],
+      #facility-modal .admin-form input[type="text"],
+      #facility-modal .admin-form input[type="file"] {
         font-size: 0.97rem;
         padding: 0.7rem 0.7rem;
         border-radius: 6px;
       }
-      #tab-facilities .button-primary {
+      #tab-facilities .button-primary,
+      #facility-modal .button-primary {
         font-size: 0.92rem;
         padding: 0.6rem 1.1rem;
         border-radius: 6px;
@@ -2313,11 +2365,14 @@
         padding: 0.3rem 0.1rem;
       }
       #tab-facilities .admin-form input[type="text"],
-      #tab-facilities .admin-form input[type="file"] {
+      #tab-facilities .admin-form input[type="file"],
+      #facility-modal .admin-form input[type="text"],
+      #facility-modal .admin-form input[type="file"] {
         font-size: 0.9rem;
         padding: 0.5rem 0.4rem;
       }
-      #tab-facilities .button-primary {
+      #tab-facilities .button-primary,
+      #facility-modal .button-primary {
         font-size: 0.8rem;
         padding: 0.4rem 0.7rem;
         border-radius: 3px;
@@ -2363,10 +2418,12 @@
       margin-bottom: 1.7rem;
       letter-spacing: -0.5px;
     }
-    #tab-instructors .admin-form .form-group {
+    #tab-instructors .admin-form .form-group,
+    #instructor-modal .admin-form .form-group {
       margin-bottom: 1.5rem;
     }
-    #tab-instructors .admin-form label {
+    #tab-instructors .admin-form label,
+    #instructor-modal .admin-form label {
       font-size: 1.08rem;
       font-weight: 600;
       color: #1e293b;
@@ -2376,7 +2433,10 @@
     }
     #tab-instructors .admin-form input[type="text"],
     #tab-instructors .admin-form input[type="file"],
-    #tab-instructors .admin-form textarea {
+    #tab-instructors .admin-form textarea,
+    #instructor-modal .admin-form input[type="text"],
+    #instructor-modal .admin-form input[type="file"],
+    #instructor-modal .admin-form textarea {
       width: 100%;
       padding: 1rem 1.1rem;
       border: 1.5px solid #b0b8c1;
@@ -2392,21 +2452,27 @@
     }
     #tab-instructors .admin-form input[type="text"]:focus,
     #tab-instructors .admin-form input[type="file"]:focus,
-    #tab-instructors .admin-form textarea:focus {
+    #tab-instructors .admin-form textarea:focus,
+    #instructor-modal .admin-form input[type="text"]:focus,
+    #instructor-modal .admin-form input[type="file"]:focus,
+    #instructor-modal .admin-form textarea:focus {
       border-color: #334a6c;
       box-shadow: 0 0 0 4px rgba(51,74,108,0.08);
       outline: none;
       background: #fff;
     }
-    #tab-instructors .admin-form input[type="file"] {
+    #tab-instructors .admin-form input[type="file"],
+    #instructor-modal .admin-form input[type="file"] {
       background: #fff;
       padding: 0.7rem 0.5rem;
     }
-    #tab-instructors .admin-form textarea {
+    #tab-instructors .admin-form textarea,
+    #instructor-modal .admin-form textarea {
       min-height: 120px;
       resize: vertical;
     }
-    #tab-instructors .button-primary {
+    #tab-instructors .button-primary,
+    #instructor-modal .button-primary {
       background: #334a6c;
       color: #fff;
       border: none;
@@ -2419,10 +2485,12 @@
       transition: background 0.2s;
       cursor: pointer;
     }
-    #tab-instructors .button-primary:hover {
+    #tab-instructors .button-primary:hover,
+    #instructor-modal .button-primary:hover {
       background: #2c405e;
     }
-    #tab-instructors .button-secondary {
+    #tab-instructors .button-secondary,
+    #instructor-modal .button-secondary {
       background: #e7eaf0;
       color: #334a6c;
       border: 1.2px solid #cfd8e3;
@@ -2435,7 +2503,8 @@
       transition: background 0.2s;
       cursor: pointer;
     }
-    #tab-instructors .button-secondary:hover {
+    #tab-instructors .button-secondary:hover,
+    #instructor-modal .button-secondary:hover {
       background: #dbe3ee;
       color: #1e293b;
     }
@@ -2582,19 +2651,25 @@
         font-size: 1.08rem;
         margin-bottom: 1.1rem;
       }
-      #tab-instructors .admin-form label {
+      #tab-instructors .admin-form label,
+      #instructor-modal .admin-form label {
         font-size: 0.98rem;
         margin-bottom: 0.3rem;
       }
       #tab-instructors .admin-form input[type="text"],
       #tab-instructors .admin-form input[type="file"],
-      #tab-instructors .admin-form textarea {
+      #tab-instructors .admin-form textarea,
+      #instructor-modal .admin-form input[type="text"],
+      #instructor-modal .admin-form input[type="file"],
+      #instructor-modal .admin-form textarea {
         font-size: 0.97rem;
         padding: 0.7rem 0.7rem;
         border-radius: 6px;
       }
       #tab-instructors .button-primary,
-      #tab-instructors .button-secondary {
+      #tab-instructors .button-secondary,
+      #instructor-modal .button-primary,
+      #instructor-modal .button-secondary {
         font-size: 0.92rem;
         padding: 0.6rem 1rem;
         border-radius: 6px;
@@ -2659,12 +2734,17 @@
       }
       #tab-instructors .admin-form input[type="text"],
       #tab-instructors .admin-form input[type="file"],
-      #tab-instructors .admin-form textarea {
+      #tab-instructors .admin-form textarea,
+      #instructor-modal .admin-form input[type="text"],
+      #instructor-modal .admin-form input[type="file"],
+      #instructor-modal .admin-form textarea {
         font-size: 0.9rem;
         padding: 0.5rem 0.4rem;
       }
       #tab-instructors .button-primary,
-      #tab-instructors .button-secondary {
+      #tab-instructors .button-secondary,
+      #instructor-modal .button-primary,
+      #instructor-modal .button-secondary {
         font-size: 0.8rem;
         padding: 0.4rem 0.7rem;
         border-radius: 3px;
@@ -3264,9 +3344,6 @@
     #preview-iframe-wrapper { min-height: 280px; }
 
     /* ── 강사 폼 수정 모드 표시 ── */
-    #instructor-form-card.editing-mode {
-      border-left: 4px solid #f59e0b;
-    }
     #instructor-form-card.editing-mode #instructor-form-title {
       color: #d97706;
     }
@@ -3387,7 +3464,6 @@
       .tab-link { flex: 0 0 auto; white-space: nowrap; }
     }
     /* ---- FAQ 탭 추가 ---- */
-    #faq-form-card.editing-mode { border-left: 4px solid #f59e0b; }
     #faq-form-card.editing-mode #faq-form-title { color: #d97706; }
     .faq-meta { font-size: 0.82rem; color: var(--t3); margin-bottom: 0.5rem; }
     .faq-order-badge { display:inline-block; font-size:0.71rem; font-weight:700; color:var(--t3); background:var(--brand-light); border-radius:5px; padding:0.1rem 0.4rem; margin-bottom:0.4rem; }
@@ -3498,32 +3574,9 @@
 
     <!-- 강사진 관리 탭 -->
     <div id="tab-instructors" class="tab-content active">
-      <div class="admin-card" id="instructor-form-card">
-        <h3 id="instructor-form-title">신규 강사 추가</h3>
-        <form id="instructor-form" class="admin-form">
-          <input type="hidden" id="instructor-id">
-          <div class="form-group">
-            <label for="instructor-name">이름 <span class="req">*</span></label>
-            <input type="text" id="instructor-name" required>
-          </div>
-          <div class="form-group">
-            <label for="instructor-title">직책 <span class="req">*</span></label>
-            <input type="text" id="instructor-title" required>
-          </div>
-          <div class="form-group">
-            <label for="instructor-image">사진</label>
-            <input type="file" id="instructor-image" accept="image/*">
-            <p class="upload-hint">JPG · PNG · WebP 지원. 5MB 이하. 수정 시 비워두면 기존 사진 유지.</p>
-            <img id="instructor-img-preview" class="instructor-img-preview" src="" alt="미리보기">
-          </div>
-          <div class="form-group">
-            <label for="instructor-details">상세 경력 (한 줄에 하나씩 입력)</label>
-            <textarea id="instructor-details" rows="5"></textarea>
-            <p id="instructor-details-count" class="upload-hint"></p>
-          </div>
-          <button type="submit" class="button-primary">저장하기</button>
-          <button type="button" id="cancel-instructor-edit" class="button-secondary" style="display: none;">취소</button>
-        </form>
+      <div class="admin-card">
+        <h3>신규 강사 추가</h3>
+        <button id="add-instructor-btn" class="button-primary">글쓰기</button>
       </div>
       <!-- 강사진 로딩 오버레이 -->
       <div id="instructor-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
@@ -3542,19 +3595,7 @@
     <div id="tab-facilities" class="tab-content">
       <div class="admin-card">
         <h3>신규 시설 사진 추가</h3>
-        <form id="facility-form" class="admin-form">
-          <div class="form-group">
-            <label for="facility-image">사진 파일 <span class="req">*</span></label>
-            <input type="file" id="facility-image" accept="image/*" required>
-            <p class="upload-hint">JPG · PNG · WebP 지원. 최대 5MB 이하.</p>
-            <img id="facility-img-preview" class="facility-img-preview" src="" alt="미리보기">
-          </div>
-          <div class="form-group">
-            <label for="facility-alt">사진 설명(alt)</label>
-            <input type="text" id="facility-alt" maxlength="100" placeholder="사진 설명 입력(선택)">
-          </div>
-          <button type="submit" class="button-primary">업로드</button>
-        </form>
+        <button id="add-facility-btn" class="button-primary">글쓰기</button>
       </div>
       <!-- 시설 사진 로딩 오버레이 -->
       <div id="facility-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
@@ -3654,22 +3695,9 @@
 
     <!-- FAQ 관리 탭 -->
     <div id="tab-faq" class="tab-content">
-      <div class="admin-card" id="faq-form-card">
-        <h3 id="faq-form-title">신규 FAQ 추가</h3>
-        <form id="faq-form" class="admin-form">
-          <input type="hidden" id="faq-id">
-          <div class="form-group">
-            <label for="faq-question">질문 <span class="req">*</span></label>
-            <input type="text" id="faq-question" required maxlength="200" placeholder="질문을 입력하세요">
-          </div>
-          <div class="form-group">
-            <label for="faq-answer">답변 <span class="req">*</span></label>
-            <textarea id="faq-answer" rows="8" required placeholder="답변을 입력하세요"></textarea>
-            
-          </div>
-          <button type="submit" class="button-primary">저장하기</button>
-          <button type="button" id="cancel-faq-edit" class="button-secondary" style="display: none;">취소</button>
-        </form>
+      <div class="admin-card">
+        <h3>신규 FAQ 추가</h3>
+        <button id="add-faq-btn" class="button-primary">글쓰기</button>
       </div>
       <!-- FAQ 로딩 오버레이 -->
       <div id="faq-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
@@ -3828,6 +3856,12 @@
               <iframe id="preview-iframe" src="index.html?admin-preview=1" scrolling="no" frameborder="0"></iframe>
               <div id="preview-dim-overlay"></div>
               <div id="popup-preview-card">
+                <div class="popup-resize-handle popup-resize-nw" data-dir="nw"></div>
+                <div class="popup-resize-handle popup-resize-ne" data-dir="ne"></div>
+                <div class="popup-resize-handle popup-resize-e" data-dir="e"></div>
+                <div class="popup-resize-handle popup-resize-se" data-dir="se"></div>
+                <div class="popup-resize-handle popup-resize-sw" data-dir="sw"></div>
+                <div class="popup-resize-handle popup-resize-w" data-dir="w"></div>
                 <button type="button" class="popup-preview-close-btn">&times;</button>
                 <div id="popup-preview-img-area">
                   <div id="popup-preview-placeholder">
@@ -3874,6 +3908,86 @@
           </label>
         </div>
         <button type="submit" class="button-primary" style="width:100%;margin-top:0.5rem;">저장하기</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 강사 작성/수정 모달 -->
+  <div id="instructor-modal" class="modal">
+    <div class="modal-content" id="instructor-form-card">
+      <div class="modal-header">
+        <h3 id="instructor-form-title">신규 강사 추가</h3>
+        <span class="close-button" id="instructor-modal-close">&times;</span>
+      </div>
+      <form id="instructor-form" class="admin-form">
+        <input type="hidden" id="instructor-id">
+        <div class="form-group">
+          <label for="instructor-name">이름 <span class="req">*</span></label>
+          <input type="text" id="instructor-name" required>
+        </div>
+        <div class="form-group">
+          <label for="instructor-title">직책 <span class="req">*</span></label>
+          <input type="text" id="instructor-title" required>
+        </div>
+        <div class="form-group">
+          <label for="instructor-image">사진</label>
+          <input type="file" id="instructor-image" accept="image/*">
+          <p class="upload-hint">JPG · PNG · WebP 지원. 5MB 이하. 수정 시 비워두면 기존 사진 유지.</p>
+          <img id="instructor-img-preview" class="instructor-img-preview" src="" alt="미리보기">
+        </div>
+        <div class="form-group">
+          <label for="instructor-details">상세 경력 (한 줄에 하나씩 입력)</label>
+          <textarea id="instructor-details" rows="5"></textarea>
+          <p id="instructor-details-count" class="upload-hint"></p>
+        </div>
+        <button type="submit" class="button-primary">저장하기</button>
+        <button type="button" id="cancel-instructor-edit" class="button-secondary" style="display: none;">취소</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 시설 사진 작성 모달 -->
+  <div id="facility-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>신규 시설 사진 추가</h3>
+        <span class="close-button" id="facility-modal-close">&times;</span>
+      </div>
+      <form id="facility-form" class="admin-form">
+        <div class="form-group">
+          <label for="facility-image">사진 파일 <span class="req">*</span></label>
+          <input type="file" id="facility-image" accept="image/*" required>
+          <p class="upload-hint">JPG · PNG · WebP 지원. 최대 5MB 이하.</p>
+          <img id="facility-img-preview" class="facility-img-preview" src="" alt="미리보기">
+        </div>
+        <div class="form-group">
+          <label for="facility-alt">사진 설명(alt)</label>
+          <input type="text" id="facility-alt" maxlength="100" placeholder="사진 설명 입력(선택)">
+        </div>
+        <button type="submit" class="button-primary">업로드</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- FAQ 작성/수정 모달 -->
+  <div id="faq-modal" class="modal">
+    <div class="modal-content" id="faq-form-card">
+      <div class="modal-header">
+        <h3 id="faq-form-title">신규 FAQ 추가</h3>
+        <span class="close-button" id="faq-modal-close">&times;</span>
+      </div>
+      <form id="faq-form" class="admin-form">
+        <input type="hidden" id="faq-id">
+        <div class="form-group">
+          <label for="faq-question">질문 <span class="req">*</span></label>
+          <input type="text" id="faq-question" required maxlength="200" placeholder="질문을 입력하세요">
+        </div>
+        <div class="form-group">
+          <label for="faq-answer">답변 <span class="req">*</span></label>
+          <textarea id="faq-answer" rows="8" required placeholder="답변을 입력하세요"></textarea>
+        </div>
+        <button type="submit" class="button-primary">저장하기</button>
+        <button type="button" id="cancel-faq-edit" class="button-secondary" style="display: none;">취소</button>
       </form>
     </div>
   </div>
@@ -3946,6 +4060,11 @@
     // 드래그 상태
     var _previewDragging = false;
     var _previewDragStartX, _previewDragStartY, _previewStartPosX, _previewStartPosY;
+
+    // 리사이즈 상태
+    var _previewResizing = false;
+    var _resizeDir = null;
+    var _resizeStartX, _resizeStartWidth, _resizeScale;
 
     document.addEventListener('DOMContentLoaded', function() {
       // 팝업 모달 dirty 트래킹
@@ -4130,7 +4249,37 @@
           e.preventDefault();
         });
       }
+      // 미리보기 카드 리사이즈 (가장자리 핸들)
+      var resizeHandles = previewCard ? previewCard.querySelectorAll('.popup-resize-handle') : [];
+      resizeHandles.forEach(function(handle) {
+        handle.addEventListener('mousedown', function(e) {
+          if (e.button !== 0) return;
+          e.stopPropagation();
+          e.preventDefault();
+          var wrapperForResize = document.getElementById('preview-iframe-wrapper');
+          if (!wrapperForResize) return;
+          _resizeScale = wrapperForResize.offsetWidth / 1440;
+          if (!_resizeScale) return;
+          _previewResizing = true;
+          _resizeDir = handle.dataset.dir;
+          _resizeStartX = e.clientX;
+          _resizeStartWidth = parseInt(document.getElementById('popup-width').value) || 420;
+        });
+      });
+
       document.addEventListener('mousemove', function(e) {
+        if (_previewResizing) {
+          var rdx = e.clientX - _resizeStartX;
+          var deltaScaled = 0;
+          if (_resizeDir.indexOf('e') !== -1) deltaScaled += rdx;
+          if (_resizeDir.indexOf('w') !== -1) deltaScaled -= rdx;
+          var newWidth = Math.round(Math.max(200, Math.min(600, _resizeStartWidth + deltaScaled / _resizeScale)));
+          document.getElementById('popup-width').value = newWidth;
+          document.getElementById('popup-width-slider').value = newWidth;
+          document.getElementById('popup-width-value').textContent = newWidth;
+          updatePopupCardInPreview();
+          return;
+        }
         if (!_previewDragging) return;
         var wrapperEl = document.getElementById('preview-iframe-wrapper');
         if (!wrapperEl) return;
@@ -4147,7 +4296,11 @@
         document.getElementById('popup-pos-y-value').textContent = newY;
         updatePopupCardInPreview();
       });
-      document.addEventListener('mouseup', function() { _previewDragging = false; });
+      document.addEventListener('mouseup', function() {
+        _previewDragging = false;
+        _previewResizing = false;
+        _resizeDir = null;
+      });
 
       // 초기 스케일 + ResizeObserver
       updatePreviewScale();

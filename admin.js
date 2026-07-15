@@ -172,6 +172,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const instructorList = document.getElementById('instructor-list');
     const cancelInstructorEditBtn = document.getElementById('cancel-instructor-edit');
 
+    // 강사 작성/수정 모달
+    const instructorModal = document.getElementById('instructor-modal');
+    const addInstructorBtn = document.getElementById('add-instructor-btn');
+    const instructorModalCloseBtn = document.getElementById('instructor-modal-close');
+    let instructorModalDirty = false;
+
+    function openInstructorModal() {
+        if (instructorModal) instructorModal.style.display = 'flex';
+    }
+    function closeInstructorModal(force) {
+        if (!force && instructorModalDirty && !confirm('작성 중인 내용이 있습니다. 닫으시겠습니까?')) return;
+        if (instructorModal) instructorModal.style.display = 'none';
+        instructorModalDirty = false;
+    }
+    if (addInstructorBtn) {
+        addInstructorBtn.addEventListener('click', () => {
+            cancelInstructorEditBtn.click();
+            openInstructorModal();
+        });
+    }
+    if (instructorModalCloseBtn) {
+        instructorModalCloseBtn.addEventListener('click', () => closeInstructorModal(false));
+    }
+    if (instructorModal) {
+        instructorModal.addEventListener('click', (e) => {
+            if (e.target === instructorModal) closeInstructorModal(false);
+        });
+    }
+    if (instructorForm) {
+        instructorForm.addEventListener('input', () => { instructorModalDirty = true; });
+        instructorForm.addEventListener('change', () => { instructorModalDirty = true; });
+    }
+
     // 상세 정보 모달 관련 변수 및 함수 추가
     const instructorDetailModal = document.getElementById('instructor-detail-modal');
     const instructorDetailBody = document.getElementById('instructor-detail-body');
@@ -423,7 +456,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (formCard) formCard.classList.add('editing-mode');
             cancelInstructorEditBtn.style.display = 'inline-block';
             instructorForm.querySelector('button[type="submit"]').textContent = '수정하기';
-            window.scrollTo(0, 0);
+            instructorModalDirty = false;
+            openInstructorModal();
         } catch (error) {
             showToast('강사 정보 로드 중 오류가 발생했습니다.', 'error');
             console.error('강사 정보 로드 오류:', error);
@@ -443,6 +477,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (preview) { preview.src = ''; preview.classList.remove('visible'); }
         var counter = document.getElementById('instructor-details-count');
         if (counter) counter.textContent = '';
+        closeInstructorModal(true);
     });
 
     // 강사 삭제
@@ -467,6 +502,41 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Facility Management (Supabase 연동) ---
     const facilityForm = document.getElementById('facility-form');
     const facilityList = document.getElementById('facility-list');
+
+    // 시설 사진 작성 모달
+    const facilityModal = document.getElementById('facility-modal');
+    const addFacilityBtn = document.getElementById('add-facility-btn');
+    const facilityModalCloseBtn = document.getElementById('facility-modal-close');
+    let facilityModalDirty = false;
+
+    function openFacilityModal() {
+        if (facilityModal) facilityModal.style.display = 'flex';
+    }
+    function closeFacilityModal(force) {
+        if (!force && facilityModalDirty && !confirm('작성 중인 내용이 있습니다. 닫으시겠습니까?')) return;
+        if (facilityModal) facilityModal.style.display = 'none';
+        if (facilityForm) facilityForm.reset();
+        const facilityImgPreview = document.getElementById('facility-img-preview');
+        if (facilityImgPreview) { facilityImgPreview.src = ''; facilityImgPreview.classList.remove('visible'); }
+        facilityModalDirty = false;
+    }
+    if (addFacilityBtn) {
+        addFacilityBtn.addEventListener('click', () => {
+            openFacilityModal();
+        });
+    }
+    if (facilityModalCloseBtn) {
+        facilityModalCloseBtn.addEventListener('click', () => closeFacilityModal(false));
+    }
+    if (facilityModal) {
+        facilityModal.addEventListener('click', (e) => {
+            if (e.target === facilityModal) closeFacilityModal(false);
+        });
+    }
+    if (facilityForm) {
+        facilityForm.addEventListener('input', () => { facilityModalDirty = true; });
+        facilityForm.addEventListener('change', () => { facilityModalDirty = true; });
+    }
 
     // 시설 이미지 목록 불러오기
     async function loadFacilities() {
@@ -653,9 +723,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // 목록 새로고침
         await loadFacilities();
         showToast('시설 사진이 업로드되었습니다.', 'success');
+        return true;
         } catch (error) {
             console.error('시설 이미지 업로드 실패:', error);
             showToast('이미지 업로드 중 오류가 발생했습니다.', 'error');
+            return false;
         }
     }
 
@@ -735,10 +807,8 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 if (loadingText) loadingText.textContent = '시설 사진 저장 중...';
                 console.log('시설 폼 제출:', { fileName: file.name, alt: alt });
-                await addFacilityImage(file, alt);
-                facilityForm.reset();
-                const facilityImgPreview = document.getElementById('facility-img-preview');
-                if (facilityImgPreview) { facilityImgPreview.src = ''; facilityImgPreview.classList.remove('visible'); }
+                const uploaded = await addFacilityImage(file, alt);
+                if (uploaded) closeFacilityModal(true);
             } catch (error) {
                 console.error('시설 폼 제출 오류:', error);
                 showToast('시설 사진 업로드 중 오류가 발생했습니다.', 'error');
@@ -2226,6 +2296,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelFaqEditBtn = document.getElementById('cancel-faq-edit');
     let _allFaqItems = [];
 
+    // FAQ 작성/수정 모달
+    const faqModal = document.getElementById('faq-modal');
+    const addFaqBtn = document.getElementById('add-faq-btn');
+    const faqModalCloseBtn = document.getElementById('faq-modal-close');
+    let faqModalDirty = false;
+
+    function openFaqModal() {
+        if (faqModal) faqModal.style.display = 'flex';
+    }
+    function closeFaqModal(force) {
+        if (!force && faqModalDirty && !confirm('작성 중인 내용이 있습니다. 닫으시겠습니까?')) return;
+        if (faqModal) faqModal.style.display = 'none';
+        faqModalDirty = false;
+    }
+    if (addFaqBtn) {
+        addFaqBtn.addEventListener('click', () => {
+            cancelFaqEditBtn.click();
+            openFaqModal();
+        });
+    }
+    if (faqModalCloseBtn) {
+        faqModalCloseBtn.addEventListener('click', () => closeFaqModal(false));
+    }
+    if (faqModal) {
+        faqModal.addEventListener('click', (e) => {
+            if (e.target === faqModal) closeFaqModal(false);
+        });
+    }
+    if (faqForm) {
+        faqForm.addEventListener('input', () => { faqModalDirty = true; });
+        faqForm.addEventListener('change', () => { faqModalDirty = true; });
+    }
+
     // FAQ 목록 불러오기
     async function loadFAQList() {
         try {
@@ -2343,7 +2446,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const formTitle = document.getElementById('faq-form-title');
             if (formTitle) formTitle.textContent = '"' + faq.question.substring(0, 20) + (faq.question.length > 20 ? '...' : '') + '" 수정 중';
 
-            document.getElementById('faq-form').scrollIntoView({ behavior: 'smooth' });
+            faqModalDirty = false;
+            openFaqModal();
 
         } catch (error) {
             console.error('FAQ 수정 모드 전환 실패:', error);
@@ -2381,6 +2485,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (formCard) formCard.classList.remove('editing-mode');
         const formTitle = document.getElementById('faq-form-title');
         if (formTitle) formTitle.textContent = '신규 FAQ 추가';
+        closeFaqModal(true);
     });
 
     // FAQ 검색
