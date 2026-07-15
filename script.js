@@ -993,9 +993,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         link.target === '_blank' ||
         e.ctrlKey || e.metaKey || e.shiftKey) return;
 
-    // 모바일에서 상위메뉴 클릭은 서브메뉴 토글이므로 로더 표시 안 함
-    if (window.innerWidth <= 768 &&
-        link.classList.contains('menu-link') &&
+    // 서브메뉴가 있는 최상위 메뉴는 PC/모바일 모두 페이지 이동 없으므로 로더 표시 안 함
+    if (link.classList.contains('menu-link') &&
         link.closest('.menu-item') &&
         link.closest('.menu-item').querySelector('.submenu-container')) return;
 
