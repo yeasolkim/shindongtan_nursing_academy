@@ -291,31 +291,38 @@ main {
 }
 
 .feature-stats {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 60px;
+  padding: 1rem 2.2rem;
 }
 .feature-stat {
-  padding: 0 2.4rem;
+  padding: 0 2rem;
   text-align: center;
 }
 .feature-stat .stat-label {
   font-size: 1rem;
   font-weight: 700;
   color: #fff;
-  margin: 0 0 0.3rem;
+  margin: 0 0 0.28rem;
   letter-spacing: -0.3px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 }
 .feature-stat .stat-desc {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.78);
   margin: 0;
 }
 .feature-divider {
   display: block;
   width: 1px;
-  height: 34px;
-  background: rgba(255, 255, 255, 0.35);
+  height: 36px;
+  background: rgba(255, 255, 255, 0.3);
   flex-shrink: 0;
 }
 
@@ -722,10 +729,10 @@ main {
   .hero-v2 .container { padding: 0 0.25rem; }
   .hero-v2-title { font-size: 1.4rem; margin-bottom: 0.6rem; }
   .hero-v2-subtitle { font-size: 0.8rem; margin: 0 auto 1.5rem; }
-  .feature-stats { gap: 0; flex-wrap: wrap; }
-  .feature-stat { padding: 0.6rem 1.4rem; }
-  .feature-stat .stat-label { font-size: 0.9rem; }
-  .feature-stat .stat-desc { font-size: 0.78rem; }
+  .feature-stats { padding: 0.8rem 1.2rem; border-radius: 40px; }
+  .feature-stat { padding: 0 1.2rem; }
+  .feature-stat .stat-label { font-size: 0.88rem; }
+  .feature-stat .stat-desc { font-size: 0.74rem; }
   .feature-divider { height: 28px; }
 
   /* Info Links */
@@ -919,10 +926,11 @@ main {
   .hero-v2 { padding: 2rem 0.5rem; min-height: 220px; margin: 0; border-radius: 0; }
   .hero-v2-title { font-size: 1rem; }
   .hero-v2-subtitle { font-size: 0.75rem; margin: 0 auto 1.2rem; }
-  .feature-stat { padding: 0.5rem 1rem; }
-  .feature-stat .stat-label { font-size: 0.83rem; }
-  .feature-stat .stat-desc { font-size: 0.73rem; }
-  .feature-divider { height: 22px; }
+  .feature-stats { padding: 0.65rem 0.8rem; }
+  .feature-stat { padding: 0 0.75rem; }
+  .feature-stat .stat-label { font-size: 0.78rem; }
+  .feature-stat .stat-desc { font-size: 0.68rem; }
+  .feature-divider { height: 20px; }
 
   /* Info Links - 작은 모바일 최적화 */
   .info-links-section { padding: 1rem 0.5rem; }
