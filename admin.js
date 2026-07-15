@@ -210,25 +210,55 @@ document.addEventListener('DOMContentLoaded', () => {
     const instructorDetailBody = document.getElementById('instructor-detail-body');
     const closeInstructorDetailBtn = document.getElementById('close-instructor-detail');
 
-    // 사진 파일 선택 시 미리보기
+    // 사진 파일 선택(드래그앤드롭 포함) 시 미리보기
     (function() {
         var imgInput = document.getElementById('instructor-image');
         var imgPreview = document.getElementById('instructor-img-preview');
+        var dropZone = document.getElementById('instructor-drop-zone');
+        var addImageBtn = document.getElementById('instructor-add-image-btn');
         if (!imgInput || !imgPreview) return;
-        imgInput.addEventListener('change', function() {
-            var file = this.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    imgPreview.src = e.target.result;
-                    imgPreview.classList.add('visible');
-                };
-                reader.readAsDataURL(file);
-            } else {
-                imgPreview.src = '';
-                imgPreview.classList.remove('visible');
-            }
-        });
+
+        function setPreview(file) {
+            if (!file) { imgPreview.src = ''; imgPreview.classList.remove('visible'); return; }
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                imgPreview.src = e.target.result;
+                imgPreview.classList.add('visible');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        imgInput.addEventListener('change', function() { setPreview(this.files[0]); });
+
+        if (addImageBtn) {
+            addImageBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                imgInput.click();
+            });
+        }
+        if (dropZone) {
+            dropZone.addEventListener('click', function(e) {
+                if (e.target.id !== 'instructor-add-image-btn') imgInput.click();
+            });
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault(); dropZone.classList.add('drag-over');
+            });
+            dropZone.addEventListener('dragleave', function() {
+                dropZone.classList.remove('drag-over');
+            });
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+                var file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    var dt = new DataTransfer();
+                    dt.items.add(file);
+                    imgInput.files = dt.files;
+                    setPreview(file);
+                    instructorModalDirty = true;
+                }
+            });
+        }
     })();
 
     // 경력 항목 수 카운터
@@ -297,6 +327,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 .order('order', { ascending: true });
             if (error) throw error;
             instructorList.innerHTML = '';
+            if (instructors.length === 0) {
+                instructorList.innerHTML = '<div class="empty-state"><i class="fas fa-user-tie"></i><p>등록된 강사가 없습니다.</p></div>';
+                return;
+            }
             instructors.forEach((inst, idx) => {
                 const item = document.createElement('div');
                 item.className = 'instructor-admin-item';
@@ -818,25 +852,55 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 파일 선택 미리보기
+    // 파일 선택(드래그앤드롭 포함) 미리보기
     (function() {
         var facilityImgInput = document.getElementById('facility-image');
         var facilityImgPreview = document.getElementById('facility-img-preview');
+        var dropZone = document.getElementById('facility-drop-zone');
+        var addImageBtn = document.getElementById('facility-add-image-btn');
         if (!facilityImgInput || !facilityImgPreview) return;
-        facilityImgInput.addEventListener('change', function() {
-            var file = this.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    facilityImgPreview.src = e.target.result;
-                    facilityImgPreview.classList.add('visible');
-                };
-                reader.readAsDataURL(file);
-            } else {
-                facilityImgPreview.src = '';
-                facilityImgPreview.classList.remove('visible');
-            }
-        });
+
+        function setPreview(file) {
+            if (!file) { facilityImgPreview.src = ''; facilityImgPreview.classList.remove('visible'); return; }
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                facilityImgPreview.src = e.target.result;
+                facilityImgPreview.classList.add('visible');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        facilityImgInput.addEventListener('change', function() { setPreview(this.files[0]); });
+
+        if (addImageBtn) {
+            addImageBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                facilityImgInput.click();
+            });
+        }
+        if (dropZone) {
+            dropZone.addEventListener('click', function(e) {
+                if (e.target.id !== 'facility-add-image-btn') facilityImgInput.click();
+            });
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault(); dropZone.classList.add('drag-over');
+            });
+            dropZone.addEventListener('dragleave', function() {
+                dropZone.classList.remove('drag-over');
+            });
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+                var file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    var dt = new DataTransfer();
+                    dt.items.add(file);
+                    facilityImgInput.files = dt.files;
+                    setPreview(file);
+                    facilityModalDirty = true;
+                }
+            });
+        }
     })();
 
     // 사진 교체 핸들러
@@ -1541,7 +1605,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderPopupList(list) {
         const el = document.getElementById('popup-list');
         if (!list.length) {
-            el.innerHTML = '<div style="color:#888;padding:1.5rem;text-align:center;">등록된 팝업이 없습니다.</div>';
+            el.innerHTML = '<div class="empty-state"><i class="fas fa-window-restore"></i><p>등록된 팝업이 없습니다.</p></div>';
             return;
         }
         el.innerHTML = list.map(item => `
@@ -2032,6 +2096,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const searchInput = document.getElementById('notice-search-input');
         const searchTypeSelect = document.getElementById('notice-search-type');
         const sortOrderSelect = document.getElementById('notice-sort-order');
+        const clearBtn = document.getElementById('notice-search-clear-btn');
         if (!searchBtn || !searchInput || !searchTypeSelect || !sortOrderSelect) return;
         function doSearch() {
             const type = searchTypeSelect.value;
@@ -2042,6 +2107,14 @@ document.addEventListener('DOMContentLoaded', () => {
         searchBtn.onclick = doSearch;
         searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') doSearch(); });
         sortOrderSelect.onchange = doSearch;
+        if (clearBtn) {
+            clearBtn.onclick = () => {
+                searchInput.value = '';
+                searchTypeSelect.value = 'title';
+                sortOrderSelect.value = 'created_at_desc';
+                renderNoticeList();
+            };
+        }
     }
     // 페이지 로드시 UI 세팅
     setupNoticeSearchSortUI();
@@ -2335,7 +2408,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const { data, error } = await window.supabaseClient
                 .from('qa')
                 .select('*')
-                .order('created_at', { ascending: true });
+                .order('order', { ascending: true });
 
             if (error) {
                 console.error('FAQ 목록 로드 실패:', error);
@@ -2362,22 +2435,43 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        faqs.forEach((faq, idx) => {
+        faqs.forEach((faq) => {
+            const trueIdx = _allFaqItems.findIndex(f => f.id === faq.id);
             const faqItem = document.createElement('div');
             faqItem.className = 'faq-admin-item';
             faqItem.innerHTML = `
-                <span class="faq-order-badge">#${idx + 1}</span>
+                <span class="faq-order-badge">#${trueIdx + 1}</span>
                 <div class="faq-question">${faq.question}</div>
                 <div class="faq-answer">${faq.answer}</div>
                 <div class="faq-meta">작성일: ${formatKoreaDate(faq.created_at)}</div>
                 <div class="faq-actions">
                     <button class="button-secondary" onclick="editFAQ(${faq.id})">수정</button>
                     <button class="button-danger" onclick="deleteFAQ(${faq.id})">삭제</button>
+                    <button class="move-up button-secondary" onclick="moveFAQ(${faq.id}, -1)" ${trueIdx <= 0 ? 'disabled' : ''}>▲</button>
+                    <button class="move-down button-secondary" onclick="moveFAQ(${faq.id}, 1)" ${trueIdx === -1 || trueIdx === _allFaqItems.length - 1 ? 'disabled' : ''}>▼</button>
                 </div>
             `;
             faqList.appendChild(faqItem);
         });
     }
+
+    // FAQ 순서 변경 (▲▼)
+    window.moveFAQ = async function(id, direction) {
+        const idx = _allFaqItems.findIndex(f => f.id === id);
+        if (idx === -1) return;
+        const swapIdx = idx + direction;
+        if (swapIdx < 0 || swapIdx >= _allFaqItems.length) return;
+        const curr = _allFaqItems[idx];
+        const target = _allFaqItems[swapIdx];
+        try {
+            await window.supabaseClient.from('qa').update({ order: target.order }).eq('id', curr.id);
+            await window.supabaseClient.from('qa').update({ order: curr.order }).eq('id', target.id);
+            await loadFAQList();
+        } catch (error) {
+            showToast('순서 변경 중 오류가 발생했습니다.', 'error');
+            console.error('FAQ 순서 변경 오류:', error);
+        }
+    };
 
     // FAQ 추가/수정 폼 제출
     faqForm.addEventListener('submit', async (e) => {
@@ -2402,9 +2496,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     .update({ question, answer })
                     .eq('id', id);
             } else {
+                const { data: maxOrderData } = await window.supabaseClient
+                    .from('qa')
+                    .select('order')
+                    .order('order', { ascending: false })
+                    .limit(1)
+                    .single();
+                const nextOrder = maxOrderData ? (maxOrderData.order + 1) : 1;
                 await window.supabaseClient
                     .from('qa')
-                    .insert([{ question, answer }]);
+                    .insert([{ question, answer, order: nextOrder }]);
             }
 
             await loadFAQList();

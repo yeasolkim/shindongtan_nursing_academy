@@ -299,7 +299,7 @@
         const { data, error } = await window.supabaseClient
           .from('qa')
           .select('*')
-          .order('created_at', { ascending: true });
+          .order('order', { ascending: true });
 
         if (error) return;
 
