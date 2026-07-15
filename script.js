@@ -254,18 +254,31 @@ function formatKoreaDate(utcDateStr) {
  * @param {string} url - 로드할 HTML 파일의 URL
  * @param {function} [callback] - 로드 완료 후 실행할 콜백 함수
  */
+// 컴포넌트 캐시 버전 — header.html/footer.html/page-hero.html 수정 시 값을 변경하세요
+const COMP_CACHE_VER = 'sdn_v2';
+
 async function loadComponent(selector, url, callback) {
   const element = document.querySelector(selector);
   if (!element) return;
 
+  // sessionStorage 캐시 확인 → 캐시 히트 시 네트워크 요청 없이 즉시 렌더링
+  const cacheKey = `${COMP_CACHE_VER}_${url}`;
+  const cached = sessionStorage.getItem(cacheKey);
+  if (cached) {
+    element.innerHTML = cached;
+    if (callback) callback();
+    return;
+  }
+
   try {
     const response = await fetch(url);
     if (response.ok) {
-      element.innerHTML = await response.text();
+      const html = await response.text();
+      try { sessionStorage.setItem(cacheKey, html); } catch(e) {}
+      element.innerHTML = html;
       if (callback) callback();
     } else {
       console.error(`'${url}' 파일 로드 실패:`, response.statusText);
-      // 로딩 실패 시 기본 콘텐츠 표시
       if (selector.includes('header')) {
         element.innerHTML = getDefaultHeader();
       } else if (selector.includes('footer')) {
@@ -274,7 +287,6 @@ async function loadComponent(selector, url, callback) {
     }
   } catch (error) {
     console.error(`'${url}' 파일 로드 중 오류 발생:`, error);
-    // 네트워크 오류 시 기본 콘텐츠 표시
     if (selector.includes('header')) {
       element.innerHTML = getDefaultHeader();
     } else if (selector.includes('footer')) {
@@ -860,21 +872,18 @@ function submitForm(formElement) {
 // =============================================================================
 
 document.addEventListener('DOMContentLoaded', async function() {
-  
-  // 1. 공통 컴포넌트 로드
+
+  // 1. 공통 컴포넌트 로드 — header/footer/page-hero 동시 병렬 fetch
+  const heroContainer = document.getElementById('page-hero-container');
   await Promise.all([
     loadComponent('header.header', 'header.html', () => {
       activateCurrentMenu();
       setupMobileMenu();
       setupDesktopKeyboardNav();
     }),
-    loadComponent('footer.footer', 'footer.html')
+    loadComponent('footer.footer', 'footer.html'),
+    heroContainer ? configurePageHero() : Promise.resolve()
   ]);
-  
-  // 2. 페이지 히어로 설정 (필요한 경우)
-  if (document.getElementById('page-hero-container')) {
-    await configurePageHero();
-  }
 
   // 3. 공통 UI 컴포넌트 초기화
   initScrollEffects();
