@@ -1424,14 +1424,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // 팝업 폼 완전 초기화 함수
     function resetPopupForm() {
         const popupForm = document.getElementById('popup-form');
+        if (!popupForm) return;
         popupForm.reset();
         document.getElementById('popup-id').value = '';
-        document.getElementById('popup-cancel').style.display = 'none';
 
-        // 미리보기 초기화
-        if (window.setPopupPreviewFromForm) {
-            window.setPopupPreviewFromForm('');
-        }
+        // 이미지 초기화
+        const popupCurrentImageWrap = document.getElementById('popup-current-image-wrap');
+        if (popupCurrentImageWrap) popupCurrentImageWrap.style.display = 'none';
+        if (window.setPopupPreviewFromForm) window.setPopupPreviewFromForm('');
 
         // 크기/위치 초기화
         const posXEl = document.getElementById('popup-pos-x');
@@ -1446,6 +1446,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const quickDateBtns = document.querySelectorAll('.quick-date-btn');
         quickDateBtns.forEach(btn => btn.classList.remove('active'));
     }
+    window.resetPopupFormForModal = resetPopupForm;
 
     // 탭 활성화 시 팝업 목록 불러오기
     function initPopupTab() {
@@ -1479,7 +1480,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="popup-list-info">
                     <div class="popup-list-title">${item.title || '(제목 없음)'}</div>
                     <div class="popup-list-date">📅 ${item.start_date||'-'} ~ ${item.end_date||'-'}</div>
-                    <div>${item.is_active ? '<span class="popup-list-status-on">● 활성화</span>' : '<span class="popup-list-status-off">○ 비활성화</span>'}</div>
+                    <label class="popup-active-toggle" title="클릭하여 활성/비활성 전환">
+                        <input type="checkbox" ${item.is_active ? 'checked' : ''} onchange="togglePopupActive(${item.id}, this.checked)">
+                        <span class="${item.is_active ? 'popup-list-status-on' : 'popup-list-status-off'}">${item.is_active ? '● 활성화' : '○ 비활성화'}</span>
+                    </label>
                 </div>
                 <div class="popup-list-actions">
                     <button class="button-secondary" onclick="editPopup(${item.id})">수정</button>
@@ -1488,6 +1492,24 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `).join('');
     }
+
+    // 팝업 활성/비활성 토글
+    window.togglePopupActive = async function(id, isActive) {
+        try {
+            await window.supabaseClient.from(popupTable).update({ is_active: isActive }).eq('id', id);
+            showToast(isActive ? '팝업이 활성화되었습니다.' : '팝업이 비활성화되었습니다.', 'success');
+            const label = event.target.closest('label');
+            if (label) {
+                const span = label.querySelector('span');
+                if (span) {
+                    span.className = isActive ? 'popup-list-status-on' : 'popup-list-status-off';
+                    span.textContent = isActive ? '● 활성화' : '○ 비활성화';
+                }
+            }
+        } catch(e) {
+            showToast('상태 변경 중 오류가 발생했습니다.', 'error');
+        }
+    };
 
     // 팝업 추가/수정 폼 제출
     const popupForm = document.getElementById('popup-form');
@@ -1498,6 +1520,18 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
         const id = document.getElementById('popup-id').value;
         const title = document.getElementById('popup-title').value;
+        // 이미지 필수 검증
+        {
+            const _fileInput = document.getElementById('popup-image');
+            const _currentImage = document.getElementById('popup-current-image');
+            const _hasImage = (_fileInput && _fileInput.files && _fileInput.files[0]) ||
+                (id && _currentImage && _currentImage.src && !_currentImage.src.endsWith('undefined') && !_currentImage.src.endsWith('/'));
+            if (!id && !_hasImage) {
+                showToast('팝업 이미지를 추가해주세요.', 'warning');
+                if (loadingOverlay) loadingOverlay.style.display = 'none';
+                return;
+            }
+        }
         const link = document.getElementById('popup-link').value;
         const start_date = document.getElementById('popup-start-date').value || null;
         const end_date = document.getElementById('popup-end-date').value || null;
@@ -1544,7 +1578,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             await loadPopupList();
-            resetPopupForm();
+            if (window.closePopupModalFn) window.closePopupModalFn(true);
             showToast('팝업이 저장되었습니다.', 'success');
         } catch (error) {
             showToast('팝업 저장 중 오류가 발생했습니다.', 'error');
@@ -1557,7 +1591,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 팝업 수정 버튼
     window.editPopup = async function(id) {
         const { data, error } = await window.supabaseClient.from(popupTable).select('*').eq('id', id).single();
-        if (error || !data) return alert('팝업 정보를 불러올 수 없습니다.');
+        if (error || !data) return showToast('팝업 정보를 불러올 수 없습니다.', 'error');
         document.getElementById('popup-id').value = data.id;
         document.getElementById('popup-title').value = data.title || '';
         document.getElementById('popup-link').value = data.link || '';
@@ -1581,10 +1615,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('popup-width-value').textContent = pw;
         if (window.updatePopupCardInPreview) window.updatePopupCardInPreview();
 
-        document.getElementById('popup-cancel').style.display = '';
         if (window.setPopupPreviewFromForm) window.setPopupPreviewFromForm(data.image_url);
-        // 수정 폼으로 스크롤
-        document.getElementById('popup-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // 날짜 버튼 초기화
+        document.querySelectorAll('.quick-date-btn').forEach(btn => btn.classList.remove('active'));
+        // 모달 열기
+        if (window.showPopupModalFn) window.showPopupModalFn(false);
     };
 
     // 팝업 삭제 버튼
@@ -1603,10 +1638,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // 팝업 취소 버튼
+    // 팝업 취소 버튼 (모달 방식으로 변경됨 - 레거시 코드 유지)
     const popupCancelBtn = document.getElementById('popup-cancel');
-    popupCancelBtn && popupCancelBtn.addEventListener('click', function() {
-        resetPopupForm();
+    if (popupCancelBtn) popupCancelBtn.addEventListener('click', function() {
+        if (window.closePopupModalFn) window.closePopupModalFn(false);
     });
 
     // 탭 전환 시 팝업 관리 탭이면 목록 로드

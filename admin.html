@@ -1192,10 +1192,10 @@
       margin-bottom: 1.7rem;
       letter-spacing: -0.5px;
     }
-    #tab-popups .admin-form .form-group {
+    #popup-form .form-group {
       margin-bottom: 1.5rem;
     }
-    #tab-popups .admin-form label {
+    #popup-form label {
       font-size: 1.08rem;
       font-weight: 600;
       color: #1e293b;
@@ -1203,10 +1203,10 @@
       display: block;
       letter-spacing: -0.5px;
     }
-    #tab-popups .admin-form input[type="text"],
-    #tab-popups .admin-form input[type="date"],
-    #tab-popups .admin-form input[type="file"],
-    #tab-popups .admin-form textarea {
+    #popup-form input[type="text"],
+    #popup-form input[type="date"],
+    #popup-form input[type="file"],
+    #popup-form textarea {
       width: 100%;
       padding: 1rem 1.1rem;
       border: 1.5px solid #b0b8c1;
@@ -1220,23 +1220,23 @@
       box-sizing: border-box;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
-    #tab-popups .admin-form input[type="text"]:focus,
-    #tab-popups .admin-form input[type="date"]:focus,
-    #tab-popups .admin-form textarea:focus {
+    #popup-form input[type="text"]:focus,
+    #popup-form input[type="date"]:focus,
+    #popup-form textarea:focus {
       border-color: #334a6c;
       box-shadow: 0 0 0 4px rgba(51,74,108,0.08);
       outline: none;
       background: #fff;
     }
-    #tab-popups .admin-form input[type="file"] {
+    #popup-form input[type="file"] {
       background: #fff;
       padding: 0.7rem 0.5rem;
     }
-    #tab-popups .admin-form textarea {
+    #popup-form textarea {
       min-height: 120px;
       resize: vertical;
     }
-    #tab-popups .quick-date-btn {
+    #popup-form .quick-date-btn {
       background-color: #e7eaf0;
       color: #334a6c;
       border: 1.2px solid #cfd8e3;
@@ -1249,8 +1249,8 @@
       margin-bottom: 0.3rem;
       transition: all 0.2s;
     }
-    #tab-popups .quick-date-btn:hover,
-    #tab-popups .quick-date-btn.active {
+    #popup-form .quick-date-btn:hover,
+    #popup-form .quick-date-btn.active {
       background-color: #334a6c;
       color: #fff;
       border-color: #334a6c;
@@ -1296,7 +1296,7 @@
       width: 14px;
     }
     /* 팝업 미리보기 */
-    #tab-popups #popup-preview-area {
+    #popup-preview-area {
       margin-top: 0.5rem;
       border-radius: 12px;
       overflow: hidden;
@@ -1365,13 +1365,13 @@
     .popup-preview-action { flex: 1; padding: 10px 0; font-size: 10.5px; color: #aaa; text-align: center; }
     .popup-preview-divider { width: 1px; height: 28px; background: #f0f0f0; flex-shrink: 0; }
     .popup-preview-action-primary { flex: 1; padding: 10px 0; font-size: 10.5px; color: #334a6c; font-weight: 600; text-align: center; }
-    #tab-popups .admin-form input[type="checkbox"] {
+    #popup-form input[type="checkbox"] {
       accent-color: #334a6c;
       width: 1.2em;
       height: 1.2em;
       margin-right: 0.5em;
     }
-    #tab-popups .admin-form .form-group:last-child {
+    #popup-form .form-group:last-child {
       margin-bottom: 0.5rem;
     }
     /* 모바일 최적화 */
@@ -1389,25 +1389,25 @@
         font-size: 1.08rem;
         margin-bottom: 1.1rem;
       }
-      #tab-popups .admin-form label {
+      #popup-form label {
         font-size: 0.98rem;
         margin-bottom: 0.3rem;
       }
-      #tab-popups .admin-form input[type="text"],
-      #tab-popups .admin-form input[type="date"],
-      #tab-popups .admin-form textarea {
+      #popup-form input[type="text"],
+      #popup-form input[type="date"],
+      #popup-form textarea {
         font-size: 0.97rem;
         padding: 0.7rem 0.7rem;
         border-radius: 6px;
       }
-      #tab-popups .quick-date-btn {
+      #popup-form .quick-date-btn {
         font-size: 0.85rem;
         padding: 0.35rem 0.7rem;
         margin-right: 0.2rem;
         margin-bottom: 0.2rem;
         border-radius: 5px;
       }
-      #tab-popups .admin-form .form-group {
+      #popup-form .form-group {
         margin-bottom: 1rem;
       }
     }
@@ -1415,13 +1415,13 @@
       #tab-popups .admin-card {
         padding: 0.3rem 0.1rem;
       }
-      #tab-popups .admin-form input[type="text"],
-      #tab-popups .admin-form input[type="date"],
-      #tab-popups .admin-form textarea {
+      #popup-form input[type="text"],
+      #popup-form input[type="date"],
+      #popup-form textarea {
         font-size: 0.9rem;
         padding: 0.5rem 0.4rem;
       }
-      #tab-popups .quick-date-btn {
+      #popup-form .quick-date-btn {
         font-size: 0.7rem;
         padding: 0.2rem 0.4rem;
       }
@@ -3432,6 +3432,22 @@
     .facility-empty-state { text-align:center; padding:2.5rem 1rem; color:var(--t3); }
     .facility-empty-state i { font-size:2.5rem; margin-bottom:0.8rem; color:var(--border); display:block; }
     .facility-empty-state p { font-size:0.95rem; margin:0; }
+    /* 팝업 모달 */
+    #popup-modal .modal-content { max-width: 860px; }
+    /* 팝업 이미지 드롭존 */
+    #popup-drop-zone { border:2px dashed #b0b8c1; border-radius:10px; padding:1.2rem 1rem; text-align:center; cursor:pointer; transition:border-color 0.2s, background 0.2s; background:#f8fafc; margin-bottom:0.6rem; user-select:none; }
+    #popup-drop-zone.drag-over { border-color:#334a6c; background:#e7edf5; }
+    #popup-drop-zone > i { font-size:1.8rem; color:#b0b8c1; margin-bottom:0.4rem; display:block; pointer-events:none; }
+    #popup-drop-zone > p { margin:0 0 0.6rem; color:#6c757d; font-size:0.9rem; pointer-events:none; }
+    #popup-add-image-btn { background:#334a6c; color:#fff; border:none; border-radius:7px; padding:0.45rem 1.1rem; font-size:0.9rem; font-weight:600; cursor:pointer; transition:background 0.2s; }
+    #popup-add-image-btn:hover { background:#2c405e; }
+    .popup-drop-hint { font-size:0.78rem; color:#adb5bd; margin:0.5rem 0 0 !important; pointer-events:none; }
+    #popup-current-image-wrap { margin-top:0.7rem; display:none; position:relative; display:inline-block; }
+    #popup-current-image-wrap img { width:120px; height:90px; object-fit:cover; border-radius:8px; border:1.5px solid #cfd8e3; display:block; }
+    #popup-image-remove-btn { position:absolute; top:-8px; right:-8px; width:22px; height:22px; background:#dc3545; color:#fff; border:none; border-radius:50%; cursor:pointer; font-size:14px; line-height:1; display:flex; align-items:center; justify-content:center; padding:0; }
+    /* 팝업 리스트 활성화 토글 */
+    .popup-active-toggle { cursor:pointer; display:inline-flex; align-items:center; gap:0.4rem; }
+    .popup-active-toggle input[type="checkbox"] { width:1.05em; height:1.05em; accent-color:#334a6c; cursor:pointer; }
   </style>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -3672,120 +3688,18 @@
 
     <!-- 팝업 관리 탭 -->
     <div id="tab-popups" class="tab-content">
-      <div class="admin-card">
-        <h3>팝업 추가/수정</h3>
-        <form id="popup-form" class="admin-form">
-          <input type="hidden" id="popup-id">
-          <p class="form-section-label">기본 정보</p>
-          <div class="form-group">
-            <label for="popup-title">제목 <span style="font-weight:400;color:#888;font-size:0.9rem;">(관리용, 홈페이지에 노출되지 않음)</span></label>
-            <input type="text" id="popup-title" maxlength="100" placeholder="팝업 이름을 입력하세요">
-          </div>
-          <div class="form-group">
-            <label for="popup-image">팝업 이미지</label>
-            <input type="file" id="popup-image" accept="image/*">
-            <p style="margin:0.4rem 0 0;font-size:0.85rem;color:#888;">권장: 가로 420px 이하, 세로 자동. JPG/PNG/WebP 지원.</p>
-          </div>
-          <div class="form-group">
-            <label for="popup-link">클릭 시 이동 링크 <span style="font-weight:400;color:#888;font-size:0.9rem;">(선택)</span></label>
-            <input type="text" id="popup-link" maxlength="300" placeholder="https://...">
-          </div>
-          <p class="form-section-label">크기 및 위치</p>
-          <!-- 팝업 크기/위치 조정 -->
-          <div class="form-group">
-            <label>팝업 크기 및 위치 조정</label>
-            <div class="popup-ctrl-group">
-              <div class="popup-ctrl-row">
-                <span class="popup-ctrl-label">크기</span>
-                <input type="range" id="popup-width-slider" min="200" max="600" value="420" class="popup-ctrl-slider">
-                <span id="popup-width-value" class="popup-ctrl-val">420</span>
-                <span class="popup-ctrl-unit">px</span>
-              </div>
-              <div class="popup-ctrl-row">
-                <span class="popup-ctrl-label">좌우 위치</span>
-                <input type="range" id="popup-pos-x-slider" min="10" max="90" value="50" class="popup-ctrl-slider">
-                <span id="popup-pos-x-value" class="popup-ctrl-val">50</span>
-                <span class="popup-ctrl-unit">%</span>
-              </div>
-              <div class="popup-ctrl-row">
-                <span class="popup-ctrl-label">상하 위치</span>
-                <input type="range" id="popup-pos-y-slider" min="10" max="90" value="50" class="popup-ctrl-slider">
-                <span id="popup-pos-y-value" class="popup-ctrl-val">50</span>
-                <span class="popup-ctrl-unit">%</span>
-              </div>
-            </div>
-            <input type="hidden" id="popup-pos-x" value="50">
-            <input type="hidden" id="popup-pos-y" value="50">
-            <input type="hidden" id="popup-width" value="420">
-          </div>
-          <!-- 팝업 미리보기 (실제 홈페이지 배경) -->
-          <div class="form-group">
-            <label>팝업 미리보기 <span style="font-weight:400;color:#888;font-size:0.85rem;">(카드를 드래그하여 위치 조정)</span></label>
-            <div id="popup-preview-area">
-              <div id="preview-iframe-wrapper">
-                <iframe id="preview-iframe" src="index.html?admin-preview=1" scrolling="no" frameborder="0"></iframe>
-                <div id="preview-dim-overlay"></div>
-                <div id="popup-preview-card">
-                  <button type="button" class="popup-preview-close-btn">&times;</button>
-                  <div id="popup-preview-img-area">
-                    <div id="popup-preview-placeholder">
-                      <i class="fas fa-image"></i>
-                      <span>이미지를 업로드하면<br>미리보기가 표시됩니다</span>
-                    </div>
-                  </div>
-                  <div class="popup-preview-footer">
-                    <span class="popup-preview-action">오늘 하루 보지 않기</span>
-                    <span class="popup-preview-divider"></span>
-                    <span class="popup-preview-action-primary">닫기</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <p class="form-section-label">노출 설정</p>
-          <div class="form-group">
-            <label>노출 기간</label>
-            <div style="margin-bottom: 0.7rem;">
-              <span style="font-size: 0.9rem; color: #6c757d; margin-right: 0.8rem;">빠른 설정:</span>
-              <button type="button" class="quick-date-btn" data-days="0">오늘</button>
-              <button type="button" class="quick-date-btn" data-days="7">1주일</button>
-              <button type="button" class="quick-date-btn" data-days="30">1달</button>
-              <button type="button" class="quick-date-btn" data-days="90">3개월</button>
-              <button type="button" class="quick-date-btn" data-days="180">6개월</button>
-              <button type="button" class="quick-date-btn" data-days="365">1년</button>
-            </div>
-            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-              <div style="flex: 1; min-width: 180px;">
-                <label for="popup-start-date" style="font-size: 0.9rem; color: #495057; margin-bottom: 0.3rem; display: block;">시작일</label>
-                <input type="date" id="popup-start-date">
-              </div>
-              <div style="flex: 1; min-width: 180px;">
-                <label for="popup-end-date" style="font-size: 0.9rem; color: #495057; margin-bottom: 0.3rem; display: block;">종료일</label>
-                <input type="date" id="popup-end-date">
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
-              <input type="checkbox" id="popup-active" checked style="width:1.1em;height:1.1em;accent-color:#334a6c;">
-              팝업 활성화 (체크 해제 시 홈페이지에 표시되지 않음)
-            </label>
-          </div>
-          <div style="display:flex;gap:0.8rem;flex-wrap:wrap;margin-top:0.5rem;">
-            <button type="submit" class="button-primary" style="flex:1;min-width:120px;">저장하기</button>
-            <button type="button" id="popup-cancel" class="button-secondary" style="display:none;flex:1;min-width:120px;">취소</button>
-          </div>
-        </form>
-      </div>
       <!-- 팝업 로딩 오버레이 -->
-      <div id="popup-loading-overlay" style="display:none;position:fixed;z-index:2000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
+      <div id="popup-loading-overlay" style="display:none;position:fixed;z-index:20000;left:0;top:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);align-items:center;justify-content:center;font-size:1.3rem;color:#334a6c;font-weight:600;">
         <div style="background:#fff;padding:2.5rem 2.5rem 2rem 2.5rem;border-radius:16px;box-shadow:0 4px 24px rgba(51,74,108,0.13);display:flex;flex-direction:column;align-items:center;gap:1.2rem;">
           <div class="loader" style="border:6px solid #f3f3f3;border-top:6px solid #334a6c;border-radius:50%;width:48px;height:48px;animation:spin 1s linear infinite;"></div>
           <span>팝업 저장 중입니다...</span>
         </div>
       </div>
       <div class="admin-card">
-        <h3>팝업 목록</h3>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;">
+          <h3 style="margin:0;">팝업 목록</h3>
+          <button id="add-popup-btn" class="button-primary" style="white-space:nowrap;">+ 새 팝업 추가</button>
+        </div>
         <div id="popup-list"></div>
       </div>
     </div>
@@ -3841,6 +3755,122 @@
           <small>공지사항 게시판 상단에 고정됩니다.</small>
         </div>
         <button type="submit" class="button-primary">저장하기</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 팝업 작성/수정 모달 -->
+  <div id="popup-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="popup-modal-title">새 팝업 추가</h3>
+        <span class="close-button" id="popup-modal-close">&times;</span>
+      </div>
+      <form id="popup-form" class="admin-form">
+        <input type="hidden" id="popup-id">
+        <p class="form-section-label">기본 정보</p>
+        <div class="form-group">
+          <label for="popup-title">제목 <span style="font-weight:400;color:#888;font-size:0.9rem;">(관리용, 홈페이지에 노출되지 않음)</span></label>
+          <input type="text" id="popup-title" maxlength="100" placeholder="팝업 이름을 입력하세요">
+        </div>
+        <div class="form-group">
+          <label>팝업 이미지 <span class="req">*</span></label>
+          <input type="file" id="popup-image" accept="image/*" style="display:none;">
+          <div id="popup-drop-zone">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>이미지를 여기에 끌어다 놓거나</p>
+            <button type="button" id="popup-add-image-btn">파일 선택</button>
+            <p class="popup-drop-hint">JPG · PNG · WebP · 최대 5MB</p>
+          </div>
+          <div id="popup-current-image-wrap" style="display:none;">
+            <img id="popup-current-image" src="" alt="팝업 이미지">
+            <button type="button" id="popup-image-remove-btn" title="이미지 제거">&times;</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="popup-link">클릭 시 이동 링크 <span style="font-weight:400;color:#888;font-size:0.9rem;">(선택)</span></label>
+          <input type="text" id="popup-link" maxlength="300" placeholder="https://...">
+        </div>
+        <p class="form-section-label">크기 및 위치</p>
+        <div class="form-group">
+          <label>팝업 크기 및 위치 조정</label>
+          <div class="popup-ctrl-group">
+            <div class="popup-ctrl-row">
+              <span class="popup-ctrl-label">크기</span>
+              <input type="range" id="popup-width-slider" min="200" max="600" value="420" class="popup-ctrl-slider">
+              <span id="popup-width-value" class="popup-ctrl-val">420</span>
+              <span class="popup-ctrl-unit">px</span>
+            </div>
+            <div class="popup-ctrl-row">
+              <span class="popup-ctrl-label">좌우 위치</span>
+              <input type="range" id="popup-pos-x-slider" min="10" max="90" value="50" class="popup-ctrl-slider">
+              <span id="popup-pos-x-value" class="popup-ctrl-val">50</span>
+              <span class="popup-ctrl-unit">%</span>
+            </div>
+            <div class="popup-ctrl-row">
+              <span class="popup-ctrl-label">상하 위치</span>
+              <input type="range" id="popup-pos-y-slider" min="10" max="90" value="50" class="popup-ctrl-slider">
+              <span id="popup-pos-y-value" class="popup-ctrl-val">50</span>
+              <span class="popup-ctrl-unit">%</span>
+            </div>
+          </div>
+          <input type="hidden" id="popup-pos-x" value="50">
+          <input type="hidden" id="popup-pos-y" value="50">
+          <input type="hidden" id="popup-width" value="420">
+        </div>
+        <div class="form-group">
+          <label>팝업 미리보기 <span style="font-weight:400;color:#888;font-size:0.85rem;">(카드를 드래그하여 위치 조정)</span></label>
+          <div id="popup-preview-area">
+            <div id="preview-iframe-wrapper">
+              <iframe id="preview-iframe" src="index.html?admin-preview=1" scrolling="no" frameborder="0"></iframe>
+              <div id="preview-dim-overlay"></div>
+              <div id="popup-preview-card">
+                <button type="button" class="popup-preview-close-btn">&times;</button>
+                <div id="popup-preview-img-area">
+                  <div id="popup-preview-placeholder">
+                    <i class="fas fa-image"></i>
+                    <span>이미지를 업로드하면<br>미리보기가 표시됩니다</span>
+                  </div>
+                </div>
+                <div class="popup-preview-footer">
+                  <span class="popup-preview-action">오늘 하루 보지 않기</span>
+                  <span class="popup-preview-divider"></span>
+                  <span class="popup-preview-action-primary">닫기</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="form-section-label">노출 설정</p>
+        <div class="form-group">
+          <label>노출 기간</label>
+          <div style="margin-bottom: 0.7rem;">
+            <span style="font-size: 0.9rem; color: #6c757d; margin-right: 0.8rem;">빠른 설정:</span>
+            <button type="button" class="quick-date-btn" data-days="0">오늘</button>
+            <button type="button" class="quick-date-btn" data-days="7">1주일</button>
+            <button type="button" class="quick-date-btn" data-days="30">1달</button>
+            <button type="button" class="quick-date-btn" data-days="90">3개월</button>
+            <button type="button" class="quick-date-btn" data-days="180">6개월</button>
+            <button type="button" class="quick-date-btn" data-days="365">1년</button>
+          </div>
+          <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 180px;">
+              <label for="popup-start-date" style="font-size: 0.9rem; color: #495057; margin-bottom: 0.3rem; display: block;">시작일</label>
+              <input type="date" id="popup-start-date">
+            </div>
+            <div style="flex: 1; min-width: 180px;">
+              <label for="popup-end-date" style="font-size: 0.9rem; color: #495057; margin-bottom: 0.3rem; display: block;">종료일</label>
+              <input type="date" id="popup-end-date">
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+            <input type="checkbox" id="popup-active" checked style="width:1.1em;height:1.1em;accent-color:#334a6c;">
+            팝업 활성화 (체크 해제 시 홈페이지에 표시되지 않음)
+          </label>
+        </div>
+        <button type="submit" class="button-primary" style="width:100%;margin-top:0.5rem;">저장하기</button>
       </form>
     </div>
   </div>
@@ -3915,16 +3945,129 @@
     var _previewDragStartX, _previewDragStartY, _previewStartPosX, _previewStartPosY;
 
     document.addEventListener('DOMContentLoaded', function() {
-      // 이미지 업로드 시 미리보기 업데이트
+      // 팝업 모달 dirty 트래킹
+      var _popupModalDirty = false;
+
+      function showPopupModal(isNew) {
+        var m = document.getElementById('popup-modal');
+        var title = document.getElementById('popup-modal-title');
+        if (title) title.textContent = isNew ? '새 팝업 추가' : '팝업 수정';
+        _popupModalDirty = false;
+        m.style.display = 'flex';
+        setTimeout(function() {
+          updatePreviewScale();
+          updatePopupCardInPreview();
+        }, 50);
+      }
+      window.showPopupModalFn = showPopupModal;
+
+      function closePopupModal(force) {
+        if (!force && _popupModalDirty && !confirm('작성 중인 내용이 있습니다. 닫으시겠습니까?')) return;
+        var m = document.getElementById('popup-modal');
+        m.style.display = 'none';
+        _popupModalDirty = false;
+      }
+      window.closePopupModalFn = closePopupModal;
+
+      // 팝업 모달 닫기 버튼
+      var popupModalClose = document.getElementById('popup-modal-close');
+      if (popupModalClose) popupModalClose.addEventListener('click', function() { closePopupModal(false); });
+
+      // 팝업 모달 바깥 클릭 시 닫기
+      var popupModalEl = document.getElementById('popup-modal');
+      if (popupModalEl) {
+        popupModalEl.addEventListener('click', function(e) {
+          if (e.target === popupModalEl) closePopupModal(false);
+        });
+      }
+
+      // 팝업 폼 변경 시 dirty 표시
+      var popupFormEl = document.getElementById('popup-form');
+      if (popupFormEl) {
+        popupFormEl.addEventListener('input', function() { _popupModalDirty = true; });
+        popupFormEl.addEventListener('change', function() { _popupModalDirty = true; });
+      }
+
+      // 새 팝업 추가 버튼
+      var addPopupBtn = document.getElementById('add-popup-btn');
+      if (addPopupBtn) {
+        addPopupBtn.addEventListener('click', function() {
+          if (window.resetPopupFormForModal) window.resetPopupFormForModal();
+          showPopupModal(true);
+        });
+      }
+
+      // 팝업 이미지 드롭존
       var popupImageInput = document.getElementById('popup-image');
+      var popupDropZone = document.getElementById('popup-drop-zone');
+      var popupAddImageBtn = document.getElementById('popup-add-image-btn');
+      var popupCurrentImageWrap = document.getElementById('popup-current-image-wrap');
+      var popupCurrentImage = document.getElementById('popup-current-image');
+      var popupImageRemoveBtn = document.getElementById('popup-image-remove-btn');
+
+      function setPopupImagePreview(src) {
+        if (src) {
+          if (popupCurrentImage) popupCurrentImage.src = src;
+          if (popupCurrentImageWrap) popupCurrentImageWrap.style.display = 'inline-block';
+          updatePopupPreview(src);
+        } else {
+          if (popupCurrentImageWrap) popupCurrentImageWrap.style.display = 'none';
+          updatePopupPreview('');
+        }
+      }
+
+      // window.setPopupPreviewFromForm 재정의 (setPopupImagePreview 사용)
+      window.setPopupPreviewFromForm = function(imgUrl) {
+        setPopupImagePreview(imgUrl || '');
+      };
+
+      if (popupAddImageBtn && popupImageInput) {
+        popupAddImageBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          popupImageInput.click();
+        });
+      }
+      if (popupDropZone && popupImageInput) {
+        popupDropZone.addEventListener('click', function(e) {
+          if (e.target.id !== 'popup-add-image-btn') popupImageInput.click();
+        });
+        popupDropZone.addEventListener('dragover', function(e) {
+          e.preventDefault(); popupDropZone.classList.add('drag-over');
+        });
+        popupDropZone.addEventListener('dragleave', function() {
+          popupDropZone.classList.remove('drag-over');
+        });
+        popupDropZone.addEventListener('drop', function(e) {
+          e.preventDefault();
+          popupDropZone.classList.remove('drag-over');
+          var file = e.dataTransfer.files[0];
+          if (file && file.type.startsWith('image/')) {
+            var dt = new DataTransfer();
+            dt.items.add(file);
+            popupImageInput.files = dt.files;
+            var reader = new FileReader();
+            reader.onload = function(ev) { setPopupImagePreview(ev.target.result); };
+            reader.readAsDataURL(file);
+            _popupModalDirty = true;
+          }
+        });
+      }
       if (popupImageInput) {
         popupImageInput.addEventListener('change', function(e) {
           var file = e.target.files[0];
           if (file) {
             var reader = new FileReader();
-            reader.onload = function(ev) { updatePopupPreview(ev.target.result); };
+            reader.onload = function(ev) { setPopupImagePreview(ev.target.result); };
             reader.readAsDataURL(file);
+            _popupModalDirty = true;
           }
+        });
+      }
+      if (popupImageRemoveBtn) {
+        popupImageRemoveBtn.addEventListener('click', function() {
+          if (popupImageInput) { popupImageInput.value = ''; }
+          setPopupImagePreview('');
+          _popupModalDirty = true;
         });
       }
 
