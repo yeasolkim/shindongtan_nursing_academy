@@ -1051,7 +1051,7 @@ function initMobileFloatingContact() {
   bar.id = 'mobile-float-contact';
   bar.innerHTML = `
     <a href="tel:031-8003-2456" class="float-call"><i class="fas fa-phone"></i> 전화 상담</a>
-    <a href="https://pf.kakao.com/_ExlqgC" target="_blank" rel="noopener noreferrer" class="float-kakao"><i class="fas fa-comment"></i> 카카오 상담</a>
+    <a href="https://pf.kakao.com/_ExlqgC" target="_blank" rel="noopener noreferrer" class="float-kakao"><i class="fas fa-comment"></i> 카카오톡 상담</a>
   `;
   document.body.appendChild(bar);
 
