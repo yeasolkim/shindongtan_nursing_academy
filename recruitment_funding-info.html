@@ -95,6 +95,39 @@
         content: '→';
     }
 
+    /* 단어 중간 줄바꿈 방지 */
+    .flow-step { word-break: keep-all; line-height: 1.5; }
+
+    /* PC·태블릿: 화살표 대신 번호가 붙은 칸으로 순서 표시 (줄 끝에 남는 화살표 없음) */
+    @media (min-width: 769px) {
+        .flowchart-single {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 1.4rem 1rem;
+            align-items: stretch;
+            counter-reset: flowstep;
+        }
+        .flowchart-single .flow-arrow { display: none; }
+        .flowchart-single .flow-step {
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 92px;
+            padding: 1.2rem 0.8rem 0.9rem;
+            counter-increment: flowstep;
+        }
+        .flowchart-single .flow-step::before {
+            content: counter(flowstep);
+            position: absolute; top: -0.85rem; left: 50%; transform: translateX(-50%);
+            width: 1.7rem; height: 1.7rem; border-radius: 50%;
+            background: var(--primary); color: #fff;
+            font-size: 0.85rem; font-weight: 700; line-height: 1.7rem; text-align: center;
+        }
+        .flowchart-single .flow-step.highlight::before { background: #b02a37; }
+    }
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .flowchart-single { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+
     /* 정보 카드 그리드 */
     .info-card-grid {
         display: grid;

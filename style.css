@@ -1984,3 +1984,77 @@ body[data-page^='community_'] .section-title {
 @media (min-width: 769px) {
   .mobile-menu-toggle { display: none !important; }
 }
+
+/* ── 푸터 가독성: 사업자 정보 대비, SNS 버튼 크기·이름 표시 (저작권 링크는 그대로) ── */
+.footer .footer-biz-info {
+  margin-top: 0.7rem;
+  color: #cbd5e0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+.footer .footer-contact-item span { color: #cbd5e0; }
+.footer .footer-social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem !important;
+}
+.footer .footer-social-item { font-size: 1rem; margin: 0 !important; }
+.footer .footer-social-item a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  color: #e2e8f0;
+  text-decoration: none;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+.footer .footer-social-item a i { font-size: 1.05rem; width: auto; margin: 0; }
+@media (hover: hover) and (pointer: fine) {
+  .footer .footer-social-item a:hover { background: rgba(255, 255, 255, 0.1); color: #fff; transform: none; }
+}
+
+/* ── 휴대폰 가독성: 최소 글자 크기 (본문 14px, 날짜·보조 정보 13px 이상) ── */
+@media (max-width: 768px) {
+  /* 홈 */
+  html body .hero-v2-subtitle { font-size: 0.875rem; }
+  html body .feature-stat .stat-label { font-size: 0.85rem; }
+  html body .feature-stat .stat-desc { font-size: 0.75rem; line-height: 1.45; }
+  html body .section-subtitle { font-size: 0.875rem; }
+  html body .social-links-section .section-subtitle { font-size: 0.875rem; }
+  html body .info-link-text p { font-size: 0.8125rem; }
+  html body .preview-item-text .title { font-size: 0.95rem; }
+  html body .preview-item-text .meta,
+  html body .preview-item-text .meta span { font-size: 0.8125rem; }
+
+  /* 게시판 목록 (공지·구인·갤러리) */
+  html body .board-row .title,
+  html body .board-row .title a { font-size: 0.95rem; line-height: 1.5; }
+  html body .board-row .number { font-size: 0.8125rem; }
+  html body .board-row.notice .number { font-size: 0.75rem; }
+  html body .board-header .number,
+  html body .board-header .title { font-size: 0.8125rem; }
+  html body .board-row .mobile-date,
+  html body .board-row .date,
+  html body .board-row .views,
+  html body .board-row .meta-info span { font-size: 0.8125rem; }
+
+  /* 오시는 길 */
+  html body .section-title p { font-size: 0.8125rem; }
+  html body .contact-item .value { font-size: 0.9rem; }
+  html body .transport-info ul,
+  html body .transport-info li,
+  html body .hours-notice .hours p,
+  html body .hours-notice .notice p { font-size: 0.875rem; line-height: 1.6; }
+  html body .hours-notice .notice h4 { font-size: 0.9rem; }
+
+  /* 푸터 (저작권 링크는 그대로) */
+  html body .footer-section h4 { font-size: 0.9rem; }
+  html body .footer-contact-item,
+  html body .footer-contact-item span,
+  html body .footer-contact-item a { font-size: 0.85rem; }
+  html body .footer .footer-biz-info { font-size: 0.8125rem; }
+}

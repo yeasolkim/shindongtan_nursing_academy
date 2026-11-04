@@ -327,6 +327,7 @@
           const item = document.createElement('div');
           item.className = 'accordion-item';
           item.dataset.accordionBound = 'qa';
+          if (faq.id != null) item.dataset.faqId = String(faq.id);
           item.innerHTML = `
             <button type="button" class="accordion-header" aria-expanded="false" aria-controls="${contentId}">
               <span class="q-icon">Q</span>
@@ -344,6 +345,20 @@
         });
 
         initializeAccordion();
+
+        // 홈 화면에서 특정 질문을 눌러 들어온 경우 그 질문을 펼치고 화면으로 이동
+        const targetId = new URLSearchParams(location.search).get('q');
+        if (targetId) {
+          const target = container.querySelector('.accordion-item[data-faq-id="' + CSS.escape(targetId) + '"]');
+          if (target) {
+            target.querySelector('.accordion-header').click();
+            setTimeout(() => {
+              const headerH = (document.querySelector('header.header') || {}).offsetHeight || 0;
+              const y = target.getBoundingClientRect().top + window.scrollY - headerH - 16;
+              window.scrollTo({ top: y, behavior: 'smooth' });
+            }, 350);
+          }
+        }
       } catch (e) {
         console.error('FAQ 데이터 로드 중 오류:', e);
         showFaqMessage(container, '질문 목록을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.');

@@ -1391,10 +1391,14 @@ async function initGalleryDetailPage() {
 
     // 여러 이미지 모두 렌더링
     const images = parseGalleryImages(currentItem.image);
-    const imagesHtml = images.map((img, idx) => `<img src="${escapeHtml(img)}" alt="${escapeHtml(currentItem.title)}" style="max-width:100%;margin-bottom:1rem;"${idx > 0 ? ' loading="lazy"' : ''}>`).join('');
+    const imagesHtml = images.map((img, idx) => `<img src="${escapeHtml(galleryMediumUrl(img))}" data-original="${escapeHtml(img)}" alt="${escapeHtml(currentItem.title)}" style="max-width:100%;margin-bottom:1rem;" decoding="async"${idx > 0 ? ' loading="lazy"' : ''}>`).join('');
     const imageGroupEl = document.getElementById('gallery-detail-image-group');
     if (imageGroupEl) {
       imageGroupEl.innerHTML = imagesHtml;
+      imageGroupEl.querySelectorAll('img[data-original]').forEach(el => {
+        attachThumbFallback(el, el.dataset.original);
+        if (el.complete && el.naturalWidth === 0 && el.src !== el.dataset.original) el.src = el.dataset.original;
+      });
     } else {
       // fallback: 기존 단일 이미지 영역이 있다면 대체
       const imageEl = document.getElementById('gallery-detail-image');
@@ -2267,7 +2271,7 @@ function renderLatestQA(qaData) {
     const question = qa.question || '질문 없음';
     
     return `
-      <a href="community_qa.html" class="preview-item">
+      <a href="community_qa.html${qa.id != null ? '?q=' + encodeURIComponent(qa.id) : ''}" class="preview-item">
         <div class="preview-item-icon">
           <b>Q</b>
         </div>
@@ -2352,6 +2356,20 @@ function galleryThumbUrl(url) {
     return 'shindongtan/resource/gallery-thumbs/' + encodeURIComponent(name) + '.jpg';
   }
   return m[1] + '/thumbs/' + encodeURIComponent(name) + '.jpg';
+}
+
+/** 갤러리 상세용: 기존 사진은 중간 크기 파일, 그 외에는 원본 */
+function galleryMediumUrl(url) {
+  if (!url) return '';
+  const clean = String(url).trim();
+  const m = clean.match(/\/object\/public\/gallery-images\/([^/?#]+)\.[A-Za-z0-9]+$/);
+  if (!m) return clean;
+  let name = m[1];
+  try { name = decodeURIComponent(name); } catch (e) {}
+  if (window.GALLERY_STATIC_MEDIUM && window.GALLERY_STATIC_MEDIUM.has(name)) {
+    return 'shindongtan/resource/gallery-medium/' + encodeURIComponent(name) + '.jpg';
+  }
+  return clean;
 }
 
 /** 썸네일을 못 불러오면 원본 사진으로 한 번만 대체 */
