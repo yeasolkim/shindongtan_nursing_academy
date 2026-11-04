@@ -1306,7 +1306,8 @@ async function initGalleryPage() {
       listContainer.innerHTML = pageItems.map(item => {
         // parseGalleryImages 함수를 사용하여 안전하게 첫 번째 이미지만 가져오기
         const images = parseGalleryImages(item.image);
-        const thumbnail = images[0] || '';
+        const original = images[0] || '';
+        const thumbnail = galleryThumbUrl(original);
         // description에서 HTML 태그 제거하여 텍스트만 추출
         const descriptionText = escapeHtml(htmlToText(item.description));
         // 상세페이지 URL
@@ -1315,7 +1316,7 @@ async function initGalleryPage() {
           <div class="board-row">
             <!-- 썸네일도 상세화면 링크로 이동 -->
             <a href="${detailUrl}">
-              <img class="thumbnail" src="${escapeHtml(thumbnail)}" alt="${escapeHtml(item.title || '갤러리 이미지')}" loading="lazy">
+              <img class="thumbnail" src="${escapeHtml(thumbnail)}" data-original="${escapeHtml(original)}" decoding="async" alt="${escapeHtml(item.title || '갤러리 이미지')}" loading="lazy">
             </a>
             <div class="title-section">
               <a href="${detailUrl}" class="title">${escapeHtml(item.title || '')}</a>
@@ -1329,6 +1330,12 @@ async function initGalleryPage() {
         `;
       }).join('');
       totalPostsCounter.textContent = `총 ${items.length}건`;
+      listContainer.querySelectorAll('img.thumbnail[data-original]').forEach(img => {
+        attachThumbFallback(img, img.dataset.original);
+        if (img.complete && img.naturalWidth === 0 && img.dataset.original && img.src !== img.dataset.original) {
+          img.src = img.dataset.original;   // 이벤트 연결 전에 이미 실패한 경우
+        }
+      });
     }
     function setupPagination(items, page) {
       const totalPages = Math.ceil(items.length / itemsPerPage);
@@ -2322,7 +2329,38 @@ function parseGalleryImages(imageField) {
     } else {
         images = [];
     }
-    return images;
+    return images
+        .filter(u => typeof u === 'string')
+        .map(u => u.trim())
+        .filter(Boolean);
+}
+
+/**
+ * 갤러리 원본 사진 주소 → 목록용 작은 썸네일 주소
+ * 1) 기존 사진: 홈페이지와 함께 배포한 썸네일 (gallery-thumbs.js 목록에 있는 것)
+ * 2) 새로 올린 사진: 관리자 페이지가 저장소 gallery-images/thumbs/ 에 함께 저장한 썸네일
+ * 3) 해당 없음: 원본 그대로
+ */
+function galleryThumbUrl(url) {
+  if (!url) return '';
+  const clean = String(url).trim();
+  const m = clean.match(/^(.*\/object\/public\/gallery-images)\/([^/?#]+)\.[A-Za-z0-9]+$/);
+  if (!m) return clean;
+  let name = m[2];
+  try { name = decodeURIComponent(name); } catch (e) {}
+  if (window.GALLERY_STATIC_THUMBS && window.GALLERY_STATIC_THUMBS.has(name)) {
+    return 'shindongtan/resource/gallery-thumbs/' + encodeURIComponent(name) + '.jpg';
+  }
+  return m[1] + '/thumbs/' + encodeURIComponent(name) + '.jpg';
+}
+
+/** 썸네일을 못 불러오면 원본 사진으로 한 번만 대체 */
+function attachThumbFallback(img, originalUrl) {
+  if (!img || !originalUrl) return;
+  img.addEventListener('error', function onErr() {
+    img.removeEventListener('error', onErr);
+    if (img.src !== originalUrl) img.src = originalUrl;
+  });
 }
 
 // =============================================================================

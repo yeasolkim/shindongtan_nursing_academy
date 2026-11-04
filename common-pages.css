@@ -778,3 +778,41 @@ p.note.small {
 @media (hover: hover) and (pointer: fine) {
   .quick-contact-sidebar .phone-link:hover { text-decoration: underline; }
 }
+
+/* 빠른 문의 상자: 본문과 겹치는 화면 폭(1201~1759px)에서는 오른쪽 끝 작은 버튼 두 개로 축소 */
+@media (min-width: 1201px) and (max-width: 1759.98px) {
+  body .quick-contact-sidebar {
+    width: 64px;
+    right: 12px;
+    overflow: hidden;
+    border-radius: 32px;
+  }
+  body .quick-contact-sidebar .contact-box {
+    margin: 0;
+    padding: 0;
+  }
+  body .quick-contact-sidebar .contact-box h3 { display: none; }
+  body .quick-contact-sidebar .phone-number { margin: 0; font-size: 0; }
+  body .quick-contact-sidebar .phone-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 64px;
+    color: var(--primary, #1a365d);
+  }
+  body .quick-contact-sidebar .phone-link i { font-size: 1.35rem; }
+  body .quick-contact-sidebar .kakao-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 64px;
+    padding: 0;
+    font-size: 0;
+  }
+  body .quick-contact-sidebar .kakao-link::before {
+    content: '카톡';
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #3c1e1e;
+  }
+}
