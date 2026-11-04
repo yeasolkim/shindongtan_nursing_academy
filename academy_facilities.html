@@ -5,13 +5,13 @@
   <meta name="description" content="신동탄간호학원 시설 안내. 쾌적하고 현대적인 교육 시설을 확인하세요.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>시설 둘러보기 - 신동탄간호학원</title>
-  <link rel="canonical" href="https://yeasolkim.github.io/shindongtan_nursing_academy/academy_facilities.html">
+  <link rel="canonical" href="https://www.ok1004.co.kr/academy_facilities.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="시설 둘러보기 - 신동탄간호학원">
   <meta property="og:description" content="쾌적하고 현대적인 신동탄간호학원 교육 시설을 사진으로 확인하세요.">
-  <meta property="og:url" content="https://yeasolkim.github.io/shindongtan_nursing_academy/academy_facilities.html">
+  <meta property="og:url" content="https://www.ok1004.co.kr/academy_facilities.html">
   <meta property="og:locale" content="ko_KR">
-  <meta property="og:image" content="https://yeasolkim.github.io/shindongtan_nursing_academy/shindongtan/resource/logo.png">
+  <meta property="og:image" content="https://www.ok1004.co.kr/shindongtan/resource/logo.png">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="시설 둘러보기 - 신동탄간호학원">
   <meta name="twitter:description" content="쾌적하고 현대적인 신동탄간호학원 교육 시설을 사진으로 확인하세요.">
@@ -270,7 +270,7 @@
   <aside class="quick-contact-sidebar" aria-label="빠른 문의">
     <div class="contact-box">
       <h3>문의 전화</h3>
-      <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
+      <p class="phone-number"><a href="tel:031-8003-2456" class="phone-link" aria-label="031-8003-2456로 전화 걸기"><i class="fas fa-phone-alt"></i> 031) 8003-2456</a></p>
     </div>
     <div class="contact-box" style="padding: 0;">
       <a href="https://pf.kakao.com/_ExlqgC" target="_blank" rel="noopener noreferrer" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
@@ -284,7 +284,12 @@
   <script src="supabase-config.js" defer></script>
   <script>
   async function loadFacilityImages() {
-    if (!window.supabaseClient) return;
+    const sliderBox = document.getElementById('facilities-slider');
+    if (!window.supabaseClient) {
+      sliderBox.innerHTML = '<div class="slider-empty"><i class="fas fa-images"></i><p>시설 사진을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p></div>';
+      sliderBox.classList.add('loaded');
+      return;
+    }
     const { data: facilities, error } = await window.supabaseClient
       .from('facilities')
       .select('*')
@@ -296,7 +301,7 @@
       slider.innerHTML = `
         <div class="slider-empty">
           <i class="fas fa-images"></i>
-          <p>등록된 시설 사진이 없습니다.</p>
+          <p>${error ? '시설 사진을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.' : '등록된 시설 사진이 없습니다.'}</p>
         </div>`;
       slider.classList.add('loaded');
       return;
@@ -353,6 +358,7 @@
 
     // 키보드 네비게이션
     document.addEventListener('keydown', (e) => {
+      if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
       if (e.key === 'ArrowLeft') show(current - 1);
       if (e.key === 'ArrowRight') show(current + 1);
     });

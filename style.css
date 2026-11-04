@@ -162,13 +162,9 @@ header {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(26, 54, 93, 0.15);
   }
-  /* 서브메뉴가 있는 최상위 메뉴는 클릭 불가 — 커서·클릭 피드백 제거 */
+  /* 최상위 메뉴도 클릭하면 첫 하위 페이지로 이동 */
   .menu-link[aria-haspopup] {
-    cursor: default;
-  }
-  .menu-link[aria-haspopup]:hover {
-    transform: none;
-    box-shadow: none;
+    cursor: pointer;
   }
 }
 
@@ -250,7 +246,7 @@ main {
 .hero-v2 {
   padding: 5rem 1rem;
   min-height: 400px;
-  background: url('shindongtan/resource/nurse.png') no-repeat center center/cover;
+  background-color: #1a365d;
   text-align: center;
   position: relative;
   border-radius: 16px;
@@ -258,6 +254,19 @@ main {
   overflow: hidden;
   display: flex;
   align-items: center;
+}
+
+/* 메인 사진: 화면 크기에 맞는 해상도를 브라우저가 고르고(srcset), 얼굴이 잘리지 않도록 위쪽 기준으로 맞춤 */
+.hero-v2-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 28%;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
 }
 
 .hero-v2::before {
@@ -312,6 +321,7 @@ main {
 .feature-stat {
   padding: 0 2rem;
   text-align: center;
+  word-break: keep-all; /* 한글 단어 중간에서 줄바꿈되지 않도록 */
 }
 .feature-stat .stat-label {
   font-size: 1rem;
@@ -935,7 +945,8 @@ main {
   .hero-v2-title { font-size: 1rem; }
   .hero-v2-subtitle { font-size: 0.75rem; margin: 0 auto 1.2rem; }
   .feature-stats { padding: 0.65rem 0.8rem; }
-  .feature-stat { padding: 0 0.75rem; }
+  .feature-stat { padding: 0 0.5rem; flex: 1 1 0; min-width: 0; }
+  .feature-stats { display: flex; width: 100%; box-sizing: border-box; border-radius: 24px; }
   .feature-stat .stat-label { font-size: 0.78rem; }
   .feature-stat .stat-desc { font-size: 0.68rem; }
   .feature-divider { height: 20px; }
@@ -1350,6 +1361,42 @@ main {
     border-radius: 9px;
     min-height: 0;
   }
+}
+
+/* 태블릿 가로 (769px ~ 991px): 메뉴를 한 줄로 배치 */
+@media (min-width: 769px) and (max-width: 991.98px) {
+  .logo-image {
+    height: 72px;
+  }
+  .main-menu > ul {
+    display: flex;
+    flex-direction: row;
+    gap: 0.25rem;
+    align-items: center;
+    justify-content: flex-end;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .menu-link {
+    font-size: 1rem;
+    padding: 0.7rem 0.75rem;
+    white-space: nowrap;
+  }
+  .submenu a {
+    font-size: 0.95rem;
+  }
+  .menu-item:last-child .submenu-container {
+    left: auto;
+    right: 0;
+  }
+}
+
+/* 작은 데스크톱·태블릿 가로 (992px ~ 1199px): 메뉴 간격을 줄여 가로 넘침 방지 */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .main-menu > ul { gap: 0.5rem !important; }
+  .main-menu .menu-link { font-size: 1.1rem; padding: 0.8rem 0.9rem; white-space: nowrap; }
+  .menu-item:last-child .submenu-container { left: auto; right: 0; }
 }
 
 @media (min-width: 992px) {
@@ -1925,4 +1972,15 @@ body[data-page^='community_'] .section-title {
 .news-error i {
   color: #f59e0b;
   font-size: 1rem;
+}
+
+/* 넓은 PC 화면: 배너 높이를 화면 너비에 비례시켜 사진 속 얼굴이 잘리지 않도록 */
+@media (min-width: 1200px) {
+  .hero-v2 { min-height: clamp(400px, 28vw, 600px); }
+  .hero-v2-bg { object-position: 50% 20%; }
+}
+
+/* PC·태블릿 가로에서는 모바일 메뉴 버튼 숨김 (예전에는 헤더 오른쪽에 작은 점으로 보였음) */
+@media (min-width: 769px) {
+  .mobile-menu-toggle { display: none !important; }
 }

@@ -14,6 +14,22 @@ if ('serviceWorker' in navigator) {
  * Quill 에디터 HTML을 안전하게 살균(sanitize)합니다.
  * <script>, 이벤트 핸들러, javascript: URL 등 XSS 위험 요소를 제거합니다.
  */
+function escapeHtml(value) {
+  if (value === null || value === undefined) return '';
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function htmlToText(html) {
+  if (!html) return '';
+  const doc = new DOMParser().parseFromString(String(html).replace(/<(br|\/p|\/div|\/li)[^>]*>/gi, ' $&'), 'text/html');
+  return (doc.body.textContent || '').replace(/\s+/g, ' ').trim();
+}
+
 function sanitizeRichText(html) {
   if (!html) return '';
   const tmp = document.createElement('div');
@@ -245,13 +261,14 @@ function getCurrentPage() {
  */
 function formatKoreaDate(utcDateStr) {
   if (!utcDateStr) return '';
-  const utcDate = new Date(utcDateStr);
-  // UTC -> KST 변환 (UTC+9)
-  const kstDate = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
-  const yyyy = kstDate.getFullYear();
-  const mm = String(kstDate.getMonth() + 1).padStart(2, '0');
-  const dd = String(kstDate.getDate()).padStart(2, '0');
-  return `${yyyy}-${mm}-${dd}`;
+  const date = new Date(utcDateStr);
+  if (isNaN(date.getTime())) return '';
+  // 방문자 브라우저의 시간대와 무관하게 한국 시간 기준 날짜로 표시
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit'
+  }).formatToParts(date);
+  const get = type => (parts.find(p => p.type === type) || {}).value;
+  return `${get('year')}-${get('month')}-${get('day')}`;
 }
 
 /**
@@ -333,7 +350,7 @@ function getDefaultHeader() {
     <div class="header-top">
       <div class="container">
         <div class="header-top-left">
-          <span><i class="fas fa-phone"></i> 031-8003-1004</span>
+          <span><i class="fas fa-phone"></i> 031-8003-2456</span>
           <span><i class="fas fa-envelope"></i> nurse8003@naver.com</span>
         </div>
         <div class="header-top-right">
@@ -420,7 +437,7 @@ function getDefaultFooter() {
         <div class="footer-section">
           <h4>신동탄간호학원</h4>
           <p>경기도 화성시 메타폴리스로 38 (반송동)<br>천년프라자 401호</p>
-          <p>전화: 031-8003-1004<br>이메일: nurse8003@naver.com</p>
+          <p>전화: 031-8003-2456<br>이메일: nurse8003@naver.com</p>
         </div>
         <div class="footer-section">
           <h4>교육과정</h4>
@@ -618,8 +635,9 @@ function setupMobileMenu() {
     const submenu = menuItem.querySelector('.submenu-container');
     if (submenu) {
       menuLink.addEventListener('click', (event) => {
-        event.preventDefault(); // 최상위 메뉴는 클릭으로 이동하지 않음
+        // 모바일: 서브메뉴 펼치기/접기, PC: 링크된 첫 페이지로 이동
         if (window.innerWidth <= 768) {
+          event.preventDefault();
           menuItem.classList.toggle('submenu-open');
         }
       });
@@ -756,6 +774,9 @@ function initTabs() {
 function initAccordion() {
   document.querySelectorAll('.accordion-container').forEach(container => {
     container.querySelectorAll('.accordion-item').forEach(item => {
+      // 이미 다른 스크립트가 동작을 연결한 항목은 건너뜀 (중복 연결 시 클릭해도 열리지 않음)
+      if (item.dataset.accordionBound) return;
+      item.dataset.accordionBound = 'common';
       const header = item.querySelector('.accordion-header');
       header?.addEventListener('click', function() {
         const isActive = item.classList.contains('active');
@@ -958,9 +979,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     case 'job_employment.html':
       initEmploymentPage();
       break;
-    case 'academy_facilities.html':
-      initFacilitiesPage();
-      break;
+    // academy_facilities.html: 슬라이더는 페이지 안의 스크립트가 담당합니다.
     case 'community_notice.html':
       initNoticePage();
       break;
@@ -993,8 +1012,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         link.target === '_blank' ||
         e.ctrlKey || e.metaKey || e.shiftKey) return;
 
-    // 서브메뉴가 있는 최상위 메뉴는 PC/모바일 모두 페이지 이동 없으므로 로더 표시 안 함
-    if (link.classList.contains('menu-link') &&
+    // 모바일에서 서브메뉴가 있는 최상위 메뉴는 펼치기만 하므로 로더 표시 안 함
+    if (window.innerWidth <= 768 &&
+        link.classList.contains('menu-link') &&
         link.closest('.menu-item') &&
         link.closest('.menu-item').querySelector('.submenu-container')) return;
 
@@ -1056,7 +1076,17 @@ function initMobileFloatingContact() {
 
   // 플로팅 바 높이만큼 footer에 여백 추가
   const footer = document.querySelector('footer.footer');
-  if (footer) footer.style.paddingBottom = 'env(safe-area-inset-bottom, 0px)';
+  if (footer) {
+    const applyFooterPadding = () => {
+      if (window.innerWidth <= 768) {
+        footer.style.paddingBottom = `calc(${bar.offsetHeight || 56}px + 2rem + env(safe-area-inset-bottom, 0px))`;
+      } else {
+        footer.style.paddingBottom = '';
+      }
+    };
+    applyFooterPadding();
+    window.addEventListener('resize', applyFooterPadding);
+  }
 }
 
 /**
@@ -1089,10 +1119,10 @@ async function initInstructorsPage() {
       grid.innerHTML = instructors.map(instructor => `
         <div class="instructor-card" data-id="${instructor.id}">
           <div class="img-container">
-            <img src="${instructor.image}" alt="${instructor.name} ${instructor.title}">
+            <img src="${escapeHtml(instructor.image)}" alt="${escapeHtml(instructor.name)} ${escapeHtml(instructor.title)}">
           </div>
-          <div class="name">${instructor.name}</div>
-          <div class="title">${instructor.title}</div>
+          <div class="name">${escapeHtml(instructor.name)}</div>
+          <div class="title">${escapeHtml(instructor.title)}</div>
           <button class="details-btn">자세히 보기</button>
         </div>
       `).join('');
@@ -1116,13 +1146,13 @@ async function initInstructorsPage() {
             </div>
             <div class="detail-content">
               <div class="detail-img-container">
-                <img src="${instructor.image}" alt="${instructor.name} ${instructor.title}">
+                <img src="${escapeHtml(instructor.image)}" alt="${escapeHtml(instructor.name)} ${escapeHtml(instructor.title)}">
               </div>
               <div class="detail-info">
-                <div class="name">${instructor.name}</div>
-                <div class="title">${instructor.title}</div>
+                <div class="name">${escapeHtml(instructor.name)}</div>
+                <div class="title">${escapeHtml(instructor.title)}</div>
                 <ul class="details-list">
-                  ${instructor.details.map(detail => `<li>${detail}</li>`).join('')}
+                  ${(Array.isArray(instructor.details) ? instructor.details : (instructor.details ? [instructor.details] : [])).map(detail => `<li>${escapeHtml(detail)}</li>`).join('')}
                 </ul>
               </div>
             </div>
@@ -1278,17 +1308,17 @@ async function initGalleryPage() {
         const images = parseGalleryImages(item.image);
         const thumbnail = images[0] || '';
         // description에서 HTML 태그 제거하여 텍스트만 추출
-        const descriptionText = (item.description || '').replace(/<[^>]*>/g, '');
+        const descriptionText = escapeHtml(htmlToText(item.description));
         // 상세페이지 URL
         const detailUrl = `community_gallery_detail.html?id=${item.id}`;
         return `
           <div class="board-row">
             <!-- 썸네일도 상세화면 링크로 이동 -->
-            <a href="${detailUrl}" onclick="incrementViewCount('gallery', ${item.id})">
-              <img class="thumbnail" src="${thumbnail}" alt="${item.title || '갤러리 이미지'}" loading="lazy">
+            <a href="${detailUrl}">
+              <img class="thumbnail" src="${escapeHtml(thumbnail)}" alt="${escapeHtml(item.title || '갤러리 이미지')}" loading="lazy">
             </a>
             <div class="title-section">
-              <a href="${detailUrl}" class="title" onclick="incrementViewCount('gallery', ${item.id})">${item.title || ''}</a>
+              <a href="${detailUrl}" class="title">${escapeHtml(item.title || '')}</a>
               <div class="description">${descriptionText}</div>
               <div class="meta-info">
                 <span class="date">${formatKoreaDate(item.created_at)}</span>
@@ -1342,18 +1372,19 @@ async function initGalleryDetailPage() {
     const currentItem = allItems.find(item => item.id === postId);
     if (!currentItem) throw new Error('게시글을 찾을 수 없습니다.');
 
-    // 조회수 증가
-    await incrementViewCount('gallery', postId);
+    // 조회수 증가 (화면 표시를 기다리게 하지 않음)
+    incrementViewCount('gallery', postId);
 
     // 최신순 정렬로 이전/다음글 계산
     const sortedItems = allItems.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
     const currentIndex = sortedItems.findIndex(item => item.id === postId);
-    const prevPost = currentIndex > 0 ? sortedItems[currentIndex - 1] : null;
-    const nextPost = currentIndex < sortedItems.length - 1 ? sortedItems[currentIndex + 1] : null;
+    // 최신순 목록 기준: 이전글 = 더 오래된 글, 다음글 = 더 최근 글
+    const prevPost = currentIndex < sortedItems.length - 1 ? sortedItems[currentIndex + 1] : null;
+    const nextPost = currentIndex > 0 ? sortedItems[currentIndex - 1] : null;
 
     // 여러 이미지 모두 렌더링
     const images = parseGalleryImages(currentItem.image);
-    const imagesHtml = images.map((img, idx) => `<img src="${img}" alt="${currentItem.title}" style="max-width:100%;margin-bottom:1rem;"${idx > 0 ? ' loading="lazy"' : ''}>`).join('');
+    const imagesHtml = images.map((img, idx) => `<img src="${escapeHtml(img)}" alt="${escapeHtml(currentItem.title)}" style="max-width:100%;margin-bottom:1rem;"${idx > 0 ? ' loading="lazy"' : ''}>`).join('');
     const imageGroupEl = document.getElementById('gallery-detail-image-group');
     if (imageGroupEl) {
       imageGroupEl.innerHTML = imagesHtml;
@@ -1380,7 +1411,6 @@ async function initGalleryDetailPage() {
     if (prevButton) {
       if (prevPost) {
         prevButton.href = `community_gallery_detail.html?id=${prevPost.id}`;
-        prevButton.onclick = () => incrementViewCount('gallery', prevPost.id);
       } else {
         prevButton.classList.add('disabled');
         prevButton.href = '#';
@@ -1391,7 +1421,6 @@ async function initGalleryDetailPage() {
     if (nextButton) {
       if (nextPost) {
         nextButton.href = `community_gallery_detail.html?id=${nextPost.id}`;
-        nextButton.onclick = () => incrementViewCount('gallery', nextPost.id);
       } else {
         nextButton.classList.add('disabled');
         nextButton.href = '#';
@@ -1547,10 +1576,10 @@ async function initJobsPage() {
       row.innerHTML = `
         <div class="number">${isNotice ? '중요' : itemNumber}</div>
         <div class="title">
-          <a href="community_jobs_detail.html?id=${item.id}" onclick="incrementViewCount('jobs', ${item.id})">${item.title}</a>
+          <a href="community_jobs_detail.html?id=${item.id}">${escapeHtml(item.title)}</a>
           ${isMobile ? `<span class="mobile-date">${formatKoreaDate(item.date || item.created_at)}</span>` : ''}
         </div>
-        <div class="author">${item.author || '관리자'}</div>
+        <div class="author">${escapeHtml(item.author || '관리자')}</div>
         <div class="date">${formatKoreaDate(item.date || item.created_at)}</div>
         <div class="views">${item.views || 0}</div>
       `;
@@ -1648,22 +1677,23 @@ async function initJobsDetailPage() {
     const post = allItems.find(item => item.id === postId);
     if (!post) throw new Error('게시글을 찾을 수 없습니다.');
 
-    // 조회수 증가
-    await incrementViewCount('jobs', postId);
+    // 조회수 증가 (화면 표시를 기다리게 하지 않음)
+    incrementViewCount('jobs', postId);
 
     // 최신순 정렬로 이전/다음글 계산
     const sortedItems = allItems.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
     const currentIndex = sortedItems.findIndex(item => item.id === postId);
-    const prevPost = currentIndex > 0 ? sortedItems[currentIndex - 1] : null;
-    const nextPost = currentIndex < sortedItems.length - 1 ? sortedItems[currentIndex + 1] : null;
+    // 최신순 목록 기준: 이전글 = 더 오래된 글, 다음글 = 더 최근 글
+    const prevPost = currentIndex < sortedItems.length - 1 ? sortedItems[currentIndex + 1] : null;
+    const nextPost = currentIndex > 0 ? sortedItems[currentIndex - 1] : null;
 
     const isNotice = post.isnotice || post.isNotice;
     viewContainer.innerHTML = `
       <div class="post-view">
         <div class="post-header">
-          <h2>${isNotice ? '<span class="notice-badge-inline">중요</span> ' : ''}${post.title}</h2>
+          <h2>${isNotice ? '<span class="notice-badge-inline">중요</span> ' : ''}${escapeHtml(post.title)}</h2>
           <div class="post-meta">
-            <span><i class="fas fa-user"></i> ${post.author || ''}</span>
+            <span><i class="fas fa-user"></i> ${escapeHtml(post.author || '')}</span>
             <span><i class="fas fa-calendar-alt"></i> ${formatKoreaDate(post.date || post.created_at)}</span>
             <span><i class="fas fa-eye"></i> ${post.views || 0}</span>
           </div>
@@ -1676,11 +1706,11 @@ async function initJobsDetailPage() {
         <ul class="post-nav">
           <li>
               <div class="nav-label">이전글</div>
-              ${prevPost ? `<a href="community_jobs_detail.html?id=${prevPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${prevPost.id})">${prevPost.title}</a>` : '<span class="no-post">이전글이 없습니다.</span>'}
+              ${prevPost ? `<a href="community_jobs_detail.html?id=${prevPost.id}" class="nav-title">${escapeHtml(prevPost.title)}</a>` : '<span class="no-post">이전글이 없습니다.</span>'}
           </li>
           <li>
               <div class="nav-label">다음글</div>
-              ${nextPost ? `<a href="community_jobs_detail.html?id=${nextPost.id}" class="nav-title" onclick="incrementViewCount('jobs', ${nextPost.id})">${nextPost.title}</a>` : '<span class="no-post">다음글이 없습니다.</span>'}
+              ${nextPost ? `<a href="community_jobs_detail.html?id=${nextPost.id}" class="nav-title">${escapeHtml(nextPost.title)}</a>` : '<span class="no-post">다음글이 없습니다.</span>'}
           </li>
         </ul>
         <div class="post-footer">
@@ -1803,75 +1833,6 @@ async function initEmploymentPage() {
 }
 
 /**
- * 시설 둘러보기 페이지 초기화 (Supabase 연동)
- */
-async function initFacilitiesPage() {
-    const sliderWrapper = document.getElementById('facilities-slider');
-    if (!sliderWrapper) return;
-
-    const mainImage = document.getElementById('slider-main-image');
-    const thumbnailsContainer = document.getElementById('slider-thumbnails');
-    const prevBtn = document.getElementById('slider-prev-btn');
-    const nextBtn = document.getElementById('slider-next-btn');
-
-    try {
-        // Supabase에서 시설 이미지 불러오기
-        const facilities = await db.facilities.getAll();
-        if (!facilities || facilities.length === 0) {
-            sliderWrapper.innerHTML = '<p>현재 등록된 시설 이미지가 없습니다. 관리자 페이지에서 추가해주세요.</p>';
-            sliderWrapper.classList.add('loaded');
-            return;
-        }
-
-        let currentIndex = 0;
-
-        function showImage(index) {
-            if (index < 0) {
-                index = facilities.length - 1;
-            } else if (index >= facilities.length) {
-                index = 0;
-            }
-            currentIndex = index;
-
-            const facility = facilities[currentIndex];
-            mainImage.src = facility.src || facility.image_url;
-            mainImage.alt = facility.alt || '';
-
-            // Update active thumbnail
-            document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
-                thumb.classList.toggle('active', i === currentIndex);
-            });
-        }
-
-        // Populate thumbnails
-        thumbnailsContainer.innerHTML = '';
-        facilities.forEach((facility, index) => {
-            const thumb = document.createElement('img');
-            thumb.src = facility.src || facility.image_url;
-            thumb.alt = facility.alt || '';
-            thumb.className = 'thumbnail';
-            thumb.addEventListener('click', () => showImage(index));
-            thumbnailsContainer.appendChild(thumb);
-        });
-        
-        // Add event listeners for prev/next buttons
-        prevBtn.addEventListener('click', () => showImage(currentIndex - 1));
-        nextBtn.addEventListener('click', () => showImage(currentIndex + 1));
-        
-        // Show the first image
-        showImage(0);
-
-        // Make slider visible after loading
-        sliderWrapper.classList.add('loaded');
-
-    } catch (error) {
-        console.error('시설 안내 페이지 초기화 오류:', error);
-        sliderWrapper.innerHTML = '<p>시설 이미지를 불러오는 중 오류가 발생했습니다.</p>';
-        sliderWrapper.classList.add('loaded');
-    }
-}
-
-/**
  * 공지사항 페이지 초기화 (Supabase 연동)
  */
 async function initNoticePage() {
@@ -1940,10 +1901,10 @@ async function initNoticePage() {
       row.innerHTML = `
         <div class="number">${isNotice ? '중요' : itemNumber}</div>
         <div class="title">
-          <a href="community_notice_detail.html?id=${item.id}" onclick="incrementViewCount('notices', ${item.id})">${item.title}</a>
+          <a href="community_notice_detail.html?id=${item.id}">${escapeHtml(item.title)}</a>
           ${isMobile ? `<span class="mobile-date">${formatKoreaDate(item.date || item.created_at)}</span>` : ''}
         </div>
-        <div class="author">${item.author || '관리자'}</div>
+        <div class="author">${escapeHtml(item.author || '관리자')}</div>
         <div class="date">${formatKoreaDate(item.date || item.created_at)}</div>
         <div class="views">${item.views || 0}</div>
       `;
@@ -2063,14 +2024,15 @@ async function initNoticeDetailPage() {
     const post = allItems.find(item => item.id === postId);
     if (!post) throw new Error('게시글을 찾을 수 없습니다.');
 
-    // 조회수 증가
-    await incrementViewCount('notices', postId);
+    // 조회수 증가 (화면 표시를 기다리게 하지 않음)
+    incrementViewCount('notices', postId);
 
     // 최신순 정렬로 이전/다음글 계산
     const sortedItems = allItems.sort((a, b) => (b.created_at || b.date || '').localeCompare(a.created_at || a.date || ''));
     const currentIndex = sortedItems.findIndex(item => item.id === postId);
-    const prevPost = currentIndex > 0 ? sortedItems[currentIndex - 1] : null;
-    const nextPost = currentIndex < sortedItems.length - 1 ? sortedItems[currentIndex + 1] : null;
+    // 최신순 목록 기준: 이전글 = 더 오래된 글, 다음글 = 더 최근 글
+    const prevPost = currentIndex < sortedItems.length - 1 ? sortedItems[currentIndex + 1] : null;
+    const nextPost = currentIndex > 0 ? sortedItems[currentIndex - 1] : null;
 
     // 첨부파일 링크에 download 속성 추가
     let processedContent = post.content;
@@ -2089,9 +2051,9 @@ async function initNoticeDetailPage() {
     detailContainer.innerHTML = `
       <div class="post-view">
         <div class="post-header">
-          <h2>${isNotice ? '<span class="notice-badge-inline">중요</span> ' : ''}${post.title}</h2>
+          <h2>${isNotice ? '<span class="notice-badge-inline">중요</span> ' : ''}${escapeHtml(post.title)}</h2>
           <div class="post-meta">
-            <span><i class="fas fa-user"></i> ${post.author || '관리자'}</span>
+            <span><i class="fas fa-user"></i> ${escapeHtml(post.author || '관리자')}</span>
             <span><i class="fas fa-calendar"></i> ${formatKoreaDate(post.date || post.created_at)}</span>
             <span><i class="fas fa-eye"></i> ${post.views || 0}회</span>
           </div>
@@ -2102,11 +2064,11 @@ async function initNoticeDetailPage() {
         <ul class="post-nav">
           <li>
             <span class="nav-label">이전글</span>
-            <span class="nav-title">${prevPost ? `<a href="community_notice_detail.html?id=${prevPost.id}">${prevPost.title}</a>` : '<span class="no-post">이전글이 없습니다.</span>'}</span>
+            <span class="nav-title">${prevPost ? `<a href="community_notice_detail.html?id=${prevPost.id}">${escapeHtml(prevPost.title)}</a>` : '<span class="no-post">이전글이 없습니다.</span>'}</span>
           </li>
           <li>
             <span class="nav-label">다음글</span>
-            <span class="nav-title">${nextPost ? `<a href="community_notice_detail.html?id=${nextPost.id}">${nextPost.title}</a>` : '<span class="no-post">다음글이 없습니다.</span>'}</span>
+            <span class="nav-title">${nextPost ? `<a href="community_notice_detail.html?id=${nextPost.id}">${escapeHtml(nextPost.title)}</a>` : '<span class="no-post">다음글이 없습니다.</span>'}</span>
           </li>
         </ul>
         <div class="post-footer">
@@ -2260,8 +2222,8 @@ function renderLatestNotices(notices) {
   
   const noticesHTML = notices.map(notice => {
     const title = notice.title || '제목 없음';
-    const date = notice.date ? formatKoreaDate(notice.date) : '날짜 없음';
-    const isNotice = notice.isNotice || false;
+    const date = formatKoreaDate(notice.date || notice.created_at) || '';
+    const isNotice = !!(notice.isnotice || notice.isNotice);
     
     return `
       <a href="community_notice_detail.html?id=${notice.id || ''}" class="preview-item">
@@ -2269,7 +2231,7 @@ function renderLatestNotices(notices) {
           <i class="fas fa-bell"></i>
         </div>
         <div class="preview-item-text">
-          <span class="title">${isNotice ? '[공지] ' : ''}${title}</span>
+          <span class="title">${isNotice ? '[공지] ' : ''}${escapeHtml(title)}</span>
           <div class="meta">
             <i class="fas fa-calendar-alt"></i>
             <span>${date}</span>
@@ -2303,7 +2265,7 @@ function renderLatestQA(qaData) {
           <b>Q</b>
         </div>
         <div class="preview-item-text">
-          <span class="title">${question}</span>
+          <span class="title">${escapeHtml(question)}</span>
         </div>
       </a>
     `;
@@ -2367,56 +2329,10 @@ function parseGalleryImages(imageField) {
 // 페이지 로드 시 초기화 함수들
 // =============================================================================
 
-/**
- * 페이지 로드 시 모든 초기화 함수를 실행합니다.
- */
-function initializePage() {
-  // 복사 방지 기능 초기화 (가장 먼저 실행)
-  initCopyProtection();
-  
-  // 기존 초기화 함수들 실행
-  activateCurrentMenu();
-  setupMobileMenu();
-  initScrollEffects();
-  initTabs();
-  initAccordion();
-  initGalleryFilter();
-  
-  // 페이지별 초기화 함수들
-  const currentPage = getCurrentPage();
-  
-  // 페이지별 특화 초기화
-  if (currentPage === 'index.html') {
-    configurePageHero();
-    initLatestNews();
-  } else if (currentPage === 'academy_instructors.html') {
-    initInstructorsPage();
-  } else if (currentPage === 'academy_location.html') {
-    initLocationMap();
-  } else if (currentPage === 'community_gallery.html') {
-    initGalleryPage();
-  } else if (currentPage === 'community_gallery_detail.html') {
-    initGalleryDetailPage();
-  } else if (currentPage === 'community_jobs.html') {
-    initJobsPage();
-  } else if (currentPage === 'community_jobs_detail.html') {
-    initJobsDetailPage();
-  } else if (currentPage === 'job_employment.html') {
-    initEmploymentPage();
-  } else if (currentPage === 'academy_facilities.html') {
-    initFacilitiesPage();
-  } else if (currentPage === 'community_notice.html') {
-    initNoticePage();
-  } else if (currentPage === 'community_notice_detail.html') {
-    initNoticeDetailPage();
-  }
-  
-  console.log('페이지 초기화 완료:', currentPage);
-}
-
-// DOM이 로드되면 초기화 실행
+// 페이지 초기화는 아래 한 곳(DOMContentLoaded 핸들러)에서만 실행합니다.
+// 예전에는 initializePage()가 별도로 있어 모든 페이지 기능이 두 번 실행되었습니다.
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializePage);
+  document.addEventListener('DOMContentLoaded', initCopyProtection);
 } else {
-  initializePage();
+  initCopyProtection();
 }

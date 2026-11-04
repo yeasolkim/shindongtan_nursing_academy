@@ -5,13 +5,13 @@
   <meta name="description" content="신동탄간호학원 자주 묻는 질문 - 수강료, 국비지원, 수업 일정, 자격증 취득 등 궁금한 사항을 확인하세요.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>자주 묻는 질문(Q&A) - 신동탄간호학원</title>
-  <link rel="canonical" href="https://yeasolkim.github.io/shindongtan_nursing_academy/community_qa.html">
+  <link rel="canonical" href="https://www.ok1004.co.kr/community_qa.html">
   <meta property="og:type" content="website">
   <meta property="og:title" content="자주 묻는 질문(Q&A) - 신동탄간호학원">
   <meta property="og:description" content="수강료, 국비지원, 수업 일정, 자격증 취득 등 신동탄간호학원 FAQ를 확인하세요.">
-  <meta property="og:url" content="https://yeasolkim.github.io/shindongtan_nursing_academy/community_qa.html">
+  <meta property="og:url" content="https://www.ok1004.co.kr/community_qa.html">
   <meta property="og:locale" content="ko_KR">
-  <meta property="og:image" content="https://yeasolkim.github.io/shindongtan_nursing_academy/shindongtan/resource/logo.png">
+  <meta property="og:image" content="https://www.ok1004.co.kr/shindongtan/resource/logo.png">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="자주 묻는 질문(Q&A) - 신동탄간호학원">
   <meta name="twitter:description" content="수강료, 국비지원, 수업 일정, 자격증 취득 등 신동탄간호학원 FAQ를 확인하세요.">
@@ -281,7 +281,7 @@
   <aside class="quick-contact-sidebar" aria-label="빠른 문의">
     <div class="contact-box">
       <h3>문의 전화</h3>
-      <p class="phone-number"><i class="fas fa-phone-alt"></i> 031) 8003-2456</p>
+      <p class="phone-number"><a href="tel:031-8003-2456" class="phone-link" aria-label="031-8003-2456로 전화 걸기"><i class="fas fa-phone-alt"></i> 031) 8003-2456</a></p>
     </div>
     <div class="contact-box" style="padding: 0;">
       <a href="https://pf.kakao.com/_ExlqgC" target="_blank" rel="noopener noreferrer" class="kakao-link"><strong>KakaoTalk</strong> <span>플러스 친구</span></a>
@@ -289,37 +289,54 @@
   </aside>
 
   <footer class="footer"></footer>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js" defer></script>
   <script src="supabase-config.js" defer></script>
 
   <script>
+    function escapeQaText(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function showFaqMessage(container, message) {
+      container.innerHTML = `<div style="text-align:center; padding:3rem 1rem; color:#888;"><p>${message}</p></div>`;
+    }
+
     async function loadFAQData() {
+      const container = document.querySelector('.accordion-container');
+      if (!container) return;
+      showFaqMessage(container, '자주 묻는 질문을 불러오는 중입니다...');
       try {
-        if (!window.supabaseClient) return;
+        if (!window.supabaseClient) throw new Error('Supabase 연결 없음');
         const { data, error } = await window.supabaseClient
           .from('qa')
           .select('*')
           .order('order', { ascending: true });
 
-        if (error) return;
+        if (error) throw error;
 
-        const container = document.querySelector('.accordion-container');
-        if (!container) return;
+        container.innerHTML = '';
+        if (!data || data.length === 0) {
+          showFaqMessage(container, '등록된 질문이 없습니다.');
+          return;
+        }
 
         data.forEach((faq, index) => {
           const contentId = `faq-content-${index}`;
           const item = document.createElement('div');
           item.className = 'accordion-item';
+          item.dataset.accordionBound = 'qa';
           item.innerHTML = `
             <button type="button" class="accordion-header" aria-expanded="false" aria-controls="${contentId}">
               <span class="q-icon">Q</span>
-              <h3>${faq.question}</h3>
+              <h3>${escapeQaText(faq.question)}</h3>
               <i class="fas fa-chevron-down toggle-icon" aria-hidden="true"></i>
             </button>
             <div class="accordion-content" id="${contentId}">
               <div class="answer-wrapper">
                 <span class="a-icon">A</span>
-                <div class="answer-content">${faq.answer.replace(/\n/g, '<br>')}</div>
+                <div class="answer-content">${escapeQaText(faq.answer).replace(/\n/g, '<br>')}</div>
               </div>
             </div>
           `;
@@ -329,6 +346,7 @@
         initializeAccordion();
       } catch (e) {
         console.error('FAQ 데이터 로드 중 오류:', e);
+        showFaqMessage(container, '질문 목록을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.');
       }
     }
 

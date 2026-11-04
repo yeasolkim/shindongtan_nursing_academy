@@ -4,4 +4,4 @@ Disallow: /admin.html
 Disallow: /test-supabase.html
 Disallow: /test-copy-protection.html
 
-Sitemap: https://yeasolkim.github.io/shindongtan_nursing_academy/sitemap.xml
+Sitemap: https://www.ok1004.co.kr/sitemap.xml

@@ -769,3 +769,12 @@ p.note.small {
     grid-template-columns: 1fr;
   }
 } 
+/* 사이드바 전화번호: 누르면 바로 전화 연결 (기존 글자 모양 유지) */
+.quick-contact-sidebar .phone-link {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+@media (hover: hover) and (pointer: fine) {
+  .quick-contact-sidebar .phone-link:hover { text-decoration: underline; }
+}

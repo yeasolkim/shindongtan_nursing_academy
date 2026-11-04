@@ -1,6 +1,6 @@
 // 신동탄간호학원 Service Worker
 // 캐시 버전 — CSS/JS/공통 HTML 변경 시 숫자를 올려주세요
-const CACHE_VER = 'sdn-sw-v13';
+const CACHE_VER = 'sdn-sw-v14';
 
 // 설치 시 즉시 캐시할 핵심 파일
 const PRECACHE = [
@@ -56,9 +56,11 @@ self.addEventListener('fetch', event => {
 
   const pathname = url.pathname;
 
-  // ① CSS / JS → Cache-First (캐시에 있으면 즉시, 없으면 네트워크 후 저장)
+  // ① CSS / JS → Stale-While-Revalidate
+  //    (캐시로 즉시 보여주고 백그라운드에서 새 버전을 받아 다음 방문부터 반영.
+  //     예전 Cache-First 방식은 캐시 버전을 올리지 않으면 수정 사항이 영영 반영되지 않았음)
   if (pathname.match(/\.(css|js)$/)) {
-    event.respondWith(cacheFirst(request));
+    event.respondWith(staleWhileRevalidate(request));
     return;
   }
 

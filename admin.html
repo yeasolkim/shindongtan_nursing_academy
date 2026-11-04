@@ -3956,7 +3956,11 @@
       const imgArea = document.getElementById('popup-preview-img-area');
       if (!imgArea) return;
       if (imgUrl) {
-        imgArea.innerHTML = `<img src="${imgUrl}" alt="팝업 미리보기">`;
+        imgArea.innerHTML = '';
+        var previewImg = document.createElement('img');
+        previewImg.src = imgUrl;
+        previewImg.alt = '팝업 미리보기';
+        imgArea.appendChild(previewImg);
       } else {
         imgArea.innerHTML = `<div id="popup-preview-placeholder"><i class="fas fa-image"></i><span>이미지를 업로드하면<br>미리보기가 표시됩니다</span></div>`;
       }
@@ -4102,6 +4106,7 @@
           e.preventDefault();
           popupDropZone.classList.remove('drag-over');
           var file = e.dataTransfer.files[0];
+          if (file && typeof validateImageFile === 'function' && !validateImageFile(file, MAX_POPUP_IMAGE_BYTES)) return;
           if (file && file.type.startsWith('image/')) {
             var dt = new DataTransfer();
             dt.items.add(file);
@@ -4116,6 +4121,10 @@
       if (popupImageInput) {
         popupImageInput.addEventListener('change', function(e) {
           var file = e.target.files[0];
+          if (file && typeof validateImageFile === 'function' && !validateImageFile(file, MAX_POPUP_IMAGE_BYTES)) {
+            e.target.value = '';
+            return;
+          }
           if (file) {
             var reader = new FileReader();
             reader.onload = function(ev) { setPopupImagePreview(ev.target.result); };
@@ -4126,7 +4135,9 @@
       }
       if (popupImageRemoveBtn) {
         popupImageRemoveBtn.addEventListener('click', function() {
+          // 제거 후에는 새 이미지를 올려야 저장 가능 (팝업은 이미지가 필수, 저장 시 admin.js에서 검사)
           if (popupImageInput) { popupImageInput.value = ''; }
+          if (popupCurrentImage) popupCurrentImage.removeAttribute('src');
           setPopupImagePreview('');
           _popupModalDirty = true;
         });
@@ -4496,7 +4507,9 @@
       var icons = { success: '✓', error: '✕', warning: '⚠' };
       var toast = document.createElement('div');
       toast.className = 'toast ' + type;
-      toast.innerHTML = '<span style="font-size:1.1rem;font-weight:700;">' + (icons[type] || '✓') + '</span> ' + msg;
+      toast.innerHTML = '<span style="font-size:1.1rem;font-weight:700;">' + (icons[type] || '✓') + '</span> ';
+      // 메시지는 텍스트로만 넣음 (오류 사유 등에 포함된 특수문자가 HTML로 해석되지 않도록)
+      toast.appendChild(document.createTextNode(String(msg == null ? '' : msg)));
       container.appendChild(toast);
       setTimeout(function() {
         toast.style.transition = 'opacity .3s ease, transform .3s ease';
