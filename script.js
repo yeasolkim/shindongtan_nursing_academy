@@ -463,7 +463,7 @@ function getDefaultFooter() {
             <a href="https://pf.kakao.com/_ExlqgC" target="_blank" rel="noopener noreferrer">
               <i class="fas fa-comment"></i>
             </a>
-            <a href="https://www.instagram.com/ok1004.co.kr/profilecard/?igsh=ZG11bW9oZHoyeTl3" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.instagram.com/ok1004.co.kr/" target="_blank" rel="noopener noreferrer">
               <i class="fab fa-instagram"></i>
             </a>
             <a href="https://cafe.naver.com/shindongtannrs" target="_blank" rel="noopener noreferrer">
