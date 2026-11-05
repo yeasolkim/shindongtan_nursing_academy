@@ -909,32 +909,26 @@ main {
     font-size: 0.8rem;
   }
 
-  body[data-page="community_notice.html"] #page-hero-container {
-    display: none !important;
+  /* 휴대폰: 큰 배경 사진 띠 대신 얇은 제목 줄만 보여줍니다 */
+  #page-hero-container .page-hero {
+    min-height: 0;
+    padding: 0.8rem 0;
+    background: var(--primary);
+    text-align: left;
   }
-
-  body[data-page^="community_"] #page-hero-container {
-    display: none !important;
+  #page-hero-container .hero-background {
+    display: none;
   }
-
-  body[data-page="job_employment.html"] #page-hero-container {
-    display: none !important;
+  #page-hero-container .breadcrumbs {
+    display: none;
   }
-
-  body[data-page="job_info.html"] #page-hero-container {
-    display: none !important;
+  #page-hero-container .page-hero .container {
+    padding: 0 1rem;
   }
-
-  body[data-page^="recruitment_"] #page-hero-container {
-    display: none !important;
-  }
-
-  body[data-page^="academy_"] #page-hero-container {
-    display: none !important;
-  }
-  
-  body[data-page^="education_"] #page-hero-container {
-    display: none !important;
+  #page-hero-container .page-hero .hero-content h1 {
+    font-size: 1.15rem;
+    line-height: 1.4;
+    text-shadow: none;
   }
 }
 

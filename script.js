@@ -562,24 +562,6 @@ async function configurePageHero() {
 
   const currentPage = getCurrentPage();
   const config = PAGE_HERO_CONFIGS[currentPage];
-  const isMobile = window.innerWidth <= 768;
-  const pagesToHideHeroOnMobile = ['academy_introduction.html', 'academy_history.html', 'academy_instructors.html', 'academy_facilities.html', 'academy_location.html'];
-
-  // 모바일이면서 특정 페이지이면 히어로 배경만 숨기고 텍스트는 유지
-  if (isMobile && pagesToHideHeroOnMobile.includes(currentPage)) {
-    pageHeroContainer.style.backgroundImage = 'none';
-    pageHeroContainer.style.backgroundColor = 'transparent';
-    pageHeroContainer.style.minHeight = '';
-    // 텍스트 색상을 어두운 색으로 유지
-    const textEls = pageHeroContainer.querySelectorAll('h1, h2, p, .breadcrumb, .badge-text, [id="page-title"], [id="page-description"], [id="breadcrumb-path"]');
-    textEls.forEach(el => { el.style.color = '#222'; });
-  } else {
-    // 다른 모든 경우에는 스타일 초기화 (리사이즈 대응)
-    pageHeroContainer.style.backgroundImage = '';
-    pageHeroContainer.style.backgroundColor = '';
-    pageHeroContainer.style.display = '';
-  }
-
   if (!config) return;
 
   await loadComponent('#page-hero-container', 'page-hero.html', () => {
@@ -948,6 +930,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   initAccordion();
   initGalleryFilter();
   initMobileFloatingContact();
+  initPageEndContact();
   // initFacilitiesGallery(); // 이 함수는 initFacilitiesPage로 대체되었으므로 삭제합니다.
 
   // 4. 페이지별 고유 스크립트 실행 (필요한 경우)
@@ -991,14 +974,6 @@ document.addEventListener('DOMContentLoaded', async function() {
       break;
   }
 
-  // 5. 화면 크기 변경 시 페이지 히어로 재설정
-  window.addEventListener('resize', () => {
-    const pagesWithCustomHero = ['academy_introduction.html', 'academy_history.html', 'academy_instructors.html', 'academy_facilities.html', 'academy_location.html'];
-    if (pagesWithCustomHero.includes(getCurrentPage()) && document.getElementById('page-hero-container')) {
-      configurePageHero();
-    }
-  });
-
   // 6. 페이지 이동 링크 클릭 시 즉시 로더 표시
   document.addEventListener('click', function(e) {
     const link = e.target.closest('a');
@@ -1032,6 +1007,86 @@ document.addEventListener('DOMContentLoaded', async function() {
 /**
  * 모바일 하단 고정 문의 버튼 (768px 이하에서만 표시)
  */
+/**
+ * 모집요강·국비과정·교육과정 페이지 끝에 상담 버튼을 붙입니다 (PC 화면).
+ * 휴대폰은 화면 아래 고정 상담 바가 이미 있어 표시하지 않습니다.
+ */
+function initPageEndContact() {
+  const page = getCurrentPage();
+  const targets = ['recruitment_recruit-info.html', 'recruitment_funding-info.html'];
+  if (!targets.includes(page) && !page.startsWith('education_course-')) return;
+  if (document.getElementById('page-end-contact')) return;
+
+  const main = document.getElementById('main-content') || document.querySelector('main');
+  if (!main) return;
+  const sections = main.querySelectorAll(':scope > section');
+  const lastSection = sections[sections.length - 1];
+  const host = (lastSection && lastSection.querySelector(':scope > .container')) || main;
+
+  const style = document.createElement('style');
+  style.textContent = `
+    #page-end-contact {
+      margin: 3rem auto 3.5rem;
+      max-width: 720px;
+      padding: 1.75rem 1.5rem;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-top: 4px solid var(--primary, #1a365d);
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(26, 54, 93, 0.06);
+    }
+    #page-end-contact h2 {
+      margin: 0 0 1.1rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary, #1a365d);
+    }
+    #page-end-contact .pec-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    #page-end-contact a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 210px;
+      justify-content: center;
+      padding: 0.85rem 1.4rem;
+      border-radius: 8px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    #page-end-contact a:hover,
+    #page-end-contact a:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+    #page-end-contact .pec-call { background: var(--primary, #1a365d); color: #fff; }
+    #page-end-contact .pec-kakao { background: #f9e000; color: #3c1e1e; }
+    @media (max-width: 768px) {
+      #page-end-contact { display: none; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  const box = document.createElement('aside');
+  box.id = 'page-end-contact';
+  box.setAttribute('aria-labelledby', 'page-end-contact-title');
+  box.innerHTML = `
+    <h2 id="page-end-contact-title">수강 상담</h2>
+    <div class="pec-buttons">
+      <a href="tel:031-8003-2456" class="pec-call"><i class="fas fa-phone" aria-hidden="true"></i> 전화 상담 031-8003-2456</a>
+      <a href="https://pf.kakao.com/_ExlqgC" target="_blank" rel="noopener noreferrer" class="pec-kakao"><i class="fas fa-comment" aria-hidden="true"></i> 카카오톡 상담</a>
+    </div>
+  `;
+  host.appendChild(box);
+}
+
 function initMobileFloatingContact() {
   if (document.getElementById('mobile-float-contact')) return;
 
@@ -1480,15 +1535,41 @@ function incrementJobView(postId) {
 }
 
 /**
+ * 게시판 목록을 불러오는 동안 표 안에 안내 문구를 보여줍니다.
+ * 목록을 그리면 renderList가 내용을 비우므로 자동으로 사라집니다.
+ */
+function showBoardLoading(listContainer) {
+  const el = document.createElement('div');
+  el.className = 'board-loading';
+  el.setAttribute('role', 'status');
+  el.style.cssText = 'text-align:center; padding:3rem 1rem; color:#666; font-size:0.95rem;';
+  el.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:0.5rem;"></i>게시글을 불러오는 중입니다...';
+  listContainer.appendChild(el);
+}
+
+/**
+ * 목록은 본문 없이 받아오므로, 내용 검색을 처음 할 때만 본문을 한 번 받아 붙입니다.
+ */
+async function ensureBoardBodies(items, table, field) {
+  if (items.__bodiesLoaded) return;
+  const { data, error } = await window.supabaseClient.from(table).select('id,' + field);
+  if (error) throw error;
+  const byId = new Map(data.map(r => [r.id, r[field]]));
+  items.forEach(item => { item[field] = byId.get(item.id) || ''; });
+  items.__bodiesLoaded = true;
+}
+
+/**
  * 취업/구인정보 페이지 초기화 (Supabase 연동)
  */
 async function initJobsPage() {
   const listContainer = document.getElementById('jobs-list');
   if (!listContainer) return;
+  showBoardLoading(listContainer);
 
   try {
-    // Supabase에서 jobs 데이터 불러오기
-    const allItems = await db.jobs.getAll();
+    // 목록용 데이터만 가볍게 불러오기 (본문은 내용 검색 때만)
+    const allItems = await db.jobs.getList();
     let currentPage = 1;
     let itemsPerPage = 10;
     let sortOrder = 'created_at_desc';
@@ -1521,9 +1602,13 @@ async function initJobsPage() {
       return sorted;
     }
 
-    function performSearchAndRender() {
+    async function performSearchAndRender() {
       const searchTerm = searchInput.value.toLowerCase().trim();
       const searchType = searchTypeSelect.value;
+      if (searchTerm && searchType !== 'title') {
+        try { await ensureBoardBodies(allItems, 'jobs', 'description'); }
+        catch (e) { console.error('본문 검색용 데이터 로드 오류:', e); }
+      }
       filteredItems = allItems.filter(item => {
         if (!searchTerm) return true;
         const title = (item.title || '').toLowerCase();
@@ -1682,10 +1767,11 @@ async function initJobsDetailPage() {
     const postId = parseInt(urlParams.get('id'));
     if (!postId) throw new Error('잘못된 접근입니다.');
 
-    // Supabase에서 전체 jobs 데이터 가져오기
-    const allItems = await db.jobs.getAll();
-    // 현재 게시물 찾기
-    const post = allItems.find(item => item.id === postId);
+    // 현재 글 본문과 이전/다음글용 가벼운 목록을 함께 불러오기
+    const [post, allItems] = await Promise.all([
+      db.jobs.getById(postId).catch(() => null),
+      db.jobs.getList()
+    ]);
     if (!post) throw new Error('게시글을 찾을 수 없습니다.');
 
     // 조회수 증가 (화면 표시를 기다리게 하지 않음)
@@ -1849,14 +1935,11 @@ async function initEmploymentPage() {
 async function initNoticePage() {
   const listContainer = document.getElementById('notice-list');
   if (!listContainer) return;
+  showBoardLoading(listContainer);
 
   try {
-    // Supabase에서 공지사항 데이터 가져오기
-    const { data: allItems, error } = await window.supabaseClient
-      .from('notices')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (error) throw error;
+    // 목록용 데이터만 가볍게 불러오기 (본문은 내용 검색 때만)
+    const allItems = await db.notices.getList();
 
     let currentPage = 1;
     let itemsPerPage = 10;
@@ -1974,9 +2057,13 @@ async function initNoticePage() {
       }
     }
 
-    function performSearch() {
+    async function performSearch() {
       const searchTerm = searchInput.value.toLowerCase().trim();
       const searchType = searchTypeSelect.value;
+      if (searchTerm && searchType !== 'title') {
+        try { await ensureBoardBodies(allItems, 'notices', 'content'); }
+        catch (e) { console.error('본문 검색용 데이터 로드 오류:', e); }
+      }
       const filteredItems = allItems.filter(item => {
         if (!searchTerm) return true;
         const title = (item.title || '').toLowerCase();
@@ -2029,10 +2116,11 @@ async function initNoticeDetailPage() {
     const postId = parseInt(urlParams.get('id'));
     if (!postId) throw new Error('잘못된 접근입니다.');
 
-    // Supabase에서 전체 notices 데이터 가져오기
-    const allItems = await db.notices.getAll();
-    // 현재 게시물 찾기
-    const post = allItems.find(item => item.id === postId);
+    // 현재 글 본문과 이전/다음글용 가벼운 목록을 함께 불러오기
+    const [post, allItems] = await Promise.all([
+      db.notices.getById(postId).catch(() => null),
+      db.notices.getList()
+    ]);
     if (!post) throw new Error('게시글을 찾을 수 없습니다.');
 
     // 조회수 증가 (화면 표시를 기다리게 하지 않음)

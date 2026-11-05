@@ -22,11 +22,22 @@ const db = {
       return data;
     },
 
-    // 최신 공지사항 N개 가져오기
+    // 목록용: 본문 없이 가볍게 가져오기 (본문에 사진이 들어 있어 전체 조회가 수백 KB)
+    async getList() {
+      const { data, error } = await supabaseClient
+        .from('notices')
+        .select('id,title,date,views,created_at,isnotice')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+
+    // 최신 공지사항 N개 가져오기 (홈 화면용, 본문 제외)
     async getLatest(limit = 5) {
       const { data, error } = await supabaseClient
         .from('notices')
-        .select('*')
+        .select('id,title,date,views,created_at,isnotice')
         .order('created_at', { ascending: false })
         .limit(limit);
       
@@ -118,6 +129,29 @@ const db = {
         .select('*')
         .order('created_at', { ascending: false });
       
+      if (error) throw error;
+      return data;
+    },
+
+    // 목록용: 본문 없이 가볍게 가져오기 (본문에 사진이 들어 있어 전체 조회가 1MB 이상)
+    async getList() {
+      const { data, error } = await supabaseClient
+        .from('jobs')
+        .select('id,title,views,created_at,isnotice')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+
+    // 특정 구인 정보 가져오기
+    async getById(id) {
+      const { data, error } = await supabaseClient
+        .from('jobs')
+        .select('*')
+        .eq('id', id)
+        .single();
+
       if (error) throw error;
       return data;
     },
