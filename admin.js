@@ -2522,6 +2522,43 @@ document.addEventListener('DOMContentLoaded', () => {
         const dateEl = document.getElementById('modal-job-close-date');
         if (dateEl) dateEl.value = (item && item.close_date) || '';
     }
+    // 목록에서 바로 진행중 ↔ 완료 전환하는 버튼
+    function jobStatusToggleHtml(item) {
+        const st = getJobStatusAdmin(item);
+        return `<div class="job-status-toggle" role="group" aria-label="구인 상태 바꾸기">
+            <button type="button" data-status="open" class="open${st === 'open' ? ' active' : ''}" aria-pressed="${st === 'open'}">진행중</button>
+            <button type="button" data-status="closed" class="closed${st === 'closed' ? ' active' : ''}" aria-pressed="${st === 'closed'}">완료</button>
+        </div>`;
+    }
+    async function changeJobStatusFromList(item, target, cardEl) {
+        if (getJobStatusAdmin(item) === target) return;
+        const patch = { status: target };
+        if (target === 'open' && item.close_date && item.close_date < todayKoreaDateAdmin()) {
+            if (!confirm('구인 마감일(' + item.close_date + ')이 이미 지났습니다.\n마감일을 지우고 진행중으로 바꿀까요?')) return;
+            patch.close_date = null;
+        }
+        const buttons = cardEl.querySelectorAll('.job-status-toggle button');
+        buttons.forEach(b => { b.disabled = true; });
+        try {
+            const { error } = await window.supabaseClient.from('jobs').update(patch).eq('id', item.id);
+            if (error) throw error;
+            Object.assign(item, patch);
+            const st = getJobStatusAdmin(item);
+            buttons.forEach(b => {
+                const on = b.dataset.status === st;
+                b.classList.toggle('active', on);
+                b.setAttribute('aria-pressed', String(on));
+            });
+            const dateMeta = cardEl.querySelector('.job-close-date-meta');
+            if (dateMeta && !item.close_date) dateMeta.remove();
+            showToast('"' + (item.title || '') + '" 글을 ' + (st === 'open' ? '진행중' : '완료') + '으로 바꿨습니다.', 'success');
+        } catch (error) {
+            console.error('구인 상태 변경 실패:', error);
+            showToast(failMsg('상태를 바꾸지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.', error), 'error');
+        } finally {
+            buttons.forEach(b => { b.disabled = false; });
+        }
+    }
     function readJobStatusFields() {
         const closedEl = document.getElementById('modal-job-status-closed');
         const dateEl = document.getElementById('modal-job-close-date');
@@ -2570,11 +2607,11 @@ document.addEventListener('DOMContentLoaded', () => {
             div.className = 'post-card-item';
             div.innerHTML = `
                 <div class="post-card-main">
-                    ${item.isnotice ? '<span class="post-notice-badge">📢 중요</span>' : (getJobStatusAdmin(item) === 'closed' ? '<span class="post-job-status-badge closed">완료</span>' : '<span class="post-job-status-badge open">진행중</span>')}
+                    ${item.isnotice ? '<span class="post-notice-badge">📢 중요</span>' : jobStatusToggleHtml(item)}
                     <div class="post-card-title">${escapeHtml(item.title)}</div>
                     <div class="post-card-meta">
                         <span><i class="fas fa-calendar-alt"></i> ${formatKoreaDate(item.created_at)}</span>
-                        ${!item.isnotice && item.close_date ? `<span><i class="fas fa-hourglass-half"></i> 마감 ${escapeHtml(item.close_date)}</span>` : ''}
+                        ${!item.isnotice && item.close_date ? `<span class="job-close-date-meta"><i class="fas fa-hourglass-half"></i> 마감 ${escapeHtml(item.close_date)}</span>` : ''}
                         <span><i class="fas fa-eye"></i> ${item.views || 0}</span>
                     </div>
                 </div>
@@ -2585,6 +2622,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <button class="button-danger btn-delete">삭제</button>
                 </div>`;
             div.querySelector('.button-secondary').addEventListener('click', () => showEditJobModal(item));
+            div.querySelectorAll('.job-status-toggle button').forEach(btn => {
+                btn.addEventListener('click', () => changeJobStatusFromList(item, btn.dataset.status, div));
+            });
             div.querySelector('.button-danger').addEventListener('click', () => deleteJobItem(item));
             listEl.appendChild(div);
         });
