@@ -1494,6 +1494,7 @@ async function initGalleryDetailPage() {
         attachThumbFallback(el, el.dataset.original);
         if (el.complete && el.naturalWidth === 0 && el.src !== el.dataset.original) el.src = el.dataset.original;
       });
+      initGalleryLightbox(imageGroupEl);
     } else {
       // fallback: 기존 단일 이미지 영역이 있다면 대체
       const imageEl = document.getElementById('gallery-detail-image');
@@ -2686,6 +2687,116 @@ function galleryMediumUrl(url) {
     return 'shindongtan/resource/gallery-medium/' + encodeURIComponent(name) + '.jpg';
   }
   return clean;
+}
+
+/**
+ * 갤러리 상세: 사진을 누르면 화면 가득 크게 보기
+ * 여러 장이면 좌우 버튼·방향키·손가락 밀기로 넘기고, ✕·Esc·바깥 클릭으로 닫습니다.
+ */
+function initGalleryLightbox(groupEl) {
+  const imgs = [...groupEl.querySelectorAll('img')];
+  if (!imgs.length) return;
+  let box = document.getElementById('gallery-lightbox');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'gallery-lightbox';
+    box.className = 'gallery-lightbox';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-modal', 'true');
+    box.setAttribute('aria-label', '사진 크게 보기');
+    box.hidden = true;
+    box.innerHTML = `
+      <div class="glb-stage">
+        <img class="glb-img" alt="">
+        <div class="glb-spinner" aria-hidden="true"><i class="fas fa-spinner fa-spin"></i></div>
+      </div>
+      <div class="glb-counter" aria-live="polite"></div>
+      <button type="button" class="glb-btn glb-close" aria-label="닫기"><i class="fas fa-times" aria-hidden="true"></i></button>
+      <button type="button" class="glb-btn glb-prev" aria-label="이전 사진"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+      <button type="button" class="glb-btn glb-next" aria-label="다음 사진"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>`;
+    document.body.appendChild(box);
+  }
+  const bigImg = box.querySelector('.glb-img');
+  const counter = box.querySelector('.glb-counter');
+  const prevBtn = box.querySelector('.glb-prev');
+  const nextBtn = box.querySelector('.glb-next');
+  const closeBtn = box.querySelector('.glb-close');
+  let index = 0, lastFocus = null;
+
+  const show = i => {
+    index = (i + imgs.length) % imgs.length;
+    const src = imgs[index];
+    box.classList.add('is-loading');
+    bigImg.onload = () => box.classList.remove('is-loading');
+    bigImg.onerror = () => {
+      // 중간 크기 사진이 없으면 원본으로
+      if (src.dataset.original && bigImg.src !== src.dataset.original) bigImg.src = src.dataset.original;
+      else box.classList.remove('is-loading');
+    };
+    bigImg.src = src.currentSrc || src.src;
+    bigImg.alt = src.alt || '';
+    counter.textContent = imgs.length > 1 ? `${index + 1} / ${imgs.length}` : '';
+    const multi = imgs.length > 1;
+    prevBtn.hidden = !multi;
+    nextBtn.hidden = !multi;
+    // 다음 사진 미리 받아 두기
+    if (multi) { const n = imgs[(index + 1) % imgs.length]; const pre = new Image(); pre.src = n.currentSrc || n.src; }
+  };
+  const open = i => {
+    lastFocus = document.activeElement;
+    show(i);
+    box.hidden = false;
+    document.documentElement.classList.add('glb-open');
+    requestAnimationFrame(() => box.classList.add('is-visible'));
+    closeBtn.focus();
+  };
+  const close = () => {
+    box.classList.remove('is-visible');
+    document.documentElement.classList.remove('glb-open');
+    box.hidden = true;
+    bigImg.removeAttribute('src');
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  };
+
+  imgs.forEach((img, i) => {
+    img.classList.add('glb-thumb');
+    img.tabIndex = 0;
+    img.setAttribute('role', 'button');
+    img.setAttribute('aria-label', '사진 크게 보기' + (imgs.length > 1 ? ` (${i + 1}/${imgs.length})` : ''));
+    img.addEventListener('click', () => open(i));
+    img.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(i); } });
+  });
+
+  if (box.dataset.ready) return;
+  box.dataset.ready = '1';
+  prevBtn.addEventListener('click', e => { e.stopPropagation(); show(index - 1); });
+  nextBtn.addEventListener('click', e => { e.stopPropagation(); show(index + 1); });
+  closeBtn.addEventListener('click', close);
+  box.addEventListener('click', e => { if (e.target === box || e.target.classList.contains('glb-stage')) close(); });
+  document.addEventListener('keydown', e => {
+    if (box.hidden) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'ArrowLeft' && imgs.length > 1) show(index - 1);
+    else if (e.key === 'ArrowRight' && imgs.length > 1) show(index + 1);
+    else if (e.key === 'Tab') {
+      // 창 안에서만 포커스 이동
+      const f = [...box.querySelectorAll('button:not([hidden])')];
+      const k = f.indexOf(document.activeElement);
+      e.preventDefault();
+      f[(k + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+    }
+  });
+  // 손가락으로 밀어서 넘기기
+  let sx = 0, sy = 0, tracking = false;
+  box.addEventListener('touchstart', e => { if (e.touches.length !== 1) { tracking = false; return; } tracking = true; sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+  box.addEventListener('touchend', e => {
+    if (!tracking) return;
+    tracking = false;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - sx, dy = t.clientY - sy;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5 && imgs.length > 1) show(index + (dx < 0 ? 1 : -1));
+    else if (dy > 90 && Math.abs(dy) > Math.abs(dx) * 1.5) close();
+  }, { passive: true });
 }
 
 /** 썸네일을 못 불러오면 원본 사진으로 한 번만 대체 */

@@ -2551,7 +2551,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const dateMeta = cardEl.querySelector('.job-close-date-meta');
             if (dateMeta && !item.close_date) dateMeta.remove();
-            showToast('"' + (item.title || '') + '" 글을 ' + (st === 'open' ? '진행중' : '완료') + '으로 바꿨습니다.', 'success');
+            showToast('"' + (item.title || '') + '" 글을 ' + (st === 'open' ? '진행중으로' : '완료로') + ' 바꿨습니다.', 'success');
         } catch (error) {
             console.error('구인 상태 변경 실패:', error);
             showToast(failMsg('상태를 바꾸지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.', error), 'error');
