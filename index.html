@@ -158,10 +158,16 @@
     <section class="community-preview-section animate-on-scroll">
       <div class="container">
         <h2 class="community-preview-title">최신 소식</h2>
-        <p class="community-preview-subtitle">공지사항과 자주 묻는 질문을 확인하세요</p>
-        <div class="preview-grid">
+        <p class="community-preview-subtitle">공지사항, 자주 묻는 질문, 구인정보를 한눈에 확인하세요</p>
+        <!-- 태블릿·휴대폰: 탭으로 한 칸씩 보기 (PC는 세 칸 모두 표시) -->
+        <div class="preview-tabs" role="tablist" aria-label="최신 소식 분류">
+          <button type="button" role="tab" id="preview-tab-notices" aria-controls="preview-panel-notices" aria-selected="true"><i class="fas fa-bullhorn" aria-hidden="true"></i> 공지사항</button>
+          <button type="button" role="tab" id="preview-tab-qa" aria-controls="preview-panel-qa" aria-selected="false" tabindex="-1"><i class="fas fa-question-circle" aria-hidden="true"></i> 자주 묻는 질문</button>
+          <button type="button" role="tab" id="preview-tab-jobs" aria-controls="preview-panel-jobs" aria-selected="false" tabindex="-1"><i class="fas fa-briefcase" aria-hidden="true"></i> 구인정보</button>
+        </div>
+        <div class="preview-grid preview-grid-3">
           <!-- Notices Column -->
-          <div class="preview-card">
+          <div class="preview-card is-active" id="preview-panel-notices" role="tabpanel" aria-labelledby="preview-tab-notices">
             <div class="preview-header">
               <div class="preview-title">
                 <h3><i class="fas fa-bullhorn"></i> 공지사항</h3>
@@ -178,7 +184,7 @@
             </div>
           </div>
           <!-- QA Column -->
-          <div class="preview-card">
+          <div class="preview-card" id="preview-panel-qa" role="tabpanel" aria-labelledby="preview-tab-qa">
             <div class="preview-header">
               <div class="preview-title">
                 <h3><i class="fas fa-question-circle"></i> 자주 묻는 질문</h3>
@@ -192,6 +198,23 @@
             </div>
             <div class="preview-card-footer">
               <a href="community_qa.html" class="preview-more-btn">더보기 <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </div>
+          <!-- Jobs Column -->
+          <div class="preview-card" id="preview-panel-jobs" role="tabpanel" aria-labelledby="preview-tab-jobs">
+            <div class="preview-header">
+              <div class="preview-title">
+                <h3><i class="fas fa-briefcase"></i> 구인정보</h3>
+                <p>협력 병원·기관의 채용 소식</p>
+              </div>
+            </div>
+            <div class="preview-list" id="latest-jobs">
+              <div class="loading-message">
+                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i> 로딩 중...
+              </div>
+            </div>
+            <div class="preview-card-footer">
+              <a href="community_jobs.html" class="preview-more-btn">더보기 <i class="fas fa-arrow-right"></i></a>
             </div>
           </div>
         </div>

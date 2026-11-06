@@ -2380,10 +2380,19 @@ async function initHomeGallery() {
 async function initLatestNews() {
   try {
     console.log('최신 소식 섹션 초기화 시작...');
+    initPreviewTabs();
+    // 구인정보는 따로 불러와서, 실패해도 공지·Q&A는 그대로 보이게 합니다
+    window.db.jobs.getList()
+      .then(renderLatestJobs)
+      .catch(err => {
+        console.error('최신 구인정보 로드 오류:', err);
+        const c = document.getElementById('latest-jobs');
+        if (c) c.innerHTML = '<div class="news-error"><i class="fas fa-exclamation-triangle"></i><span>구인정보를 불러오는 중 문제가 발생했습니다.</span></div>';
+      });
     // Supabase에서 공지사항과 Q&A 데이터를 병렬로 로드
     const [notices, qaData] = await Promise.all([
       window.db.notices.getLatest(5),
-      window.db.qa.getLatest(7)
+      window.db.qa.getLatest(5)
     ]);
     // 공지사항 렌더링
     renderLatestNotices(notices);
@@ -2530,6 +2539,66 @@ function renderLatestQA(qaData) {
   }).join('');
   
   container.innerHTML = qaHTML;
+}
+
+/**
+ * 홈 최신 소식: 구인정보 칸 (중요 공지글은 빼고 최신 5개, 진행중/완료 표시)
+ */
+function renderLatestJobs(jobs) {
+  const container = document.getElementById('latest-jobs');
+  if (!container) return;
+  const items = (jobs || [])
+    .filter(j => !(j.isnotice || j.isNotice))
+    .sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''))
+    .slice(0, 5);
+  if (!items.length) {
+    container.innerHTML = '<div class="loading-message" style="text-align: center; padding: 2rem; color: #777;">등록된 구인정보가 없습니다.</div>';
+    return;
+  }
+  container.innerHTML = items.map(job => `
+      <a href="community_jobs_detail.html?id=${job.id}" class="preview-item${getJobStatus(job) === 'closed' ? ' is-closed' : ''}">
+        <div class="preview-item-icon">
+          <i class="fas fa-briefcase"></i>
+        </div>
+        <div class="preview-item-text">
+          <span class="title">${jobStatusBadgeHtml(job)}${escapeHtml(job.title || '')}${newBadgeHtml(job)}</span>
+          <div class="meta">
+            <i class="fas fa-calendar-alt"></i>
+            <span>${formatKoreaDate(job.created_at)}</span>${job.close_date ? `<span class="meta-sep">·</span><span>마감 ${escapeHtml(job.close_date)}</span>` : ''}
+          </div>
+        </div>
+      </a>`).join('');
+}
+
+/**
+ * 홈 최신 소식 탭 (태블릿·휴대폰에서만 보임): 공지사항 / 자주 묻는 질문 / 구인정보
+ */
+function initPreviewTabs() {
+  const tablist = document.querySelector('.preview-tabs');
+  if (!tablist || tablist.dataset.ready) return;
+  tablist.dataset.ready = '1';
+  const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+  const select = (tab, focus) => {
+    tabs.forEach(t => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      const panel = document.getElementById(t.getAttribute('aria-controls'));
+      if (panel) panel.classList.toggle('is-active', on);
+    });
+    if (focus) tab.focus();
+  };
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => select(tab));
+    tab.addEventListener('keydown', e => {
+      let j = null;
+      if (e.key === 'ArrowRight') j = (i + 1) % tabs.length;
+      else if (e.key === 'ArrowLeft') j = (i - 1 + tabs.length) % tabs.length;
+      else if (e.key === 'Home') j = 0;
+      else if (e.key === 'End') j = tabs.length - 1;
+      if (j !== null) { e.preventDefault(); select(tabs[j], true); }
+    });
+  });
 }
 
 /**
