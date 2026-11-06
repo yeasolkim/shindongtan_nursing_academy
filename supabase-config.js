@@ -97,6 +97,18 @@ const db = {
 
   // 갤러리 관련 함수
   gallery: {
+    // 홈 화면용: 최신 갤러리 N개 (본문 제외)
+    async getLatest(limit = 12) {
+      const { data, error } = await supabaseClient
+        .from('gallery')
+        .select('id,title,image,created_at')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+      if (error) throw error;
+      return data;
+    },
+
     // 모든 갤러리 항목 가져오기
     async getAll() {
       const { data, error } = await supabaseClient

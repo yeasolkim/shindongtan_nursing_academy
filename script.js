@@ -940,6 +940,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     case 'index.html':
     case '':
       initLatestNews();
+      initHomeGallery();
       break;
     case 'academy_instructors.html':
       initInstructorsPage();
@@ -2295,6 +2296,82 @@ async function initNoticeDetailPage() {
     console.error('공지사항 상세 페이지 초기화 오류:', error);
     detailContainer.innerHTML = '<p style="text-align: center; padding: 4rem;">게시물을 불러오는 데 실패했습니다.</p>';
   }
+}
+
+/**
+ * 홈 화면 갤러리 줄: 최신 갤러리 글의 대표 사진을 옆으로 넘겨 봅니다.
+ * 휴대폰은 손가락으로 밀고, PC는 좌우 버튼이나 트랙패드로 넘깁니다.
+ */
+async function initHomeGallery() {
+  const track = document.getElementById('home-gallery-track');
+  if (!track) return;
+  const section = track.closest('.home-gallery-section');
+  const prevBtn = section.querySelector('.home-gallery-nav.prev');
+  const nextBtn = section.querySelector('.home-gallery-nav.next');
+
+  let items;
+  try {
+    items = await window.db.gallery.getLatest(12);
+  } catch (e) {
+    console.error('홈 갤러리 로드 오류:', e);
+    section.hidden = true;
+    return;
+  }
+  items = (items || []).map(item => ({ item, src: parseGalleryImages(item.image)[0] })).filter(x => x.src);
+  if (!items.length) { section.hidden = true; return; }
+
+  track.innerHTML = items.map(({ item, src }, i) => `
+    <li class="home-gallery-card">
+      <a href="community_gallery_detail.html?id=${item.id}">
+        <img src="${escapeHtml(galleryThumbUrl(src))}" data-original="${escapeHtml(src)}" alt="${escapeHtml(item.title || '갤러리 사진')}" loading="${i < 4 ? 'eager' : 'lazy'}" decoding="async" draggable="false">
+        <span class="home-gallery-caption">
+          <span class="home-gallery-title">${escapeHtml(item.title || '')}${newBadgeHtml(item)}</span>
+          <span class="home-gallery-date">${formatKoreaDate(item.created_at)}</span>
+        </span>
+      </a>
+    </li>`).join('') + `
+    <li class="home-gallery-card home-gallery-card-more">
+      <a href="community_gallery.html"><i class="fas fa-images" aria-hidden="true"></i><span>갤러리<br>전체 보기</span></a>
+    </li>`;
+  track.querySelectorAll('img[data-original]').forEach(img => attachThumbFallback(img, img.dataset.original));
+
+  // 좌우 버튼: 한 번에 보이는 폭의 약 80%만큼 이동, 끝에서는 숨김
+  const step = () => Math.max(240, track.clientWidth * 0.8);
+  const update = () => {
+    const max = track.scrollWidth - track.clientWidth - 8;
+    const canScroll = max > 0;
+    const atStart = track.scrollLeft <= 8;
+    const atEnd = !canScroll || track.scrollLeft >= max;
+    prevBtn.hidden = !canScroll || atStart;
+    nextBtn.hidden = atEnd;
+    section.classList.toggle('at-start', atStart);
+    section.classList.toggle('at-end', atEnd);
+  };
+  prevBtn.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+  nextBtn.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+  track.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+  window.addEventListener('resize', update);
+  track.querySelectorAll('img').forEach(img => img.addEventListener('load', update, { once: true }));
+  update();
+
+  // PC 마우스로 끌어서 넘기기 (끌었을 때는 링크 클릭 막기)
+  let down = false, startX = 0, startLeft = 0, moved = false;
+  track.addEventListener('pointerdown', e => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    down = true; moved = false; startX = e.clientX; startLeft = track.scrollLeft;
+  });
+  window.addEventListener('pointermove', e => {
+    if (!down) return;
+    const dx = e.clientX - startX;
+    if (Math.abs(dx) > 5) { moved = true; track.classList.add('is-dragging'); }
+    if (moved) track.scrollLeft = startLeft - dx;
+  });
+  window.addEventListener('pointerup', () => {
+    if (!down) return;
+    down = false;
+    track.classList.remove('is-dragging');
+  });
+  track.addEventListener('click', e => { if (moved) { e.preventDefault(); moved = false; } }, true);
 }
 
 /**

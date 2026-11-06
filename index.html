@@ -133,6 +133,27 @@
       </div>
     </section>
 
+    <!-- Gallery Strip Section: 갤러리 최신 사진을 옆으로 넘겨 보기 -->
+    <section class="home-gallery-section" aria-labelledby="home-gallery-title">
+      <div class="container">
+        <div class="home-gallery-head">
+          <h2 id="home-gallery-title" class="community-preview-title">갤러리</h2>
+          <p class="community-preview-subtitle">학원의 생생한 순간들을 만나보세요</p>
+          <a href="community_gallery.html" class="home-gallery-more">전체 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="home-gallery-wrap">
+          <button type="button" class="home-gallery-nav prev" aria-label="이전 사진" hidden><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+          <ul class="home-gallery-track" id="home-gallery-track" aria-label="갤러리 사진 목록">
+            <li class="home-gallery-card is-skeleton" aria-hidden="true"></li>
+            <li class="home-gallery-card is-skeleton" aria-hidden="true"></li>
+            <li class="home-gallery-card is-skeleton" aria-hidden="true"></li>
+            <li class="home-gallery-card is-skeleton" aria-hidden="true"></li>
+          </ul>
+          <button type="button" class="home-gallery-nav next" aria-label="다음 사진" hidden><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </section>
+
     <!-- Community Preview Section -->
     <section class="community-preview-section animate-on-scroll">
       <div class="container">
@@ -204,6 +225,7 @@
 
   <!-- Supabase 설정 파일 -->
   <script src="supabase-config.js" defer></script>
+  <script src="gallery-thumbs.js" defer></script>
   <script src="script.js" defer></script>
   <script>
     async function loadPopupsFromSupabase() {
