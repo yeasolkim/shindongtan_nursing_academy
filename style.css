@@ -2436,3 +2436,11 @@ body[data-page^='community_'] .section-title {
   .community-preview-section .preview-grid-3 .preview-title h3 { font-size: 1.05rem; }
   .community-preview-section .preview-grid-3 .preview-item-text .title { font-size: 0.92rem; }
 }
+
+/* ===== 태블릿·PC: 오른쪽 끝 메뉴(취업/진학, 커뮤니티)의 하위 메뉴가 화면 밖으로 나가 페이지가 옆으로 밀리던 문제 ===== */
+@media (min-width: 769px) {
+  .main-menu > ul > .menu-item:nth-last-child(-n+2) .submenu-container {
+    left: auto;
+    right: 0;
+  }
+}
