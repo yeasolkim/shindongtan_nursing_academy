@@ -1647,7 +1647,8 @@ document.addEventListener('DOMContentLoaded', () => {
         postModalSnapshot = {
             title: document.getElementById('modal-title-input').value,
             html: (typeof quill !== 'undefined' && quill) ? quill.root.innerHTML : '',
-            isNotice: noticeCheckbox ? noticeCheckbox.checked : false
+            isNotice: noticeCheckbox ? noticeCheckbox.checked : false,
+            jobFields: jobFieldsKey()
         };
         galleryModalDirty = false;
     }
@@ -1659,7 +1660,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const html = (typeof quill !== 'undefined' && quill) ? quill.root.innerHTML : '';
         return document.getElementById('modal-title-input').value !== postModalSnapshot.title ||
             html !== postModalSnapshot.html ||
-            (noticeCheckbox ? noticeCheckbox.checked : false) !== postModalSnapshot.isNotice;
+            (noticeCheckbox ? noticeCheckbox.checked : false) !== postModalSnapshot.isNotice ||
+            jobFieldsKey() !== postModalSnapshot.jobFields;
+    }
+    // 구인 상태·마감일 변경도 '작성 중인 내용'으로 봅니다 (구인 글 작성 창에서만)
+    function jobFieldsKey() {
+        const group = document.getElementById('modal-job-status-group');
+        if (!group || group.style.display === 'none') return '';
+        const closedEl = document.getElementById('modal-job-status-closed');
+        const dateEl = document.getElementById('modal-job-close-date');
+        return (closedEl && closedEl.checked ? 'closed' : 'open') + '|' + (dateEl ? dateEl.value : '');
     }
 
     // ── 작성 중인 글 자동 임시저장 (공지/구인/갤러리, 이 브라우저에만 저장) ──
@@ -2124,6 +2134,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (modalForm) {
             modalForm.reset();
         }
+        const jobStatusGroup = document.getElementById('modal-job-status-group');
+        if (jobStatusGroup) jobStatusGroup.style.display = 'none';
         // 갤러리 작성/수정 모달 닫을 때 이미지 미리보기도 초기화
         if (typeof resetGalleryImageFiles === 'function') {
             resetGalleryImageFiles();
@@ -2489,6 +2501,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Jobs Management (Supabase 연동) ---
     let _allJobItems = [];
+    // 구인 상태: 완료로 지정했거나 마감일(한국 날짜)이 지났으면 완료 (공개 페이지 script.js와 같은 규칙)
+    function todayKoreaDateAdmin() {
+        return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date());
+    }
+    function getJobStatusAdmin(item) {
+        if (!item || item.isnotice) return null;
+        if (item.status === 'closed') return 'closed';
+        if (item.close_date && item.close_date < todayKoreaDateAdmin()) return 'closed';
+        return 'open';
+    }
+    function setJobStatusFields(item) {
+        const group = document.getElementById('modal-job-status-group');
+        if (group) group.style.display = 'grid';
+        const status = item ? (getJobStatusAdmin(Object.assign({}, item, { isnotice: false })) || 'open') : 'open';
+        const openEl = document.getElementById('modal-job-status-open');
+        const closedEl = document.getElementById('modal-job-status-closed');
+        if (openEl) openEl.checked = status === 'open';
+        if (closedEl) closedEl.checked = status === 'closed';
+        const dateEl = document.getElementById('modal-job-close-date');
+        if (dateEl) dateEl.value = (item && item.close_date) || '';
+    }
+    function readJobStatusFields() {
+        const closedEl = document.getElementById('modal-job-status-closed');
+        const dateEl = document.getElementById('modal-job-close-date');
+        return {
+            status: closedEl && closedEl.checked ? 'closed' : 'open',
+            close_date: dateEl && dateEl.value ? dateEl.value : null
+        };
+    }
+    (function() {
+        const clearBtn = document.getElementById('modal-job-close-date-clear');
+        if (clearBtn) clearBtn.addEventListener('click', function() {
+            const dateEl = document.getElementById('modal-job-close-date');
+            if (dateEl) dateEl.value = '';
+        });
+    })();
     async function loadJobList() {
         const { data, error } = await window.supabaseClient
             .from('jobs')
@@ -2522,10 +2570,11 @@ document.addEventListener('DOMContentLoaded', () => {
             div.className = 'post-card-item';
             div.innerHTML = `
                 <div class="post-card-main">
-                    ${item.isnotice ? '<span class="post-notice-badge">📢 중요</span>' : ''}
+                    ${item.isnotice ? '<span class="post-notice-badge">📢 중요</span>' : (getJobStatusAdmin(item) === 'closed' ? '<span class="post-job-status-badge closed">완료</span>' : '<span class="post-job-status-badge open">진행중</span>')}
                     <div class="post-card-title">${escapeHtml(item.title)}</div>
                     <div class="post-card-meta">
                         <span><i class="fas fa-calendar-alt"></i> ${formatKoreaDate(item.created_at)}</span>
+                        ${!item.isnotice && item.close_date ? `<span><i class="fas fa-hourglass-half"></i> 마감 ${escapeHtml(item.close_date)}</span>` : ''}
                         <span><i class="fas fa-eye"></i> ${item.views || 0}</span>
                     </div>
                 </div>
@@ -2582,6 +2631,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const title = document.getElementById('modal-title-input').value.trim();
         const description = typeof quill !== 'undefined' && quill ? quill.root.innerHTML : document.getElementById('modal-content-input').value;
         const isnotice = document.getElementById('modal-is-notice-checkbox')?.checked || false;
+        const { status, close_date } = readJobStatusFields();
+        if (status === 'open' && close_date && close_date < todayKoreaDateAdmin()) {
+            showToast('구인 마감일이 이미 지났습니다. 진행중으로 두려면 마감일을 오늘 이후로 바꾸거나 지워 주세요.', 'warning');
+            return;
+        }
 
         // 본문 빈 값 검사
         const descText = typeof quill !== 'undefined' && quill ? quill.getText().trim() : description.replace(/<[^>]*>/g, '').trim();
@@ -2613,13 +2667,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const { error: updateError } = await window.supabaseClient
                     .from('jobs')
-                    .update({ title, description, isnotice })
+                    .update({ title, description, isnotice, status, close_date })
                     .eq('id', id);
                 if (updateError) throw updateError;
             } else {
                 const { error: insertError } = await window.supabaseClient
                     .from('jobs')
-                    .insert([{ title, description, isnotice }]);
+                    .insert([{ title, description, isnotice, status, close_date }]);
                 if (insertError) throw insertError;
             }
             if (oldFileUrls.length) removeStorageUrls(diffRemovedUrls(oldFileUrls, extractStorageUrlsFromHtml(description)));
@@ -2677,6 +2731,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modal-title-input').value = '';
         document.getElementById('modal-content-input').value = '';
         document.getElementById('modal-is-notice-checkbox').checked = false;
+        setJobStatusFields(null);
         
         // Quill 에디터 초기화
         initializeQuillEditor();
@@ -2700,6 +2755,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modalNoticeGroup.style.display = 'block';
         document.getElementById('modal-title-input').value = item.title || '';
         document.getElementById('modal-is-notice-checkbox').checked = !!item.isnotice;
+        setJobStatusFields(item);
         
         // Quill 에디터 초기화 및 내용 설정
         initializeQuillEditor();

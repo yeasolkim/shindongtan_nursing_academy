@@ -137,7 +137,7 @@ const db = {
     async getList() {
       const { data, error } = await supabaseClient
         .from('jobs')
-        .select('id,title,views,created_at,isnotice')
+        .select('id,title,views,created_at,isnotice,status,close_date')
         .order('created_at', { ascending: false });
 
       if (error) throw error;

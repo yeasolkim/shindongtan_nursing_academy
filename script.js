@@ -1413,7 +1413,7 @@ async function initGalleryPage() {
               <img class="thumbnail" src="${escapeHtml(thumbnail)}" data-original="${escapeHtml(original)}" decoding="async" alt="${escapeHtml(item.title || '갤러리 이미지')}" loading="lazy">
             </a>
             <div class="title-section">
-              <a href="${detailUrl}" class="title">${escapeHtml(item.title || '')}</a>
+              <a href="${detailUrl}" class="title">${escapeHtml(item.title || '')}${newBadgeHtml(item)}</a>
               <div class="description">${descriptionText}</div>
               <div class="meta-info">
                 <span class="date">${formatKoreaDate(item.created_at)}</span>
@@ -1574,6 +1574,48 @@ function incrementJobView(postId) {
 }
 
 /**
+ * 작성한 지 30일 이내 글이면 NEW 표시를 붙입니다 (공지사항·갤러리·구인 목록).
+ * DB 시간 중 시간대 표기가 없는 값은 UTC로 봅니다.
+ */
+const NEW_POST_DAYS = 30;
+function isNewPost(item) {
+  // 목록에 보이는 날짜와 같은 기준 (date가 있으면 date, 없으면 created_at)
+  let s = item && (item.date || item.created_at);
+  if (!s) return false;
+  s = String(s);
+  if (/^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/.test(s)) s = s.replace(' ', 'T') + 'Z';
+  const t = new Date(s).getTime();
+  if (isNaN(t)) return false;
+  const age = Date.now() - t;
+  return age >= 0 && age < NEW_POST_DAYS * 24 * 60 * 60 * 1000;
+}
+function newBadgeHtml(item) {
+  return isNewPost(item) ? '<span class="new-badge" aria-label="새 글">NEW</span>' : '';
+}
+
+/**
+ * 구인 글 상태: 'open'(진행중) | 'closed'(완료) | null(중요 공지글은 표시 안 함)
+ * 관리자가 완료로 바꿨거나, 구인 마감일(close_date)이 한국 날짜 기준으로 지났으면 완료입니다.
+ * (DB도 매일 0시 5분에 마감일이 지난 글을 완료로 바꾸지만, 화면은 그 전에도 바로 완료로 보여줍니다.)
+ */
+function todayKoreaDate() {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date());
+}
+function getJobStatus(item) {
+  if (!item || item.isnotice || item.isNotice) return null;
+  if (item.status === 'closed') return 'closed';
+  if (item.close_date && item.close_date < todayKoreaDate()) return 'closed';
+  return 'open';
+}
+function jobStatusBadgeHtml(item) {
+  const st = getJobStatus(item);
+  if (!st) return '';
+  return st === 'open'
+    ? '<span class="job-status job-status-open">진행중</span>'
+    : '<span class="job-status job-status-closed">완료</span>';
+}
+
+/**
  * 게시판 목록을 불러오는 동안 표 안에 안내 문구를 보여줍니다.
  * 목록을 그리면 renderList가 내용을 비우므로 자동으로 사라집니다.
  */
@@ -1711,7 +1753,7 @@ async function initJobsPage() {
       row.innerHTML = `
         <div class="number">${isNotice ? '중요' : itemNumber}</div>
         <div class="title">
-          <a href="community_jobs_detail.html?id=${item.id}">${escapeHtml(item.title)}</a>
+          ${jobStatusBadgeHtml(item)}<a href="community_jobs_detail.html?id=${item.id}">${escapeHtml(item.title)}</a>${newBadgeHtml(item)}
           ${isMobile ? `<span class="mobile-date">${formatKoreaDate(item.date || item.created_at)}</span>` : ''}
         </div>
         <div class="author">${escapeHtml(item.author || '관리자')}</div>
@@ -1827,10 +1869,11 @@ async function initJobsDetailPage() {
     viewContainer.innerHTML = `
       <div class="post-view">
         <div class="post-header">
-          <h2>${isNotice ? '<span class="notice-badge-inline">중요</span> ' : ''}${escapeHtml(post.title)}</h2>
+          <h2>${isNotice ? '<span class="notice-badge-inline">중요</span> ' : jobStatusBadgeHtml(post)}${escapeHtml(post.title)}</h2>
           <div class="post-meta">
             <span><i class="fas fa-user"></i> ${escapeHtml(post.author || '')}</span>
             <span><i class="fas fa-calendar-alt"></i> ${formatKoreaDate(post.date || post.created_at)}</span>
+            ${!isNotice && post.close_date ? `<span><i class="fas fa-hourglass-half"></i> 구인 마감 ${escapeHtml(post.close_date)}</span>` : ''}
             <span><i class="fas fa-eye"></i> ${post.views || 0}</span>
           </div>
         </div>
@@ -2034,7 +2077,7 @@ async function initNoticePage() {
       row.innerHTML = `
         <div class="number">${isNotice ? '중요' : itemNumber}</div>
         <div class="title">
-          <a href="community_notice_detail.html?id=${item.id}">${escapeHtml(item.title)}</a>
+          <a href="community_notice_detail.html?id=${item.id}">${escapeHtml(item.title)}</a>${newBadgeHtml(item)}
           ${isMobile ? `<span class="mobile-date">${formatKoreaDate(item.date || item.created_at)}</span>` : ''}
         </div>
         <div class="author">${escapeHtml(item.author || '관리자')}</div>

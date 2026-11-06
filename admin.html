@@ -3488,6 +3488,34 @@
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
     }
     .legacy-cancel-btn { display: none !important; }
+    /* 구인 상태·마감일 (구인 글 작성 창에서만 표시) */
+    .modal .form-group#modal-job-status-group {
+      margin-top: -0.4rem; margin-bottom: 1.4rem; padding: 0.9rem 1rem;
+      border: 1.5px solid #cfe3d6; border-radius: 10px; background: #f6fbf7;
+      display: grid; gap: 0.9rem;
+    }
+    .job-status-field { display: grid; gap: 0.4rem; }
+    .job-status-field-label { font-weight: 700; font-size: 0.95rem; color: var(--t1, #1f2937); margin: 0; }
+    .modal label.job-status-field-label { display: block; }
+    .job-status-field-label .job-opt { font-weight: 400; font-size: 0.85rem; color: var(--t3, #6b7280); }
+    .job-status-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .job-status-options label {
+      display: inline-flex; align-items: center; gap: 0.4rem; margin: 0; cursor: pointer;
+      padding: 0.45rem 0.95rem; border-radius: 999px; border: 1.5px solid #d3d8df; background: #fff;
+      font-size: 0.95rem; font-weight: 600;
+    }
+    .job-status-options label:has(input:checked) { border-color: #1e6b34; background: #e6f4ea; color: #1e6b34; }
+    .job-status-options input[type="radio"] { width: 1.05em; height: 1.05em; margin: 0; accent-color: #1e6b34; }
+    .job-close-date-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    .job-close-date-row input[type="date"] { width: auto; min-width: 170px; margin: 0; }
+    .job-close-date-row .button-secondary { width: auto; margin: 0; padding: 0.5rem 0.9rem; }
+    .job-status-help { color: var(--t3, #6b7280); font-size: 0.82rem; line-height: 1.45; }
+    .post-job-status-badge {
+      display: inline-block; font-size: 0.73rem; font-weight: 700; border-radius: 5px;
+      padding: 0.1rem 0.45rem; margin: 0 0.3rem 0.35rem 0;
+    }
+    .post-job-status-badge.open { color: #1e6b34; background: #e6f4ea; border: 1px solid #a8d5b5; }
+    .post-job-status-badge.closed { color: #5b6472; background: #eef0f3; border: 1px solid #d3d8df; }
     /* 중요 공지 체크박스 (제목 바로 아래) */
     .modal .form-group#modal-notice-group { margin-top: -1rem; margin-bottom: 1.4rem; }
     .modal .form-group label.notice-check-label {
@@ -3877,6 +3905,23 @@
             <input type="checkbox" id="modal-is-notice-checkbox"> 중요 공지로 등록
             <small>목록 맨 위에 고정됩니다.</small>
           </label>
+        </div>
+        <div class="form-group" id="modal-job-status-group" style="display: none;">
+          <div class="job-status-field">
+            <span class="job-status-field-label" id="job-status-label">구인 상태</span>
+            <div class="job-status-options" role="radiogroup" aria-labelledby="job-status-label">
+              <label><input type="radio" name="job-status" id="modal-job-status-open" value="open" checked> 진행중</label>
+              <label><input type="radio" name="job-status" id="modal-job-status-closed" value="closed"> 완료</label>
+            </div>
+          </div>
+          <div class="job-status-field">
+            <label class="job-status-field-label" for="modal-job-close-date">구인 마감일 <span class="job-opt">(선택)</span></label>
+            <div class="job-close-date-row">
+              <input type="date" id="modal-job-close-date">
+              <button type="button" class="button-secondary" id="modal-job-close-date-clear">지우기</button>
+            </div>
+            <small class="job-status-help">이 날짜까지 '진행중'으로 보이고, 다음 날 자동으로 '완료'로 바뀝니다. 비워 두면 직접 바꿀 때까지 그대로입니다.</small>
+          </div>
         </div>
         <div class="form-group" id="modal-image-group" style="display: none;">
           <label>이미지 <span class="req">*</span></label>
