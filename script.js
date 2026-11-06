@@ -2489,7 +2489,7 @@ function renderLatestNotices(notices) {
           <i class="fas fa-bell"></i>
         </div>
         <div class="preview-item-text">
-          <span class="title">${isNotice ? '[공지] ' : ''}${escapeHtml(title)}</span>
+          <span class="title">${isNotice ? '[공지] ' : ''}${escapeHtml(title)}${newBadgeHtml(notice)}</span>
           <div class="meta">
             <i class="fas fa-calendar-alt"></i>
             <span>${date}</span>
