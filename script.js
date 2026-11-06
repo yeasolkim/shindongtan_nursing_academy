@@ -931,6 +931,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   initGalleryFilter();
   initMobileFloatingContact();
   initPageEndContact();
+  initSubMenuTabs();
   // initFacilitiesGallery(); // 이 함수는 initFacilitiesPage로 대체되었으므로 삭제합니다.
 
   // 4. 페이지별 고유 스크립트 실행 (필요한 경우)
@@ -1007,6 +1008,44 @@ document.addEventListener('DOMContentLoaded', async function() {
 /**
  * 모바일 하단 고정 문의 버튼 (768px 이하에서만 표시)
  */
+/**
+ * 하위 페이지 제목 아래에 같은 메뉴 안의 페이지 탭 줄을 붙입니다.
+ * 탭 목록은 상단 메뉴(header.html)의 하위 메뉴를 그대로 읽어 씁니다.
+ */
+function initSubMenuTabs() {
+  const hero = document.getElementById('page-hero-container');
+  if (!hero || document.querySelector('.sub-tabs')) return;
+  const detailToList = {
+    'community_jobs_detail.html': 'community_jobs.html',
+    'community_notice_detail.html': 'community_notice.html',
+    'community_gallery_detail.html': 'community_gallery.html'
+  };
+  const page = getCurrentPage();
+  const target = detailToList[page] || page;
+  const submenus = document.querySelectorAll('header.header .submenu');
+  const submenu = [...submenus].find(ul => ul.querySelector(`a[href="${target}"]`));
+  if (!submenu) return;
+  const links = [...submenu.querySelectorAll('a[href]')];
+  if (links.length < 2) return;
+
+  const nav = document.createElement('nav');
+  nav.className = 'sub-tabs';
+  nav.setAttribute('aria-label', '같은 메뉴의 다른 페이지');
+  nav.innerHTML = '<ul>' + links.map(a => {
+    const href = a.getAttribute('href');
+    const current = href === target ? ' aria-current="page"' : '';
+    return `<li><a href="${href}"${current}>${escapeHtml(a.textContent.trim())}</a></li>`;
+  }).join('') + '</ul>';
+  hero.insertAdjacentElement('afterend', nav);
+
+  // 휴대폰에서 탭이 넘치면 현재 탭이 보이도록 가로 스크롤
+  const active = nav.querySelector('[aria-current="page"]');
+  if (active) {
+    const ul = nav.querySelector('ul');
+    ul.scrollLeft = Math.max(0, active.offsetLeft - (ul.clientWidth - active.offsetWidth) / 2);
+  }
+}
+
 /**
  * 모집요강·국비과정·교육과정 페이지 끝에 상담 버튼을 붙입니다 (PC 화면).
  * 휴대폰은 화면 아래 고정 상담 바가 이미 있어 표시하지 않습니다.
